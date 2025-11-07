@@ -1,0 +1,96 @@
+.footer_classname_wrapper {
+  width: 100%;
+  background-color: #174d38;
+  color: white;
+  padding: 2rem;
+}
+
+.footer_classname_container {
+  width: 100%;
+}
+
+/* ========== Features Section ========== */
+.footer_classname_features {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5rem;
+  background: white;
+  color: black;
+  padding: 2rem 0;
+}
+
+.footer_classname_featureCard {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  padding: 2.5rem;
+  gap: 1.25rem;
+}
+
+.footer_classname_featureCard img {
+  width: 2rem;
+  height: 2rem;
+  margin: 0 auto;
+}
+
+
+
+.footer_classname_featureDesc {
+  opacity: 0.8;
+}
+
+/* ========== Links Grid Section ========== */
+.footer_classname_linksGrid {
+  width: 100%;
+  margin: 6rem 0;
+  display: grid;
+  grid-template-columns: 32% 17% 17% 17% 17%;
+}
+
+.footer_classname_about {
+  width: 50%;
+  opacity: 0.9;
+}
+
+.footer_classname_column {
+  text-transform: uppercase;
+}
+
+.footer_classname_heading {
+  margin-bottom: 0.5rem;
+}
+
+.footer_classname_column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer_classname_column li {
+  margin: 0.4rem 0;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.footer_classname_column li:hover {
+  opacity: 0.7;
+}
+
+/* ========== Bottom Section ========== */
+.footer_classname_bottom {
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+.footer_logo{
+    width: 25vw;
+}
+
+.footer_classname_bottom p {
+  opacity: 0.8;
+}

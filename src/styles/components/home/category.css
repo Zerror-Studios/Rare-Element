@@ -1,0 +1,26 @@
+.category_header {
+    margin-top: 4rem;
+  text-align: center;
+}
+
+.home_category_paren {
+  margin: 2rem 0;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1.5rem;
+}
+.category_box {
+  width: 100%;
+  text-align: center;
+}
+.category_box_img_paren {
+  width: 100%;
+  aspect-ratio: 1/1;
+  margin-bottom: 1rem;
+}
+.category_box_img_paren img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

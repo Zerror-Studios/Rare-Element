@@ -1,0 +1,29 @@
+.header {
+  position: fixed;
+  top: 2.25rem;
+  z-index: 99;
+  left: 0;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav_links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+.nav_links p {
+  color: rgb(255, 255, 255);
+  cursor: pointer;
+  text-transform: uppercase;
+}
+.nav_links p:hover {
+  text-decoration: underline;
+}
+.short_links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
