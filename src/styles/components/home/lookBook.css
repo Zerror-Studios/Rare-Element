@@ -112,7 +112,7 @@
 .lookbookSlider_card_image {
   width: 100%;
   aspect-ratio: 6 / 7;
-  background-color: #eab308; /* Tailwind yellow-600 */
+  overflow: hidden;
 }
 
 .lookbookSlider_card_description {
