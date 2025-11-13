@@ -136,9 +136,9 @@ const ProductDetail = () => {
                         <div className="productDetail_info">
                             <div className="productDetail_info_left">
                                 <Link scroll={false} href="/products">
-                                    <p className="productDetail_category text-sm ">RINGS</p>
+                                    <p className="productDetail_category text-base ">RINGS</p>
                                 </Link>
-                                <h2 className="productDetail_title text-lg uppercase">{product?.title}</h2>
+                                <h2 className="productDetail_title text-xl uppercase">{product?.title}</h2>
                                 <p className="productDetail_price text-base">₹  {product?.price}</p>
                             </div>
                             <div className="productDetail_info_right">
@@ -153,13 +153,13 @@ const ProductDetail = () => {
                         <div className="productDetail_options">
                             <div className="productDetail_row ">
                                 <div className="productDetail_select productDetail_select--green">
-                                    <button className='text-sm'>
+                                    <button className='text-base'>
                                         <p>Silver</p>
                                         <img className='productDetail_quantity_icon' src="/icons/longArrowDown.svg" alt="" />
                                     </button>
                                 </div>
                                 <div className="productDetail_select productDetail_select--white">
-                                    <button className='text-sm'>
+                                    <button className='text-base'>
                                         <p>Medium</p>
                                         <img className='productDetail_quantity_icon' src="/icons/longArrowDown.svg" alt="" />
                                     </button>
@@ -184,7 +184,7 @@ const ProductDetail = () => {
                                         className="accordion_header"
                                         onClick={() => handleToggle(index)}
                                     >
-                                        <p className="text-sm accordion_title uppercase">{item.title}</p>
+                                        <p className="text-base accordion_title uppercase">{item.title}</p>
 
                                         <img
                                             className={`productDetail_quantity_icon ${openIndex === index ? "rotated" : ""}`}
