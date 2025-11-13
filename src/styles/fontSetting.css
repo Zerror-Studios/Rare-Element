@@ -54,11 +54,13 @@ h2 {
 }
 .thin {
   font-weight: 100 !important;
+  color: black !important;
   font-family: railway-regular !important;
 }
 .bold {
   font-weight: 1000 !important;
   opacity: .9;
+  color: black !important;
   font-family: railway-medium !important;
 }
 .text-xxs {

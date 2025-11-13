@@ -23,7 +23,7 @@ const ProductDetail = () => {
 
     const product = ProductsData.find((item) => item.slug === slug);
 
-    const [openIndex, setOpenIndex] = useState(0);
+    const [openIndex, setOpenIndex] = useState(null);
 
     const [openDropdown, setOpenDropdown] = useState(null); // "color" | "size" | null
 
@@ -151,38 +151,34 @@ const ProductDetail = () => {
                         <div className="productDetail_options">
                             <div className="productDetail_row">
                                 <div
-  className={`productDetail_select ${
-    openDropdown === "color" ? "active" : ""
-  }`}
->
-  <button className="text-base" onClick={() => toggleDropdown("color")}>
-    <p className="productDetail_select_inner_elem">Silver</p>
-    <img
-      className={`productDetail_quantity_icon productDetail_select_inner_elem_img ${
-        openDropdown === "color" ? "rotate_icon" : ""
-      }`}
-      src="/icons/LongArrowDown.svg"
-      alt=""
-    />
-  </button>
-</div>
+                                    className={`productDetail_select ${openDropdown === "color" ? "active" : ""
+                                        }`}
+                                >
+                                    <button className="text-base" onClick={() => toggleDropdown("color")}>
+                                        <p className="productDetail_select_inner_elem">Silver</p>
+                                        <img
+                                            className={`productDetail_quantity_icon productDetail_select_inner_elem_img ${openDropdown === "color" ? "rotate_icon" : ""
+                                                }`}
+                                            src="/icons/LongArrowDown.svg"
+                                            alt=""
+                                        />
+                                    </button>
+                                </div>
 
-<div
-  className={`productDetail_select ${
-    openDropdown === "size" ? "active" : ""
-  }`}
->
-  <button className="text-base" onClick={() => toggleDropdown("size")}>
-    <p className="productDetail_select_inner_elem">Medium</p>
-    <img
-      className={`productDetail_quantity_icon productDetail_select_inner_elem_img ${
-        openDropdown === "size" ? "rotate_icon" : ""
-      }`}
-      src="/icons/LongArrowDown.svg"
-      alt=""
-    />
-  </button>
-</div>
+                                <div
+                                    className={`productDetail_select ${openDropdown === "size" ? "active" : ""
+                                        }`}
+                                >
+                                    <button className="text-base" onClick={() => toggleDropdown("size")}>
+                                        <p className="productDetail_select_inner_elem">Medium</p>
+                                        <img
+                                            className={`productDetail_quantity_icon productDetail_select_inner_elem_img ${openDropdown === "size" ? "rotate_icon" : ""
+                                                }`}
+                                            src="/icons/LongArrowDown.svg"
+                                            alt=""
+                                        />
+                                    </button>
+                                </div>
 
                             </div>
 
@@ -191,7 +187,7 @@ const ProductDetail = () => {
                                 {/* Colors */}
                                 <div
                                     className={`productDetail_selction ${openDropdown === "color" ? "open" : ""
-                                    }`}
+                                        }`}
                                 >
                                     <div className="color_selection">
                                         {Array.isArray(product?.colors) &&
@@ -212,7 +208,7 @@ const ProductDetail = () => {
                                 {/* Sizes */}
                                 <div
                                     className={`productDetail_selction ${openDropdown === "size" ? "open" : ""
-                                    }`}
+                                        }`}
                                 >
                                     <a href="" className='text-xs underline size_link uppercase'>Size guide</a>
                                     <div className="color_selection">
@@ -247,7 +243,7 @@ const ProductDetail = () => {
                             </div>
                             <div className="productDetail_btn_icon center">
                                 <div className="icon_pr">
-                                    <img className='  short_links_icon_heart invert' src="/icons/heart.svg" alt="" />
+                                    <img className='  short_links_icon_heart ' src="/icons/greenHeart.svg" alt="" />
                                     <img className=' short_links_icon_heart_hover' src="/icons/heartFill.svg" alt="" />
                                 </div>
                             </div>
@@ -282,34 +278,20 @@ const ProductDetail = () => {
                 </div>
             </div>
 
-            <div className="suggestion_parent">
+            <div className="suggestion_parent padding">
                 <div className="suggestion_parent_header">
                     <p className='text-base thin uppercase'>you may also like </p>
                 </div>
                 <div className="featured_scroll relative">
-                    <Swiper
-                        slidesPerView={'auto'}
-                        spaceBetween={0}
-                        loop={true}
-                        infinite={true}
-                        navigation={true}
-                        modules={[Navigation, Autoplay]}
-                        autoplay={{
-                            delay: 2500,
-                            disableOnInteraction: false,
-                        }}
-                        className="mySwiper"
-                    >
-                        {ProductsData?.map((item, i) => (
-                            <SwiperSlide key={i} className="featured_shopcard">
+                        {ProductsData.slice(0, 4)?.map((item, i) => (
+                            <div key={i} className="featured_shopcard">
                                 <Link scroll={false} href={`/products/${item.slug}`}>
                                     <div className="featured_shopcard">
                                         <ShopCard item={item} />
                                     </div>
                                 </Link>
-                            </SwiperSlide>
+                            </div>
                         ))}
-                    </Swiper>
                 </div>
             </div>
 

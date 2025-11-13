@@ -17,7 +17,10 @@
 }
 
 .featured_scroll {
-  padding: 0rem 0rem;
+  width: 100%;
+  overflow-x: scroll;
+  display: flex;
+  border-right: 1px solid #f5f5f5;
   margin-top: 2.5rem;
 }
 .mySwiper {
@@ -32,7 +35,7 @@
 
 .featured_shopcard {
   border-top: 1px solid #f5f5f5;
-  border-bottom: 1px solid #f5f5f5;
+  /* border-bottom: 1px solid #f5f5f5; */
   width: 20rem !important;
   flex-shrink: 0;
 }
@@ -61,10 +64,13 @@
   width: 28rem !important;
   flex-shrink: 0;
 }
-  .featured_scroll {
-    padding: 0rem 2rem;
-    margin-top: 2.5rem;
-  }
+.featured_scroll {
+  width: fit-content;
+  display: flex;
+  justify-content: center;
+  border-right: 1px solid #f5f5f5;
+  margin-top: 2.5rem;
+}
   .mySwiper .swiper-button-next,
   .mySwiper .swiper-button-prev {
     color: black !important;

@@ -43,6 +43,9 @@
   transform: translateY(-100%);
   opacity: 0;
 }
+.footer_below p{
+  color: white !important;
+}
 /* ========== Links Grid Section ========== */
 .footer_classname_linksGrid {
   margin: 4rem 0;

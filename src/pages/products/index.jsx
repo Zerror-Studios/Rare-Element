@@ -39,7 +39,7 @@ const AllProducts = () => {
             <div className="products_hero-section ">
                 <img className='products_hero-img' src="/images/productpage/heroImg.png" alt="" />
                 <div className="products_content padding">
-                    <h2 className='text-3xl uppercase'>Aurora Drop Earrings</h2>
+                    <h2 className='text-3xl '>Aurora Drop Earrings</h2>
                     <p className='text-xl thin'>
                         At Nahara, every piece is a blend of artistry and precision designed to celebrate your story.
                         From everyday classics to statement creations, our jewellery reflects beauty that endures beyond trends.

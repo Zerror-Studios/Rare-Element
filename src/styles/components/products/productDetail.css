@@ -11,6 +11,14 @@
   /* padding-right: .05rem; */
   width: 100%;
 }
+@media (max-width:750px) {
+  .productDetail_left {
+    aspect-ratio: 3/4;
+  /* padding-right: .05rem; */
+  width: 100%;
+}
+  
+}
 
 /* ================================
    📱 Mobile Image Slider
@@ -144,7 +152,34 @@
   justify-content: space-between;
 }
 
+.productDetail_select.active {
+  background-color: #174d38;
+  border: 1px solid #174d38;
+}
+
+.productDetail_select.active button {
+  color: #fff;
+}
+
+.productDetail_select.active .productDetail_quantity_icon {
+  filter: invert(1); /* turn white on dark background */
+}
+
 @media (min-width: 750px) {
+
+  .productDetail_select:hover,
+.productDetail_select.active {
+  background-color: #174d38;
+  border: 1px solid #174d38;
+}
+.productDetail_select:hover button,
+.productDetail_select.active button {
+  color: #fff;
+}
+.productDetail_select:hover .productDetail_quantity_icon,
+.productDetail_select.active .productDetail_quantity_icon {
+  filter: invert(1); /* turn white on dark background */
+}
   .productDetail_main {
     margin-top: 5rem;
     width: 100%;
@@ -302,26 +337,12 @@
   transition: color 0.3s ease;
 }
 
-.productDetail_select:hover,
-.productDetail_select.active {
-  background-color: #174d38;
-  border: 1px solid #174d38;
-}
-
-.productDetail_select:hover button,
-.productDetail_select.active button {
-  color: #fff;
-}
 
 .productDetail_quantity_icon {
   transition: transform 0.3s ease;
   filter: invert(0); /* normal color */
 }
 
-.productDetail_select:hover .productDetail_quantity_icon,
-.productDetail_select.active .productDetail_quantity_icon {
-  filter: invert(1); /* turn white on dark background */
-}
 
 .rotate_icon {
   transform: rotate(180deg);
@@ -390,8 +411,8 @@
 }
 .productDetail_btn_icon {
   height: 3.5rem;
-  width: 10%;
-  border: 1px solid #a5a5a5;
+  aspect-ratio: 1/1;
+  border: 3px solid #174d38;
 }
 .productDetail_btn_icon img {
   transform: translateY(0.1rem);
@@ -414,6 +435,7 @@
 }
 
 .accordion_header {
+  color: black !important;
   background: none;
   border: none;
   outline: none;
@@ -427,7 +449,9 @@
   transition: max-height 0.8s cubic-bezier(0.23, 1, 0.32, 1);
   cursor: pointer;
 }
-
+.accordion_title{
+  color: black !important;
+}
 .accordion_content {
   max-height: 0;
   overflow: hidden;
@@ -473,6 +497,10 @@
 }
 
 .suggestion_parent {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin-top: 5rem;
 }
 .suggestion_parent_header {
@@ -483,7 +511,7 @@
 .image_banner_paren {
   margin: 5rem 0rem;
   background-color: #174d38;
-  color: white;
+  color: white !important;
   width: 100%;
 }
 .image_banner_paren_left {
@@ -499,6 +527,12 @@
   justify-content: center;
   text-align: center;
   gap: 5rem;
+}
+.image_banner_paren_right p{
+  color: white !important;
+}
+.image_banner_paren_right button p{
+  color: #174d38 !important;
 }
 
 @media (min-width: 750px) {
