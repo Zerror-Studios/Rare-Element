@@ -136,10 +136,10 @@ const ProductDetail = () => {
                         <div className="productDetail_info">
                             <div className="productDetail_info_left">
                                 <Link scroll={false} href="/products">
-                                    <p className="productDetail_category text-base ">RINGS</p>
+                                    <p className="productDetail_category text-lg  ">RINGS</p>
                                 </Link>
-                                <h2 className="productDetail_title text-xl uppercase">{product?.title}</h2>
-                                <p className="productDetail_price text-base">₹  {product?.price}</p>
+                                <h2 className="productDetail_title text-2xl uppercase">{product?.title}</h2>
+                                <p className="productDetail_price text-2xl ">₹  {product?.price}</p>
                             </div>
                             <div className="productDetail_info_right">
                                 <div className="productDetail_btn_icon center">
@@ -168,13 +168,13 @@ const ProductDetail = () => {
 
                             <div className="productDetail_quantity text-base">
                                 <img className='productDetail_quantity_icon' src="/icons/minus.svg" alt="" />
-                                <h3>1</h3>
+                                <p>1</p>
                                 <img className='productDetail_quantity_icon' src="/icons/plus.svg" alt="" />
                             </div>
                         </div>
                         <div className="productDetail_addtocart">
                             <div className="productDetail_btn ">
-                                <h3 className='text-lg uppercase'>Add To Cart</h3>
+                                <p className='text-base uppercase'>Add To Cart</p>
                             </div>
                         </div>
                         <div className="accordion_container">
@@ -184,7 +184,7 @@ const ProductDetail = () => {
                                         className="accordion_header"
                                         onClick={() => handleToggle(index)}
                                     >
-                                        <p className="text-base accordion_title uppercase">{item.title}</p>
+                                        <p className="text-sm accordion_title uppercase bold">{item.title}</p>
 
                                         <img
                                             className={`productDetail_quantity_icon ${openIndex === index ? "rotated" : ""}`}
@@ -196,7 +196,7 @@ const ProductDetail = () => {
                                     <div
                                         className={`accordion_content ${openIndex === index ? "open" : ""}`}
                                     >
-                                        <h3 className="text-base">{item.content}</h3>
+                                        <p className="text-base">{item.content}</p>
                                     </div>
                                 </div>
                             ))}
@@ -209,7 +209,7 @@ const ProductDetail = () => {
 
             <div className="suggestion_parent">
                 <div className="suggestion_parent_header">
-                    <p className='text-base uppercase'>you may also like </p>
+                    <p className='text-base thin uppercase'>you may also like </p>
                 </div>
                 <div className="featured_scroll relative">
                     <Swiper
@@ -245,11 +245,11 @@ const ProductDetail = () => {
                     </div>
                     <div className="image_banner_paren_right">
                         <div className="image_banner_paren_left_txt">
-                            <h2 className='text-xl uppercase'>Iconic gifts</h2>
-                            <h3 className='text-base'>From everyday classics to statement <br /> creations, our jewellery reflects beauty that <br /> endures beyond trends.</h3>
+                            <h2 className='text-3xl uppercase'>Iconic gifts</h2>
+                            <p className='text-xl thin'>From everyday classics to statement <br /> creations, our jewellery reflects beauty that <br /> endures beyond trends.</p>
                         </div>
                         <button>
-                            <p className='text-base'>Shop Now</p>
+                            <p className='text-lg bold'>Shop Now</p>
                         </button>
                     </div>
                 </div>

@@ -1,72 +1,72 @@
 .info_header {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    background-color: #174D38;
-    height: 2.25rem;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  background-color: #174d38;
+  height: 2.25rem;
 }
-.info_header h3{
-    color: white;
-    cursor: pointer;
-    text-transform: uppercase;
+.info_header p {
+  color: white;
+  cursor: pointer;
+  text-transform: uppercase;
 }
-.info_header p:hover{
-    text-decoration: underline;
+.info_header p:hover {
+  text-decoration: underline;
 }
-.dummy_hero_div{
-    height: 40rem;
+.dummy_hero_div {
+  height: 40rem;
+  pointer-events: none;
+}
+.home_hero {
+  color: white;
+  overflow: hidden;
+  position: absolute;
+  top: 2.25rem;
+  width: 100%;
+  height: 0;
+}
+
+@media (min-width: 750px) {
+  .dummy_hero_div {
+    height: 66vh;
     pointer-events: none;
-}
-.home_hero{
+  }
+  .home_hero {
     color: white;
     overflow: hidden;
     position: absolute;
     top: 2.25rem;
     width: 100%;
     height: 0;
+  }
 }
-
-@media (min-width:750px) {
-  .dummy_hero_div{
-    height: 30rem;
-    pointer-events: none;
+.home_hero video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
 }
-.home_hero{
-    color: white;
-    overflow: hidden;
-    position: absolute;
-    top: 2.25rem;
-    width: 100%;
-    height: 0
+.home_hero_inner {
+  position: absolute;
+  white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 9;
+  bottom: 8%;
+  left: 50%;
+  transform: translateX(-50%);
 }
-}
-.home_hero video{
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: -1;
-}
-.home_hero_inner{
-    position: absolute;
-    white-space: nowrap;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    z-index: 9;
-    bottom: 8%;
-    left: 50%;
-    transform: translateX(-50%);
-}
-.green_button{
-    margin-top: 2rem;
-    padding: .75rem 5rem;
-    background-color: transparent;
-    border: 1px solid #ffffff;
-    color: #ffffff;
+.green_button {
+  margin-top: 2rem;
+  padding: 0.75rem 5rem;
+  background-color: transparent;
+  border: 1px solid #ffffff;
+  color: #ffffff;
   transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1) 0s;
 }
-.green_button:hover{
-    background-color: #174D38;
-    border: 1px solid #174D38;
-    color: white;
+.green_button:hover {
+  background-color: #174d38;
+  border: 1px solid #174d38;
+  color: white;
 }

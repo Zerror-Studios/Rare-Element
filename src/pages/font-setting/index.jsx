@@ -48,7 +48,7 @@ const Category = () => {
                                 </div>
                             </Link>
                         ))}
-                    </div>
+                    </div>  
                 </div>
             </div>
             <div className="padding">

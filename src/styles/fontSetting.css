@@ -11,8 +11,8 @@
   src: url(../../public/fonts/raleway/Raleway-Regular.ttf);
 }
 @font-face {
-  font-family: railway-semibold;
-  src: url(../../public/fonts/raleway/Raleway-SemiBold.ttf);
+  font-family: railway-bold;
+  src: url(../../public/fonts/raleway/Raleway-Bold.ttf);
 }
 @font-face {
   font-family: safira;
@@ -27,13 +27,7 @@ body {
 @media (min-width: 750px) {
   html,
   body {
-    font-size: 1vw;
-  }
-}
-@media (min-width: 1020px) {
-  html,
-  body {
-    font-size: .9vw;
+    font-size: 0.8vw;
   }
 }
 a {
@@ -44,40 +38,28 @@ a {
 
 p,
 a,
+u,
 span,
 input,
 li,
 button {
-  font-weight: 1000;
-  letter-spacing: .05rem;
-  font-family: railway-light;
+  letter-spacing: 0.05rem;
+  font-family: railway-medium;
   cursor: pointer;
 }
 h2 {
   font-weight: 100;
-  letter-spacing: .1rem;
+  letter-spacing: 0.1rem;
   font-family: safira;
 }
-
-
-h4{
-  font-weight: 100;
-  font-family: safira;
+.thin {
+  font-weight: 100 !important;
+  font-family: railway-regular !important;
 }
-h5{
-  font-weight: 100;
-  font-family: railway-medium;
-}
-h6{
-  font-weight: 1000;
-  font-family: railway-regular;
-}
-
-
-h3 {
-  font-weight: 100;
-  letter-spacing: .05rem;
-  font-family: railway-regular;
+.bold {
+  font-weight: 1000 !important;
+  opacity: .9;
+  font-family: railway-medium !important;
 }
 .text-xxs {
   font-size: 0.625rem; /* 10px */
@@ -90,7 +72,7 @@ h3 {
 }
 
 .text-sm {
-  font-size: 0.875rem; /* 14px */
+  font-size: 0.9rem; /* 14px */
   line-height: 1.25rem; /* 20px */
 }
 
@@ -101,6 +83,7 @@ h3 {
 
 .text-lg {
   font-size: 1.125rem; /* 18px */
+  letter-spacing: 0rem;
   line-height: 2rem; /* 28px */
 }
 
@@ -118,12 +101,11 @@ h3 {
   font-size: 1.5rem; /* 30px */
   line-height: 2rem; /* 36px */
 }
-@media (min-width:750px) {
+@media (min-width: 750px) {
   .text-3xl {
     font-size: 1.875rem; /* 30px */
     line-height: 3.5rem; /* 36px */
   }
-  
 }
 
 .text-4xl {
@@ -155,6 +137,3 @@ h3 {
   font-size: 8rem; /* 128px */
   line-height: 1;
 }
-
-
-

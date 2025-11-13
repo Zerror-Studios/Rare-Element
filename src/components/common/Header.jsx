@@ -102,7 +102,7 @@ const Header = () => {
           {
             navLinks.map((item, index) => (
               <Link scroll={false} href={item.link} key={index}>
-                <h3 className='text-sm hover_text'>{item.title}</h3>
+                <p className='text-sm  hover_text'>{item.title}</p>
               </Link>
             ))
           }

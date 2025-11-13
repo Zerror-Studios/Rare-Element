@@ -58,10 +58,11 @@
 }
 
 .socialCard_description{
-  width: 80%;
+  line-height: 1.2rem;
+  width: 90%;
 }
 .socialCard_title{
-  line-height: 2rem !important;
+  line-height: 2.5rem !important;
 
 }
 

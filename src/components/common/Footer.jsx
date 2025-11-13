@@ -61,7 +61,6 @@ const Footer = () => {
   return (
     <div className="footer_classname_wrapper">
       <div className="footer_classname_container">
-        {/* Secure Payment Section */}
         <div className="footer_classname_features">
           {featureData.map((item, i) => {
             const mainRef = useRef(null);
@@ -71,11 +70,9 @@ const Footer = () => {
               <div
                 key={i}
                 onMouseEnter={() => {
-                  // Restart and play once
                   mainRef.current?.goToAndPlay(0, true);
                   arrowRef.current?.goToAndPlay(0, true);
                 }}
-                // 👇 No stop on mouse leave (let animation finish naturally)
                 className="footer_classname_featureCard"
               >
                 <div className="featured_icon">
@@ -83,17 +80,17 @@ const Footer = () => {
                     lottieRef={mainRef}
                     animationData={item?.animationData}
                     autoplay={false}
-                    loop={false} // play only once
+                    loop={false}
                   />
                 </div>
 
-                <p className="footer_classname_featureTitle text-sm uppercase">
+                <p className="footer_classname_featureTitle bold text-sm uppercase">
                   {item.title}
                 </p>
 
-                <h3 className="footer_classname_featureDesc text-sm">
+                <p className="footer_classname_featureDesc text-sm">
                   {item.desc}
-                </h3>
+                </p>
 
                 <div className="featured_icon">
                   <Lottie
@@ -112,46 +109,46 @@ const Footer = () => {
           {/* Footer Links Section */}
           <div className="footer_classname_linksGrid">
             <div className="footer_classname_about">
-              <h3 className='text-base'>
+              <p className='text-base thin'>
                 Nahara is where timeless design meets modern craftsmanship — every piece a statement of individuality.
-              </h3>
+              </p>
             </div>
 
             <div className="footer_classname_column">
-              <h3 className="footer_classname_heading text-base uppercase">Category</h3>
+              <p className="footer_classname_heading text-lg uppercase">Category</p>
               <div className='footer_links_column' >
-                <h3 className='text-sm' >Rings</h3>
-                <h3 className='text-sm' >Earrings</h3>
-                <h3 className='text-sm' >Bracelet</h3>
-                <h3 className='text-sm' >Necklace</h3>
-                <h3 className='text-sm' >Anklets</h3>
+                <p className='text-base thin' >Rings</p>
+                <p className='text-base thin' >Earrings</p>
+                <p className='text-base thin' >Bracelet</p>
+                <p className='text-base thin' >Necklace</p>
+                <p className='text-base thin' >Anklets</p>
               </div>
             </div>
 
             <div className="footer_classname_column">
-              <h3 className="footer_classname_heading text-base uppercase">Brand</h3>
+              <p className="footer_classname_heading text-lg uppercase">Brand</p>
               <div className='footer_links_column' >
-                <h3 className='text-sm' >Home</h3>
-                <h3 className='text-sm' >Shop</h3>
-                <h3 className='text-sm' >About Nahara</h3>
+                <p className='text-base thin' >Home</p>
+                <p className='text-base thin' >Shop</p>
+                <p className='text-base thin' >About Nahara</p>
               </div>
             </div>
 
             <div className="footer_classname_column">
-              <h3 className="footer_classname_heading text-base uppercase">Support</h3>
+              <p className="footer_classname_heading text-lg uppercase">Support</p>
               <div className='footer_links_column' >
-                <h3 className='text-sm' >Shipping & Returns</h3>
-                <h3 className='text-sm' >FAQs</h3>
-                <h3 className='text-sm' >Care Guide</h3>
+                <p className='text-base thin' >Shipping & Returns</p>
+                <p className='text-base thin' >FAQs</p>
+                <p className='text-base thin' >Care Guide</p>
               </div>
             </div>
 
             <div className="footer_classname_column">
-              <h3 className="footer_classname_heading text-base uppercase">Contact Us</h3>
+              <p className="footer_classname_heading text-lg uppercase">Contact Us</p>
               <div className='footer_links_column' >
-                <h3 className='text-sm' >hello@rareelement.in</h3>
-                <h3 className='text-sm' >Instagram</h3>
-                <h3 className='text-sm' >WhatsApp</h3>
+                <p className='text-base thin' >hello@rareelement.in</p>
+                <p className='text-base thin' >Instagram</p>
+                <p className='text-base thin' >WhatsApp</p>
               </div>
             </div>
           </div>
@@ -161,7 +158,12 @@ const Footer = () => {
             <Link scroll={false} href="/">
               <img className='footer_logo' src="/logo.svg" alt="Nahara Logo" />
             </Link>
-            <h3 className='uppercase text-xs copyright_txt'>© 2025 Nahara. All rights reserved. Developed by Zerror Studios</h3>
+            <div className='uppercase  text-xs copyright_txt'>
+              <p>
+                © 2025 Nahara. All rights reserved. Developed by
+              </p>
+              <a href="https://www.zerrorstudios.com/" target='_blank' > Zerror Studios</a>
+            </div>
           </div>
         </div>
       </div>

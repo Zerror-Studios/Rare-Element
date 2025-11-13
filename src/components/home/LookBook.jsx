@@ -121,7 +121,7 @@ const LookBook = () => {
                         Aurora Drop <br /> Earrings
                     </h2>
                     <button className="lookbook_button">
-                        <h3 className="lookbook_btn_text text-base">Shop Now</h3>
+                        <p className="lookbook_btn_text text-base">Shop Now</p>
                     </button>
                 </div>
                 <img
@@ -208,11 +208,11 @@ const LookBook = () => {
                                         <div className="lookbookSlider_card_image">
                                             <img className="cover" src={item.hoverImage} alt="" />
                                         </div>
-                                        <p className="lookbookSlider_card_description text-base">
+                                        <p className="lookbookSlider_card_description uppercase text-base">
                                             {item.title}
                                         </p>
                                         <button className="lookbook_button">
-                                            <h3 className="lookbook_btn_text text-base">Shop Now</h3>
+                                            <p className="lookbook_btn_text text-base">Shop Now</p>
                                         </button>
                                     </div>
                                 </SwiperSlide>

@@ -5,27 +5,27 @@ const categoryData = [
     {
         link: "",
         title: "Rings",
-        img: "https://www.buccellati.com/media/wysiwyg/Widget_Macri_Capri.jpg"
+        img: "/images/homepage/category/rings.svg"
     },
     {
         link: "",
         title: "earings",
-        img: "https://www.buccellati.com/media/wysiwyg/Category_Boxes_Macri.jpg"
+        img: "/images/homepage/category/earings.svg"
     },
     {
         link: "",
         title: "Necklace",
-        img: "https://www.buccellati.com/media/wysiwyg/Category_Boxes_Macri_Classica_copia.jpg"
+        img: "/images/homepage/category/necklace.svg"
     },
     {
         link: "",
         title: "Bracelets",
-        img: "https://www.buccellati.com/media/wysiwyg/Category_Boxes_Macri_AB_copia.jpg"
+        img: "/images/homepage/category/bracelets.svg"
     },
     {
         link: "",
         title: "anklets",
-        img: "https://www.buccellati.com/media/wysiwyg/Category_Boxes_Macri_Giglio_copia.jpg"
+        img: "/images/homepage/category/anklets.svg"
     },
 ]
 const Category = () => {
@@ -33,7 +33,7 @@ const Category = () => {
         <>
             <div className="padding">
                 <div className="category_header">
-                    <p className='text-base uppercase'>The Essence of Elegance</p>
+                    <p className='text-base uppercase thin'>The Essence of Elegance</p>
                 </div>
                 <div className="home_category_paren scroller_none">
                     <div className="home_category_inner scroller_none">
@@ -43,7 +43,7 @@ const Category = () => {
                                     <div className="category_box_img_paren">
                                         <img src={item.img} className='category_box_img' alt={item.title} />
                                     </div>
-                                    <p className='text-sm uppercase'>{item.title}</p>
+                                    <p className='text-sm bold uppercase'>{item.title}</p>
                                 </div>
                             </Link>
                         ))}

@@ -13,7 +13,7 @@ const FeaturedCollection = () => {
   return (
     <div className="featured_collections_section">
       <div className="featured_header text-center mb-6">
-        <p className="featured_subtitle text-base uppercase text-gray-600">Crafted for Every Moment</p>
+        <p className="featured_subtitle thin text-base uppercase text-gray-600">Crafted for Every Moment</p>
         <h2 className="featured_title text-3xl font-semibold">Featured Collections</h2>
       </div>
 

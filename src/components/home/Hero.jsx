@@ -24,12 +24,12 @@ const Hero = () => {
         })
     }, [pathname])
 
-    
+
     useEffect(() => {
         var height
 
-        if (window.innerWidth >750) {
-            height = "36.3rem"
+        if (window.innerWidth > 750) {
+            height = "72vh"
         } else {
             height = "45rem"
         }
@@ -56,7 +56,7 @@ const Hero = () => {
         <>
             {pathname === "/" && (
                 <div className="info_header center">
-                    <h3 className='text-xs'> Free Shipping on orders above ₹  3,000 </h3>
+                    <p className='text-xs'> Free Shipping on orders above ₹  3,000 </p>
                 </div>
             )}
             <div className="dummy_hero_div"></div>
@@ -65,7 +65,7 @@ const Hero = () => {
                 <div className="home_hero_inner">
                     <h2 className='text-3xl'>The Aurora Collection</h2>
                     <Link scroll={false} href="/products">
-                        <button className='green_button'><h3 className='text-base ' >Discover</h3></button>
+                        <button className='green_button'><p className='text-base ' >Discover</p></button>
                     </Link>
                 </div>
             </div>

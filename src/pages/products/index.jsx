@@ -9,8 +9,8 @@ const AllProducts = () => {
     useEffect(() => {
         var height
 
-        if (window.innerWidth >750) {
-            height = "38.5rem"
+        if (window.innerWidth > 750) {
+            height = "76vh"
         } else {
             height = "47.5rem"
         }
@@ -39,15 +39,15 @@ const AllProducts = () => {
             <div className="products_hero-section ">
                 <img className='products_hero-img' src="/images/productpage/heroImg.png" alt="" />
                 <div className="products_content padding">
-                    <h2 className='text-xl uppercase'>Aurora Drop Earrings</h2>
-                    <h3 className='text-base'>
+                    <h2 className='text-3xl uppercase'>Aurora Drop Earrings</h2>
+                    <p className='text-xl thin'>
                         At Nahara, every piece is a blend of artistry and precision designed to celebrate your story.
                         From everyday classics to statement creations, our jewellery reflects beauty that endures beyond trends.
-                    </h3>
+                    </p>
                 </div>
             </div>
             <div className="products_header">
-                <p className="products_subtitle text-base uppercase">Crafted for Every Moment</p>
+                <p className="products_subtitle thin text-base uppercase">Crafted for Every Moment</p>
                 <h2 className="products_title text-3xl">Rings</h2>
             </div>
 

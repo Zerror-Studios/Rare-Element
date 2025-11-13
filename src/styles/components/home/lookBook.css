@@ -195,8 +195,8 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 1rem; /* 20px */
-  width: 25vw !important;
+  gap: 1.5rem; /* 20px */
+  width: 27.5vw !important;
   transform: translateX(-2rem);
 }
 }
