@@ -18,11 +18,23 @@ export const ProductsData = [
           "Handle your jewellery with care. Store it in a soft pouch when not in use and avoid exposure to harsh chemicals or moisture.",
       },
     ],
+    
+    sizes: ["S","M","L","XL"],
+    colors: [
+      {
+        name: "gold",
+        code: "#ffd700",
+      }, {
+        name: "silver",
+        code: "#c0c0c0",
+      },
+    ],
     images: [
-      "https://www.buccellati.com/media/catalog/category/4_Earrings.jpg?width=500",
-      "https://www.buccellati.com/media/catalog/category/2_Ghirlanda_Desktop.jpg?width=500",
-      "https://www.buccellati.com/media/catalog/category/4_Earrings.jpg?width=500",
-      "https://www.buccellati.com/media/wysiwyg/2_Macri_221102_650x650px.jpg"
+      "https://palmonas.com/cdn/shop/files/DSC09339.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/DSC09338.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/DSC09341_98dd383e-380f-401a-9d80-95220bae05cc.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/BR093-RG_1ecf6e0a-8c78-4a57-8726-b3f3e7524a9b.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/BR093-B_b2505079-b550-4521-8d72-32af352050af.jpg?v=1744526386&width=900"
     ]
   },
   {
@@ -31,7 +43,7 @@ export const ProductsData = [
     slug: "silver-chain-necklace",
     price: "2,500",
     image: "https://www.buccellati.com/media/catalog/product/cache/f32ea68c9c107d6f3a07ad7e3694ba92/J/A/JAUEAR023853_V1xxl_2.png",
-    hoverImage: "https://www.buccellati.com/media/wysiwyg/2_Macri_221102_650x650px.jpg",
+    hoverImage: "https://www.apm.mc/cdn/shop/files/AB5616OX-apm-monaco-pave-bracelet-jewelry_6406ed76-f49c-44d3-95ba-7e51e631a327.jpg?v=1755764670&width=600",
     accordionData: [
       {
         title: "DESCRIPTION",
@@ -44,11 +56,22 @@ export const ProductsData = [
           "Handle your jewellery with care. Store it in a soft pouch when not in use and avoid exposure to harsh chemicals or moisture.",
       },
     ],
-    images: [
-      "https://www.buccellati.com/media/catalog/category/4_Earrings.jpg?width=500",
-      "https://www.buccellati.com/media/catalog/category/2_Ghirlanda_Desktop.jpg?width=500",
-      "https://www.buccellati.com/media/catalog/category/4_Earrings.jpg?width=500",
-      "https://www.buccellati.com/media/wysiwyg/2_Macri_221102_650x650px.jpg"
+    sizes: ["S","M","L","XL"],
+    colors: [
+      {
+        name: "gold",
+        code: "#ffd700",
+      }, {
+        name: "silver",
+        code: "#c0c0c0",
+      },
+    ],
+        images: [
+      "https://palmonas.com/cdn/shop/files/DSC09339.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/DSC09338.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/DSC09341_98dd383e-380f-401a-9d80-95220bae05cc.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/BR093-RG_1ecf6e0a-8c78-4a57-8726-b3f3e7524a9b.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/BR093-B_b2505079-b550-4521-8d72-32af352050af.jpg?v=1744526386&width=900"
     ]
   },
   {
@@ -70,11 +93,22 @@ export const ProductsData = [
           "Handle your jewellery with care. Store it in a soft pouch when not in use and avoid exposure to harsh chemicals or moisture.",
       },
     ],
-    images: [
-      "https://www.buccellati.com/media/catalog/category/4_Earrings.jpg?width=500",
-      "https://www.buccellati.com/media/catalog/category/2_Ghirlanda_Desktop.jpg?width=500",
-      "https://www.buccellati.com/media/catalog/category/4_Earrings.jpg?width=500",
-      "https://www.buccellati.com/media/wysiwyg/2_Macri_221102_650x650px.jpg"
+    sizes: ["S","M","L","XL"],
+    colors: [
+      {
+        name: "gold",
+        code: "#ffd700",
+      }, {
+        name: "silver",
+        code: "#c0c0c0",
+      },
+    ],
+        images: [
+      "https://palmonas.com/cdn/shop/files/DSC09339.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/DSC09338.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/DSC09341_98dd383e-380f-401a-9d80-95220bae05cc.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/BR093-RG_1ecf6e0a-8c78-4a57-8726-b3f3e7524a9b.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/BR093-B_b2505079-b550-4521-8d72-32af352050af.jpg?v=1744526386&width=900"
     ]
   },
   {
@@ -96,11 +130,22 @@ export const ProductsData = [
           "Handle your jewellery with care. Store it in a soft pouch when not in use and avoid exposure to harsh chemicals or moisture.",
       },
     ],
-    images: [
-      "https://www.buccellati.com/media/catalog/category/4_Earrings.jpg?width=500",
-      "https://www.buccellati.com/media/catalog/category/2_Ghirlanda_Desktop.jpg?width=500",
-      "https://www.buccellati.com/media/catalog/category/4_Earrings.jpg?width=500",
-      "https://www.buccellati.com/media/wysiwyg/2_Macri_221102_650x650px.jpg"
+    sizes: ["S","M","L","XL"],
+    colors: [
+      {
+        name: "gold",
+        code: "#ffd700",
+      }, {
+        name: "silver",
+        code: "#c0c0c0",
+      },
+    ],
+        images: [
+      "https://palmonas.com/cdn/shop/files/DSC09339.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/DSC09338.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/DSC09341_98dd383e-380f-401a-9d80-95220bae05cc.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/BR093-RG_1ecf6e0a-8c78-4a57-8726-b3f3e7524a9b.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/BR093-B_b2505079-b550-4521-8d72-32af352050af.jpg?v=1744526386&width=900"
     ]
   },
   {
@@ -109,7 +154,7 @@ export const ProductsData = [
     slug: "rose-gold-anklet",
     price: "1,200",
     image: "https://www.buccellati.com/media/catalog/product/cache/f32ea68c9c107d6f3a07ad7e3694ba92/J/A/JAUEAR004578_V1xxl_2.png",
-    hoverImage: "https://www.buccellati.com/media/catalog/category/4_Earrings.jpg?width=500",
+    hoverImage: "https://www.apm.mc/cdn/shop/files/AB5656OX-apm-monaco-kaa-double-wrap-around-bangle-jewelry_e6d41014-e22c-4ad3-acfc-d309f93ef258.jpg?v=1755766186&width=600",
     accordionData: [
       {
         title: "DESCRIPTION",
@@ -122,11 +167,22 @@ export const ProductsData = [
           "Handle your jewellery with care. Store it in a soft pouch when not in use and avoid exposure to harsh chemicals or moisture.",
       },
     ],
-    images: [
-      "https://www.buccellati.com/media/catalog/category/4_Earrings.jpg?width=500",
-      "https://www.buccellati.com/media/catalog/category/2_Ghirlanda_Desktop.jpg?width=500",
-      "https://www.buccellati.com/media/catalog/category/4_Earrings.jpg?width=500",
-      "https://www.buccellati.com/media/wysiwyg/2_Macri_221102_650x650px.jpg"
+    sizes: ["S","M","L","XL"],
+    colors: [
+      {
+        name: "gold",
+        code: "#ffd700",
+      }, {
+        name: "silver",
+        code: "#c0c0c0",
+      },
+    ],
+        images: [
+      "https://palmonas.com/cdn/shop/files/DSC09339.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/DSC09338.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/DSC09341_98dd383e-380f-401a-9d80-95220bae05cc.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/BR093-RG_1ecf6e0a-8c78-4a57-8726-b3f3e7524a9b.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/BR093-B_b2505079-b550-4521-8d72-32af352050af.jpg?v=1744526386&width=900"
     ]
   },
   {
@@ -148,11 +204,22 @@ export const ProductsData = [
           "Handle your jewellery with care. Store it in a soft pouch when not in use and avoid exposure to harsh chemicals or moisture.",
       },
     ],
-    images: [
-      "https://www.buccellati.com/media/catalog/category/4_Earrings.jpg?width=500",
-      "https://www.buccellati.com/media/catalog/category/2_Ghirlanda_Desktop.jpg?width=500",
-      "https://www.buccellati.com/media/catalog/category/4_Earrings.jpg?width=500",
-      "https://www.buccellati.com/media/wysiwyg/2_Macri_221102_650x650px.jpg"
+    sizes: ["S","M","L","XL"],
+    colors: [
+      {
+        name: "gold",
+        code: "#ffd700",
+      }, {
+        name: "silver",
+        code: "#c0c0c0",
+      },
+    ],
+        images: [
+      "https://palmonas.com/cdn/shop/files/DSC09339.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/DSC09338.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/DSC09341_98dd383e-380f-401a-9d80-95220bae05cc.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/BR093-RG_1ecf6e0a-8c78-4a57-8726-b3f3e7524a9b.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/BR093-B_b2505079-b550-4521-8d72-32af352050af.jpg?v=1744526386&width=900"
     ]
   },
   {
@@ -174,11 +241,22 @@ export const ProductsData = [
           "Handle your jewellery with care. Store it in a soft pouch when not in use and avoid exposure to harsh chemicals or moisture.",
       },
     ],
-    images: [
-      "https://www.buccellati.com/media/catalog/category/4_Earrings.jpg?width=500",
-      "https://www.buccellati.com/media/catalog/category/2_Ghirlanda_Desktop.jpg?width=500",
-      "https://www.buccellati.com/media/catalog/category/4_Earrings.jpg?width=500",
-      "https://www.buccellati.com/media/wysiwyg/2_Macri_221102_650x650px.jpg"
+    sizes: ["S","M","L","XL"],
+    colors: [
+      {
+        name: "gold",
+        code: "#ffd700",
+      }, {
+        name: "silver",
+        code: "#c0c0c0",
+      },
+    ],
+        images: [
+      "https://palmonas.com/cdn/shop/files/DSC09339.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/DSC09338.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/DSC09341_98dd383e-380f-401a-9d80-95220bae05cc.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/BR093-RG_1ecf6e0a-8c78-4a57-8726-b3f3e7524a9b.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/BR093-B_b2505079-b550-4521-8d72-32af352050af.jpg?v=1744526386&width=900"
     ]
   },
   {
@@ -187,7 +265,7 @@ export const ProductsData = [
     slug: "ruby-ring",
     price: "3,800",
     image: "https://www.buccellati.com/media/catalog/product/cache/f32ea68c9c107d6f3a07ad7e3694ba92/J/A/JAUBRA016181_V1xxl_2.png",
-    hoverImage: "https://www.buccellati.com/media/catalog/category/2_Ghirlanda_Desktop.jpg?width=500",
+    hoverImage: "https://www.apm.mc/cdn/shop/files/AB3325OX-apm-monaco-double-meteorites-bracelet-jewelry_68fe89ba-d96e-496e-8b4e-da1b563da510.jpg?v=1756707565&width=600",
     accordionData: [
       {
         title: "DESCRIPTION",
@@ -200,11 +278,22 @@ export const ProductsData = [
           "Handle your jewellery with care. Store it in a soft pouch when not in use and avoid exposure to harsh chemicals or moisture.",
       },
     ],
-    images: [
-      "https://www.buccellati.com/media/catalog/category/4_Earrings.jpg?width=500",
-      "https://www.buccellati.com/media/catalog/category/2_Ghirlanda_Desktop.jpg?width=500",
-      "https://www.buccellati.com/media/catalog/category/4_Earrings.jpg?width=500",
-      "https://www.buccellati.com/media/wysiwyg/2_Macri_221102_650x650px.jpg"
+    sizes: ["S","M","L","XL"],
+    colors: [
+      {
+        name: "gold",
+        code: "#ffd700",
+      }, {
+        name: "silver",
+        code: "#c0c0c0",
+      },
+    ],
+        images: [
+      "https://palmonas.com/cdn/shop/files/DSC09339.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/DSC09338.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/DSC09341_98dd383e-380f-401a-9d80-95220bae05cc.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/BR093-RG_1ecf6e0a-8c78-4a57-8726-b3f3e7524a9b.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/BR093-B_b2505079-b550-4521-8d72-32af352050af.jpg?v=1744526386&width=900"
     ]
   },
   {
@@ -213,7 +302,7 @@ export const ProductsData = [
     slug: "ruby-ring",
     price: "3,800",
     image: "https://www.buccellati.com/media/catalog/product/cache/f32ea68c9c107d6f3a07ad7e3694ba92/J/A/JAUEAR023368_V1xxl_2.png",
-    hoverImage: "https://www.buccellati.com/media/catalog/category/4_Earrings.jpg?width=500",
+    hoverImage: "https://www.apm.mc/cdn/shop/files/AB5656OX-apm-monaco-kaa-double-wrap-around-bangle-jewelry_e6d41014-e22c-4ad3-acfc-d309f93ef258.jpg?v=1755766186&width=600",
     accordionData: [
       {
         title: "DESCRIPTION",
@@ -226,11 +315,22 @@ export const ProductsData = [
           "Handle your jewellery with care. Store it in a soft pouch when not in use and avoid exposure to harsh chemicals or moisture.",
       },
     ],
-    images: [
-      "https://www.buccellati.com/media/catalog/category/4_Earrings.jpg?width=500",
-      "https://www.buccellati.com/media/catalog/category/2_Ghirlanda_Desktop.jpg?width=500",
-      "https://www.buccellati.com/media/catalog/category/4_Earrings.jpg?width=500",
-      "https://www.buccellati.com/media/wysiwyg/2_Macri_221102_650x650px.jpg"
+    sizes: ["S","M","L","XL"],
+    colors: [
+      {
+        name: "gold",
+        code: "#ffd700",
+      }, {
+        name: "silver",
+        code: "#c0c0c0",
+      },
+    ],
+        images: [
+      "https://palmonas.com/cdn/shop/files/DSC09339.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/DSC09338.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/DSC09341_98dd383e-380f-401a-9d80-95220bae05cc.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/BR093-RG_1ecf6e0a-8c78-4a57-8726-b3f3e7524a9b.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/BR093-B_b2505079-b550-4521-8d72-32af352050af.jpg?v=1744526386&width=900"
     ]
   },
   {
@@ -252,11 +352,22 @@ export const ProductsData = [
           "Handle your jewellery with care. Store it in a soft pouch when not in use and avoid exposure to harsh chemicals or moisture.",
       },
     ],
-    images: [
-      "https://www.buccellati.com/media/catalog/category/4_Earrings.jpg?width=500",
-      "https://www.buccellati.com/media/catalog/category/2_Ghirlanda_Desktop.jpg?width=500",
-      "https://www.buccellati.com/media/catalog/category/4_Earrings.jpg?width=500",
-      "https://www.buccellati.com/media/wysiwyg/2_Macri_221102_650x650px.jpg"
+    sizes: ["S","M","L","XL"],
+    colors: [
+      {
+        name: "gold",
+        code: "#ffd700",
+      }, {
+        name: "silver",
+        code: "#c0c0c0",
+      },
+    ],
+        images: [
+      "https://palmonas.com/cdn/shop/files/DSC09339.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/DSC09338.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/DSC09341_98dd383e-380f-401a-9d80-95220bae05cc.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/BR093-RG_1ecf6e0a-8c78-4a57-8726-b3f3e7524a9b.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/BR093-B_b2505079-b550-4521-8d72-32af352050af.jpg?v=1744526386&width=900"
     ]
   },
   {
@@ -265,7 +376,7 @@ export const ProductsData = [
     slug: "silver-chain-necklace",
     price: "2,500",
     image: "https://www.buccellati.com/media/catalog/product/cache/f32ea68c9c107d6f3a07ad7e3694ba92/J/A/JAUEAR023853_V1xxl_2.png",
-    hoverImage: "https://www.buccellati.com/media/wysiwyg/2_Macri_221102_650x650px.jpg",
+    hoverImage: "https://www.apm.mc/cdn/shop/files/AB5616OX-apm-monaco-pave-bracelet-jewelry_6406ed76-f49c-44d3-95ba-7e51e631a327.jpg?v=1755764670&width=600",
     accordionData: [
       {
         title: "DESCRIPTION",
@@ -278,11 +389,22 @@ export const ProductsData = [
           "Handle your jewellery with care. Store it in a soft pouch when not in use and avoid exposure to harsh chemicals or moisture.",
       },
     ],
-    images: [
-      "https://www.buccellati.com/media/catalog/category/4_Earrings.jpg?width=500",
-      "https://www.buccellati.com/media/catalog/category/2_Ghirlanda_Desktop.jpg?width=500",
-      "https://www.buccellati.com/media/catalog/category/4_Earrings.jpg?width=500",
-      "https://www.buccellati.com/media/wysiwyg/2_Macri_221102_650x650px.jpg"
+    sizes: ["S","M","L","XL"],
+    colors: [
+      {
+        name: "gold",
+        code: "#ffd700",
+      }, {
+        name: "silver",
+        code: "#c0c0c0",
+      },
+    ],
+        images: [
+      "https://palmonas.com/cdn/shop/files/DSC09339.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/DSC09338.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/DSC09341_98dd383e-380f-401a-9d80-95220bae05cc.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/BR093-RG_1ecf6e0a-8c78-4a57-8726-b3f3e7524a9b.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/BR093-B_b2505079-b550-4521-8d72-32af352050af.jpg?v=1744526386&width=900"
     ]
   },
   {
@@ -304,11 +426,22 @@ export const ProductsData = [
           "Handle your jewellery with care. Store it in a soft pouch when not in use and avoid exposure to harsh chemicals or moisture.",
       },
     ],
-    images: [
-      "https://www.buccellati.com/media/catalog/category/4_Earrings.jpg?width=500",
-      "https://www.buccellati.com/media/catalog/category/2_Ghirlanda_Desktop.jpg?width=500",
-      "https://www.buccellati.com/media/catalog/category/4_Earrings.jpg?width=500",
-      "https://www.buccellati.com/media/wysiwyg/2_Macri_221102_650x650px.jpg"
+    sizes: ["S","M","L","XL"],
+    colors: [
+      {
+        name: "gold",
+        code: "#ffd700",
+      }, {
+        name: "silver",
+        code: "#c0c0c0",
+      },
+    ],
+        images: [
+      "https://palmonas.com/cdn/shop/files/DSC09339.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/DSC09338.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/DSC09341_98dd383e-380f-401a-9d80-95220bae05cc.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/BR093-RG_1ecf6e0a-8c78-4a57-8726-b3f3e7524a9b.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/BR093-B_b2505079-b550-4521-8d72-32af352050af.jpg?v=1744526386&width=900"
     ]
   },
   {
@@ -330,11 +463,22 @@ export const ProductsData = [
           "Handle your jewellery with care. Store it in a soft pouch when not in use and avoid exposure to harsh chemicals or moisture.",
       },
     ],
-    images: [
-      "https://www.buccellati.com/media/catalog/category/4_Earrings.jpg?width=500",
-      "https://www.buccellati.com/media/catalog/category/2_Ghirlanda_Desktop.jpg?width=500",
-      "https://www.buccellati.com/media/catalog/category/4_Earrings.jpg?width=500",
-      "https://www.buccellati.com/media/wysiwyg/2_Macri_221102_650x650px.jpg"
+    sizes: ["S","M","L","XL"],
+    colors: [
+      {
+        name: "gold",
+        code: "#ffd700",
+      }, {
+        name: "silver",
+        code: "#c0c0c0",
+      },
+    ],
+        images: [
+      "https://palmonas.com/cdn/shop/files/DSC09339.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/DSC09338.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/DSC09341_98dd383e-380f-401a-9d80-95220bae05cc.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/BR093-RG_1ecf6e0a-8c78-4a57-8726-b3f3e7524a9b.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/BR093-B_b2505079-b550-4521-8d72-32af352050af.jpg?v=1744526386&width=900"
     ]
   },
   {
@@ -343,7 +487,7 @@ export const ProductsData = [
     slug: "rose-gold-anklet",
     price: "1,200",
     image: "https://www.buccellati.com/media/catalog/product/cache/f32ea68c9c107d6f3a07ad7e3694ba92/J/A/JAUEAR004578_V1xxl_2.png",
-    hoverImage: "https://www.buccellati.com/media/catalog/category/4_Earrings.jpg?width=500",
+    hoverImage: "https://www.apm.mc/cdn/shop/files/AB5656OX-apm-monaco-kaa-double-wrap-around-bangle-jewelry_e6d41014-e22c-4ad3-acfc-d309f93ef258.jpg?v=1755766186&width=600",
     accordionData: [
       {
         title: "DESCRIPTION",
@@ -356,11 +500,22 @@ export const ProductsData = [
           "Handle your jewellery with care. Store it in a soft pouch when not in use and avoid exposure to harsh chemicals or moisture.",
       },
     ],
-    images: [
-      "https://www.buccellati.com/media/catalog/category/4_Earrings.jpg?width=500",
-      "https://www.buccellati.com/media/catalog/category/2_Ghirlanda_Desktop.jpg?width=500",
-      "https://www.buccellati.com/media/catalog/category/4_Earrings.jpg?width=500",
-      "https://www.buccellati.com/media/wysiwyg/2_Macri_221102_650x650px.jpg"
+    sizes: ["S","M","L","XL"],
+    colors: [
+      {
+        name: "gold",
+        code: "#ffd700",
+      }, {
+        name: "silver",
+        code: "#c0c0c0",
+      },
+    ],
+        images: [
+      "https://palmonas.com/cdn/shop/files/DSC09339.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/DSC09338.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/DSC09341_98dd383e-380f-401a-9d80-95220bae05cc.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/BR093-RG_1ecf6e0a-8c78-4a57-8726-b3f3e7524a9b.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/BR093-B_b2505079-b550-4521-8d72-32af352050af.jpg?v=1744526386&width=900"
     ]
   },
   {
@@ -382,11 +537,22 @@ export const ProductsData = [
           "Handle your jewellery with care. Store it in a soft pouch when not in use and avoid exposure to harsh chemicals or moisture.",
       },
     ],
-    images: [
-      "https://www.buccellati.com/media/catalog/category/4_Earrings.jpg?width=500",
-      "https://www.buccellati.com/media/catalog/category/2_Ghirlanda_Desktop.jpg?width=500",
-      "https://www.buccellati.com/media/catalog/category/4_Earrings.jpg?width=500",
-      "https://www.buccellati.com/media/wysiwyg/2_Macri_221102_650x650px.jpg"
+    sizes: ["S","M","L","XL"],
+    colors: [
+      {
+        name: "gold",
+        code: "#ffd700",
+      }, {
+        name: "silver",
+        code: "#c0c0c0",
+      },
+    ],
+        images: [
+      "https://palmonas.com/cdn/shop/files/DSC09339.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/DSC09338.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/DSC09341_98dd383e-380f-401a-9d80-95220bae05cc.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/BR093-RG_1ecf6e0a-8c78-4a57-8726-b3f3e7524a9b.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/BR093-B_b2505079-b550-4521-8d72-32af352050af.jpg?v=1744526386&width=900"
     ]
   },
   {
@@ -408,11 +574,22 @@ export const ProductsData = [
           "Handle your jewellery with care. Store it in a soft pouch when not in use and avoid exposure to harsh chemicals or moisture.",
       },
     ],
-    images: [
-      "https://www.buccellati.com/media/catalog/category/4_Earrings.jpg?width=500",
-      "https://www.buccellati.com/media/catalog/category/2_Ghirlanda_Desktop.jpg?width=500",
-      "https://www.buccellati.com/media/catalog/category/4_Earrings.jpg?width=500",
-      "https://www.buccellati.com/media/wysiwyg/2_Macri_221102_650x650px.jpg"
+    sizes: ["S","M","L","XL"],
+    colors: [
+      {
+        name: "gold",
+        code: "#ffd700",
+      }, {
+        name: "silver",
+        code: "#c0c0c0",
+      },
+    ],
+        images: [
+      "https://palmonas.com/cdn/shop/files/DSC09339.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/DSC09338.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/DSC09341_98dd383e-380f-401a-9d80-95220bae05cc.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/BR093-RG_1ecf6e0a-8c78-4a57-8726-b3f3e7524a9b.jpg?v=1744526386&width=900",
+      "https://palmonas.com/cdn/shop/files/BR093-B_b2505079-b550-4521-8d72-32af352050af.jpg?v=1744526386&width=900"
     ]
   },
 

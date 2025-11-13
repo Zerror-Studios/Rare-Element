@@ -25,6 +25,12 @@ const ProductDetail = () => {
 
     const [openIndex, setOpenIndex] = useState(0);
 
+    const [openDropdown, setOpenDropdown] = useState(null); // "color" | "size" | null
+
+    const toggleDropdown = (type) => {
+        setOpenDropdown((prev) => (prev === type ? null : type));
+    };
+
     const handleToggle = (index) => {
         setOpenIndex(openIndex === index ? null : index);
     };
@@ -138,43 +144,112 @@ const ProductDetail = () => {
                                 <Link scroll={false} href="/products">
                                     <p className="productDetail_category text-lg  ">RINGS</p>
                                 </Link>
-                                <h2 className="productDetail_title text-2xl uppercase">{product?.title}</h2>
-                                <p className="productDetail_price text-2xl ">₹  {product?.price}</p>
-                            </div>
-                            <div className="productDetail_info_right">
-                                <div className="productDetail_btn_icon center">
-                                    <div className="icon_pr">
-                                        <img className='  short_links_icon_heart invert' src="/icons/heart.svg" alt="" />
-                                        <img className=' short_links_icon_heart_hover' src="/icons/heartFill.svg" alt="" />
-                                    </div>
-                                </div>
+                                <h2 className="productDetail_title text-xl ">{product?.title}</h2>
+                                <p className="productDetail_price text-xl ">₹  {product?.price}</p>
                             </div>
                         </div>
                         <div className="productDetail_options">
-                            <div className="productDetail_row ">
-                                <div className="productDetail_select productDetail_select--green">
-                                    <button className='text-base'>
-                                        <p>Silver</p>
-                                        <img className='productDetail_quantity_icon' src="/icons/LongArrowDown.svg" alt="" />
-                                    </button>
+                            <div className="productDetail_row">
+                                <div
+  className={`productDetail_select ${
+    openDropdown === "color" ? "active" : ""
+  }`}
+>
+  <button className="text-base" onClick={() => toggleDropdown("color")}>
+    <p className="productDetail_select_inner_elem">Silver</p>
+    <img
+      className={`productDetail_quantity_icon productDetail_select_inner_elem_img ${
+        openDropdown === "color" ? "rotate_icon" : ""
+      }`}
+      src="/icons/LongArrowDown.svg"
+      alt=""
+    />
+  </button>
+</div>
+
+<div
+  className={`productDetail_select ${
+    openDropdown === "size" ? "active" : ""
+  }`}
+>
+  <button className="text-base" onClick={() => toggleDropdown("size")}>
+    <p className="productDetail_select_inner_elem">Medium</p>
+    <img
+      className={`productDetail_quantity_icon productDetail_select_inner_elem_img ${
+        openDropdown === "size" ? "rotate_icon" : ""
+      }`}
+      src="/icons/LongArrowDown.svg"
+      alt=""
+    />
+  </button>
+</div>
+
+                            </div>
+
+                            {/* Dropdowns */}
+                            <div className="productDetail_selection_wrapper">
+                                {/* Colors */}
+                                <div
+                                    className={`productDetail_selction ${openDropdown === "color" ? "open" : ""
+                                    }`}
+                                >
+                                    <div className="color_selection">
+                                        {Array.isArray(product?.colors) &&
+                                            product.colors.map((item, index) => (
+                                                <div key={index} className="select_color_paren">
+                                                    <div className="color_div">
+                                                        <div
+                                                            style={{ backgroundColor: item.code }}
+                                                            className="color_inner"
+                                                        ></div>
+                                                    </div>
+                                                    <p className="text-base capitalize">{item.name}</p>
+                                                </div>
+                                            ))}
+                                    </div>
                                 </div>
-                                <div className="productDetail_select productDetail_select--white">
-                                    <button className='text-base'>
-                                        <p>Medium</p>
-                                        <img className='productDetail_quantity_icon' src="/icons/LongArrowDown.svg" alt="" />
-                                    </button>
+
+                                {/* Sizes */}
+                                <div
+                                    className={`productDetail_selction ${openDropdown === "size" ? "open" : ""
+                                    }`}
+                                >
+                                    <a href="" className='text-xs underline size_link uppercase'>Size guide</a>
+                                    <div className="color_selection">
+                                        {Array.isArray(product?.sizes) &&
+                                            product.sizes.map((item, index) => (
+                                                <div key={index} className="select_color_paren">
+                                                    <div className="color_div">
+                                                        <div className="color_inner center">
+                                                            <p className="text-base">{item}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="productDetail_quantity text-base">
-                                <img className='productDetail_quantity_icon' src="/icons/minus.svg" alt="" />
+
+                            <div className="productDetail_quantity text-xl">
+                                <button className="productDetail_quantity_btn">
+                                    <img className='productDetail_quantity_icon' src="/icons/minus.svg" alt="" />
+                                </button>
                                 <p>1</p>
-                                <img className='productDetail_quantity_icon' src="/icons/plus.svg" alt="" />
+                                <button className="productDetail_quantity_btn">
+                                    <img className='productDetail_quantity_icon' src="/icons/plus.svg" alt="" />
+                                </button>
                             </div>
                         </div>
                         <div className="productDetail_addtocart">
                             <div className="productDetail_btn ">
                                 <p className='text-base uppercase'>Add To Cart</p>
+                            </div>
+                            <div className="productDetail_btn_icon center">
+                                <div className="icon_pr">
+                                    <img className='  short_links_icon_heart invert' src="/icons/heart.svg" alt="" />
+                                    <img className=' short_links_icon_heart_hover' src="/icons/heartFill.svg" alt="" />
+                                </div>
                             </div>
                         </div>
                         <div className="accordion_container">
@@ -188,7 +263,7 @@ const ProductDetail = () => {
 
                                         <img
                                             className={`productDetail_quantity_icon ${openIndex === index ? "rotated" : ""}`}
-                                            src="/icons/arrowDown.svg"
+                                            src="/icons/LongArrowRight.svg"
                                             alt=""
                                         />
                                     </button>

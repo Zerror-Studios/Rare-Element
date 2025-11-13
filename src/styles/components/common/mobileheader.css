@@ -46,6 +46,7 @@
 .mobile_menu_classname_open_menu {
   position: fixed;
   left: -100%;
+  top: 0;
   width: 100%;
   height: 100dvh;
   background-color: #FFFDF6;

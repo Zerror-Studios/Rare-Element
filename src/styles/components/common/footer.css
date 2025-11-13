@@ -91,10 +91,19 @@
   width: 40vw;
 }
 
-.footer_classname_bottom p,
-.copyright_txt {
-  opacity: 0.8;
-}
+  .copyright_txt {
+    display: flex;
+    gap: 0.25rem;
+  }
+  .footer_classname_bottom a {
+    text-decoration: underline !important;
+  }
+  .footer_classname_bottom p,
+  .footer_classname_bottom a,
+  .copyright_txt {
+    color: white !important;
+    opacity: 0.9;
+  }
 
 @media (min-width: 750px) {
   .footer_classname_wrapper {
@@ -188,10 +197,11 @@
     width: 17vw;
   }
 
-    .copyright_txt {
-    display: flex; gap: .25rem;
+  .copyright_txt {
+    display: flex;
+    gap: 0.25rem;
   }
-  .footer_classname_bottom a{
+  .footer_classname_bottom a {
     text-decoration: underline !important;
   }
   .footer_classname_bottom p,

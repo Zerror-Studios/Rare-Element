@@ -88,7 +88,7 @@ h2 {
 }
 
 .text-xl {
-  font-size: 1.25rem; /* 20px */
+  font-size: 1rem; /* 20px */
   line-height: 2.5rem; /* 28px */
 }
 
@@ -98,10 +98,14 @@ h2 {
 }
 
 .text-3xl {
-  font-size: 1.5rem; /* 30px */
+  font-size: 1.25rem; /* 30px */
   line-height: 2rem; /* 36px */
 }
 @media (min-width: 750px) {
+  .text-xl {
+  font-size: 1.25rem; /* 20px */
+  line-height: 2.5rem; /* 28px */
+}
   .text-3xl {
     font-size: 1.875rem; /* 30px */
     line-height: 3.5rem; /* 36px */

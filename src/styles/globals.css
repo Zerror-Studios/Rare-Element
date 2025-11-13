@@ -37,6 +37,9 @@ button {
 .uppercase{
   text-transform: uppercase;
 }
+.capitalize{
+  text-transform: capitalize;
+}
 .invert{
   filter: invert(1);
 }
