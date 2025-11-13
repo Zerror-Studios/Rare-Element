@@ -155,13 +155,13 @@ const ProductDetail = () => {
                                 <div className="productDetail_select productDetail_select--green">
                                     <button className='text-base'>
                                         <p>Silver</p>
-                                        <img className='productDetail_quantity_icon' src="/icons/longArrowDown.svg" alt="" />
+                                        <img className='productDetail_quantity_icon' src="/icons/LongArrowDown.svg" alt="" />
                                     </button>
                                 </div>
                                 <div className="productDetail_select productDetail_select--white">
                                     <button className='text-base'>
                                         <p>Medium</p>
-                                        <img className='productDetail_quantity_icon' src="/icons/longArrowDown.svg" alt="" />
+                                        <img className='productDetail_quantity_icon' src="/icons/LongArrowDown.svg" alt="" />
                                     </button>
                                 </div>
                             </div>
