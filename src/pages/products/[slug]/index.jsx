@@ -282,16 +282,14 @@ const ProductDetail = () => {
                 <div className="suggestion_parent_header">
                     <p className='text-base thin uppercase'>you may also like </p>
                 </div>
-                <div className="featured_scroll relative">
-                        {ProductsData.slice(0, 4)?.map((item, i) => (
-                            <div key={i} className="featured_shopcard">
-                                <Link scroll={false} href={`/products/${item.slug}`}>
-                                    <div className="featured_shopcard">
-                                        <ShopCard item={item} />
-                                    </div>
-                                </Link>
+                <div className="suggestion_scroll relative">
+                    {ProductsData.slice(0, 6)?.map((item, i) => (
+                        <Link key={i} scroll={false} href={`/products/${item.slug}`}>
+                            <div className="suggestion_shopcard">
+                                    <ShopCard item={item} />
                             </div>
-                        ))}
+                        </Link>
+                    ))}
                 </div>
             </div>
 

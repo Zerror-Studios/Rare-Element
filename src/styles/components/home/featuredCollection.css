@@ -17,12 +17,13 @@
 }
 
 .featured_scroll {
-  width: 100%;
-  overflow-x: scroll;
-  display: flex;
-  border-right: 1px solid #f5f5f5;
-  margin-top: 2.5rem;
+width: 100%;
+display: grid;
+grid-template-columns: repeat(2, 1fr);
+border-right: 1px solid #f5f5f5;
+margin-top: 2.5rem;
 }
+
 .mySwiper {
   display: flex;
   width: 100%;
@@ -65,9 +66,9 @@
   flex-shrink: 0;
 }
 .featured_scroll {
-  width: fit-content;
+  width: 100%;
   display: flex;
-  justify-content: center;
+  overflow-x: scroll;
   border-right: 1px solid #f5f5f5;
   margin-top: 2.5rem;
 }
