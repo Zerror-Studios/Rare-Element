@@ -4,6 +4,8 @@ import { usePathname } from 'next/navigation'
 import React, { useEffect } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
+import WhiteBorder from '../buttons/WhiteBorderBtn'
+import WhiteBorderBtn from '../buttons/WhiteBorderBtn'
 gsap.registerPlugin(ScrollTrigger)
 
 const Hero = () => {
@@ -65,7 +67,7 @@ const Hero = () => {
                 <div className="home_hero_inner">
                     <h2 className='text-3xl'>The Aurora Collection</h2>
                     <Link scroll={false} href="/products">
-                        <button className='green_button'><p className='text-base ' >Discover</p></button>
+                        <WhiteBorderBtn text={"Discover"} />
                     </Link>
                 </div>
             </div>

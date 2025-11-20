@@ -1,0 +1,89 @@
+.accountLeftSlide {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .accountLeftSlide {
+    width: 30rem;
+    gap: 5rem;
+    padding-left: 2rem;
+    padding-right: 5rem;
+  }
+}
+
+.accountLeftSlide_pointsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.accountLeftSlide_progressBar {
+  width: 100%;
+  height: .2rem;
+  background-color: rgba(0, 0, 0, 0.1);
+  margin-bottom: 0.5rem;
+}
+
+.accountLeftSlide_nav {
+  display: flex;
+  flex-direction: column;
+  text-transform: capitalize;
+  gap: 1rem;
+}
+
+.accountLeftSlide_navItem_hidden {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .accountLeftSlide_navItem_hidden {
+    display: block;
+  }
+}
+
+.accountLeftSlide_navLink {
+  cursor: pointer;
+}
+
+.accountLeftSlide_navLink:hover {
+  text-decoration: underline;
+}
+
+.active {
+  color: black;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.accountLeftSlide_signoutBtn {
+  width: 40%;
+  padding-top: 0.6rem;
+  padding-bottom: 0.6rem;
+  background-color: #313131;
+  display: flex;
+  color: white;
+  border-radius: .25rem;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 1024px) {
+  .accountLeftSlide_signoutBtn {
+    width: 100%;
+  }
+}
+
+.accountLeftSlide_signoutText {
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.accountLeftSlide_signoutText:hover {
+  text-decoration: underline;
+}

@@ -15,6 +15,7 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { useRouter } from 'next/router';
 import { usePathname } from 'next/navigation';
+import GreenBoxBtn from '@/components/buttons/GreenBoxBtn';
 
 const ProductDetail = () => {
     const pathname = usePathname()
@@ -238,9 +239,7 @@ const ProductDetail = () => {
                             </div>
                         </div>
                         <div className="productDetail_addtocart">
-                            <div className="productDetail_btn ">
-                                <p className='text-base uppercase'>Add To Cart</p>
-                            </div>
+                            <GreenBoxBtn text={"Add To Cart"} />
                             <div className="productDetail_btn_icon center">
                                 <div className="icon_pr">
                                     <img className='  short_links_icon_heart ' src="/icons/greenHeart.svg" alt="" />
@@ -286,7 +285,7 @@ const ProductDetail = () => {
                     {ProductsData.slice(0, 6)?.map((item, i) => (
                         <Link key={i} scroll={false} href={`/products/${item.slug}`}>
                             <div className="suggestion_shopcard">
-                                    <ShopCard item={item} />
+                                <ShopCard item={item} />
                             </div>
                         </Link>
                     ))}

@@ -1,12 +1,24 @@
+/* --------------------------------------------------
+   LOOKBOOK — MAIN SECTION
+-------------------------------------------------- */
+
 .lookbook_section {
-  margin: 8rem 0rem;
+  margin: 8rem 0;
   position: relative;
   width: 100%;
   height: 100vh;
-  color: white;
   overflow: hidden;
+  color: white;
 }
 
+/* Background Image */
+.lookbook_bg_img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Overlay Content */
 .lookbook_content {
   position: absolute;
   z-index: 9;
@@ -17,73 +29,69 @@
   gap: 2rem;
 }
 
-.lookbook_bg_img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.lookbook_button {
-  width: fit-content;
-  padding: 0.75rem 4rem;
-  background-color: #174d38;
-  color: white;
-}
+/* --------------------------------------------------
+   LOOKBOOK — CARD LIST (DESKTOP GRID)
+-------------------------------------------------- */
 
 .lookbookCard_container {
   width: 100%;
   display: flex;
   justify-content: center;
-  gap: 2.5rem; /* 40px */
+  gap: 2.5rem;
 }
 
 .lookbookCard_box {
   width: 35%;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem; /* 20px */
+  gap: 1.25rem;
 }
 
 .lookbookCard_image {
-  overflow: hidden;
   width: 100%;
   aspect-ratio: 6 / 7;
+  overflow: hidden;
 }
 
 .lookbookCard_text {
   margin-top: 1rem;
+  width: 100%;
+  text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
-  width: 100%;
-  text-align: center;
 }
+
 .lookbookCard_link {
   width: fit-content;
   opacity: 0.8;
 }
 
+/* Section Header */
 .lookBook_header {
   margin-top: 6rem;
   width: 100%;
   text-align: center;
 }
+
+/* --------------------------------------------------
+   LOOKBOOK SLIDER — SHARED
+-------------------------------------------------- */
+
 .lookbookSlider_section {
   margin-top: 3rem;
   width: 100%;
-  /* height: 100vh; */
   display: flex;
   flex-direction: column;
 }
 
-
+/* Left slider (hidden on mobile) */
 .lookbookSlider_left {
   display: none;
-  overflow: hidden;
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 
 .lookbook_swiper_left,
@@ -91,37 +99,34 @@
   width: 100% !important;
   height: 100% !important;
 }
+
+/* Right Content Area */
 .lookbookSlider_right {
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 5rem; /* 80px */
+  gap: 5rem;
 }
 
-.lookbookSlider_heading_wrapper {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
+/* Card Row */
 .lookbookSlider_card_wrapper {
   width: 100%;
   display: flex;
-  gap: 10rem;
   justify-content: center;
+  gap: 10rem;
 }
 
+/* Slider Card */
 .lookbookSlider_card {
+  width: 94vw !important;
   flex-shrink: 0;
+  text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
-  gap: 1rem; /* 20px */
-  width: 94vw !important;
+  gap: 1rem;
 }
 
 .lookbookSlider_card_image {
@@ -135,68 +140,51 @@
 }
 
 .lookbookSlider_card_button {
-  padding: 0.75rem 1.5rem; /* 12px 24px */
-  background-color: black;
+  padding: 0.75rem 1.5rem;
+  background: black;
   color: white;
   border: none;
   border-radius: 0.5rem;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background 0.3s ease;
 }
 
 .lookbookSlider_card_button:hover {
-  background-color: #333;
+  background: #333;
 }
 
+/* Swiper full width */
 .swiper {
   width: 100%;
   height: 100%;
 }
 
+/* --------------------------------------------------
+   DESKTOP RESPONSIVE
+-------------------------------------------------- */
+
 @media (min-width: 750px) {
-  .lookbookSlider_section {
-    margin-top: 3rem;
-    width: 100%;
-    height: calc(100vh - 4rem);
-    display: flex;
-    flex-direction: row;
-  }
   .lookBook_header {
     margin-top: 8rem;
-    width: 100%;
-    text-align: center;
   }
 
-  
-.lookbookSlider_left {
-  display: block;
-  overflow: hidden;
-  width: 50%;
-  height: 100%;
-}
+  .lookbookSlider_section {
+    flex-direction: row;
+    height: calc(100vh - 4rem);
+  }
 
-.lookbook_swiper_left,
-.lookbookSlider_card_image_left {
-  width: 100% !important;
-  height: 100% !important;
-}
-.lookbookSlider_right {
-  width: 50%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 5rem; 
-}
+  .lookbookSlider_left {
+    display: block;
+    width: 50%;
+  }
 
-.lookbookSlider_card {
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 1.5rem; /* 20px */
-  width: 27.5vw !important;
-  transform: translateX(-2rem);
-}
+  .lookbookSlider_right {
+    width: 50%;
+  }
+
+  .lookbookSlider_card {
+    width: 27.5vw !important;
+    gap: 1.5rem;
+    transform: translateX(-2rem);
+  }
 }

@@ -1,3 +1,6 @@
+/* ---------------------------------------------
+   SOCIAL — HEADER
+--------------------------------------------- */
 .social_header {
   width: 100%;
   text-align: center;
@@ -6,42 +9,45 @@
   gap: 1rem;
   margin-top: 6rem;
 }
+
+/* ---------------------------------------------
+   SOCIAL — CARD SCROLLER (MOBILE)
+--------------------------------------------- */
 .socialCard_section {
-  margin: 3rem 0rem;
-  display: flex;
-  overflow: scroll;
-  gap: 1rem;
   width: 100%;
+  margin: 3rem 0;
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
 
+.socialCard_section::-webkit-scrollbar {
+  display: none;
+}
+
+/* ---------------------------------------------
+   SOCIAL — CARD BASE STYLES
+--------------------------------------------- */
 .socialCard_box {
-  flex-shrink: 0;
   position: relative;
+  flex-shrink: 0;
   width: 70vw;
-  aspect-ratio: 5/8;
+  aspect-ratio: 5 / 8;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
+  padding: 3rem 0.5rem;
   text-align: center;
   color: white;
-  padding: 3rem 0.5rem;
   overflow: hidden;
 }
-.socialCard_box_vid {
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity: 0;
-  transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1) 0s;
-}
 
+/* Background Image */
 .socialCard_image_wrapper {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   z-index: -1;
 }
 
@@ -52,47 +58,49 @@
   filter: brightness(75%);
 }
 
-.socialCard_description {
-  color: white !important;
-  line-height: 1.2rem;
-  width: 90%;
+/* Hover Video Layer */
+.socialCard_box_vid {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.6s cubic-bezier(0.19, 1, 0.22, 1);
 }
+
+/* Text */
 .socialCard_title {
   line-height: 2.5rem !important;
 }
 
+.socialCard_description {
+  width: 90%;
+  line-height: 1.2rem;
+  color: white !important;
+}
+
+/* ---------------------------------------------
+   DESKTOP (≥ 750px)
+--------------------------------------------- */
 @media (min-width: 750px) {
-  .socialCard_box:hover .socialCard_box_vid {
-    opacity: 1;
-  }
+  /* Header spacing adjustment */
   .social_header {
-    width: 100%;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
     margin-top: 8rem;
   }
+
+  /* Grid layout instead of scroll */
   .socialCard_section {
-    overflow: hidden;
-    margin: 3rem 0rem;
     display: grid;
-    gap: 1rem;
     grid-template-columns: repeat(4, 1fr);
-    width: 100%;
-  }
-  .socialCard_box {
-    flex-shrink: 0;
-    position: relative;
-    width: 100%;
-    aspect-ratio: 5/8;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    text-align: center;
-    color: white;
-    padding: 3rem 0rem;
     overflow: hidden;
+  }
+
+  /* Card width becomes responsive grid column */
+  .socialCard_box {
+    width: 100%;
+    padding: 3rem 0;
+  }
+
+  /* Show video on hover */
+  .socialCard_box:hover .socialCard_box_vid {
+    opacity: 1;
   }
 }

@@ -1,0 +1,109 @@
+/* Glass + universal utilities */
+
+.account_wrapper {
+  width: 100%;
+  padding-bottom: 5rem;
+  padding-top: 6rem;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 1024px) {
+  .account_wrapper {
+    padding-top: 8rem;
+    flex-direction: row;
+  }
+}
+
+.account_rightSection {
+  height: 100%;
+  width: 100%;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .account_rightSection {
+    width: 60%;
+    padding-left: 5rem;
+    padding-right: 5rem;
+  }
+}
+
+.account_heading {
+  display: none;
+  text-transform: uppercase;
+}
+
+@media (min-width: 1024px) {
+  .account_heading {
+    display: block;
+  }
+}
+
+.account_gridBox {
+  margin-top: 2rem;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2.5rem 1.25rem; /* gap-y-10 gap-x-5 */
+}
+.wishlist_box {
+  margin-top: 2rem;
+  width: fit-content;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  display: grid;
+  /* gap: 1.5rem 0.75rem; gap-y-10 gap-x-5 */
+}
+.wishlist_card {
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .wishlist_box {
+    border-top: 1px solid #e6e6e6;
+    border-right: 1px solid #e6e6e6;
+    margin-top: 2rem;
+    /* width: 50rem; */
+    grid-template-columns: 25rem 25rem 25rem ;
+    display: grid;
+  }
+  .account_gridBox {
+    grid-template-columns: 18rem 18rem;
+  }
+}
+
+.account_offerCard {
+  aspect-ratio: 4 / 5;
+  width: 100%;
+  height: fit-content;
+}
+
+@media (min-width: 1024px) {
+  .account_offerCard {
+    width: 18rem;
+  }
+}
+
+.account_imgBox {
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(0.75rem);
+  border-radius: 0.25rem;
+  overflow: hidden;
+}
+
+.account_img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.account_offerText {
+  margin-top: 0.5rem;
+}
+
+.account_offerTitle {
+  margin-bottom: 0.25rem;
+}

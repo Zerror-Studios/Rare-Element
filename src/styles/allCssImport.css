@@ -1,9 +1,23 @@
 @import "./fontSetting.css";
 
+@import "./pages/login.css";
+@import "./pages/checkout.css";
+@import "./pages/legals.css";
+@import "./pages/account.css";
+
 @import "./components/common/header.css";
 @import "./components/common/mobileheader.css";
 @import "./components/common/footer.css";
 @import "./components/common/shopCard.css";
+@import "./components/common/cartBag.css";
+
+
+@import "./components/buttons.css";
+
+@import "./components/account/accountLeftSlide.css";
+@import "./components/account/forms.css";
+@import "./components/account/purchases.css";
+@import "./components/account/settings.css";
 
 
 @import "./components/home/hero.css";

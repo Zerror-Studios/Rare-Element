@@ -1,10 +1,11 @@
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import Link from 'next/link'
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import { usePathname } from 'next/navigation';
 import CustomEase from 'gsap/dist/CustomEase';
+import CartBag from './CartBag';
 gsap.registerPlugin(ScrollTrigger, CustomEase)
 
 const navLinks = [
@@ -29,13 +30,12 @@ const navLinks = [
     link: "/products"
   },
 ]
-const Header = () => {
+const Header = ({setOpenCartBag}) => {
   const pathname = usePathname()
 
   useEffect(() => {
     if (window.innerWidth < 750) return
-    // Reset or set conditions when changing paths
-    if (pathname?.startsWith("/products/")) {
+    if (pathname !== "/") {
       gsap.set(".header_bg", { top: 0 });
     }
   }, [pathname]);
@@ -63,9 +63,8 @@ const Header = () => {
 
   useEffect(() => {
     if (window.innerWidth < 750) return
-    if (pathname?.startsWith("/products/")) return;
+    if (pathname !== "/") return;
 
-    // Kill old ScrollTriggers
     ScrollTrigger.getAll().forEach((t) => t.kill());
 
     const tl = gsap.timeline({
@@ -108,13 +107,13 @@ const Header = () => {
           }
         </div>
         <div className="short_links">
-          <Link scroll={false} href="/">
+          <Link scroll={false} href="/account/wishlist">
             <img className='short_links_icon' src="/icons/heart.svg" alt="" />
           </Link>
-          <Link scroll={false} href="/">
+          <button onClick={() => setOpenCartBag(true)}>
             <img className='short_links_icon' src="/icons/cart.svg" alt="" />
-          </Link>
-          <Link scroll={false} href="/">
+          </button>
+          <Link scroll={false} href="/login">
             <img className='short_links_icon' src="/icons/profile.svg" alt="" />
           </Link>
         </div>

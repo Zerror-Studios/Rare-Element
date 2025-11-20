@@ -11,13 +11,12 @@
   /* padding-right: .05rem; */
   width: 100%;
 }
-@media (max-width:750px) {
+@media (max-width: 750px) {
   .productDetail_left {
     aspect-ratio: 3/4;
-  /* padding-right: .05rem; */
-  width: 100%;
-}
-  
+    /* padding-right: .05rem; */
+    width: 100%;
+  }
 }
 
 /* ================================
@@ -166,20 +165,19 @@
 }
 
 @media (min-width: 750px) {
-
   .productDetail_select:hover,
-.productDetail_select.active {
-  background-color: #174d38;
-  border: 1px solid #174d38;
-}
-.productDetail_select:hover button,
-.productDetail_select.active button {
-  color: #fff;
-}
-.productDetail_select:hover .productDetail_quantity_icon,
-.productDetail_select.active .productDetail_quantity_icon {
-  filter: invert(1); /* turn white on dark background */
-}
+  .productDetail_select.active {
+    background-color: #174d38;
+    border: 1px solid #174d38;
+  }
+  .productDetail_select:hover button,
+  .productDetail_select.active button {
+    color: #fff;
+  }
+  .productDetail_select:hover .productDetail_quantity_icon,
+  .productDetail_select.active .productDetail_quantity_icon {
+    filter: invert(1); /* turn white on dark background */
+  }
   .productDetail_main {
     margin-top: 5rem;
     width: 100%;
@@ -240,7 +238,6 @@
   width: 100%;
 }
 
-
 .productDetail_select button {
   display: flex;
   align-items: center;
@@ -267,7 +264,7 @@
   width: 100%;
   background-color: #fff;
 }
-.size_link{
+.size_link {
   position: absolute;
   right: 0;
   bottom: 0;
@@ -284,32 +281,32 @@
   gap: 1rem;
 }
 
-.color_selection{
+.color_selection {
   display: flex;
   gap: 1rem;
 }
-.color_inner p{
-  transform: translateY(.1rem);
+.color_inner p {
+  transform: translateY(0.1rem);
 }
-.select_color_paren{
+.select_color_paren {
   display: flex;
   transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1) 0s;
   justify-content: center;
   align-items: center;
   gap: 1rem;
 }
-.select_color_paren:hover{
-  opacity: .5;
+.select_color_paren:hover {
+  opacity: 0.5;
   cursor: pointer;
 }
-.color_div{
+.color_div {
   width: 3rem;
-  padding: .2rem;
+  padding: 0.2rem;
   border: 1px solid #a5a5a5;
   height: 3rem;
   border-radius: 100%;
 }
-.color_inner{
+.color_inner {
   width: 100%;
   height: 100%;
   border-radius: 100%;
@@ -337,17 +334,14 @@
   transition: color 0.3s ease;
 }
 
-
 .productDetail_quantity_icon {
   transition: transform 0.3s ease;
   filter: invert(0); /* normal color */
 }
 
-
 .rotate_icon {
   transform: rotate(180deg);
 }
-
 
 .productDetail_quantity_btn {
   width: 100%;
@@ -361,12 +355,12 @@
   border: none;
   cursor: pointer;
 }
-.productDetail_quantity_btn:hover{
+.productDetail_quantity_btn:hover {
   background-color: #a5a5a52b;
 }
 .productDetail_quantity {
   width: 100%;
-  padding: 0rem .75rem;
+  padding: 0rem 0.75rem;
   margin-top: 1rem;
   border: 1px solid #a5a5a5;
   height: 3.5rem;
@@ -394,21 +388,7 @@
   background-color: #cfcfcf;
   bottom: -2rem;
 } */
-.productDetail_btn {
-  cursor: pointer;
-  width: 90%;
-  text-align: center;
-  height: 3.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #174d38;
-  border: 1px solid #174d38;
-  color: white;
-}
-.productDetail_btn p {
-  transform: translateY(0.1rem);
-}
+
 .productDetail_btn_icon {
   height: 3.5rem;
   aspect-ratio: 1/1;
@@ -449,7 +429,7 @@
   transition: max-height 0.8s cubic-bezier(0.23, 1, 0.32, 1);
   cursor: pointer;
 }
-.accordion_title{
+.accordion_title {
   color: black !important;
 }
 .accordion_content {
@@ -512,11 +492,11 @@
   flex-shrink: 0;
 }
 .suggestion_scroll {
-width: 100%;
-display: grid;
-grid-template-columns: repeat(2, 1fr);
-border-right: 1px solid #f5f5f5;
-margin-top: 2.5rem;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  border-right: 1px solid #f5f5f5;
+  margin-top: 2.5rem;
 }
 .suggestion_scroll::-webkit-scrollbar {
   display: none; /* Chrome/Safari */
@@ -541,24 +521,24 @@ margin-top: 2.5rem;
   text-align: center;
   gap: 5rem;
 }
-.image_banner_paren_right p{
+.image_banner_paren_right p {
   color: white !important;
 }
-.image_banner_paren_right button p{
+.image_banner_paren_right button p {
   color: #174d38 !important;
 }
 
 @media (min-width: 750px) {
-  .suggestion_shopcard{
+  .suggestion_shopcard {
     width: 20vw;
   }
   .suggestion_scroll {
-  width: 100%;
-  display: flex;
-  overflow-x: scroll;
-  border-right: 1px solid #f5f5f5;
-  margin-top: 2.5rem;
-}
+    width: 100%;
+    display: flex;
+    overflow-x: scroll;
+    border-right: 1px solid #f5f5f5;
+    margin-top: 2.5rem;
+  }
   .image_banner_paren_left {
     width: 50%;
     height: 100%;

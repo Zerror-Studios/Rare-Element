@@ -40,6 +40,44 @@ export const featureData = [
   },
 ];
 
+const footerLinksData = [
+  {
+    title: "Category",
+    links: [
+      { label: "Rings", href: "/products" },
+      { label: "Earrings", href: "/products" },
+      { label: "Bracelet", href: "/products" },
+      { label: "Necklace", href: "/products" },
+      { label: "Anklets", href: "/products" },
+    ],
+  },
+  {
+    title: "Brand",
+    links: [
+      { label: "Home", href: "/" },
+      { label: "Shop", href: "/products" },
+      { label: "About Nahara", href: "/about" },
+    ],
+  },
+  {
+    title: "Support",
+    links: [
+      { label: "privacy-policy", href: "/privacy-policy" },
+      { label: "Shipping & Returns", href: "/shipping-returns" },
+      { label: "Terms & Conditions", href: "/terms-of-service" },
+    ],
+  },
+  {
+    title: "Contact Us",
+    links: [
+      { label: "hello@rareelement.in", href: "mailto:hello@rareelement.in" },
+      { label: "Instagram", href: "https://instagram.com" },
+      { label: "WhatsApp", href: "https://wa.me/0000000000" },
+    ],
+  },
+];
+
+
 const Footer = () => {
 
   useEffect(() => {
@@ -106,66 +144,46 @@ const Footer = () => {
 
         </div>
         <div className="footer_below">
+
           {/* Footer Links Section */}
           <div className="footer_classname_linksGrid">
+
+            {/* ABOUT TEXT — stays static */}
             <div className="footer_classname_about">
-              <p className='text-base thin'>
+              <p className="text-base thin">
                 Nahara is where timeless design meets modern craftsmanship — every piece a statement of individuality.
               </p>
             </div>
 
-            <div className="footer_classname_column">
-              <p className="footer_classname_heading text-lg uppercase">Category</p>
-              <div className='footer_links_column' >
-                <p className='text-base thin' >Rings</p>
-                <p className='text-base thin' >Earrings</p>
-                <p className='text-base thin' >Bracelet</p>
-                <p className='text-base thin' >Necklace</p>
-                <p className='text-base thin' >Anklets</p>
-              </div>
-            </div>
+            {/* DYNAMIC COLUMNS */}
+            {footerLinksData.map((col, index) => (
+              <div className="footer_classname_column" key={index}>
+                <p className="footer_classname_heading text-lg uppercase">{col.title}</p>
 
-            <div className="footer_classname_column">
-              <p className="footer_classname_heading text-lg uppercase">Brand</p>
-              <div className='footer_links_column' >
-                <p className='text-base thin' >Home</p>
-                <p className='text-base thin' >Shop</p>
-                <p className='text-base thin' >About Nahara</p>
+                <div className="footer_links_column">
+                  {col.links.map((item, idx) => (
+                    <Link key={idx} href={item.href} scroll={false}>
+                      <p className="text-base thin">{item.label}</p>
+                    </Link>
+                  ))}
+                </div>
               </div>
-            </div>
-
-            <div className="footer_classname_column">
-              <p className="footer_classname_heading text-lg uppercase">Support</p>
-              <div className='footer_links_column' >
-                <p className='text-base thin' >Shipping & Returns</p>
-                <p className='text-base thin' >FAQs</p>
-                <p className='text-base thin' >Care Guide</p>
-              </div>
-            </div>
-
-            <div className="footer_classname_column">
-              <p className="footer_classname_heading text-lg uppercase">Contact Us</p>
-              <div className='footer_links_column' >
-                <p className='text-base thin' >hello@rareelement.in</p>
-                <p className='text-base thin' >Instagram</p>
-                <p className='text-base thin' >WhatsApp</p>
-              </div>
-            </div>
+            ))}
           </div>
 
           {/* Footer Bottom Section */}
           <div className="footer_classname_bottom">
             <Link scroll={false} href="/">
-              <img className='footer_logo' src="/logo.svg" alt="Nahara Logo" />
+              <img className="footer_logo" src="/logo.svg" alt="Nahara Logo" />
             </Link>
-            <div className='uppercase  text-xs copyright_txt'>
-              <p>
-                © 2025 Nahara. All rights reserved. Developed by
-              </p>
-              <a href="https://www.zerrorstudios.com/" target='_blank' > Zerror Studios</a>
+
+            <div className="uppercase text-xs copyright_txt">
+              <p>© 2025 Nahara. All rights reserved. Developed by</p>
+              <a href="https://www.zerrorstudios.com/" target="_blank">Zerror Studios</a>
             </div>
           </div>
         </div>
+
       </div>
     </div>
   );

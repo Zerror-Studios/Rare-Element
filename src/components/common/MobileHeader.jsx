@@ -30,7 +30,7 @@ const navLinks = [
     link: "/products"
   },
 ]
-const MobileHeader = () => {
+const MobileHeader = ({ setOpenCartBag }) => {
 
   CustomEase.create("in-out-quint", "0.83,0,0.17,1");
 
@@ -38,8 +38,7 @@ const MobileHeader = () => {
 
   useEffect(() => {
     if (window.innerWidth > 750) return
-    // Reset or set conditions when changing paths
-    if (pathname?.startsWith("/products/")) {
+    if (pathname !== "/") {
       gsap.set(".mobile_header_bg", { top: 0 });
     }
   }, [pathname]);
@@ -67,7 +66,7 @@ const MobileHeader = () => {
 
   useEffect(() => {
     if (window.innerWidth > 750) return
-    if (pathname?.startsWith("/products/")) return;
+    if (pathname !== "/") return;
 
     // Kill old ScrollTriggers
     ScrollTrigger.getAll().forEach((t) => t.kill());
@@ -159,7 +158,7 @@ const MobileHeader = () => {
         <Link scroll={false} href="/">
           <img className='mobile_logo' src="/logo.svg" alt="" />
         </Link>
-        <img className='short_links_icon' src="/icons/cart.svg" alt="" />
+        <img onClick={() => setOpenCartBag(true)}  className='short_links_icon' src="/icons/cart.svg" alt="" />
       </div>
     </>
   )

@@ -11,6 +11,7 @@ import { usePathname } from "next/navigation";
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import { useGSAP } from "@gsap/react";
+import GreenBoxBtn from "../buttons/GreenBoxBtn";
 gsap.registerPlugin(ScrollTrigger)
 
 const LookBook = () => {
@@ -208,12 +209,14 @@ const LookBook = () => {
                                         <div className="lookbookSlider_card_image">
                                             <img className="cover" src={item.hoverImage} alt="" />
                                         </div>
-                                        <p className="lookbookSlider_card_description uppercase text-base">
+                                        <p className="lookbookSlider_card_description uppercase text-xl">
                                             {item.title}
                                         </p>
-                                        <button className="lookbook_button">
-                                            <p className="lookbook_btn_text text-base">Shop Now</p>
-                                        </button>
+                                        <div className="center ">
+                                            <div className="lookbook_button_paren">
+                                           <GreenBoxBtn text={"shop Now"} />
+                                            </div>
+                                        </div>
                                     </div>
                                 </SwiperSlide>
                             ))}

@@ -27,6 +27,7 @@ export default function SmoothScroller() {
     });
 
     lenis.current = instance;
+    window.lenis = instance;
 
     let frame;
     const raf = (time) => {
