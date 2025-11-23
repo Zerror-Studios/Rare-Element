@@ -1,19 +1,28 @@
 .accountLeftSlide {
   height: 100%;
-  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
   padding-left: 1rem;
   padding-right: 1rem;
+  margin-bottom: 2rem;
 }
-
+.accountLeftSlide_pointsSection {
+  width: 100%;
+}
 @media (min-width: 750px) {
   .accountLeftSlide {
-    width: 30rem;
     gap: 5rem;
-    padding-left: 2rem;
-    padding-right: 5rem;
+    width: 25rem;
+  }
+}
+@media (min-width: 1020px) {
+  .accountLeftSlide {
+    gap: 5rem;
+    width: 32rem;
+    padding-left: 2.5rem;
+    padding-right: 8rem;
+    margin-bottom: 0rem;
   }
 }
 
@@ -24,12 +33,40 @@
 }
 
 .accountLeftSlide_progressBar {
+  position: relative;
   width: 100%;
-  height: .2rem;
+  height: 0.2rem;
   background-color: rgba(0, 0, 0, 0.1);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+.accountLeftSlide_progressBar_inner {
+  top: 0;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  background-color: #174d38;
 }
 
+.accountLeftSlide_text15_points {
+  margin-top: 0.5rem;
+}
+.accountLeftSlide_highlight {
+  font-weight: 900;
+  margin-left: 0.25rem;
+}
+.bar_code_img_paren {
+  width: 41%;
+}
+@media (min-width:750px) {
+  .bar_code_img_paren {
+  width: 100%;
+}
+}
+.bar_code_img {
+  filter: contrast(1.2);
+  width: 100%;
+  margin-top: 2rem;
+}
 .accountLeftSlide_nav {
   display: flex;
   flex-direction: column;
@@ -63,12 +100,8 @@
 
 .accountLeftSlide_signoutBtn {
   width: 40%;
-  padding-top: 0.6rem;
-  padding-bottom: 0.6rem;
-  background-color: #313131;
   display: flex;
   color: white;
-  border-radius: .25rem;
   align-items: center;
   justify-content: center;
 }

@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import gsap from "gsap";
+import GreenBoxBtn from "../buttons/GreenBoxBtn";
 
 const ContactForm = () => {
 
@@ -90,9 +91,7 @@ const ContactForm = () => {
             <textarea className="text-base" />
           </div>
           <div className="submit_form_btn_paren">
-            <button className="submit_form_btn">
-              <p>Submit</p>
-            </button>
+             <GreenBoxBtn text="submit" />
           </div>
 
         </form>

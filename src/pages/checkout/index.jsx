@@ -29,7 +29,7 @@ const Checkout = () => {
         <>
             <div className="checkout_section">
                 <div className="checkout_section_inner">
-                <h2 className=" text-2xl checkout_heading">Checkout</h2>
+                <h2 className=" text-2xl uppercase checkout_heading">Checkout</h2>
 
                 <div className="checkout_Wrapper">
 

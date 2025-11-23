@@ -110,12 +110,12 @@ const Header = ({setOpenCartBag}) => {
           <Link scroll={false} href="/account/wishlist">
             <img className='short_links_icon' src="/icons/heart.svg" alt="" />
           </Link>
-          <button onClick={() => setOpenCartBag(true)}>
-            <img className='short_links_icon' src="/icons/cart.svg" alt="" />
-          </button>
           <Link scroll={false} href="/login">
             <img className='short_links_icon' src="/icons/profile.svg" alt="" />
           </Link>
+          <button onClick={() => setOpenCartBag(true)}>
+            <img className='short_links_icon' src="/icons/cart.svg" alt="" />
+          </button>
         </div>
       </div>
     </>

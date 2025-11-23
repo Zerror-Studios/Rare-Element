@@ -62,6 +62,7 @@ const footerLinksData = [
   {
     title: "Support",
     links: [
+      { label: "contact-support", href: "/contact-support" },
       { label: "privacy-policy", href: "/privacy-policy" },
       { label: "Shipping & Returns", href: "/shipping-returns" },
       { label: "Terms & Conditions", href: "/terms-of-service" },

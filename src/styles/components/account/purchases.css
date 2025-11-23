@@ -74,8 +74,24 @@
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
+  padding-bottom: 2rem;
 }
-
+.orderDetails_cartBag {
+  padding-top: 1rem;
+  width: 100%;
+}
+@media (min-width: 750px) {
+  .orderDetails_cartBag {
+    width: 35rem;
+  }
+}
+.order_detailsBagItem {
+  padding: 1rem 0rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+.order_detailsBagItem:last-child {
+  border: none;
+}
 /* Order card */
 .purchases_orderCard {
   display: flex;
@@ -89,17 +105,20 @@
 /* Items grid */
 .purchases_itemsGrid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.25rem;
 }
 
 @media (min-width: 750px) {
   .purchases_itemsGrid {
     grid-template-columns: 12vw 12vw 12vw 12vw;
+    gap: 0.5rem;
   }
 }
 
 .purchases_itemBox {
-  aspect-ratio: 2 / 3;
+  aspect-ratio: 3 / 4;
+  border: 1px solid rgba(0, 0, 0, 0.1);
   width: 100%;
   overflow: hidden;
 }
@@ -117,6 +136,21 @@
   gap: 0.25rem;
 }
 
+.purchases_orderFooter_inner{
+  width: fit-content;
+  text-transform: uppercase;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.purchases_orderFooter_inner p{
+  cursor: pointer;
+  transition: all .2s ease;
+}
+.purchases_orderFooter_inner p:hover{
+  opacity: .8;
+  /* margin-left: .3rem; */
+  scale: .95;
+}
 .purchases_viewOrder {
   text-decoration: underline;
   cursor: pointer;

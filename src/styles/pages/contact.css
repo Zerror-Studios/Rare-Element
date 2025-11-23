@@ -1,0 +1,233 @@
+/* contact css */
+#contact_form {
+  height: 100vh;
+  width: 100%;
+  padding: 10vh 3vw;
+  padding-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  color: black;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: bottom;
+  position: relative;
+}
+#contact_form #form {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+}
+#contact_form #left {
+  width: 50%;
+  height: 100%;
+}
+.phone_container {
+  position: absolute;
+  left: 0;
+  top: 5%;
+  width: 49%;
+  height: 100%;
+  z-index: 3;
+}
+#contact_form #left h2 {
+  text-transform: capitalize;
+}
+#contact_form #right {
+  width: 50%;
+  height: 100%;
+}
+
+#contact_form #right form {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+#contact_form #right form #common_black_btn {
+  margin-top: 1.9rem;
+  max-width: 100%;
+}
+#contact_form #right form .input {
+  width: 48%;
+  margin-bottom: 1.9rem;
+  position: relative;
+}
+#contact_form .linei {
+  width: 100%;
+  height: 0.08vw;
+  background-color: black;
+  position: absolute;
+  bottom: 0%;
+  left: 0;
+  transform-origin: left; /* Scale starts from the left initially */
+  transform: scaleX(0);
+}
+
+#contact_form #right form .input.label_active p {
+  top: 0%;
+  opacity: 0.8;
+}
+#contact_form #right form .input p,
+#contact_form #right form .textarea p {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: black;
+  transition: all ease 0.3s;
+  text-transform: capitalize;
+}
+#contact_form #right form .textarea p {
+  top: 15%;
+}
+#contact_form #right form .textarea.label_active p {
+  top: 0%;
+  opacity: 0.8;
+}
+#contact_form #right form input {
+  flex-shrink: 0;
+  width: 100%;
+  padding: 1vw 0;
+  background-color: transparent;
+  border: none;
+  color: black;
+  outline: none;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.745);
+}
+#contact_form #right form .textarea {
+  width: 100%;
+  position: relative;
+  height: 20vh;
+}
+#contact_form #right form textarea {
+  padding: 1vw 0;
+  flex-shrink: 0;
+  width: 100%;
+  height: 100%;
+  resize: none;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.745);
+}
+#contact_form #address {
+  width: 100%;
+  height: 10vh;
+  display: flex;
+  justify-content: space-between;
+}
+
+#contact_form #address .elem {
+  width: 50%;
+  height: 50%;
+  display: flex;
+  justify-content: space-between;
+}
+#contact_form .elem-lf p {
+  width: 50%;
+}
+#contact_form .elem .add {
+  width: 49%;
+  height: 100%;
+}
+.add h3{
+  margin-bottom: .5rem;
+}
+#contact_form .elem .add h5,
+#contact_form .elem .add a {
+  text-decoration: none;
+  display: block;
+}
+.submit_form_btn_paren{
+  margin-top: 4rem;
+  width: 20%;
+}
+
+@media (max-width: 576px) {
+  #contact_form {
+    height: auto;
+    min-height: 100vh;
+    padding: 150px 20px 80px;
+    gap: 10vw;
+  }
+  #contact_form #left {
+    display: none;
+  }
+  #contact_form #right {
+    width: 100%;
+  }
+  .phone_container {
+    position: static;
+    width: 100%;
+    height: 30vh;
+    margin-top: -10vw;
+  }
+  #contact_form #address {
+    flex-direction: column;
+    height: auto;
+    gap: 7vw;
+  }
+  #contact_form #address .elem {
+    width: 100%;
+    display: flex;
+    gap: 1.25rem;
+  }
+  #contact_form .elem-lf h5 {
+    width: 100%;
+  }
+  #contact_form .elem .add {
+    width: 100%;
+  }
+  #contact_form #right form input {
+    padding: 3vw 0;
+  }
+  .submit_form_btn_paren{
+  margin-top: 4rem;
+  width: 100%;
+}
+}
+
+/* Tablets (portrait) */
+@media (min-width: 577px) and (max-width: 768px) {
+    #contact_form {
+    height: auto;
+    min-height: 100vh;
+    padding: 150px 25px 80px;
+    gap: 10vw;
+  }
+  #contact_form #left {
+    display: none;
+  }
+  #contact_form #right {
+    width: 100%;
+  }
+  .phone_container {
+    position: static;
+    width: 100%;
+    height: 30vh;
+    margin-top: -10vw;
+  }
+  #contact_form #address {
+    flex-direction: column;
+    height: auto;
+    gap: 7vw;
+  }
+  #contact_form #address .elem {
+    width: 100%;
+    display: flex;
+    gap: 1.25rem;
+  }
+  #contact_form .elem-lf h5 {
+    width: 80%;
+  }
+  #contact_form .elem .add {
+    width: 45%;
+  }
+  #contact_form #right form input {
+    padding: 3vw 0;
+  }
+}

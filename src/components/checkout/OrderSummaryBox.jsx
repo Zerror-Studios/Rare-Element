@@ -15,23 +15,23 @@ const OrderSummaryBox = ({ user, quantity, setQuantity }) => {
                 <div className="summary_products_paren">
                     {ProductsData.slice(0, 2).map((item, index) => (
                         <div key={index} className="checkout_item">
-                                <div className="checkout_imgWrapper">
-                            <Link href={`/products/${item.slug}`} >
+                            <div className="checkout_imgWrapper">
+                                <Link href={`/products/${item.slug}`} >
                                     <img
                                         className="checkout_productImg"
                                         src={item.hoverImage}
                                         alt=""
                                     />
-                            </Link>
-                                </div>
+                                </Link>
+                            </div>
 
                             <div className="checkout_details">
                                 <div className="checkout_topRow">
                                     <div>
                                         <p className="checkout_productName text-base">{item.title}</p>
-                                        <p className="checkout_metaText text-xs ">Quantity: {quantity}</p>
                                         <p className="checkout_metaText text-xs ">Color - Gold</p>
                                         <p className="checkout_metaText text-xs ">Size -  14</p>
+                                        <p className="checkout_metaText text-xs ">Quantity: {quantity}</p>
                                     </div>
 
                                     <p className="checkout_price text-base">₹ {item.price}</p>

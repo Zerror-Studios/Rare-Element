@@ -59,7 +59,7 @@ h2 {
 }
 .bold {
   font-weight: 1000 !important;
-  opacity: .9;
+  /* opacity: .9; */
   color: black !important;
   font-family: railway-medium !important;
 }
