@@ -36,7 +36,7 @@ const ChangePassword = () => {
     renewPassword: false,
   });
   const [updatePassword, { loading }] = useMutation(UPDATE_USER_PASSWORD);
-  const { user, setToken } = useAuthStore((state) => state);
+  const { user } = useAuthStore((state) => state);
   const {
     register,
     handleSubmit,

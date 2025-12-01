@@ -10,11 +10,13 @@ import { formatePrice } from "@/utils/Util";
 import GreenBoxBtn from '@/components/buttons/GreenBoxBtn';
 import CartItem from '@/components/cart/CartItem';
 import { RiCloseLine } from "@remixicon/react";
+import { AuthCookies } from "@/utils/AuthCookies";
 
 const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
   const router = useRouter();
+  const token = AuthCookies.get();
   const { visitorId } = useVisitor();
-  const { token, user, isLoggedIn } = useAuthStore((state) => state);
+  const { user, isLoggedIn } = useAuthStore((state) => state);
 
   const [isBtnLoading, setIsBtnLoading] = useState(false);
 

@@ -15,6 +15,7 @@ import ProductImageGrid from '@/components/product/ProductImageGrid';
 import ProductContant from '@/components/product/ProductContant';
 import ProductListGrid from "@/components/product/ProductListGrid";
 import ProductBanner from "@/components/product/ProductBanner";
+import { AuthCookies } from "@/utils/AuthCookies";
 gsap.registerPlugin(ScrollTrigger);
 
 const ProductDetail = ({ meta, data, productList }) => {
@@ -27,8 +28,9 @@ const ProductDetail = ({ meta, data, productList }) => {
   const [finalPrice, setFinalPrice] = useState(basePrice);
   const [variantMatched, setVariantMatched] = useState(null);
   const [cartBtn, setCartBtn] = useState(false);
-  const { token, user, isLoggedIn } = useAuthStore((state) => state);
+  const { user, isLoggedIn } = useAuthStore((state) => state);
   const { openCart } = useCartStore((state) => state);
+  const token = AuthCookies.get();
   const [addItemToCart, { loading }] = useMutation(ADD_ITEM_TO_CART);
   const [createNotifyRequest, { loading: notifyLoading }] = useMutation(CREATE_BACK_IN_STOCK_REQUEST);
 
@@ -49,7 +51,7 @@ const ProductDetail = ({ meta, data, productList }) => {
     if (!cartBtn || variantMatched.stockStatus === Const.OUT_OF_STOCK) return;
 
     try {
-      const productId = router?.query?.slug;
+      const productId = data?._id;
       if (!productId) throw new Error("Product ID not found");
 
       const payload = {
@@ -73,7 +75,7 @@ const ProductDetail = ({ meta, data, productList }) => {
     if (variantMatched.stockStatus !== Const.OUT_OF_STOCK) return;
     if (!isLoggedIn) return router.push("/login");
     try {
-      const productId = router?.query?.slug;
+      const productId = data?._id;
       if (!productId) throw new Error("Product ID not found");
 
       const payload = {
