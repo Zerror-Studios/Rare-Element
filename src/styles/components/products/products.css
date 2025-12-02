@@ -36,13 +36,24 @@
 
 .allproducts_paren {
   flex-shrink: 0;
-  border-top: 1px solid #e6e6e6;
-  border-right: 1px solid #e6e6e6;
   width: 100%;
   display: grid;
   margin-top: 3rem;
   grid-template-columns: repeat(2, 1fr);
 }
+.allproducts_paren .shopCard_card:nth-child(1){
+  border-left: 1px solid #e6e6e6;
+}
+.allproducts_paren .shopCard_card:last-child{
+  border-right: 1px solid #e6e6e6;
+}
+.allproducts_paren .shopCard_card:nth-child(1),
+.allproducts_paren .shopCard_card:nth-child(2),
+.allproducts_paren .shopCard_card:nth-child(3),
+.allproducts_paren .shopCard_card:nth-child(4) {
+  border-top: 1px solid #e6e6e6;
+}
+
 .products_hero-section p {
   color: white !important;
 }

@@ -28,7 +28,7 @@ const Delivery = ({ errors, control, register, setValue }) => {
   };
 
   useEffect(() => {
-    if (!addressRef.current) {
+    if (addressRef.current) {
       gsap.set(addressRef.current, { height: 0 })
     }
     if (isAddress) {
@@ -76,128 +76,134 @@ const Delivery = ({ errors, control, register, setValue }) => {
             )
           }
           {
-           isLoggedIn && isAddress && (
-              <div onClick={() => setIsAddress(false)} className="settings__link">
-                <p className="underline uppercase text-base"> Use saved address</p>
-              </div>
+            data.length > 0 && (
+              isLoggedIn && isAddress && (
+                <div onClick={() => setIsAddress(false)} className="settings__link">
+                  <p className="underline uppercase text-base"> Use saved address</p>
+                </div>
+              )
             )
           }
         </div>
-        <div ref={addressRef} className="checkout_address_form">
+        {isAddress && (
+          <div ref={addressRef} className="checkout_address_form shipping_addres_paren">
 
-          {/* First + Last Name */}
-          <div className="checkout_inp_flex">
-            <Input
-              placeholder="First Name"
-              error={errors?.shippingAddress?.firstname}
-              {...register("shippingAddress.firstname")}
-            />
-            <Input
-              placeholder="Last Name"
-              error={errors?.shippingAddress?.lastname}
-              {...register("shippingAddress.lastname")}
-            />
-          </div>
-
-          {/* Phone + Address Type */}
-          <div className="checkout_inp_flex">
-            <div className="checkOut_input">
-              <PhoneInput
-                defaultCountry="in"
-                className="delivery__phone_btn"
-                inputClassName="delivery__input__phone"
-                value={`+${shippingAddress?.countryCode?.replace("+", "") || "91"
-                  }${shippingAddress?.phone || ""}`}
-                onChange={(value, metadata) => {
-                  const countryCode = `+${metadata?.country?.dialCode || "91"}`;
-                  const numberOnly = value.replace(countryCode, "").trim();
-
-                  setValue("shippingAddress.countryCode", countryCode, {
-                    shouldValidate: true,
-                  });
-                  setValue("shippingAddress.phone", numberOnly, {
-                    shouldValidate: true,
-                  });
-                }}
+            {/* First + Last Name */}
+            <div className="checkout_inp_flex">
+              <Input
+                placeholder="First Name"
+                error={errors?.shippingAddress?.firstname}
+                {...register("shippingAddress.firstname")}
               />
               <Input
-                type="hidden"
-                {...register("shippingAddress.countryCode")}
-              />
-              <Input
-                type="hidden"
-                error={errors?.shippingAddress?.phone}
-                {...register("shippingAddress.phone")}
+                placeholder="Last Name"
+                error={errors?.shippingAddress?.lastname}
+                {...register("shippingAddress.lastname")}
               />
             </div>
 
-            <select className="checkOut_input" {...register("shippingAddress.addressType")}>
-              <option value="" disabled hidden className="placeholderOption">Address Type</option>
-              {addressType?.map((item, index) => (
-                <option value={item?.value || ""} key={`addr-${index}`}>
-                  {item?.label || ""}
+            {/* Phone + Address Type */}
+            <div className="checkout_inp_flex">
+              <div className="checkOut_input">
+                <PhoneInput
+                  defaultCountry="in"
+                  className="delivery__phone_btn"
+                  inputClassName="delivery__input__phone"
+                  value={`+${shippingAddress?.countryCode?.replace("+", "") || "91"
+                    }${shippingAddress?.phone || ""}`}
+                  onChange={(value, metadata) => {
+                    const countryCode = `+${metadata?.country?.dialCode || "91"}`;
+                    const numberOnly = value.replace(countryCode, "").trim();
+
+                    setValue("shippingAddress.countryCode", countryCode, {
+                      shouldValidate: true,
+                    });
+                    setValue("shippingAddress.phone", numberOnly, {
+                      shouldValidate: true,
+                    });
+                  }}
+                />
+                <Input
+                  type="hidden"
+                  {...register("shippingAddress.countryCode")}
+                />
+                <Input
+                  type="hidden"
+                  error={errors?.shippingAddress?.phone}
+                  {...register("shippingAddress.phone")}
+                />
+              </div>
+
+              <select className="checkOut_input" {...register("shippingAddress.addressType")}>
+                <option value="" disabled hidden className="placeholderOption">Address Type</option>
+                {addressType?.map((item, index) => (
+                  <option value={item?.value || ""} key={`addr-${index}`}>
+                    {item?.label || ""}
+                  </option>
+                ))}
+              </select>
+              {errors?.shippingAddress?.addressType && (
+                <span className="error">
+                  {errors?.shippingAddress?.addressType?.message ||
+                    ""}
+                </span>
+              )}
+            </div>
+            {/* City + ZIP */}
+            <div className="checkout_inp_flex">
+              <Input
+                placeholder="City"
+                error={errors?.shippingAddress?.city}
+                {...register("shippingAddress.city")}
+              />
+              <Input
+                placeholder="ZIP Code"
+                error={errors?.shippingAddress?.pincode}
+                {...register("shippingAddress.pincode")}
+              />
+            </div>
+
+            {/* Country + State */}
+            <div className="checkout_inp_flex">
+              <select className="checkOut_input" required {...register("shippingAddress.country")}>
+                <option value="" disabled hidden className="placeholderOption">
+                  Country/Region
                 </option>
-              ))}
-            </select>
-            {errors?.shippingAddress?.addressType && (
-              <span className="error">
-                {errors?.shippingAddress?.addressType?.message ||
-                  ""}
-              </span>
-            )}
-          </div>
-          {/* City + ZIP */}
-          <div className="checkout_inp_flex">
+                {countriesData?.map((item, index) => (
+                  <option value={item?.name || ""} key={`country-${index}`}>
+                    {item?.name || ""}
+                  </option>
+                ))}
+              </select>
+
+              <Input
+                placeholder="State"
+                error={errors?.shippingAddress?.states}
+                {...register("shippingAddress.states")}
+              />
+            </div>
+
+            {/* Address lines */}
             <Input
-              placeholder="City"
-              error={errors?.shippingAddress?.city}
-              {...register("shippingAddress.city")}
+              placeholder="Address Line"
+              error={errors?.shippingAddress?.addressline1}
+              {...register("shippingAddress.addressline1")}
             />
             <Input
-              placeholder="ZIP Code"
-              error={errors?.shippingAddress?.pincode}
-              {...register("shippingAddress.pincode")}
+              placeholder="Apartment, Suite, etc"
+              {...register("shippingAddress.addressline2")}
             />
           </div>
-
-          {/* Country + State */}
-          <div className="checkout_inp_flex">
-            <select className="checkOut_input" required {...register("shippingAddress.country")}>
-              <option value="" disabled hidden className="placeholderOption">
-                Country/Region
-              </option>
-              {countriesData?.map((item, index) => (
-                <option value={item?.name || ""} key={`country-${index}`}>
-                  {item?.name || ""}
-                </option>
-              ))}
-            </select>
-
-            <Input
-              placeholder="State"
-              error={errors?.shippingAddress?.states}
-              {...register("shippingAddress.states")}
-            />
-          </div>
-
-          {/* Address lines */}
-          <Input
-            placeholder="Address Line"
-            error={errors?.shippingAddress?.addressline1}
-            {...register("shippingAddress.addressline1")}
-          />
-          <Input
-            placeholder="Apartment, Suite, etc"
-            {...register("shippingAddress.addressline2")}
-          />
-        </div>
+        )}
 
         {/* Saved Address */}
         {!isAddress && data.length > 0 && (
           <div className="address_div">
             {data?.map((item, index) => (
               <div key={`address-${index}`} className="address_box text-base">
-                <Checkbox onChange={handleAddress} value={index} checked={selectedAddress === index} />
+                <div className="select_address_paren">
+                  <Checkbox onChange={handleAddress} value={index} checked={selectedAddress === index} />
+                </div>
                 <p>{item?.firstname || ""} {item?.lastname || ""}</p>
                 <p>{item?.flat || ""} {item?.addressline1 || ""}</p>
                 <p>{item?.addressline2 || ""}</p>

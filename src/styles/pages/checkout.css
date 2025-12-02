@@ -79,6 +79,49 @@
   gap: 0.5rem;
   align-items: center;
 }
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+/* Hide default checkbox */
+.checkbox-input {
+  display: none;
+}
+
+/* Custom checkbox box */
+.custom-checkbox {
+  width: 1rem;
+  height: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #000;   
+  border-radius: 0;       
+  position: relative;
+}
+
+.checkbox-input:checked + .custom-checkbox {
+  background-color: #174d38;   
+}
+
+.checkbox-input:checked + .custom-checkbox::after {
+  content: "";
+  position: absolute;
+  width: 3px;
+  height: 7px;
+  top: 0;
+  border: solid #fff;
+  border-width: 0 1px 1px 0;
+  transform: rotate(45deg);
+}
+
+.shipping_addres_paren{
+  height: 0;
+}
 .checkout_address_form {
   overflow: hidden;
   width: 100%;
@@ -102,7 +145,7 @@
   border-radius: 0.25rem;
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
-.address_box_check_box_div {
+.select_address_paren {
   position: absolute;
   top: 1rem;
   right: 1rem;
@@ -159,10 +202,10 @@
 }
 .delivery__phone_btn .react-international-phone-country-selector-button {
   /* border: 1px solid #dedede !important; */
-  scale: 0.8;
+  scale: 1;
   border: none !important;
   background-color: rgba(255, 255, 255, 0.6) !important;
-  height: 90%;
+  height: 110%;
 }
 /* 50% opacity placeholder */
 .placeholderOption {
@@ -191,6 +234,11 @@
 .checkout_subHeading {
   font-weight: 1000 !important;
 }
+.checkbox-container{
+  display: flex; 
+  gap: .5rem;
+}
+
 @media (min-width: 768px) {
   .checkout_leftContainer {
     padding-left: 2rem;
@@ -253,6 +301,7 @@
 
 .checkout_topRow {
   display: flex;
+  gap: .5rem;
   justify-content: space-between;
 }
 .checkout_productName {

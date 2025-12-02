@@ -37,7 +37,6 @@ const Categories = ({ meta, data, productList }) => {
     })
   }, [])
 
-
   return (
     <>
       <SeoHeader meta={meta} />
@@ -58,7 +57,7 @@ const Categories = ({ meta, data, productList }) => {
       <div className="padding">
         <div className="allproducts_paren ">
           {productList?.map((item) => (
-            <Link scroll={false} href={`/products/${item?.slug || item?._id}`}>
+            <Link key={item?._id} scroll={false} href={`/products/${item?.slug || item?._id}`}>
               <ProductCard
                 key={item?._id}
                 name={item?.name || ""}

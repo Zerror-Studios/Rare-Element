@@ -137,22 +137,24 @@ const AddressBlock = () => {
       <div className="checkout_thin_line"></div>
 
       <div className="settings__block">
+        {addressList.length === 0 && <p>No Address Added</p>}
         {addressList.map((item, index) => (
-          <div key={item._id} className="mb-4">
+          <div key={item._id} className="address_list">
             <p>{item.firstname} {item.lastname}</p>
             <p>{item.addressline1}</p>
             {item.addressline2 && <p>{item.addressline2}</p>}
             <p>{`${item.city}, ${item.states}, ${item.country} - ${item.pincode}`}</p>
             <p>{`${item.countryCode} ${item.phone} - ${item?.addressType}`}</p>
-
-            {isOpen !== index && (
-              <div
-                onClick={() => setIsOpen(index)}
-                className="settings__link"
-              >
-                <p>Edit Address</p>
-              </div>
-            )}
+            <div className="edit_address_btn">
+              {isOpen !== index && (
+                <div
+                  onClick={() => setIsOpen(index)}
+                  className="settings__link"
+                >
+                  <p>Edit Address</p>
+                </div>
+              )}
+            </div>
           </div>
         ))}
 

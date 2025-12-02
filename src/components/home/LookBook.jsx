@@ -79,36 +79,36 @@ const LookBook = ({ data }) => {
 
     const pathname = usePathname()
 
-    useGSAP(() => {
-        gsap.fromTo(".lookbook_bg_img", {
-            y: -100
-        }, {
-            scrollTrigger: {
-                trigger: ".lookbook_section",
-                start: "top bottom",
-                end: "bottom top",
-                scrub: true,
-                // markers: true
-            },
-            y: 100,
-            ease: "linear"
-        })
+    // useGSAP(() => {
+    //     gsap.fromTo(".lookbook_bg_img", {
+    //         y: -100
+    //     }, {
+    //         scrollTrigger: {
+    //             trigger: ".lookbook_section",
+    //             start: "top bottom",
+    //             end: "bottom top",
+    //             scrub: true,
+    //             // markers: true
+    //         },
+    //         y: 100,
+    //         ease: "linear"
+    //     })
 
-        gsap.fromTo(".lookbookCard_image img", {
-            y: -100
-        }, {
-            scrollTrigger: {
-                trigger: ".lookbookCard_box",
-                start: "top bottom",
-                end: "bottom top",
-                scrub: true,
-                // markers: true
-            },
-            y: 100,
-            ease: "linear"
-        })
+    //     gsap.fromTo(".lookbookCard_image img", {
+    //         y: -100
+    //     }, {
+    //         scrollTrigger: {
+    //             trigger: ".lookbookCard_box",
+    //             start: "top bottom",
+    //             end: "bottom top",
+    //             scrub: true,
+    //             // markers: true
+    //         },
+    //         y: 100,
+    //         ease: "linear"
+    //     })
 
-    }, [pathname])
+    // }, [pathname])
 
     return (
         <>

@@ -189,7 +189,7 @@ const Signup = ({ setToggle }) => {
             )}
           </div>
 
-          <GreenBoxBtn text={"Signup"} loading={loading} />
+          <GreenBoxBtn title={"Signup"} loading={loading} />
 
         </form>
 

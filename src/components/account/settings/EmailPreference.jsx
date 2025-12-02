@@ -18,8 +18,8 @@ const EmailPreference = () => {
       <div className="checkout_thin_line"></div>
       <div className="settings__block">
         <div>
-          <p>Newsletter Subscription - {"Subscribed"}</p>
-          <p>Direct Mail Marketing - {"Subscribed"}</p>
+          <p>Newsletter Subscription - {"Not Subscribed"}</p>
+          <p>Direct Mail Marketing - {"Not Subscribed"}</p>
         </div>
         {!isEdit && (
           <div onClick={() => setIsEdit(true)} className="settings__link">

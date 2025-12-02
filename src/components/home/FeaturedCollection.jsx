@@ -22,7 +22,6 @@ const FeaturedCollection = ({ data }) => {
           slidesPerView={'auto'}
           spaceBetween={0}
           loop={true}
-          infinite={true}
           speed={800}
           navigation={true}
           modules={[Navigation, Autoplay]}

@@ -74,6 +74,6 @@ export const getProductPriceLabel = (variants = [], discountedPrice = 0) => {
 export const renderVariants = (variant = []) => {
   if (variant.length === 0) return;
   return variant.map((value, idx) => (
-    <p key={idx} className="cartBag_itemSize text-sm">{`${idx === 0 ? "Color" : "Size"} - ${value}`}</p>
+    <p key={idx} className="cartBag_itemSize text-xs">{`${idx === 0 ? "Color" : "Size"} - ${value}`}</p>
   ));
 };

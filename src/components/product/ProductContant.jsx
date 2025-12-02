@@ -24,7 +24,6 @@ const ProductContant = ({
   // Initialize default variants and color
   useEffect(() => {
     if (!data?.productOptions?.length) return;
-
     const defaults = {};
     data.productOptions.forEach((option) => {
       if (option.choices?.length) {
@@ -129,6 +128,10 @@ const ProductContant = ({
                               choice.name
                             );
                           }}
+                          style={{
+                            opacity: selected ? 1 : 0.7,
+                          }}
+
                           className="select_color_paren">
                           {productOption?.optionName === "color" ? (
                             <>
@@ -136,12 +139,17 @@ const ProductContant = ({
                                 <div className="color_inner" style={{ backgroundColor: choice?.name }}>
                                 </div>
                               </div>
-                              <p className="text-base capitalize">{choice?.name}</p>
+                              <p
+                                style={{
+                                  textDecoration: selected ? "underline" : "none",
+                                }} className="text-base capitalize">{choice?.name}</p>
                             </>
                           ) : (
                             <div className="color_div">
                               <div className="color_inner center">
-                                <p className="text-base capitalize">{choice?.name}</p>
+                                <p style={{
+                                  textDecoration: selected ? "underline" : "none",
+                                }} className="text-base uppercase">{choice?.name}</p>
                               </div>
                             </div>
                           )}

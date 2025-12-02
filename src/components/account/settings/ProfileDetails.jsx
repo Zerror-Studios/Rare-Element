@@ -88,15 +88,15 @@ const ProfileDetails = () => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="inp_paren">
               <Input label="First Name" isRequired={true} error={errors.firstName} {...register("firstName")} />
-              <RiCheckLine className='check_icon' />
+              {/* <RiCheckLine className='check_icon' /> */}
             </div>
             <div className="inp_paren">
               <Input label="Last Name" isRequired={true} error={errors.lastName} {...register("lastName")} />
-              <RiCheckLine className='check_icon' />
+              {/* <RiCheckLine className='check_icon' /> */}
             </div>
             <div className="inp_paren">
               <Input label="Email" isRequired={true} error={errors.email} {...register("email")} />
-              <RiCheckLine className='check_icon' />
+              {/* <RiCheckLine className='check_icon' /> */}
             </div>
             <div className="inp_paren text-base">
               <p className='text-sm '>Contact <span>*</span> </p>
@@ -129,7 +129,7 @@ const ProfileDetails = () => {
                 <Input type="hidden" error={errors.countryCode} {...register("countryCode")} />
                 <Input type="hidden" error={errors.phoneNumber} {...register("phoneNumber")} />
               </div>
-              <RiCheckLine className='check_icon' />
+              {/* <RiCheckLine className='check_icon' /> */}
             </div>
             <GreenBoxBtn title={loading ? "Saving" : "Save"} loading={loading} />
             <button type='button' onClick={() => setIsEditable(false)} className='cancel_form_btn'>

@@ -2,12 +2,13 @@ import React from 'react'
 // import Link from 'next/link';
 // import { RiDeleteBinLine } from '@remixicon/react'
 import { formatePrice, renderVariants } from '@/utils/Util';
+import { RiDeleteBinLine } from '@remixicon/react';
 
-const OrderItems = ({ data, count }) => {
+const OrderItems = ({ data }) => {
   return (
     <>
       <div className="">
-        <p className="checkout_subHeading text-lg uppercase"> Order Summary ({count})</p>
+        <p className="checkout_subHeading text-lg uppercase"> Order Summary ({data?.length})</p>
         <div className="summary_products_paren">
           {data && data.length > 0 && data?.map((item, index) => {
             const price = formatePrice(item?.variantDetail?.variantPrice || null);
@@ -28,7 +29,7 @@ const OrderItems = ({ data, count }) => {
                       {renderVariants(item?.variantDetail?.selectedOptions || [])}
                       <p className="checkout_metaText text-xs ">Quantity: {item?.qty}</p>
                     </div>
-                    <p className="checkout_price text-base">{price}</p>
+                    <p className="checkout_price  text-base">{price}</p>
                   </div>
                   {/* <div className="cartBag_bagItemBottom">
                     <div className="cartBag_qtyControl text-lg">

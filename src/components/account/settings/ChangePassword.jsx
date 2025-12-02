@@ -98,25 +98,25 @@ const ChangePassword = () => {
             <div className="inp_paren text-base">
               <Input type={visible?.currentPassword ? "text" : "password"} label="Enter Current Password" isRequired={true} error={errors.currentPassword} {...register("currentPassword")} />
               {visible?.currentPassword ? (
-                <RiEyeLine className="check_icon" onClick={() => onVisibleChange("currentPassword")} />
+                <RiEyeLine size={18} className="check_icon" onClick={() => onVisibleChange("currentPassword")} />
               ) : (
-                <RiEyeOffLine className="check_icon" onClick={() => onVisibleChange("currentPassword")} />
+                <RiEyeOffLine size={18} className="check_icon" onClick={() => onVisibleChange("currentPassword")} />
               )}
             </div>
             <div className="inp_paren text-base">
               <Input type={visible?.newPassword ? "text" : "password"} label="Enter New Password" isRequired={true} error={errors.newPassword} {...register("newPassword")} />
               {visible?.newPassword ? (
-                <RiEyeLine className="check_icon" onClick={() => onVisibleChange("newPassword")} />
+                <RiEyeLine size={18} className="check_icon" onClick={() => onVisibleChange("newPassword")} />
               ) : (
-                <RiEyeOffLine className="check_icon" onClick={() => onVisibleChange("newPassword")} />
+                <RiEyeOffLine size={18} className="check_icon" onClick={() => onVisibleChange("newPassword")} />
               )}
             </div>
             <div className="inp_paren text-base">
               <Input type={visible?.renewPassword ? "text" : "password"} label="Confirm New Password" isRequired={true} error={errors.renewPassword} {...register("renewPassword")} />
               {visible?.renewPassword ? (
-                <RiEyeLine className="check_icon" onClick={() => onVisibleChange("renewPassword")} />
+                <RiEyeLine size={18} className="check_icon" onClick={() => onVisibleChange("renewPassword")} />
               ) : (
-                <RiEyeOffLine className="check_icon" onClick={() => onVisibleChange("renewPassword")} />
+                <RiEyeOffLine size={18} className="check_icon" onClick={() => onVisibleChange("renewPassword")} />
               )}
             </div>
             <GreenBoxBtn title="Save" loading={loading} />
