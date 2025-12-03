@@ -1,5 +1,6 @@
 import React from "react";
 import { useRouter } from "next/router";
+import Loader from "../checkout/Loader";
 
 const GreenBoxBtn = ({ title, href, onClick, loading = false, type = "submit" }) => {
     const router = useRouter();
@@ -15,7 +16,12 @@ const GreenBoxBtn = ({ title, href, onClick, loading = false, type = "submit" })
         <button className="green_box_btn" type={type}
             onClick={handleClick}
             disabled={loading}>
-            <p className='text-base uppercase'>{title}</p>
+            {loading ? (
+                <div className="spinner_loader"></div>
+            ) : (
+                <p className='text-base uppercase'>{title}</p>
+            )}
+
         </button>
     )
 }
