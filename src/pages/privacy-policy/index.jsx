@@ -9,14 +9,10 @@ const privacyPolicy = ({ meta }) => {
         <h2 className=" text-2xl">Privacy Policy</h2>
         <div className="legal-container">
           <p>
-            [NAHARA] values your privacy and is committed
-            to protecting your personal information. Here's a summary of how we
-            collect, use, and share your data:
+            [NAHARA] ("we" or "us") values your privacy and is committed to protecting your personal information. Here's a summary of how we collect, use, and share your data:
           </p>
           <p>
-            <strong>Information We Collect:</strong> We may collect personal
-            information such as contact details and payment information when you
-            interact with us.
+            <strong>Information We Collect:</strong> We may collect personal information such as contact details and payment information when you interact with us.
           </p>
           <p>
             <strong>Use of Information:</strong> We use your information to
@@ -42,43 +38,38 @@ const privacyPolicy = ({ meta }) => {
             communications.
           </p>
           <p>
-            <strong>Legal Entity Information</strong>
+            <strong>Legal Entity Information</strong> <br />
+            The NAHARA website is operated by RARE ELEMENT TRADING LLP.
+          </p>
+       
+          <p>
+            <strong>
+              Registered address:
+            </strong> <br />
+            GE 1080 G TOWER <br />
+            EAST WING 1ST FLOOR <br />
+            BHARAT DIAMOND BOURSE BANDRA KURLA COMPLEX <br />
+            27 MAHARASHTRA  <br />
+            400051 <br />
+
           </p>
           <p>
-            This website is operated by Nahara Owner Name, sole
-            proprietor of Nahara.
-          </p>
-          <p>
-            For any questions regarding this policy, you may contact us at{" "}
-            <a target="_blank" href="" className="">
-              nahara@gmail.com
-            </a>
-            .
-          </p>
-          <p>
-            We respect your privacy and prioritize the protection of your
-            personal information. When you use our service, we may request
-            certain personally identifiable information that enables us to
-            contact or identify you.
-          </p>
+            We respect your privacy and prioritize the protection of your personal information. When you use our service, we may request certain personally identifiable information that enables us to contact or identify you. </p>
           <p>
             This information may include, but is not limited to <br /> (1)Email address <br />
             (2)First name and last name <br /> (3) Phone number <br /> (4) Address <br /> (5) State
             or province <br /> (6) ZIP/Postal code <br /> (7) City
           </p>
           <p>
-            We value your trust and are committed to protecting your personal
-            information. We assure you that we will not sell, distribute, or
-            lease your personal information to any third party unless we have
-            obtained your explicit permission or are legally obligated to do so.
+            We value your trust and are committed to protecting your personal information. We will not sell, distribute, or lease your personal information to any third party unless we have obtained your explicit permission or are legally obligated to do so.
           </p>
           <p>
             We strive to maintain accurate and complete information about you.
             If you believe that any information we hold about you is inaccurate
             or incomplete, please contact us promptly. You can reach us by
             writing or emailing us at{" "}
-            <a target="_blank" href="">
-              nahara@gmail.com
+            <a target="_blank" href="https://mail.google.com/mail/u/0/#inbox?compose=GTvVlcSKjgCNjxJKkzZhJktdvrWdssGbJXkRJqFwsZljDKHnPDRLXcrkzLKSLVtRgNBJQQtgTCQjs">
+              contact@nahara.co.in
             </a>
             , and we will promptly make the necessary updates or corrections.
           </p>
