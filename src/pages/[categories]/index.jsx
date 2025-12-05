@@ -41,7 +41,7 @@ const Categories = ({ meta, data, productList }) => {
     <>
       <SeoHeader meta={meta} />
       <div className="products_hero-section ">
-        <img className='products_hero-img' src={"/images/productpage/heroImg.png"} alt={data?.name || ""} />
+        <img className='products_hero-img' src={data?.imgsrc || "/images/productpage/heroImg.png"} alt={data?.name || ""} />
         <div className="products_content padding">
           <h2 className='text-3xl '>{data?.name || ""}</h2>
           <p className='text-xl thin'>

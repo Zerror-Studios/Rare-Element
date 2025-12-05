@@ -5,16 +5,17 @@ import Category from '@/components/home/Category'
 import FeaturedCollection from '@/components/home/FeaturedCollection'
 import LookBook from '@/components/home/LookBook'
 import SocialReels from '@/components/home/SocialReels'
-import { GET_PRODUCTS, GET_CLIENT_SIDE_CATEGORIES } from '@/graphql'
+import { GET_PRODUCTS } from '@/graphql'
 import { createApolloClient } from '@/lib/apolloClient'
 import { ProductStatus } from '@/utils/Constant'
+import { MenuData } from '@/helpers/MenuData'
 
-const Home = ({ meta, categories, products }) => {
+const Home = ({ meta, products }) => {
   return (
     <>
       <SeoHeader meta={meta} />
       <Hero />
-      <Category data={categories} />
+      <Category data={MenuData} />
       <FeaturedCollection data={products} />
       <LookBook data={products} />
       <SocialReels />
@@ -49,35 +50,23 @@ export async function getServerSideProps() {
       description: "Explore premium handcrafted jewellery at Nahara.",
     }
   };
-  
+
   try {
     const client = createApolloClient();
-    const queries = [
-      client.query({
-        query: GET_CLIENT_SIDE_CATEGORIES,
-        variables: {
-          offset: 0,
-          limit: 5,
+    const response = await client.query({
+      query: GET_PRODUCTS,
+      variables: {
+        offset: 0,
+        limit: 10,
+        filters: {
+          status: ProductStatus.PUBLISHED,
         },
-      }),
-      client.query({
-        query: GET_PRODUCTS,
-        variables: {
-          offset: 0,
-          limit: 10,
-          filters: {
-            status: ProductStatus.PUBLISHED,
-          },
-        },
-      }),
-    ].filter(Boolean);
-
-    const [categoriesRes, productRes] = await Promise.all(queries);
+      },
+    });
     return {
       props: {
         meta,
-        categories: categoriesRes?.data?.getClientSideCategories?.categories || [],
-        products: productRes?.data?.getClientSideProducts?.products || [],
+        products: response?.data?.getClientSideProducts?.products || [],
       },
     };
   } catch (error) {
@@ -85,7 +74,6 @@ export async function getServerSideProps() {
     return {
       props: {
         meta,
-        catgories: [],
         products: [],
       },
     };

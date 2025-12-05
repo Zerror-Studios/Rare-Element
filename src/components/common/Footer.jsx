@@ -44,26 +44,25 @@ const footerLinksData = [
   {
     title: "Category",
     links: [
-      { label: "Rings", href: "/products" },
-      { label: "Earrings", href: "/products" },
-      { label: "Bracelet", href: "/products" },
-      { label: "Necklace", href: "/products" },
-      { label: "Anklets", href: "/products" },
+      { label: "Rings", href: "/rings" },
+      { label: "Earrings", href: "/earings" },
+      { label: "Bracelets", href: "/bracelets" },
+      { label: "Necklaces", href: "/necklaces" },
+      { label: "Anklets", href: "/anklets" },
     ],
   },
   {
     title: "Brand",
     links: [
       { label: "Home", href: "/" },
-      { label: "Shop", href: "/products" },
       { label: "About Nahara", href: "/about" },
     ],
   },
   {
     title: "Support",
     links: [
-      { label: "contact-support", href: "/contact-support" },
-      { label: "privacy-policy", href: "/privacy-policy" },
+      { label: "Contact", href: "/contact" },
+      { label: "Privacy Policy", href: "/privacy-policy" },
       { label: "Shipping & Returns", href: "/shipping-returns" },
       { label: "Terms & Conditions", href: "/terms-of-service" },
     ],

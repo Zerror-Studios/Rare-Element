@@ -1,5 +1,5 @@
-import Link from 'next/link'
-import React from 'react'
+import React from 'react';
+import Link from 'next/link';
 
 const Category = ({ data }) => {
     return (
@@ -11,12 +11,12 @@ const Category = ({ data }) => {
                 <div className="home_category_paren scroller_none">
                     <div className="home_category_inner scroller_none">
                         {data?.map((item, index) => (
-                            <Link scroll={false} key={index} href={`/${item?.slug || item?._id}`}>
+                            <Link scroll={false} key={index} href={`/${item?.link}`}>
                                 <div className="category_box">
                                     <div className="category_box_img_paren">
-                                        <img src={item?.imgsrc} className='category_box_img' alt={item?.name || ""} />
+                                        <img src={item?.image} className='category_box_img' alt={item?.title || ""} />
                                     </div>
-                                    <p className='text-sm bold uppercase'>{item?.name || ""}</p>
+                                    <p className='text-sm bold uppercase'>{item?.title || ""}</p>
                                 </div>
                             </Link>
                         ))}

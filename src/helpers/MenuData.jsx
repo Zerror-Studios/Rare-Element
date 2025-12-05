@@ -1,22 +1,27 @@
 export const MenuData = [
   {
     title: "Rings",
-    link: "/rings"
+    link: "/rings",
+    image: "/images/homepage/category/rings.svg"
   },
   {
     title: "Earings",
-    link: "/earings"
+    link: "/earings",
+    image: "/images/homepage/category/earings.svg"
   },
   {
     title: "Necklaces",
-    link: "/necklaces"
+    link: "/necklaces",
+    image: "/images/homepage/category/necklace.svg"
   },
   {
     title: "Bracelets",
-    link: "/bracelets"
+    link: "/bracelets",
+    image: "/images/homepage/category/bracelets.svg"
   },
   {
     title: "Anklets",
-    link: "/anklets"
+    link: "/anklets",
+    image: "/images/homepage/category/anklets.svg"
   },
 ];
