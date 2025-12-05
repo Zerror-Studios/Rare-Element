@@ -1,0 +1,196 @@
+.about_header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  padding: 8rem 0rem;
+}
+.abt_img_galry img,
+.abt_mob_txt img {
+    opacity: 0;
+}
+.about_marquee_paren {
+  display: flex;
+  width: 100%;
+}
+.marq_img_paren {
+  display: flex;
+  flex-shrink: 0;
+  align-items: end;
+  gap: 1.25rem;
+}
+.marq_img_paren_next {
+  flex-shrink: 0;
+  display: flex;
+  align-items: start;
+  padding-top: 1.25rem;
+  gap: 1.25rem;
+}
+
+.marq_img_1 {
+  width: 18vw;
+  overflow: hidden;
+  aspect-ratio: 3/4;
+}
+
+.marq_img_2 {
+  width: 15vw;
+  overflow: hidden;
+  aspect-ratio: 3/4;
+}
+.marq_img_3 {
+  margin-top: 1.25rem;
+  width: 34vw;
+  overflow: hidden;
+  aspect-ratio: 4/2;
+}
+.marq_img_4 {
+  width: 34vw;
+  overflow: hidden;
+  aspect-ratio: 4/2;
+}
+.about_marquee_paren img {
+  transition: all 0.3s ease;
+}
+.about_marquee_paren img:hover {
+  scale: 1.05;
+}
+.about_marq_txt_paren {
+  width: 45vw;
+  flex-shrink: 0;
+  padding: 5rem 8rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.25rem;
+  text-align: center;
+}
+.about_txt_upper {
+  display: flex;
+  flex-direction: column;
+  gap: 8rem;
+  text-align: center;
+}
+.about_txt_img_paren {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+.about_txt_img {
+  width: 14vw;
+  overflow: hidden;
+  aspect-ratio: 3/2;
+}
+.about_marq_txt_paren p {
+  line-height: 1.25rem;
+}
+
+.about_sticker_section {
+  overflow: hidden;
+  transform: translateY(5rem);
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 100vh;
+}
+
+.about_sticker_1 {
+  position: absolute;
+  height: 95%;
+  left: 8rem;
+  z-index: 5;
+}
+.about_sticker_2 {
+  right: 15rem;
+  position: absolute;
+  width: 40vw;
+  bottom: 2rem;
+  z-index: 5;
+}
+
+@media (min-width: 750px) {
+  .about_sticker_1 {
+    height: 70%;
+  }
+  .abt_img_galry,
+  .abt_mob_txt,
+  .mobile_sticker_1 {
+    display: none;
+  }
+}
+@media (min-width: 1020px) {
+  .about_sticker_1 {
+    height: 95%;
+  }
+}
+/* ////Mobile part//// */
+@media (max-width: 750px) {
+  .about_marquee_paren,
+  .about_sticker_1 {
+    display: none;
+  }
+
+  .about_header {
+    padding: 8rem 0rem;
+    padding-bottom: 5rem;
+  }
+  .about_marque_img_paren_1 {
+    padding: 0 1rem;
+  }
+  .marq_img_paren {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 60% 40%;
+    flex-shrink: 0;
+    align-items: end;
+    gap: 0;
+  }
+  .marq_img_1 {
+    width: calc(100% - 0.5rem);
+    overflow: hidden;
+    aspect-ratio: 3/4;
+  }
+
+  .marq_img_2 {
+    width: 100%;
+    overflow: hidden;
+    aspect-ratio: 3/4;
+  }
+  .marq_img_3 {
+    margin-top: 0.5rem;
+    width: 100%;
+    overflow: hidden;
+    aspect-ratio: 4/2;
+  }
+
+  .abt_mob_txt {
+    padding: 8rem 1rem;
+    padding-bottom: 3rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    gap: 4rem;
+    justify-content: center;
+    align-items: center;
+  }
+  .about_txt_img {
+    width: 55%;
+  }
+  .about_sticker_section{
+    height: 80vh;
+  }
+  .mobile_sticker_1 {
+    width: 100%;
+    position: absolute;
+    left: 0;
+    top: 5%;
+  }
+  .about_sticker_2 {
+    width: 100%;
+    left: 0;
+  }
+}
