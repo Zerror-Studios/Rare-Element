@@ -72,13 +72,13 @@ const ProductImageGrid = ({ data }) => {
             className="MobileImageSlider_arrow left"
             onClick={() => swiperInstance?.slidePrev()}
           >
-            <img src="/icons/arrowLeft.svg" alt="" />
+            <img src="/icons/arrowLeft.svg" alt="loading" />
           </button>
           <button
             className="MobileImageSlider_arrow right"
             onClick={() => swiperInstance?.slideNext()}
           >
-            <img src="/icons/arrowRight.svg" alt="" />
+            <img src="/icons/arrowRight.svg" alt="loading" />
 
           </button>
         </div>

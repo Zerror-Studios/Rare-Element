@@ -84,6 +84,7 @@
 @media (min-width: 750px) {
   .footer_classname_linksGrid {
     margin: 5rem 0;
+    margin-bottom: 1rem;
     grid-template-columns: 39% repeat(4, 15.25%);
   }
 }
@@ -91,6 +92,10 @@
 .footer_classname_about {
   grid-column: span 2;
   width: 100%;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  flex-direction: column;
 }
 
 @media (min-width: 750px) {
@@ -100,7 +105,7 @@
     line-height: 1rem;
   }
   .footer_classname_about p {
-    line-height: 1.5rem;
+    line-height: 1.25rem;
   }
 }
 
@@ -143,11 +148,6 @@
 /* ========== Bottom Section ========== */
 .footer_classname_bottom {
   width: 100%;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
 }
 
 .footer_logo {
@@ -158,6 +158,12 @@
   .footer_logo {
     width: 17vw;
   }
+  .footer_classname_bottom {
+  flex-direction: column;
+  align-items: flex-end;
+  gap: .25rem;
+  display: flex;
+}
 }
 
 .footer_classname_bottom a {
@@ -174,4 +180,17 @@
 .copyright_txt {
   display: flex;
   gap: 0.25rem;
+}
+
+.footer_classname_bottom .footer_logo{
+  display: none;
+}
+@media (max-width:750px) {
+  .footer_classname_about .footer_logo{
+    display: none;
+  }
+  .footer_classname_bottom .footer_logo{
+    display: block;
+  margin-bottom: 1rem;
+}
 }

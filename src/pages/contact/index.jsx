@@ -21,12 +21,12 @@ const ContactSupport = ({ meta }) => {
             </div>
             <div className="elem">
               <div className="add">
-                <p className='text-base uppercase bold'>Business Enquiries</p>
-                <a href="">nahara@gmail.com</a>
-                <a href="">+91 99999-99999</a>
+                <p className=' ct_head text-base uppercase bold'>Business Enquiries</p>
+                <a className='underline' href="https://mail.google.com/mail/u/0/#inbox?compose=GTvVlcSKjgCNjxJKkzZhJktdvrWdssGbJXkRJqFwsZljDKHnPDRLXcrkzLKSLVtRgNBJQQtgTCQjs">contact@nahara.co.in</a>
+                <a className='underline' href=" tel:+91 99999-99999">+91 99999-99999</a>
               </div>
               <div className="add">
-                <p className='text-base uppercase bold'>Address</p>
+                <p className='ct_head text-base uppercase bold'>Address</p>
                 <p>
                   Bankeybihari Holdings <br />
                   B5, 3rd floor, Everest Apt., <br />

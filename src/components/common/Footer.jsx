@@ -42,10 +42,11 @@ export const featureData = [
 
 const footerLinksData = [
   {
-    title: " Links",
+    title: "Navigation",
     links: [
       { label: "Home", href: "/" },
       { label: "About ", href: "/about" },
+      { label: "Contact", href: "/contact" },
     ],
   },
   {
@@ -61,7 +62,6 @@ const footerLinksData = [
   {
     title: "Support",
     links: [
-      { label: "Contact", href: "/contact" },
       { label: "Privacy Policy", href: "/privacy-policy" },
       { label: "Shipping & Returns", href: "/shipping-returns" },
       { label: "Terms & Conditions", href: "/terms-of-service" },
@@ -151,7 +151,10 @@ const Footer = () => {
 
             {/* ABOUT TEXT — stays static */}
             <div className="footer_classname_about">
-              <p className="text-base thin">
+              <Link scroll={false} href="/">
+                <img className="footer_logo" src="/logo.svg" alt="Nahara Logo" />
+              </Link>
+              <p className=" footer_about text-base thin">
                 Nahara is where timeless design meets modern craftsmanship — every piece a statement of individuality.
               </p>
             </div>
@@ -177,10 +180,14 @@ const Footer = () => {
             <Link scroll={false} href="/">
               <img className="footer_logo" src="/logo.svg" alt="Nahara Logo" />
             </Link>
-
             <div className="uppercase text-xs copyright_txt">
-              <p>© {currentYear} Nahara. All rights reserved. Developed by</p>
-              <a href="https://www.zerrorstudios.com/" target="_blank">Zerror Studios</a>
+              <p>© {currentYear} Nahara. All rights reserved.</p>
+            </div>
+            <div className="uppercase text-xs copyright_txt">
+              <p>
+                Developed by &nbsp;
+                <a href="https://www.zerrorstudios.com/" target="_blank">Zerror Studios</a>
+              </p>
             </div>
           </div>
         </div>

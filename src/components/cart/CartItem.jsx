@@ -48,9 +48,8 @@ const CartItem = ({
             <div className="cartBag_itemHead">
               <p className="cartBag_itemName text-base">{item?.name}</p>
               {renderVariants(item?.variantDetail?.selectedOptions || [])}
-
             </div>
-            <p className='text-xl'>{`${item.qty > 1 ? `${item?.qty} x` : ""} ${formatePrice(
+            <p className='text-xl crt_itms_price'>{`${item.qty > 1 ? `${item?.qty} x` : ""} ${formatePrice(
               item?.variantDetail?.variantPrice || 0
             )}`}</p>
           </div>

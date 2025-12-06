@@ -133,7 +133,7 @@ const LookBook = ({ data }) => {
 
                 <div className="lookbookCard_box">
                     <div className="lookbookCard_image">
-                        <img className='cover' src="/images/homepage/bookletbox1.svg" alt="" />
+                        <img className='cover' src="/images/homepage/bookletbox1.svg" alt="loading" />
                     </div>
                     <div className="lookbookCard_text">
                         <h2 className="lookbookCard_title text-xl uppercase">Iconic Gifts</h2>
@@ -143,7 +143,7 @@ const LookBook = ({ data }) => {
 
                 <div className="lookbookCard_box">
                     <div className="lookbookCard_image">
-                        <img className='cover' src="/images/homepage/bookletbox2.svg" alt="" />
+                        <img className='cover' src="/images/homepage/bookletbox2.svg" alt="loading" />
                     </div>
                     <div className="lookbookCard_text">
                         <h2 className="lookbookCard_title text-xl uppercase">Iconic Gifts</h2>

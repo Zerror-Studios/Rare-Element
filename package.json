@@ -14,7 +14,7 @@
     "@hookform/resolvers": "^5.2.2",
     "@remixicon/react": "^4.6.0",
     "cross-fetch": "^4.1.0",
-    "framer-motion": "^12.23.5",
+    "framer-motion": "^12.23.25",
     "graphql": "^16.12.0",
     "gsap": "^3.13.0",
     "html-react-parser": "^5.2.10",

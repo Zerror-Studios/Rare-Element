@@ -74,7 +74,7 @@ const Header = ({ openCart }) => {
         <div className="header_bg"></div>
         <div className="logo_paren">
           <Link scroll={false} href="/">
-            <img className='header_logo' src="/logo.svg" alt="" />
+            <img className='header_logo' src="/logo.svg" alt="loading" />
           </Link>
         </div>
         <div className="nav_links">
@@ -88,13 +88,13 @@ const Header = ({ openCart }) => {
         </div>
         <div className="short_links">
           <Link scroll={false} href={isLoggedIn ? "/account/wishlist" : "/login"}>
-            <img className='short_links_icon' src="/icons/heart.svg" alt="" />
+            <img className='short_links_icon' src="/icons/heart.svg" alt="loading" />
           </Link>
           <Link scroll={false} href={isLoggedIn ? "/account/settings" : "/login"}>
-            <img className='short_links_icon' src="/icons/profile.svg" alt="" />
+            <img className='short_links_icon' src="/icons/profile.svg" alt="loading" />
           </Link>
           <button onClick={openCart}>
-            <img className='short_links_icon' src="/icons/cart.svg" alt="" />
+            <img className='short_links_icon' src="/icons/cart.svg" alt="loading" />
           </button>
         </div>
       </div>

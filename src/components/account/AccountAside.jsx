@@ -38,7 +38,7 @@ const AccountAside = () => {
               Points <span className="accountLeftSlide_highlight">400/1000</span>
             </p>
             <div className="bar_code_img_paren">
-              <img className='bar_code_img' src="/images/Black-barcode-icon.png" alt="" />
+              <img className='bar_code_img' src="/images/Black-barcode-icon.png" alt="loading" />
             </div>
           </div>
         </div>

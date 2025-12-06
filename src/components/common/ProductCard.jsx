@@ -6,14 +6,14 @@ const ProductCard = ({ name, price, assets }) => {
             <div className="shopCard_card">
                 <div className="heart_icon">
                     <div className="icon_pr">
-                        <img className='  short_links_icon_heart invert' src="/icons/heart.svg" alt="" />
-                        <img className=' short_links_icon_heart_hover' src="/icons/heartFill.svg" alt="" />
+                        <img className='  short_links_icon_heart invert' src="/icons/heart.svg" alt="loading" />
+                        <img className=' short_links_icon_heart_hover' src="/icons/heartFill.svg" alt="loading" />
                     </div>
                 </div>
-                <img 
-                    className='shopCard_hoverImg' 
+                <img
+                    className='shopCard_hoverImg'
                     src={assets?.[1]?.path}
-                    alt={assets?.[1]?.altText || ""} 
+                    alt={assets?.[1]?.altText || ""}
                 />
 
                 <div className="shopCard_img_wrapper center">

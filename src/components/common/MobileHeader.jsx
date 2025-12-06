@@ -110,7 +110,7 @@ const MobileHeader = ({ openCart }) => {
       <div className="mobile_menu_classname_open_menu">
         <div className="mobile_menu_classname_close_icon_container">
           <img onClick={() => closeMenu()}
-            src="/icons/close.svg" alt="" />
+            src="/icons/close.svg" alt="loading" />
         </div>
 
         <div className="mobile_menu_classname_center">
@@ -131,11 +131,11 @@ const MobileHeader = ({ openCart }) => {
       <div className="mobile_dummy_paren"></div>
       <div className="mobile_header padding">
         <div className="mobile_header_bg"></div>
-        <img onClick={openMenu} className='short_links_icon' src="/icons/menu.svg" alt="" />
+        <img onClick={openMenu} className='short_links_icon' src="/icons/menu.svg" alt="loading" />
         <Link scroll={false} href="/">
-          <img className='mobile_logo' src="/logo.svg" alt="" />
+          <img className='mobile_logo' src="/logo.svg" alt="loading" />
         </Link>
-        <img onClick={openCart}  className='short_links_icon' src="/icons/cart.svg" alt="" />
+        <img onClick={openCart} className='short_links_icon' src="/icons/cart.svg" alt="loading" />
       </div>
     </>
   )

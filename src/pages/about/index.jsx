@@ -3,6 +3,7 @@ import Marquee from 'react-fast-marquee'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
+import ScrollVelocity from '@/components/about/ScrollVelocity';
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -12,7 +13,7 @@ const About = () => {
   useGSAP(() => {
 
     gsap.to(".abt_img_galry img, .abt_mob_txt img ", {
-      opacity: 1, duration: 1.2, stagger:0.1, delay: .5, ease: "expo.out"
+      opacity: 1, duration: 1.2, stagger: 0.1, delay: .5, ease: "expo.out"
     })
 
     gsap.fromTo(".sticker_bg_img", {
@@ -86,20 +87,20 @@ const About = () => {
         <div className="about_marque_img_paren_1">
           <div className="marq_img_paren">
             <div className="marq_img_1">
-              <img className='cover' src="/images/aboutpage/about_img1.webp" alt="" />
+              <img className='cover' src="/images/aboutpage/about_img1.webp" alt="loading" />
             </div>
             <div className="marq_img_2">
-              <img className='cover' src="/images/aboutpage/about_img2.webp" alt="" />
+              <img className='cover' src="/images/aboutpage/about_img2.webp" alt="loading" />
             </div>
           </div>
           <div className="marq_img_3">
-            <img className='cover' src="/images/aboutpage/landscape_img1.webp" alt="" />
+            <img className='cover' src="/images/aboutpage/landscape_img1.webp" alt="loading" />
           </div>
         </div>
       </div>
       <div className="abt_mob_txt">
         <div className="about_txt_img">
-          <img className='cover' src="/images/aboutpage/desc_img.webp" alt="" />
+          <img className='cover' src="/images/aboutpage/desc_img.webp" alt="loading" />
         </div>
         <p className='  text-base bold uppercase '>Behind Rare Element</p>
         <div className=" text-base">
@@ -107,75 +108,15 @@ const About = () => {
         </div>
       </div>
 
-      <Marquee speed={20} className='abt_desktop_marq'>
-        <div className="about_marquee_paren">
-          <div className="about_marque_img_paren_1">
-            <div className="marq_img_paren">
-              <div className="marq_img_1">
-                <img className='cover' src="/images/aboutpage/about_img1.webp" alt="" />
-              </div>
-              <div className="marq_img_2">
-                <img className='cover' src="/images/aboutpage/about_img2.webp" alt="" />
-              </div>
-            </div>
-            <div className="marq_img_3">
-              <img className='cover' src="/images/aboutpage/landscape_img1.webp" alt="" />
-            </div>
-          </div>
-
-          <div className="about_marq_txt_paren">
-            <div className="about_txt_upper">
-              <div className="about_txt_img_paren">
-                <div className="about_txt_img">
-                  <img className='cover' src="/images/aboutpage/desc_img.webp" alt="" />
-                </div>
-              </div>
-              <p className='  text-base uppercase '>Behind Rare Element</p>
-            </div>
-            <div className=" text-xl">
-              <p className='thin italic'>“ Nahara was born from the idea that beauty should be honest and thoughtful. We create slowly, with intention, allowing every design to carry a story. What you see here is more than a brand it’s a journey shaped with clarity, purpose, and heart.”</p>
-            </div>
-          </div>
-
-
-          <div className="about_marque_img_paren_2">
-            <div className="marq_img_4">
-              <img className='cover' src="/images/aboutpage/landscape_img2.webp" alt="" />
-            </div>
-            <div className="marq_img_paren_next">
-              <div className="marq_img_1">
-                <img className='cover' src="/images/aboutpage/about_img3.webp" alt="" />
-              </div>
-              <div className="marq_img_2">
-                <img className='cover' src="/images/aboutpage/about_img4.webp" alt="" />
-              </div>
-            </div>
-          </div>
-
-          <div className="about_marq_txt_paren">
-            <div className="about_txt_upper">
-              <div className="about_txt_img_paren">
-                <div className="about_txt_img">
-                  <img className='cover' src="/images/aboutpage/desc_img.webp" alt="" />
-                </div>
-              </div>
-              <p className='  text-base uppercase '>Behind Rare Element</p>
-            </div>
-            <div className=" text-xl">
-              <p className='thin italic'>“ Nahara was born from the idea that beauty should be honest and thoughtful. We create slowly, with intention, allowing every design to carry a story. What you see here is more than a brand it’s a journey shaped with clarity, purpose, and heart.”</p>
-            </div>
-          </div>
-
-        </div>
-      </Marquee>
+      <ScrollVelocity />
 
       <div className="about_sticker_section">
-        <img className=' sticker_bg_img cover' src="/images/aboutpage/about_sticker_bg.webp" alt="" />
+        <img className=' sticker_bg_img cover' src="/images/aboutpage/about_sticker_bg.webp" alt="loading" />
 
-        <img className='mobile_sticker_1' src="/images/aboutpage/mobile_stickr_1.png" alt="" />
-        <img className='about_sticker_1' src="/images/aboutpage/desktop_sticker_1.png" alt="" />
+        <img className='mobile_sticker_1' src="/images/aboutpage/mobile_stickr_1.png" alt="loading" />
+        <img className='about_sticker_1' src="/images/aboutpage/desktop_sticker_1.png" alt="loading" />
 
-        <img className='about_sticker_2' src="/images/aboutpage/sticker_2.png" alt="" />
+        <img className='about_sticker_2' src="/images/aboutpage/sticker_2.png" alt="loading" />
       </div>
 
     </>

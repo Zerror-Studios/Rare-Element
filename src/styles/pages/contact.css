@@ -134,6 +134,9 @@
   width: 49%;
   height: 100%;
 }
+.ct_head{
+  margin-bottom: .5rem;
+}
 .add h3{
   margin-bottom: .5rem;
 }
@@ -176,7 +179,7 @@
     display: flex;
     gap: 1.25rem;
   }
-  #contact_form .elem-lf h5 {
+  #contact_form .elem-lf p {
     width: 100%;
   }
   #contact_form .elem .add {
@@ -221,8 +224,8 @@
     display: flex;
     gap: 1.25rem;
   }
-  #contact_form .elem-lf h5 {
-    width: 80%;
+  #contact_form .elem-lf p {
+    width: 30%;
   }
   #contact_form .elem .add {
     width: 45%;

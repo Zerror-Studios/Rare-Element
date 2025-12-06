@@ -172,7 +172,7 @@ const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
       <div className="cartBag_bagHeader">
         <div className="cartBag_bagHeaderLeft">
           <h2 className="cartBag_bagTitle text-2xl">Cart</h2>
-          <p className="cartBag_bagCount text-base"> ({itemcount}) </p>
+          <p className="cartBag_bagCount text-base"> ({cart?.length}) </p>
         </div>
         <div
           onClick={closeCart}
@@ -212,6 +212,8 @@ const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
             onClick={navigateCheckout}
             loading={isBtnLoading}
           />
+          <p className="text-sm  crt_btn_txt"> Free shipping on orders above ₹3,000, with easy returns and fast support—always.</p>
+          {/* <p className="text-xs ">Free shipping on orders above 3k</p> */}
         </div>
       </div>
     </div>

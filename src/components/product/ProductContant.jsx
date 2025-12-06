@@ -102,7 +102,7 @@ const ProductContant = ({
                       className={`productDetail_quantity_icon productDetail_select_inner_elem_img ${openDropdown === item?.optionName ? "rotate_icon" : ""
                         }`}
                       src="/icons/LongArrowDown.svg"
-                      alt=""
+                      alt="loading"
                     />
                   </button>
                 </div>
@@ -165,11 +165,11 @@ const ProductContant = ({
 
           {/* <div className="productDetail_quantity text-xl">
             <button className="productDetail_quantity_btn">
-              <img className="productDetail_quantity_icon" src="/icons/minus.svg" alt="" />
+              <img className="productDetail_quantity_icon" src="/icons/minus.svg" alt="loading" />
             </button>
             <p>1</p>
             <button className="productDetail_quantity_btn">
-              <img className="productDetail_quantity_icon" src="/icons/plus.svg" alt="" />
+              <img className="productDetail_quantity_icon" src="/icons/plus.svg" alt="loading" />
             </button>
           </div> */}
         </div>
@@ -178,13 +178,14 @@ const ProductContant = ({
             <GreenBoxBtn title={notifyLoading ? "Loading..." : "Notify me"} onClick={handleNotifyMe} />
           )}
           <GreenBoxBtn
+            loading={loading}
             title={loading ? "Loading..." : !cartBtn ? "Select a Size" : isOutOfStock ? StockStatus.OUT_OF_STOCK : "Add To Cart"}
             onClick={handleAddToCart}
           />
           <div className="productDetail_btn_icon center">
             <div className="icon_pr">
-              <img className="short_links_icon_heart" src="/icons/greenHeart.svg" alt="" />
-              <img className="short_links_icon_heart_hover" src="/icons/heartFill.svg" alt="" />
+              <img className="short_links_icon_heart" src="/icons/greenHeart.svg" alt="loading" />
+              <img className="short_links_icon_heart_hover" src="/icons/heartFill.svg" alt="loading" />
             </div>
           </div>
         </div>
@@ -201,7 +202,7 @@ const ProductContant = ({
                   <img
                     className={`productDetail_quantity_icon ${accordionIndex === index ? "rotated" : ""}`}
                     src="/icons/LongArrowRight.svg"
-                    alt=""
+                    alt="loading"
                   />
                 </button>
 

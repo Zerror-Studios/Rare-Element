@@ -52,7 +52,10 @@ button {
   height: 100%;
 }
 .underline:hover{
-  text-decoration: underline;
+  text-decoration: underline !important;
+}
+.flex{
+  display: flex;
 }
 .italic{
   font-style: italic;
@@ -76,4 +79,21 @@ button {
 }
 .under_anim:hover::after{
   width: 100%;
+}
+
+
+
+
+.parallax {
+  position: relative;
+  overflow: hidden;
+}
+
+.scroller {
+  display: flex;
+  text-align: center;
+}
+
+.scroller span {
+  flex-shrink: 0;
 }
