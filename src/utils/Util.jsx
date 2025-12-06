@@ -71,9 +71,36 @@ export const getProductPriceLabel = (variants = [], discountedPrice = 0) => {
   return `Starts from ${formatePrice(minPrice)}`;
 };
 
-export const renderVariants = (variant = []) => {
-  if (variant.length === 0) return;
-  return variant.map((value, idx) => (
-    <p key={idx} className="cartBag_itemSize text-xs">{`${idx === 0 ? "Color" : "Size"} - ${value}`}</p>
-  ));
+export const renderVariants = (
+  productOptions = [],
+  selectedOptions = []
+) => {
+  if (!productOptions.length || !selectedOptions.length) return null;
+
+  return selectedOptions.map((value, idx) => {
+    const matchedOption = productOptions.find((opt) =>
+      opt.choices.some((choice) => choice.name === value)
+    );
+    const formattedName =
+      matchedOption?.optionName
+        ? matchedOption.optionName[0].toUpperCase() +
+        matchedOption.optionName.slice(1)
+        : `Option ${idx + 1}`;
+
+    return (
+      <p key={idx} className="cartBag_itemSize text-xs">
+        {`${formattedName} - ${value}`}
+      </p>
+    );
+  });
 };
+
+export const getCartItemCount = (cart) => {
+  if (!cart || !Array.isArray(cart)) return 0;
+
+  return cart.reduce((total, item) => {
+    const qty = item?.qty || 0;
+    return total + qty;
+  }, 0);
+};
+

@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import Link from "next/link";
 import { formatePrice, renderVariants } from "@/utils/Util";
 import { RiDeleteBinLine } from "@remixicon/react";
 const CartItem = ({
   item,
   handleAddItem,
   handleRemoveItem,
+  onClose,
 }) => {
   const [removing, setRemoving] = useState(false);
   const [adding, setAdding] = useState(false);
@@ -35,19 +37,19 @@ const CartItem = ({
     <div className="cartBag_bagItem">
       <div className="cartBag_bagItemInner">
         <div className="cartBag_bagImageWrapper">
-          <div className='cartBag_bagImage'>
+          <Link scroll={false} onClick={onClose} href={`/products/${item?.product?.slug}`} className='cartBag_bagImage'>
             <img
               className="cartBag_bagImage"
               src={item?.asset?.path || ""}
               alt={item?.asset?.altText || ""}
             />
-          </div>
+          </Link>
         </div>
         <div className="cartBag_bagItemDetails">
           <div className="cartBag_bagItemTop">
             <div className="cartBag_itemHead">
-              <p className="cartBag_itemName text-base">{item?.name}</p>
-              {renderVariants(item?.variantDetail?.selectedOptions || [])}
+              <Link scroll={false} onClick={onClose} href={`/products/${item?.product?.slug}`} className="cartBag_itemName text-base">{item?.name}</Link>
+              {renderVariants(item?.product?.productOptions || [], item?.variantDetail?.selectedOptions || [])}
 
             </div>
             <p className='text-xl'>{`${item.qty > 1 ? `${item?.qty} x` : ""} ${formatePrice(

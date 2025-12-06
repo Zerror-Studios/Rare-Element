@@ -6,7 +6,7 @@ import AccountLayout from '@/components/layouts/AccountLayout';
 import AccountBreadcrumb from '@/components/account/AccountBreadcrumb';
 import { useQuery } from '@apollo/client/react';
 import { GET_ORDER_BY_ID } from '@/graphql';
-import { formatDateTime, formatePrice } from '@/utils/Util';
+import { formatDateTime, formatePrice, renderVariants } from '@/utils/Util';
 
 const OrderDetail = ({ meta }) => {
   const { id } = useParams();
@@ -110,7 +110,7 @@ const OrderDetail = ({ meta }) => {
                         <div className="cartBag_bagItemTop">
                           <div>
                             <p className="cartBag_itemName text-base">{item?.name || ""}</p>
-                            <p className="cartBag_itemSize text-sm">{item?.variantDetail?.selectedOptions.join(" | ")}</p>
+                            {renderVariants(item?.product?.productOptions || [], item?.variantDetail?.selectedOptions || [])}
                           </div>
                           <p className='text-xl'>{formatePrice(item?.finalPrice || 0)}</p>
                         </div>

@@ -1,5 +1,5 @@
 import React from 'react'
-// import Link from 'next/link';
+import Link from 'next/link';
 // import { RiDeleteBinLine } from '@remixicon/react'
 import { formatePrice, renderVariants } from '@/utils/Util';
 import { RiDeleteBinLine } from '@remixicon/react';
@@ -14,19 +14,19 @@ const OrderItems = ({ data }) => {
             const price = formatePrice(item?.variantDetail?.variantPrice || null);
             return (
               <div key={index} className="checkout_item">
-                <div className="checkout_imgWrapper">
+                <Link scroll={false} href={`/products/${item?.product?.slug}`} className="checkout_imgWrapper">
                   <img
                     className="checkout_productImg"
                     src={item?.asset?.path || ""}
                     alt={item?.asset?.altText || ""}
                   />
-                </div>
+                </Link>
 
                 <div className="checkout_details">
                   <div className="checkout_topRow">
                     <div>
-                      <p className="checkout_productName text-base">{item?.name}</p>
-                      {renderVariants(item?.variantDetail?.selectedOptions || [])}
+                      <Link scroll={false} href={`/products/${item?.product?.slug}`} className="checkout_productName text-base">{item?.name}</Link>
+                      {renderVariants(item?.product?.productOptions || [], item?.variantDetail?.selectedOptions || [])}
                       <p className="checkout_metaText text-xs ">Quantity: {item?.qty}</p>
                     </div>
                     <p className="checkout_price  text-base">{price}</p>

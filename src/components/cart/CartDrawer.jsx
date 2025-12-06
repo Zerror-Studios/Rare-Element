@@ -6,7 +6,7 @@ import { useMutation, useQuery } from "@apollo/client/react";
 import { ADD_ITEM_TO_CART, CART_LIST, REMOVE_ITEM_FROM_CART } from "@/graphql";
 import { useAuthStore } from "@/store/auth-store";
 import { useVisitor } from "@/hooks/useVisitor";
-import { formatePrice } from "@/utils/Util";
+import { formatePrice, getCartItemCount } from "@/utils/Util";
 import GreenBoxBtn from '@/components/buttons/GreenBoxBtn';
 import CartItem from '@/components/cart/CartItem';
 import { RiCloseLine } from "@remixicon/react";
@@ -45,10 +45,11 @@ const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
 
   const {
     _id,
-    itemcount = 0,
     discountedPrice = 0,
     cart = [],
   } = cartResponse?.getCart || {};
+
+  const count = getCartItemCount(cart);
 
   const handleAddItem = async (productId, variantDetail) => {
     try {
@@ -172,7 +173,7 @@ const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
       <div className="cartBag_bagHeader">
         <div className="cartBag_bagHeaderLeft">
           <h2 className="cartBag_bagTitle text-2xl">Cart</h2>
-          <p className="cartBag_bagCount text-base"> ({itemcount}) </p>
+          <p className="cartBag_bagCount text-base"> ({count}) </p>
         </div>
         <div
           onClick={closeCart}
@@ -190,6 +191,7 @@ const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
               item={item}
               handleAddItem={handleAddItem}
               handleRemoveItem={handleRemoveItem}
+              onClose={closeCart}
             />
           ))
         ) : (

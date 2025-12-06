@@ -48,6 +48,18 @@ export const ORDER_LIST = gql`
         finalPrice
         customTexts
         productId
+        product {
+          _id
+          name
+          slug
+          productOptions {
+            optionName
+            choices {
+              name
+            }
+            showInProductPageAs
+          }
+        }
       }
       nimbblInvoiceId
       customDiscount {
@@ -121,6 +133,13 @@ query GetClientSidePaymentByOrderId($getClientSidePaymentByOrderIdId: ID!) {
           _id
           name
           slug
+          productOptions {
+            optionName
+            choices {
+              name
+            }
+            showInProductPageAs
+          }
         }
       }
       billingAddress {
