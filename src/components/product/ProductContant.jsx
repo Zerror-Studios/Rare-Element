@@ -97,7 +97,7 @@ const ProductContant = ({
                   className={`productDetail_select ${openDropdown === item?.optionName ? "active" : ""}`}
                 >
                   <button className="text-base" onClick={() => toggleDropdown(item?.optionName)}>
-                    <p className="productDetail_select_inner_elem capitalize">{selectOption}</p>
+                    <p className="productDetail_select_inner_elem capitalize">{selectOption?.replace(/(\d)([a-zA-Z]+)/, "$1 $2")}</p>
                     <img
                       className={`productDetail_quantity_icon productDetail_select_inner_elem_img ${openDropdown === item?.optionName ? "rotate_icon" : ""
                         }`}
@@ -145,11 +145,11 @@ const ProductContant = ({
                                 }} className="text-base capitalize">{choice?.name}</p>
                             </>
                           ) : (
-                            <div className="color_div">
-                              <div className="color_inner center">
+                            <div className=" size_div">
+                              <div className=" size_inner center">
                                 <p style={{
                                   textDecoration: selected ? "underline" : "none",
-                                }} className="text-base uppercase">{choice?.name}</p>
+                                }} className="text-base capitalize ">{choice?.name?.replace(/(\d)([a-zA-Z]+)/, "$1 $2")}</p>
                               </div>
                             </div>
                           )}
