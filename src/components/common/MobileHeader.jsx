@@ -135,19 +135,19 @@ const MobileHeader = ({ openCart }) => {
             </div>
           ) : (
             <Link href={"/login"} onClick={() => closeMenu()}>
-              <p className='text-base uppercase underline'>Login/Signup</p>
+              <p className='text-base uppercase '>Login/Signup</p>
             </Link>
           )}
         </div>
 
         <div className="links_paren">
           <Link href={"/"} className='menu_links_iner' onClick={() => closeMenu()}>
-            <h2 className='text-3xl capitalize underline'>Home</h2>
+            <h2 className='text-3xl capitalize '>Home</h2>
             <RiArrowRightSLine size={16} />
           </Link>
           <div className="">
             <Link href={"/rings"} className='menu_links_iner' onClick={() => closeMenu()}>
-              <h2 className='text-3xl capitalize underline'>Categories</h2>
+              <h2 className='text-3xl capitalize '>Categories</h2>
               <RiArrowRightSLine size={16} />
             </Link>
             <div className="home_category_paren scroller_none">
@@ -167,12 +167,12 @@ const MobileHeader = ({ openCart }) => {
           </div>
 
           <Link href={"/about"} className='menu_links_iner' onClick={() => closeMenu()}>
-            <h2 className='text-3xl capitalize underline'>about</h2>
+            <h2 className='text-3xl capitalize '>about</h2>
             <RiArrowRightSLine size={16} />
           </Link>
 
           <Link href={"/contact"} className='menu_links_iner' onClick={() => closeMenu()}>
-            <h2 className='text-3xl capitalize underline'>contact</h2>
+            <h2 className='text-3xl capitalize '>contact</h2>
             <RiArrowRightSLine size={16} />
           </Link>
         </div>
@@ -181,7 +181,7 @@ const MobileHeader = ({ openCart }) => {
           {
             footer_links.map((item, index) => (
               <div key={index} className="">
-                <p className='text-base menu_footer_title uppercase underline'>{item?.title}</p>
+                <p className='text-base menu_footer_title uppercase '>{item?.title}</p>
                 {footer_links[index]?.links?.map((item, index) => (
                   <Link scroll={false} key={index} href={`${item?.href}`} onClick={() => closeMenu()}>
                     <p className='text-sm menu_footer_title_inner'>{item?.label}</p>

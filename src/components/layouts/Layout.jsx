@@ -5,7 +5,10 @@ import Header from "@/components/common/Header";
 import MobileHeader from "@/components/common/MobileHeader";
 import Footer from "@/components/common/Footer";
 import CartDrawer from "@/components/cart/CartDrawer";
+import { usePathname } from "next/navigation";
+
 const Layout = ({ children }) => {
+  const pathname = usePathname();
   const { isCartOpen, openCart, closeCart } = useCartStore((state) => state);
   const overlayRef = useRef()
 
@@ -35,7 +38,7 @@ const Layout = ({ children }) => {
       <Header openCart={openCart} />
       <MobileHeader openCart={openCart} />
       {children}
-      <Footer />
+      {pathname !== "/login" && <Footer />}
     </>
   );
 };
