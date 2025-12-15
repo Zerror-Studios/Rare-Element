@@ -88,7 +88,7 @@ export const renderVariants = (
         : `Option ${idx + 1}`;
 
     return (
-      <p key={idx} className="cartBag_itemSize text-xs">
+      <p key={idx} className="cartBag_itemSize text-sm">
         {`${formattedName} - ${value}`}
       </p>
     );

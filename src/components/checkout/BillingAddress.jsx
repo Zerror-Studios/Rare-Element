@@ -5,6 +5,7 @@ import { countriesData, addressType } from "@/helpers/Data";
 import Input from "@/components/ui/Input";
 import Checkbox from "@/components/ui/Checkbox";
 import "react-international-phone/style.css";
+import { RiArrowDownSLine } from "@remixicon/react";
 
 const BillingAddress = ({ errors, control, register, setValue }) => {
   const useShippingAsBilling = useWatch({
@@ -100,17 +101,21 @@ const BillingAddress = ({ errors, control, register, setValue }) => {
               />
             </div>
 
-            <select
-              required
-              className="checkOut_input"
-              disabled={useShippingAsBilling}
-              {...register("billingAddress.addressType")}
-            >
-              <option value="" disabled hidden className="placeholderOption">Address Type</option>
-              {addressType?.map((item, index) => (
-                <option value={item?.value || ""} key={`addr-${index}`}>{item?.label || ""}</option>
-              ))}
-            </select>
+            <div className="relative">
+              <RiArrowDownSLine size={12} className="select_arrow" />
+
+              <select
+                required
+                className="checkOut_input"
+                disabled={useShippingAsBilling}
+                {...register("billingAddress.addressType")}
+              >
+                <option value="" disabled hidden className="placeholderOption">Address Type</option>
+                {addressType?.map((item, index) => (
+                  <option value={item?.value || ""} key={`addr-${index}`}>{item?.label || ""}</option>
+                ))}
+              </select>
+            </div>
             {errors?.billingAddress?.addressType && (
               <span className="error">
                 {errors?.billingAddress?.addressType?.message ||
@@ -118,6 +123,7 @@ const BillingAddress = ({ errors, control, register, setValue }) => {
               </span>
             )}
           </div>
+
 
           {/* City + ZIP */}
           <div className="checkout_inp_flex">
@@ -137,24 +143,28 @@ const BillingAddress = ({ errors, control, register, setValue }) => {
 
           {/* Country + State */}
           <div className="checkout_inp_flex">
-            <select
-              required
-              className="checkOut_input"
-              disabled={useShippingAsBilling}
-              {...register("billingAddress.country")}
-            >
-              <option value="" disabled hidden className="placeholderOption">
-                Country/Region
-              </option>
-              {countriesData?.map((item, index) => (
-                <option
-                  value={item?.name || ""}
-                  key={`country-${index}`}
-                >
-                  {item?.name || ""}
+
+            <div className="relative">
+              <RiArrowDownSLine size={18} className="select_arrow" />
+              <select
+                required
+                className="checkOut_input"
+                disabled={useShippingAsBilling}
+                {...register("billingAddress.country")}
+              >
+                <option value="" disabled hidden className="placeholderOption">
+                  Country/Region
                 </option>
-              ))}
-            </select>
+                {countriesData?.map((item, index) => (
+                  <option
+                    value={item?.name || ""}
+                    key={`country-${index}`}
+                  >
+                    {item?.name || ""}
+                  </option>
+                ))}
+              </select>
+            </div>
             {errors?.billingAddress?.country && (
               <span className="error">
                 {errors?.billingAddress?.country?.message || ""}

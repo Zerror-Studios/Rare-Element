@@ -152,6 +152,7 @@
   right: 1rem;
 }
 .checkout_inp_flex {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
@@ -164,6 +165,7 @@
 
 /* Base select */
 .checkOut_input {
+  position: relative;
   border-radius: 0 !important;
   flex-shrink: 0;
   font-size: 1.125rem;
@@ -171,19 +173,51 @@
   padding-left: 0.5rem;
   height: 3.5rem;
   padding-right: 3rem;
-  border: 1px solid #00000050;
+  border: 1px solid #00000050 !important;
   outline: none;
   color: #000; /* normal text */
   transition: all 0.1s ease;
 }
-.checkOut_input:hover {
-  padding-left: 1rem;
-  border: 2px solid #1f9468;
+.select_arrow {
+  color: black !important;
+  position: absolute;
+  z-index: 9;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 0.5rem;
 }
-@media (min-height: 1020px) {
+@media (min-width: 1020px) {
+  .checkOut_input:hover {
+    padding-left: 1.5rem;
+    border: 2px solid #1f9468;
+  }
   .checkOut_input {
     padding-left: 1rem;
   }
+}
+
+/* Remove iOS default input styling */
+.checkOut_input {
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: #fff;
+}
+
+/* iOS focus blue background fix */
+.checkOut_input:focus {
+  background-color: #fff !important;
+  outline: none;
+}
+
+/* iOS autofill (blue/yellow background) fix */
+.checkOut_input:-webkit-autofill,
+.checkOut_input:-webkit-autofill:hover,
+.checkOut_input:-webkit-autofill:focus,
+.checkOut_input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #fff inset !important;
+  box-shadow: 0 0 0 1000px #fff inset !important;
+  -webkit-text-fill-color: #000 !important;
+  transition: background-color 9999s ease-in-out 0s;
 }
 
 .delivery__input__phone {
@@ -306,6 +340,7 @@
 .checkout_productName {
   margin-bottom: 0.5rem;
 }
+
 .checkout_metaText {
   opacity: 0.8;
 }
@@ -392,11 +427,11 @@
   padding-left: 1rem;
   margin-bottom: 2rem;
 }
-.checkout_couponInput:hover {
-  padding-left: 1rem;
-  border: 2px solid #1f9468;
-}
-@media (min-height: 1020px) {
+@media (min-width: 1020px) {
+  .checkout_couponInput:hover {
+    padding-left: 1.5rem;
+    border: 2px solid #1f9468;
+  }
   .checkout_couponInput {
     padding-left: 1rem;
   }
@@ -426,6 +461,9 @@
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 @media (max-width: 750px) {
+  .checkout_productName {
+    color: white !important;
+  }
   .checkout_borderRow {
     border-bottom: 1px solid rgba(194, 194, 194, 0.331);
   }

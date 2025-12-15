@@ -5,7 +5,7 @@ import { useAuthStore } from "@/store/auth-store";
 import { Sort } from "@/utils/Constant";
 import { useQuery } from "@apollo/client/react";
 import { USER_ADDRESS_LIST } from "@/graphql";
-import { RiCheckLine } from '@remixicon/react'
+import { RiArrowDownSLine, RiCheckLine } from '@remixicon/react'
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 import { countriesData, addressType } from "@/helpers/Data";
@@ -133,15 +133,17 @@ const Delivery = ({ errors, control, register, setValue }) => {
                   {...register("shippingAddress.phone")}
                 />
               </div>
-
-              <select className="checkOut_input" {...register("shippingAddress.addressType")}>
-                <option value="" disabled hidden className="placeholderOption">Address Type</option>
-                {addressType?.map((item, index) => (
-                  <option value={item?.value || ""} key={`addr-${index}`}>
-                    {item?.label || ""}
-                  </option>
-                ))}
-              </select>
+              <div className="relative">
+                <RiArrowDownSLine size={12} className="select_arrow" />
+                <select className="checkOut_input" {...register("shippingAddress.addressType")}>
+                  <option value="" disabled hidden className="placeholderOption">Address Type</option>
+                  {addressType?.map((item, index) => (
+                    <option value={item?.value || ""} key={`addr-${index}`}>
+                      {item?.label || ""}
+                    </option>
+                  ))}
+                </select>
+              </div>
               {errors?.shippingAddress?.addressType && (
                 <span className="error">
                   {errors?.shippingAddress?.addressType?.message ||
@@ -165,16 +167,19 @@ const Delivery = ({ errors, control, register, setValue }) => {
 
             {/* Country + State */}
             <div className="checkout_inp_flex">
-              <select className="checkOut_input" required {...register("shippingAddress.country")}>
-                <option value="" disabled hidden className="placeholderOption">
-                  Country/Region
-                </option>
-                {countriesData?.map((item, index) => (
-                  <option value={item?.name || ""} key={`country-${index}`}>
-                    {item?.name || ""}
+              <div className="relative">
+                <RiArrowDownSLine size={12} className="select_arrow" />
+                <select className="checkOut_input" required {...register("shippingAddress.country")}>
+                  <option value="" disabled hidden className="placeholderOption">
+                    Country/Region
                   </option>
-                ))}
-              </select>
+                  {countriesData?.map((item, index) => (
+                    <option value={item?.name || ""} key={`country-${index}`}>
+                      {item?.name || ""}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
               <Input
                 placeholder="State"

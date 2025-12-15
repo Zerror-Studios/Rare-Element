@@ -113,6 +113,7 @@ const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
   useEffect(() => {
     if (window.innerWidth < 1020) {
       if (isOpen) {
+        if (window.lenis) window.lenis.stop();
         const tedv = gsap.timeline();
         tedv.to(".cartBag_openBagParent", {
           right: "0",
@@ -125,6 +126,7 @@ const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
           }, "<+=0.1")
 
       } else {
+        if (window.lenis) window.lenis.start();
         const dsc = gsap.timeline();
         dsc.to(".cartBag_openBagParent", {
           right: "-100%",
@@ -214,7 +216,7 @@ const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
             onClick={navigateCheckout}
             loading={isBtnLoading}
           />
-          <p className="text-sm  crt_btn_txt"> Free shipping on orders above ₹3,000, with easy returns and fast support—always.</p>
+          <p className="text-base  crt_btn_txt"> Free shipping on orders above ₹3,000, with easy returns and fast support—always.</p>
         </div>
       </div>
     </div>
