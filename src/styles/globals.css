@@ -26,9 +26,7 @@ button {
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
 }
-.background {
-  background-color: #f6f6f6;
-}
+
 .padding{
   padding: 0rem 1rem;
 }

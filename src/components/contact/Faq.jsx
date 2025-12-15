@@ -66,7 +66,7 @@ const Faq = () => {
 
     return (
         <div className='faq_paren'>
-            <div className="">
+            <div className="faq_header">
                 <h2 className=' text-3xl font-semibold'>FAQs</h2>
                 <p className='text-base uppercase'> Here are some frequently asked questions </p>
             </div>

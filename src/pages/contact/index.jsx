@@ -83,7 +83,7 @@ const ContactSupport = ({ meta }) => {
           <img className='contact_bg_img' src="https://images.unsplash.com/photo-1711462579127-d25e6ea88244?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="loading" />
           <div className="ct_box">
             <h2 className=' text-3xl font-semibold'>Contact Us</h2>
-            <p className='text-base uppercase'>Need help? Contact Nahara for support, product inquiries, <br /> custom jewellery requests, and order assistance.</p>
+            <p className='text-base uppercase'>Need help? Contact Nahara for support, product inquiries, custom jewellery requests, and order assistance.</p>
           </div>
 
         </div>

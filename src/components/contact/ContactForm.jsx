@@ -111,7 +111,7 @@ const ContactForm = () => {
     <div id="form">
       <div id="right" className="text-base">
           <div className="form_header">
-            <p className='text-base  uppercase '> get in touch with us</p>
+            <p className='  uppercase '> get in touch </p>
           </div>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="input lineanime">
