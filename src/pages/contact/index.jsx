@@ -66,25 +66,10 @@ const ContactSupport = ({ meta }) => {
 
     } else {
       tl.to(".slider_box_paren", {
-        xPercent: -120,
+        xPercent: -90,
         ease: "linear",
         duration: .5,
       })
-      tl.to(".ct_box", {
-        opacity:0,
-        duration:.2,
-        ease: "linear",
-      }, "<+=0.05")
-      tl.to(".contact_img_paren", {
-        width: "0%",
-        padding:"0rem 0rem",
-        ease: "linear",
-      }, "<")
-      tl.from("#form", {
-        opacity: 0,
-        duration: .5,
-        ease: "linear",
-      }, "<0.25")
     }
 
 
