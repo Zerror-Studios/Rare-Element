@@ -105,6 +105,15 @@ const About = () => {
           <p className='italic thin'>“ Nahara was born from the idea that beauty should be honest and thoughtful. We create slowly, with intention, allowing every design to carry a story. What you see here is more than a brand it’s a journey shaped with clarity, purpose, and heart.”</p>
         </div>
       </div>
+      <div className=" abt_mob_txt_2">
+        <div className="marq_img_6">
+          <img className='cover' src="https://plus.unsplash.com/premium_photo-1681276169939-5ad54d5de5fd?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="loading" />
+        </div>
+        <p className='  text-base bold uppercase '>Quiet Craftsmanship</p>
+        <div className=" text-base">
+          <p className='italic thin'>“ Blending inventive design with next-gen craftsmanship, our jewellery celebrates a new wave of elegance: fun, fearless silhouettes paired with the kind of delicate finishing that makes each piece feel truly special. “</p>
+        </div>
+      </div>
 
         <ScrollVelocityThree />
 

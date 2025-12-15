@@ -9,6 +9,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import { useGSAP } from "@gsap/react";
 import GreenBoxBtn from "../buttons/GreenBoxBtn";
+import Image from "next/image";
 gsap.registerPlugin(ScrollTrigger)
 
 const LookBook = ({ data }) => {
@@ -174,7 +175,10 @@ const LookBook = ({ data }) => {
                         {data.map((item) => (
                             <SwiperSlide key={item?._id}>
                                 <div className="lookbookSlider_card_image_left">
-                                    <img className="cover" src={item?.assets?.[1]?.path || ""} alt={item?.assets?.[1]?.altText || ""} />
+                                    <Image
+                                        fill
+                                        quality={50}
+                                        className="cover" src={item?.assets?.[1]?.path || ""} alt={item?.assets?.[1]?.altText || ""} />
                                 </div>
                             </SwiperSlide>
                         ))}
@@ -204,7 +208,8 @@ const LookBook = ({ data }) => {
                                 <SwiperSlide key={item?._id} className="lookbookSlider_card">
                                     <div className="lookbookSlider_card">
                                         <div className="lookbookSlider_card_image">
-                                            <img className="cover" src={item?.assets?.[1]?.path || ""} alt={item?.assets?.[1]?.altText || ""} />
+                                            <Image width={600}
+                                                height={800} className="cover" src={item?.assets?.[1]?.path || ""} alt={item?.assets?.[1]?.altText || ""} />
                                         </div>
                                         <p className="lookbookSlider_card_description uppercase text-xl">
                                             {item?.name || ""}

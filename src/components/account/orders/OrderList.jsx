@@ -4,6 +4,7 @@ import { useQuery } from "@apollo/client/react";
 import { useAuthStore } from "@/store/auth-store";
 import { ORDER_LIST } from "@/graphql";
 import { formatDateTime, formatePrice } from "@/utils/Util";
+import Image from "next/image";
 
 const OrderList = () => {
   const LIMIT = 100;
@@ -40,7 +41,9 @@ const OrderList = () => {
                 return (
                   <>
                     <div key={`order-product-${cartIndex}`} className="purchases_itemBox">
-                      <img
+                      <Image
+                        width={150}
+                        height={200}
                         className="purchases_itemImg"
                         src={cartItem?.asset?.path || ""}
                         alt={cartItem?.asset?.altText || ""}

@@ -173,6 +173,7 @@
   }
   .abt_img_galry,
   .abt_mob_txt,
+  .abt_mob_txt_2,
   .mobile_sticker_1 {
     display: none;
   }
@@ -225,9 +226,23 @@
     aspect-ratio: 4/2;
     position: relative;
   }
+  .marq_img_6 {
+  width: 50vw;
+}
 
   .abt_mob_txt {
-    padding: 8rem 1rem;
+    padding: 5rem 1rem;
+    padding-bottom: 3rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    gap: 4rem;
+    justify-content: center;
+    align-items: center;
+  }
+  .abt_mob_txt_2 {
+    padding: 2rem 1rem;
     padding-bottom: 3rem;
     width: 100%;
     display: flex;

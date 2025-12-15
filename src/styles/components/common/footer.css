@@ -102,7 +102,7 @@
 @media (min-width: 750px) {
   .footer_classname_about {
     grid-column: span 1;
-    width: 50%;
+    width: 70%;
     line-height: 1rem;
   }
   .footer_classname_about p {

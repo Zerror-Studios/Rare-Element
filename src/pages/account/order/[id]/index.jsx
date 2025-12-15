@@ -7,6 +7,7 @@ import AccountBreadcrumb from '@/components/account/AccountBreadcrumb';
 import { useQuery } from '@apollo/client/react';
 import { GET_ORDER_BY_ID } from '@/graphql';
 import { formatDateTime, formatePrice, renderVariants } from '@/utils/Util';
+import Image from 'next/image';
 
 const OrderDetail = ({ meta }) => {
   const { id } = useParams();
@@ -99,7 +100,9 @@ const OrderDetail = ({ meta }) => {
                     <div className="cartBag_bagItemInner">
                       <div className="cartBag_bagImageWrapper">
                         <Link key={item?.product?._id} href={`/products/${item?.product?.slug}`} className='cartBag_bagImage'>
-                          <img
+                          <Image
+                            width={150}
+                            height={200}
                             className="cartBag_bagImage"
                             src={item?.asset?.path || ""}
                             alt={item?.asset?.altText || ""}

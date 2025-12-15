@@ -3,6 +3,7 @@ import Link from 'next/link';
 // import { RiDeleteBinLine } from '@remixicon/react'
 import { formatePrice, renderVariants } from '@/utils/Util';
 import { RiDeleteBinLine } from '@remixicon/react';
+import Image from 'next/image';
 
 const OrderItems = ({ data }) => {
   return (
@@ -15,7 +16,9 @@ const OrderItems = ({ data }) => {
             return (
               <div key={index} className="checkout_item">
                 <Link scroll={false} href={`/products/${item?.product?.slug}`} className="checkout_imgWrapper">
-                  <img
+                  <Image
+                    width={150}
+                    height={200}
                     className="checkout_productImg"
                     src={item?.asset?.path || ""}
                     alt={item?.asset?.altText || ""}
