@@ -128,7 +128,7 @@ const MobileHeader = ({ openCart }) => {
         <div className="mobile_menu_header">
           {isLoggedIn ? (
             <div className="login_header">
-              <Link scroll={false} href={isLoggedIn ? "/account/settings" : "/login"}>
+              <Link scroll={false} onClick={() => closeMenu()} href={isLoggedIn ? "/account/settings" : "/login"}>
                 <img className='short_links_icon' src="/icons/profile.svg" alt="loading" />
               </Link>
               <h2 className='text-xl'>Welcome Sunny</h2>
@@ -183,7 +183,7 @@ const MobileHeader = ({ openCart }) => {
               <div key={index} className="">
                 <p className='text-base menu_footer_title uppercase underline'>{item?.title}</p>
                 {footer_links[index]?.links?.map((item, index) => (
-                  <Link scroll={false} key={index} href={`${item?.href}`}>
+                  <Link scroll={false} key={index} href={`${item?.href}`} onClick={() => closeMenu()}>
                     <p className='text-sm menu_footer_title_inner'>{item?.label}</p>
                   </Link>
                 ))}
