@@ -12,6 +12,7 @@ const SeoHeader = ({ meta }) => {
   return (
     <Head>
       <title>{meta?.title ?? ""}</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
       <meta name="description" content={meta?.description ?? ""} />
       <meta name="keywords" content={meta?.keywords ?? ""} />
       <meta name="author" content={meta?.author ?? Const.Brand} />
@@ -50,8 +51,8 @@ const SeoHeader = ({ meta }) => {
       <meta name="twitter:site" content={"@nahara"} />
       <meta name="twitter:image" content={meta?.twitter?.image ?? ""} />
       <meta name="twitter:creator" content={"@nahara"} />
-      <meta charset="UTF-8" />
-      <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+      <meta charSet="UTF-8" />
+      <meta httpEquiv="Content-Type" content="text/html;charset=UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
       <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
@@ -59,7 +60,7 @@ const SeoHeader = ({ meta }) => {
       <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" />
       <link
         rel="alternate"
-        hreflang="en-in"
+        hrefLang="en-in"
         href={meta?.canonical ?? canonical}
       />
       <WebPageSchema
