@@ -15,6 +15,7 @@ import Delivery from "@/components/checkout/Delivery";
 import BillingAddress from "@/components/checkout/BillingAddress";
 import OrderSummary from "@/components/checkout/OrderSummary";
 import Loader from "@/components/checkout/Loader";
+import Link from "next/link";
 
 
 const CheckoutPage = ({ meta }) => {
@@ -50,15 +51,15 @@ const CheckoutPage = ({ meta }) => {
     resolver: zodResolver(CheckoutSchema),
     defaultValues: {
       shippingAddress: {
-        addressType: "HOME",
+        addressType: "",
         countryCode: "+91",
-        country: "India",
+        country: "",
         primary: true,
       },
       billingAddress: {
-        addressType: "HOME",
+        addressType: "",
         countryCode: "+91",
-        country: "India",
+        country: "",
         primary: false,
       },
       emailSubscribedStatus: EmailSubscribedStatus.SUBSCRIBED,
@@ -199,6 +200,20 @@ const CheckoutPage = ({ meta }) => {
                 control={control}
                 errors={errors}
               />
+              <label className="checkbox-container">
+                <input type="checkbox" className="checkbox-input" />
+                <span className="custom-checkbox" />
+                <p>
+                  By continuing, I confirm that I have read and accept the{" "}
+                  <Link href="/terms-of-service" className="text_decoration_underline ">
+                    Terms and Conditions
+                  </Link>{" "}
+                  and the{" "}
+                  <Link href="/privacy-policy" className="text_decoration_underline ">
+                    Privacy Policy
+                  </Link>
+                </p>
+              </label>
             </div>
             <OrderSummary data={cartData} loading={isLoading} refetch={refetch} />
           </form>
@@ -213,6 +228,19 @@ export default CheckoutPage;
 
 
 export async function getServerSideProps({ params }) {
+  const { id } = params;
+
+  const isValidMongoId = /^[a-f\d]{24}$/i.test(id);
+
+  if (!isValidMongoId) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
   const meta = {
     title: "Checkout – Complete Your Nahara Jewellery Purchase",
     description: "Secure checkout for purchasing fine jewellery from Nahara. Fast delivery, trusted payments.",
@@ -233,6 +261,7 @@ export async function getServerSideProps({ params }) {
 
   return {
     props: {
+      id,
       meta: meta,
     },
   };

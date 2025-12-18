@@ -22,19 +22,19 @@ const ProductContant = ({
   const [accordionIndex, setAccordionIndex] = useState(null);
 
   // Initialize default variants and color
-  useEffect(() => {
-    if (!data?.productOptions?.length) return;
-    const defaults = {};
-    data.productOptions.forEach((option) => {
-      if (option.choices?.length) {
-        defaults[option.optionName] = option.choices[0].name;
-      }
-    });
+  // useEffect(() => {
+  //   if (!data?.productOptions?.length) return;
+  //   const defaults = {};
+  //   data.productOptions.forEach((option) => {
+  //     if (option.choices?.length) {
+  //       defaults[option.optionName] = option.choices[0].name;
+  //     }
+  //   });
 
-    setSelectedVariants(defaults);
-    setCartBtn(Object.keys(defaults).length === data.productOptions.length);
-    updatePriceBasedOnVariant(defaults);
-  }, [data]);
+  //   setSelectedVariants(defaults);
+  //   setCartBtn(Object.keys(defaults).length === data.productOptions.length);
+  //   updatePriceBasedOnVariant(defaults);
+  // }, [data]);
 
   const toggleDropdown = (type) => {
     setOpenDropdown((prev) => (prev === type ? null : type));
@@ -68,6 +68,12 @@ const ProductContant = ({
     setSelectedVariants(updated);
     setCartBtn(Object.keys(updated).length === data.productOptions?.length);
     updatePriceBasedOnVariant(updated);
+    setOpenDropdown(null);
+  };
+
+  const clearVariants = () => {
+    setSelectedVariants({});
+    setCartBtn(false);
   };
 
   if (!data) return null;
@@ -88,9 +94,16 @@ const ProductContant = ({
           </div>
         </div>
         <div className="productDetail_options">
+          <div className="clear_variatns_btn">
+            <button type="button" onClick={clearVariants} className="">
+              <p className="uppercase text-xs">
+                Clear Options
+              </p>
+            </button>
+          </div>
           <div className="productDetail_row">
             {data?.productOptions?.map((item, index) => {
-              const selectOption = selectedVariants[item?.optionName];
+              const selectOption = selectedVariants[item?.optionName] || item?.optionName;
               return (
                 <div
                   key={`option-select-${index}`}
@@ -179,7 +192,7 @@ const ProductContant = ({
           )}
           <GreenBoxBtn
             loading={loading}
-            title={loading ? "Loading..." : !cartBtn ? "Select a Size" : isOutOfStock ? StockStatus.OUT_OF_STOCK : "Add To Cart"}
+            title={loading ? "Loading..." : !cartBtn ? "Select Options" : isOutOfStock ? StockStatus.OUT_OF_STOCK : "Add To Cart"}
             onClick={handleAddToCart}
           />
           <div className="productDetail_btn_icon center">

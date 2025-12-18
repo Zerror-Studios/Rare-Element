@@ -28,7 +28,7 @@ const ProductImageGrid = ({ data }) => {
     <div className="productDetail_left">
       <div className="MobileImageSlider_container">
         {/* Thumbnails */}
-        <div className="MobileImageSlider_thumbnails">
+        <div data-lenis-prevent className="MobileImageSlider_thumbnails scroller_none">
           {data?.map((item, index) => (
             <div
               key={index}

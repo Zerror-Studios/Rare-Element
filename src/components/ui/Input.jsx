@@ -1,29 +1,45 @@
-import React from "react";
+import React, { forwardRef } from "react";
 
-const Input = ({
-  type = "text",
-  label = "",
-  placeholder = "",
-  className = "",
-  error,
-  isRequired = false,
-  ...rest
-}) => {
-  return (
-    <div className="w-full text-base">
-      {label && (<p className='text-sm'>{label}{isRequired && (<span> * </span>)}</p>)}
-      <input
-        autoCorrect="off"
-        autoCapitalize="off"
-        spellCheck={false}
-        type={type}
-        placeholder={placeholder}
-        className={`checkOut_input ${className}`}
-        {...rest}
-      />
-      {error && (<p className="input_error_msg text-xs">{error?.message || ""}</p>)}
-    </div>
-  );
-};
+const Input = forwardRef(
+  (
+    {
+      type = "text",
+      label = "",
+      placeholder = "",
+      className = "",
+      error,
+      isRequired = false,
+      ...rest
+    },
+    ref
+  ) => {
+    return (
+      <div className="w-full text-base">
+        {label && (
+          <p className="text-sm">
+            {label}
+            {isRequired && <span> * </span>}
+          </p>
+        )}
+
+        <input
+          ref={ref}                    // ✅ forwarded here
+          type={type}
+          placeholder={placeholder}
+          className={`checkOut_input ${className}`}
+          {...rest}
+        />
+
+        {error && (
+          <p className="input_error_msg text-xs">
+            {error?.message || ""}
+          </p>
+        )}
+      </div>
+    );
+  }
+);
+
+Input.displayName = "Input";
 
 export default Input;

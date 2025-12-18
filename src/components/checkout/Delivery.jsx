@@ -135,7 +135,7 @@ const Delivery = ({ errors, control, register, setValue }) => {
               </div>
               <div className="relative checkOut_input_pren">
                 <RiArrowDownSLine size={12} className="select_arrow" />
-                <select className="checkOut_input" {...register("shippingAddress.addressType")}>
+                <select required className="checkOut_input" {...register("shippingAddress.addressType")}>
                   <option value="" disabled hidden className="placeholderOption">Address Type</option>
                   {addressType?.map((item, index) => (
                     <option value={item?.value || ""} key={`addr-${index}`}>

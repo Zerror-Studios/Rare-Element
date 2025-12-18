@@ -13,7 +13,7 @@ import { AuthCookies } from "@/utils/AuthCookies";
 import { useVisitor } from "@/hooks/useVisitor";
 import { formatePrice } from '@/utils/Util';
 
-const couponSchema = z.object({ couponCode: z.string().min(1, "Current password is required").optional() });
+const couponSchema = z.object({ couponCode: z.string().min(1, "Enter Valid Coupon").optional() });
 const OrderSummary = ({ data, loading, refetch }) => {
   const {
     totalprice = 0,

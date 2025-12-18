@@ -99,6 +99,7 @@ const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
   };
 
   const navigateCheckout = async () => {
+    if (count <= 0) return;
     try {
       setIsBtnLoading(true);
       await router.push(`/checkout/${_id}`);
@@ -215,6 +216,9 @@ const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
             title={"Proceed to Checkout"}
             onClick={navigateCheckout}
             loading={isBtnLoading}
+            style={{
+              cursor: count === 0 ? "not-allowed" : "pointer",
+            }}
           />
           <p className="text-base  crt_btn_txt"> Free shipping on orders above ₹3,000, with easy returns and fast support—always.</p>
         </div>

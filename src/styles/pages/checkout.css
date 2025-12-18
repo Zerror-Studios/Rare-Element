@@ -59,8 +59,8 @@
   gap: 1rem;
   margin-bottom: 4rem;
 }
-.checkout_user_details:last-child {
-  margin-bottom: 0 !important;
+.checkout_user_details:nth-last-child(2) {
+  margin-bottom: 2rem !important;
 }
 .check_box_div {
   cursor: pointer;
@@ -95,6 +95,7 @@
 
 /* Custom checkbox box */
 .custom-checkbox {
+  flex-shrink: 0;
   width: 1rem;
   height: 1rem;
   display: flex;
@@ -119,6 +120,22 @@
   border-width: 0 1px 1px 0;
   transform: rotate(45deg);
 }
+
+
+.checkbox-container p {
+  opacity: 0.5;
+  transition: opacity 0.25s ease;
+}
+
+.checkbox-input:checked ~ p {
+  opacity: 1;
+}
+
+.checkbox-input:disabled ~ p {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
 
 .shipping_addres_paren {
   height: 0;
@@ -450,6 +467,7 @@
 }
 
 .coupon_div {
+  margin-bottom: 2rem;
   display: flex;
   gap: 0.5rem;
 }
@@ -465,7 +483,6 @@
   height: 3.5rem;
   width: 70%;
   padding-left: 1rem;
-  margin-bottom: 2rem;
 }
 @media (min-width: 1020px) {
   .checkout_couponInput:hover {

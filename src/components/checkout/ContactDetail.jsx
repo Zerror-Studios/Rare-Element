@@ -1,9 +1,9 @@
 import React from 'react'
 import Link from 'next/link'
 import Input from '@/components/ui/Input'
-import { RiCheckLine } from '@remixicon/react'
 import { useAuthStore } from "@/store/auth-store";
 import { EmailSubscribedStatus } from "@/utils/Constant";
+import Checkbox from '../ui/Checkbox';
 
 const ContactDetail = ({ register, setValue, watch, errors }) => {
     const { isLoggedIn } = useAuthStore((state) => state);
@@ -25,30 +25,21 @@ const ContactDetail = ({ register, setValue, watch, errors }) => {
                     type="email"
                     placeholder="Email"
                     error={errors?.email}
-                    {...register("email", { required: "Email is required" })}
+                    {...register("email")}
                 />
-                <div onClick={() => {
-                    setValue(
-                        "emailSubscribedStatus",
-                        !isSubscribed
-                            ? EmailSubscribedStatus.SUBSCRIBED
-                            : EmailSubscribedStatus.UNSUBSCRIBED
-                    )
-                }} className="cards_inner_content">
-                    <div className={`check_box_div center ${isSubscribed ? "check_box_div_active" : ""} `}>
-                        {isSubscribed && <RiCheckLine size={14} />}
-                    </div>
-                    <p>Email me with news and offers</p>
-                </div>
-
-                {/* <div className=" text-base">
-                                        <p>{user.email}</p>
-                                        <p>{user.phone}</p>
-                                        <p>{user.name}</p>
-                                        <p>{user.dob}</p>
-                                    </div> */}
-
-                {/* <div className="checkout_thin_line"></div> */}
+                <Checkbox
+                    label="Email me with news and offers"
+                    checked={isSubscribed}
+                    onChange={(e) =>
+                        setValue(
+                            "emailSubscribedStatus",
+                            e.target.checked
+                                ? EmailSubscribedStatus.SUBSCRIBED
+                                : EmailSubscribedStatus.UNSUBSCRIBED,
+                            { shouldDirty: true } // important for RHF
+                        )
+                    }
+                />
             </div>
         </>
     )

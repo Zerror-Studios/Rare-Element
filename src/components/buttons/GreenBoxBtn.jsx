@@ -2,7 +2,7 @@ import React from "react";
 import { useRouter } from "next/router";
 import Loader from "../checkout/Loader";
 
-const GreenBoxBtn = ({ title, href, onClick, loading = false, type = "submit" }) => {
+const GreenBoxBtn = ({ title, href, onClick, loading = false, type = "submit", ...props }) => {
     const router = useRouter();
 
     const handleClick = () => {
@@ -15,6 +15,7 @@ const GreenBoxBtn = ({ title, href, onClick, loading = false, type = "submit" })
     return (
         <button className="green_box_btn" type={type}
             onClick={handleClick}
+            {...props}
             disabled={loading}>
             {loading ? (
                 <div className="spinner_loader"></div>

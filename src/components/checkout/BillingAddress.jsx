@@ -23,7 +23,7 @@ const BillingAddress = ({ errors, control, register, setValue }) => {
         ...rest,
         phone: phone || "",
         countryCode: countryCode || "",
-        addressType: addressType || "HOME",
+        addressType: addressType || "",
       });
     }
   }, [useShippingAsBilling, shippingAddress, setValue]);
@@ -110,7 +110,7 @@ const BillingAddress = ({ errors, control, register, setValue }) => {
                 disabled={useShippingAsBilling}
                 {...register("billingAddress.addressType")}
               >
-                <option value="" disabled hidden className="placeholderOption">Address Type</option>
+                <option value="" disabled hidden  className="placeholderOption">Address Type</option>
                 {addressType?.map((item, index) => (
                   <option value={item?.value || ""} key={`addr-${index}`}>{item?.label || ""}</option>
                 ))}
@@ -190,7 +190,6 @@ const BillingAddress = ({ errors, control, register, setValue }) => {
             placeholder="Apartment, Suite, etc"
             {...register("billingAddress.addressline2")}
           />
-
         </div>
       </div>
     </>

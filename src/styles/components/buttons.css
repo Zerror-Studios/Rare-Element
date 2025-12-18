@@ -44,6 +44,7 @@
 }
 
 .green_box_btn p {
+  cursor: inherit;
   transform: translateY(0.1rem);
 }
 
