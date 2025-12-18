@@ -576,14 +576,14 @@
   height: 100vh;
   flex-direction: column;
   width: 100%;
-  gap: 1rem;
+  gap: 2rem;
   display: flex;
   text-align: center;
   align-items: center;
   justify-content: center;
 }
 .status_section img {
-  width: 6rem;
+  width: 20rem;
 }
 .status_section p {
   width: 90%;
