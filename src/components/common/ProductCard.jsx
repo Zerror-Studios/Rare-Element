@@ -2,7 +2,6 @@ import Image from "next/image";
 import React from "react";
 
 const ProductCard = ({ name, ribbon, price, assets }) => {
-    console.log(ribbon);
     return (
         <div className="shopCard_card">
             {ribbon?.name && (

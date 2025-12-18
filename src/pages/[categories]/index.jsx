@@ -7,9 +7,9 @@ import { GET_CLIENT_SIDE_CATEGORY_BY_SLUG } from '@/graphql'
 import { createApolloClient } from '@/lib/apolloClient'
 import { getProductPriceLabel } from '@/utils/Util'
 import { StatusCode } from '@/utils/Constant'
+import Image from 'next/image'
 
 const Categories = ({ meta, data, productList }) => {
-  console.log(productList);
 
   useEffect(() => {
     var height
@@ -42,7 +42,7 @@ const Categories = ({ meta, data, productList }) => {
     <>
       <SeoHeader meta={meta} />
       <div className="products_hero-section ">
-        <img className='products_hero-img' src={data?.imgsrc || "/images/productpage/heroImg.png"} alt={data?.name || ""} />
+        <Image fill  className='products_hero-img' src={data?.imgsrc} alt={data?.name || ""} />
         <div className="products_content padding">
           <h2 className='text-3xl '>{data?.name || ""}</h2>
           <p className='text-xl thin'>
