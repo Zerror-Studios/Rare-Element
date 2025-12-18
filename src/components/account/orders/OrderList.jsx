@@ -1,10 +1,10 @@
 import React, { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useQuery } from "@apollo/client/react";
 import { useAuthStore } from "@/store/auth-store";
 import { ORDER_LIST } from "@/graphql";
 import { formatDateTime, formatePrice } from "@/utils/Util";
-import Image from "next/image";
 
 const OrderList = () => {
   const LIMIT = 100;

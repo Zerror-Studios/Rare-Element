@@ -49,10 +49,9 @@ const Login = ({ setToggle }) => {
       } else {
         toast.error("Invalid login credentials.");
       }
-    } catch (error) {
-      console.error("Login error:", err);
-      const gqlMessage = err?.graphQLErrors?.[0]?.message;
-      toast.error(gqlMessage || err.message || "Login failed");
+    } catch (err) {
+      // console.error("Login error:", err);
+      toast.error("Invalid login credentials.");
     }
   };
 

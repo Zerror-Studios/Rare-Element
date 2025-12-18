@@ -1,7 +1,8 @@
 import React from 'react';
 import SeoHeader from '@/components/seo/SeoHeader';
 import AccountLayout from '@/components/layouts/AccountLayout';
-import OrderList from '@/components/account/orders/OrderList';
+import dynamic from 'next/dynamic';
+const OrderList = dynamic(() => import('@/components/account/orders/OrderList'), { ssr: false });
 
 const Account = ({ meta }) => {
   return (

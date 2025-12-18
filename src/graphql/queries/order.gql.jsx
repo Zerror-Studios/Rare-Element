@@ -26,8 +26,6 @@ export const ORDER_LIST = gql`
           type
           isFeatured
           altText
-          createdAt
-          updatedAt
         }
         qty
         freeQty
