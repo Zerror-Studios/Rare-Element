@@ -7,9 +7,9 @@ const EmailPreference = () => {
 
   useLayoutEffect(() => {
     if (isEdit) {
-      gsap.to(".subscription_form_paren", { height: "auto", paddingTop: "2rem", duration: 0.5, ease: "power2.out" })
+      gsap.to(".subscription_form_paren", { height: "auto", duration: 0.5, ease: "power2.out" })
     } else {
-      gsap.to(".subscription_form_paren", { height: "0vh", paddingTop: 0, duration: 0.5, ease: "power2.out" })
+      gsap.to(".subscription_form_paren", { height: "0vh",  duration: 0.5, ease: "power2.out" })
     }
   }, [isEdit])
 
@@ -68,13 +68,16 @@ const EmailPreference = () => {
             </div>
           </div>
 
-          <GreenBoxBtn title='Save' />
+          <div className="settings_btn">
 
-          <button onClick={() => setIsEdit(false)} className='cancel_form_btn'>
-            <p>
-              Cancel
-            </p>
-          </button>
+            <GreenBoxBtn title='Save' />
+
+            <button onClick={() => setIsEdit(false)} className='cancel_form_btn'>
+              <p>
+                Cancel
+              </p>
+            </button>
+          </div>
         </div>
       </div>
     </>

@@ -32,23 +32,22 @@ const ProductCard = ({ name, ribbon, price, assets }) => {
             </div>
 
             {/* Hover Image */}
-            <Image
-                className="shopCard_hoverImg"
-                src={assets?.[1]?.path || "/placeholder.png"}
-                alt={assets?.[1]?.altText || ""}
-                width={450}
-                height={600}
-                loading="lazy"
-                quality={75}
-            />
+            <div className="shopCard_hoverImg">
+                <Image
+                    src={assets?.[1]?.path || "/green_logo.svg"}
+                    alt={assets?.[1]?.altText || "loading"}
+                    fill
+                    loading="lazy"
+                    quality={75}
+                />
+            </div>
 
             {/* Main Image */}
             <div className="shopCard_img_wrapper center">
                 <Image
-                    src={assets?.[0]?.path || "/placeholder.png"}
-                    alt={assets?.[0]?.altText || ""}
-                    width={450}
-                    height={600}
+                    src={assets?.[0]?.path || "/green_logo.svg"}
+                    alt={assets?.[0]?.altText || "loading"}
+                    fill
                     loading="lazy"
                     quality={75}
                 />

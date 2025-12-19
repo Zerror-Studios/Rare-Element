@@ -57,7 +57,7 @@ const SocialReels = () => {
               <span className=" text-4xl thin">{item.titleSpan}</span>{" "}
               {item.title}
             </h2>
-            <p className="socialCard_description thin text-lg">
+            <p className="socialCard_description thin text-base">
               {item.description}
             </p>
           </div>

@@ -58,7 +58,6 @@ const AddressBlock = () => {
 
     gsap.to(formRef.current, {
       height: isOpen !== null ? "auto" : 0,
-      paddingTop: isOpen !== null ? "2rem" : 0,
       duration: 0.5,
       ease: "power2.out",
     });
@@ -167,44 +166,119 @@ const AddressBlock = () => {
         {/* Form */}
         <div ref={formRef} className="address_form_paren overflow-hidden h-0">
           <form onSubmit={handleSubmit(onSubmit)}>
-            {/* FIRST NAME */}
-            <div className="inp_paren">
-              <Input
-                label="First Name"
-                isRequired
-                error={errors.firstname}
-                {...register("firstname")}
-              />
-            </div>
+            <div className="settings_inp_flex">
 
-            {/* LAST NAME */}
-            <div className="inp_paren">
-              <Input
-                label="Last Name"
-                isRequired
-                error={errors.lastname}
-                {...register("lastname")}
-              />
-            </div>
-
-            {/* PHONE */}
-            <div className="inp_paren">
-              <p className="text-sm">Contact <span>*</span></p>
-              <div className="settings_input">
-                <PhoneInput
-                  defaultCountry="in"
-                  inputClassName="delivery__input__phone"
-                  onChange={(value, meta) => {
-                    const countryCode = `+${meta.country.dialCode}`;
-                    const number = value.replace(countryCode, "").trim();
-
-                    setValue("countryCode", countryCode, { shouldValidate: true });
-                    setValue("phone", number, { shouldValidate: true });
-                  }}
+              {/* FIRST NAME */}
+              <div className="inp_paren">
+                <Input
+                  label="First Name"
+                  isRequired
+                  error={errors.firstname}
+                  {...register("firstname")}
                 />
+              </div>
 
-                <Input type="hidden" {...register("countryCode")} />
-                <Input type="hidden" error={errors.phone} {...register("phone")} />
+              {/* LAST NAME */}
+              <div className="inp_paren">
+                <Input
+                  label="Last Name"
+                  isRequired
+                  error={errors.lastname}
+                  {...register("lastname")}
+                />
+              </div>
+            </div>
+
+            <div className="settings_inp_flex">
+              {/* COUNTRY */}
+              <div className="inp_paren">
+                <p className="text-sm some_margin">Country <span>*</span></p>
+                <select className="checkOut_input" {...register("country")}>
+                  {countriesData.map((c, i) => (
+                    <option key={i} value={c.name}>{c.name}</option>
+                  ))}
+                </select>
+                {errors.country && (
+                  <p className="input_error_msg">{errors.country.message}</p>
+                )}
+              </div>
+
+              {/* PHONE */}
+              <div className="inp_paren">
+                <p className="text-sm">Contact <span>*</span></p>
+                <div className="settings_input">
+                  <PhoneInput
+                    defaultCountry="in"
+                    className="delivery__phone_btn"
+                    inputClassName="delivery__input__phone"
+                    enableSearch={true}   // allows searching countries
+                    inputStyle={{ width: "100%" }} // full width like other inputs
+                    buttonStyle={{ border: "none" }} // clean flag dropdown
+                    placeholder="Enter phone number"
+                    onChange={(value, meta) => {
+                      const countryCode = `+${meta.country.dialCode}`;
+                      const number = value.replace(countryCode, "").trim();
+
+                      setValue("countryCode", countryCode, { shouldValidate: true });
+                      setValue("phone", number, { shouldValidate: true });
+                    }}
+                  />
+
+                  <Input type="hidden" {...register("countryCode")} />
+                  <Input type="hidden" error={errors.phone} {...register("phone")} />
+                </div>
+              </div>
+            </div>
+
+            <div className="settings_inp_flex">
+
+              {/* PINCODE */}
+              <div className="inp_paren">
+                <Input
+                  label="Area Pincode"
+                  type="number"
+                  isRequired
+                  error={errors.pincode}
+                  {...register("pincode")}
+                />
+              </div>
+
+              {/* ADDRESS TYPE */}
+              <div className="inp_paren">
+                <p className="text-sm some_margin">Address Type <span>*</span></p>
+                <select className="checkOut_input" {...register("addressType")}>
+                  {addressType.map((t, index) => (
+                    <option key={index} value={t.value}>
+                      {t.label}
+                    </option>
+                  ))}
+                </select>
+                {errors.addressType && (
+                  <p className="input_error_msg">{errors.addressType.message}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="settings_inp_flex">
+
+              {/* CITY */}
+              <div className="inp_paren">
+                <Input
+                  label="City"
+                  isRequired
+                  error={errors.city}
+                  {...register("city")}
+                />
+              </div>
+
+              {/* STATE */}
+              <div className="inp_paren">
+                <Input
+                  label="State"
+                  isRequired
+                  error={errors.states}
+                  {...register("states")}
+                />
               </div>
             </div>
 
@@ -227,77 +301,24 @@ const AddressBlock = () => {
               />
             </div>
 
-            {/* CITY */}
-            <div className="inp_paren">
-              <Input
-                label="City"
-                isRequired
-                error={errors.city}
-                {...register("city")}
-              />
+
+
+
+            <div className="settings_btn">
+
+              <GreenBoxBtn title="Save" loading={addressLoading} />
+
+              <button
+                type="button"
+                onClick={() => {
+                  setIsOpen(null);
+                  reset();
+                }}
+                className="cancel_form_btn"
+              >
+                Cancel
+              </button>
             </div>
-
-            {/* STATE */}
-            <div className="inp_paren">
-              <Input
-                label="State"
-                isRequired
-                error={errors.states}
-                {...register("states")}
-              />
-            </div>
-
-            {/* COUNTRY */}
-            <div className="inp_paren">
-              <p className="text-sm">Country <span>*</span></p>
-              <select className="checkOut_input" {...register("country")}>
-                {countriesData.map((c, i) => (
-                  <option key={i} value={c.name}>{c.name}</option>
-                ))}
-              </select>
-              {errors.country && (
-                <p className="input_error_msg">{errors.country.message}</p>
-              )}
-            </div>
-
-            {/* PINCODE */}
-            <div className="inp_paren">
-              <Input
-                label="Area Pincode"
-                type="number"
-                isRequired
-                error={errors.pincode}
-                {...register("pincode")}
-              />
-            </div>
-
-            {/* ADDRESS TYPE */}
-            <div className="inp_paren">
-              <p className="text-sm">Address Type <span>*</span></p>
-              <select className="checkOut_input" {...register("addressType")}>
-                {addressType.map((t, index) => (
-                  <option key={index} value={t.value}>
-                    {t.label}
-                  </option>
-                ))}
-              </select>
-              {errors.addressType && (
-                <p className="input_error_msg">{errors.addressType.message}</p>
-              )}
-            </div>
-
-            <GreenBoxBtn title="Save" loading={addressLoading} />
-
-            <button
-              type="button"
-              onClick={() => {
-                setIsOpen(null);
-                reset();
-              }}
-              className="cancel_form_btn"
-            >
-              Cancel
-            </button>
           </form>
         </div>
       </div>

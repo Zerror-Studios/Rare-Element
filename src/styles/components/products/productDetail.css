@@ -69,7 +69,7 @@
 .MobileImageSlider_thumbnail img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .MobileImageSlider_thumbnail--active {
@@ -459,6 +459,17 @@
 .accordion_title {
   color: black !important;
 }
+.accordion_content ol,
+.accordion_content ul {
+  list-style: disc;
+  padding-left: 1.25rem; /* space for bullets */
+}
+
+.accordion_content li {
+  display: list-item;
+  margin-bottom: 0.5rem;
+}
+
 .accordion_content {
   max-height: 0;
   overflow: hidden;

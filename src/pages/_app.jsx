@@ -24,6 +24,7 @@ export default function App({ Component, pageProps }) {
     }, 500);
     return () => clearTimeout(timeout);
   }, [router.asPath]);
+  
 
   return (
     <>

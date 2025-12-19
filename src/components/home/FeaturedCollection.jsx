@@ -21,6 +21,7 @@ const FeaturedCollection = ({ data }) => {
         <Swiper
           slidesPerView={'auto'}
           spaceBetween={0}
+          centeredSlides={true}
           loop={true}
           speed={800}
           navigation={true}

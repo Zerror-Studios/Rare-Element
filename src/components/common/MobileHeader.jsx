@@ -134,26 +134,26 @@ const MobileHeader = ({ openCart }) => {
               <h2 className='text-xl'>Welcome Sunny</h2>
             </div>
           ) : (
-            <Link href={"/login"} onClick={() => closeMenu()}>
+            <Link scroll={false} href={"/login"} onClick={() => closeMenu()}>
               <p className='text-base uppercase '>Login/Signup</p>
             </Link>
           )}
         </div>
 
         <div className="links_paren">
-          <Link href={"/"} className='menu_links_iner' onClick={() => closeMenu()}>
+          <Link scroll={false} href={"/"} className='menu_links_iner' onClick={() => closeMenu()}>
             <h2 className='text-3xl capitalize '>Home</h2>
             <RiArrowRightSLine size={16} />
           </Link>
           <div className="">
-            <Link href={"/rings"} className='menu_links_iner' onClick={() => closeMenu()}>
+            <Link scroll={false} href={"/rings"} className='menu_links_iner' onClick={() => closeMenu()}>
               <h2 className='text-3xl capitalize '>Categories</h2>
               <RiArrowRightSLine size={16} />
             </Link>
             <div data-lenis-prevent className="home_category_paren scroller_none">
               <div className="home_category_inner scroller_none">
                 {MenuData?.map((item, index) => (
-                  <Link  key={index} href={`${item?.link}`} onClick={() => closeMenu()}>
+                  <Link scroll={false}  key={index} href={`${item?.link}`} onClick={() => closeMenu()}>
                     <div className="category_box">
                       <div className="category_box_img_paren">
                         <img src={item?.image} className='category_box_img' alt={item?.title || ""} />
@@ -166,12 +166,12 @@ const MobileHeader = ({ openCart }) => {
             </div>
           </div>
 
-          <Link href={"/about"} className='menu_links_iner' onClick={() => closeMenu()}>
+          <Link scroll={false} href={"/about"} className='menu_links_iner' onClick={() => closeMenu()}>
             <h2 className='text-3xl capitalize '>about</h2>
             <RiArrowRightSLine size={16} />
           </Link>
 
-          <Link href={"/contact"} className='menu_links_iner' onClick={() => closeMenu()}>
+          <Link scroll={false} href={"/contact"} className='menu_links_iner' onClick={() => closeMenu()}>
             <h2 className='text-3xl capitalize '>contact</h2>
             <RiArrowRightSLine size={16} />
           </Link>

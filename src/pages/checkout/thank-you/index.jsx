@@ -2,45 +2,27 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import SeoHeader from "@/components/seo/SeoHeader";
+import GreenBoxBtn from './../../../components/buttons/GreenBoxBtn';
 
 const ThankYou = ({ meta }) => {
-  const router = useRouter();
-  const [time, setTime] = useState(10);
-
-  useEffect(() => {
-    const countdown = setInterval(() => {
-      setTime((prev) => {
-        if (prev <= 1) {
-          clearInterval(countdown);
-          router.push("/");
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(countdown);
-  }, [router]);
 
   return (
     <>
       <SeoHeader meta={meta} />
-      <div className="status_section">
-        <img
-          src="/gifs/success.gif"
-          alt="payment successfull"
-        />
-        <h2 className="uppercase  text-3xl">
-          Thank You <br /> for Your Purchase !
-        </h2>
-        <p className="text-lg">
-          Your payment has been successfully processed. We’re preparing your
-          order and will send you updates soon. Thank you for shopping.
-        </p>
-        <p className="text-lg">
-          <strong>You will be redirected to the home page in  {time}  seconds</strong>
-        </p>
-        <Link href="/" className="text-lg text_decoration_underline">Go Back to home page</Link>
+      <div className="status_section center">
+        <div className="status_section_inner">
+          <div className="status_img_pren center">
+            <img className="cover" src="/gifs/success.gif" alt="" />
+          </div>
+            <h2 className="text-3xl">Payment Successfull</h2>
+            <p className="uppercase">Thank you for your purchase</p>
+            <p></p>
+            <p>Have Question? Contact Us at: </p>
+            <a className="text_decoration_underline" target="_blank" href="https://mail.google.com/mail/u/0/#inbox?compose=GTvVlcSKjgCNjxJKkzZhJktdvrWdssGbJXkRJqFwsZljDKHnPDRLXcrkzLKSLVtRgNBJQQtgTCQjs">contact@nahara.co.in</a>
+            <div className="w-full">
+            <GreenBoxBtn title="Continue Shopping" href="/" />
+            </div>
+        </div>
       </div>
     </>
   );

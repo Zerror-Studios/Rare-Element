@@ -99,7 +99,7 @@ const OrderDetail = ({ meta }) => {
                   <div key={index} className="order_detailsBagItem">
                     <div className="cartBag_bagItemInner">
                       <div className="cartBag_bagImageWrapper">
-                        <Link key={item?.product?._id} href={`/products/${item?.product?.slug}`} className='cartBag_bagImage'>
+                        <Link scroll={false} key={item?.product?._id} href={`/products/${item?.product?.slug}`} className='cartBag_bagImage'>
                           <Image
                             width={150}
                             height={200}

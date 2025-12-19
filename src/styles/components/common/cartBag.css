@@ -9,6 +9,61 @@
   pointer-events: none;
   z-index: 999;
 }
+.add_popup_paren{
+  pointer-events: none;
+  position: fixed;
+  height: 100vh;
+  width: 100%;
+  top: 0%;
+  left: 0%;
+  background-color: rgba(0, 0, 0, 0.167);
+  backdrop-filter: blur(0.1rem);
+  z-index: 99999;
+}
+.add_popup{
+  padding: 1rem;
+  padding-block: 1.5rem;
+  text-align: center;
+  width: 95%;
+  background-color: white;
+}
+.wishlist_item_popup{
+  margin-top: 4rem;
+  width: 100%;
+  display: flex; 
+  gap: 1rem;
+}
+.wishlist_btn {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: start;
+  width: 100%;
+  margin-top: 2rem;
+}
+.cartBag_bagItemDetails.cartBag_bagItemDetails{
+  text-align: start;
+  width: 100%;
+}
+.wishlist_item_popup_img_wrapper{
+  aspect-ratio: 3/4;
+  width: 30%;
+}
+.wishlist_item_popup_detail_wrapper{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: start;
+}
+
+@media (min-width: 750px) {
+ .add_popup{
+    padding: 2rem;
+  padding-block: 3rem;
+  width: 30%;
+}
+}
+
 @media (min-width: 1020px) {
   .header_overlay {
     backdrop-filter: blur(0.3rem);

@@ -65,7 +65,7 @@ const Hero = () => {
         <video className=' home_hero_video cover' loop muted playsInline autoPlay src="/videos/hero_video.mp4"></video>
         <div className="home_hero_inner">
           <h2 className='text-3xl'>World of Nahara</h2>
-          <Link scroll={false} href="/rings">
+          <Link scroll={false} href="/products">
             <WhiteBorderBtn text={"Discover"} />
           </Link>
         </div>

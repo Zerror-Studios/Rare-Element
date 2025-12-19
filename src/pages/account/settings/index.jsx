@@ -7,7 +7,6 @@ const ProfileDetails = dynamic(() => import("@/components/account/settings/Profi
 const AddressBlock = dynamic(() => import("@/components/account/settings/AddressBlock"), { ssr: false });
 const EmailPreference = dynamic(() => import("@/components/account/settings/EmailPreference"), { ssr: false });
 const ChangePassword = dynamic(() => import("@/components/account/settings/ChangePassword"), { ssr: false });
-const Signout = dynamic(() => import("@/components/account/settings/Signout"), { ssr: false });
 
 const Settings = ({ meta }) => {
   return (
@@ -22,7 +21,6 @@ const Settings = ({ meta }) => {
             <AddressBlock />
             <EmailPreference />
             <ChangePassword />
-            <Signout />
           </div>
         </div>
       </AccountLayout>

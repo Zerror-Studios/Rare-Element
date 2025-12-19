@@ -111,6 +111,7 @@ const Footer = () => {
 
             return (
               <Link
+                scroll={false}
                 href={item.href}
                 key={i}
                 onMouseEnter={() => {

@@ -25,7 +25,6 @@ const AccountLayout = ({ children }) => {
           <AccountAside />
         </div>
       )}
-
       {children}
     </div>
   );

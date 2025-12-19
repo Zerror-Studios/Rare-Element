@@ -11,12 +11,16 @@ import GreenBoxBtn from '@/components/buttons/GreenBoxBtn';
 import CartItem from '@/components/cart/CartItem';
 import { RiCloseLine } from "@remixicon/react";
 import { AuthCookies } from "@/utils/AuthCookies";
+import Image from "next/image";
+import Link from "next/link";
+import WishlistPopup from "./WishlistPopup";
 
 const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
   const router = useRouter();
   const token = AuthCookies.get();
   const { visitorId } = useVisitor();
   const { user, isLoggedIn } = useAuthStore((state) => state);
+  const [popupActive, setPopupActive] = useState(false)
 
   const [isBtnLoading, setIsBtnLoading] = useState(false);
 
@@ -171,8 +175,21 @@ const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
     }
   }, [isOpen])
 
+
   return (
     <div className="cartBag_openBagParent">
+
+      {popupActive && (
+        <WishlistPopup
+          item={cart?.[0]}
+          popupActive={popupActive}
+          setPopupActive={setPopupActive}
+          handleAddItem={handleAddItem}
+          handleRemoveItem={handleRemoveItem}
+          onClose={closeCart}
+        />
+      )}
+
       <div className="cartBag_bagHeader">
         <div className="cartBag_bagHeaderLeft">
           <h2 className="cartBag_bagTitle text-2xl">Cart</h2>

@@ -10,7 +10,6 @@ export default function PageTransition({ children, routeKey }) {
   const [displayChildren, setDisplayChildren] = useState(children);
   const overlayRef = useRef(null);
 
-  // --- Trigger fade animation when route changes ---
   useEffect(() => {
     if (!overlayRef.current) return;
     const el = overlayRef.current;
@@ -26,45 +25,33 @@ export default function PageTransition({ children, routeKey }) {
         });
       });
 
-    const fadeOut = () =>
-      new Promise((resolve) => {
-        gsap.to(el, {
-          autoAlpha: 0,
-          duration: 0.5,
-          ease: "ease-secondary",
-          onComplete: resolve,
-        });
-      });
-
-    // Play transition: fade in, switch content, fade out
     fadeIn().then(() => {
+      // 🔥 swap content first
       setDisplayChildren(children);
+
+      // 🔥 THEN reset scroll for new page only
+      requestAnimationFrame(() => {
+        const lenis = window.lenis;
+        if (lenis && typeof lenis.scrollTo === "function") {
+          lenis.scrollTo(0, { immediate: true });
+        } else {
+          window.scrollTo({ top: 0, behavior: "auto" });
+        }
+      });
     });
   }, [routeKey]);
 
-  // --- After children change, fade overlay out ---
   useEffect(() => {
     if (!overlayRef.current) return;
 
-    requestAnimationFrame(() => {
-      const lenis = window.lenis;
-      if (lenis && typeof lenis.scrollTo === "function") {
-        lenis.scrollTo(0, { immediate: true });
-      } else {
-        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-        document.documentElement.scrollTop = 0;
-        document.body.scrollTop = 0;
-      }
-    });
-
-    const el = overlayRef.current;
-    gsap.to(el, {
+    gsap.to(overlayRef.current, {
       autoAlpha: 0,
       duration: 0.5,
       ease: "ease-secondary",
       onComplete: () => ScrollTrigger.refresh(),
     });
   }, [displayChildren]);
+
 
   return (
     <>

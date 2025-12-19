@@ -16,20 +16,18 @@ const AccountAside = () => {
   }
 
   return (
-    <div>
+    <>
       <div className="accountLeftSlide">
 
         <div className="accountLeftSlide_pointsSection text-base">
           <div>
             <h2 className="accountLeftSlide_text15 text-xl uppercase">Welcome {user?.firstName || ""}</h2>
-
-            <p className="accountLeftSlide_text15">
+            <p className="member_id">
               Member ID: {user?._id}
             </p>
-
           </div>
 
-          <div>
+          {/* <div>
             <div className="accountLeftSlide_progressBar">
               <div style={{ width: "40%" }} className="accountLeftSlide_progressBar_inner"></div>
             </div>
@@ -40,7 +38,7 @@ const AccountAside = () => {
             <div className="bar_code_img_paren">
               <img className='bar_code_img' src="/images/Black-barcode-icon.png" alt="loading" />
             </div>
-          </div>
+          </div> */}
         </div>
 
         <div className="accountLeftSlide_nav">
@@ -94,7 +92,7 @@ const AccountAside = () => {
           <GreenBoxBtn title={"Sign Out"} onClick={handleSignout} />
         </div>
       </div>
-    </div>
+    </>
   )
 }
 

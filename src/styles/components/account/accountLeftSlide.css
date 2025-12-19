@@ -18,7 +18,7 @@
 }
 @media (min-width: 1020px) {
   .accountLeftSlide {
-    gap: 5rem;
+    gap: 10rem;
     width: 32rem;
     padding-left: 2.5rem;
     padding-right: 8rem;
@@ -30,6 +30,9 @@
   display: flex;
   flex-direction: column;
   gap: 1.75rem;
+}
+.member_id{
+  margin-top: .75rem;
 }
 
 .accountLeftSlide_progressBar {

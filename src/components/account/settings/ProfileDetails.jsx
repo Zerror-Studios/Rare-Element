@@ -27,9 +27,9 @@ const ProfileDetails = () => {
   const { user, setUser } = useAuthStore((state) => state);
   useLayoutEffect(() => {
     if (isEditable) {
-      gsap.to(".details_form_paren", { height: "auto", paddingTop: "2rem", duration: 0.5, ease: "power2.out" })
+      gsap.to(".details_form_paren", { height: "auto", duration: 0.5, ease: "power2.out" })
     } else {
-      gsap.to(".details_form_paren", { height: "0vh", paddingTop: 0, duration: 0.5, ease: "power2.out" })
+      gsap.to(".details_form_paren", { height: "0vh",duration: 0.5, ease: "power2.out" })
     }
   }, [isEditable])
 
@@ -86,57 +86,64 @@ const ProfileDetails = () => {
         )}
         <div className="details_form_paren">
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="inp_paren">
-              <Input label="First Name" isRequired={true} error={errors.firstName} {...register("firstName")} />
-              {/* <RiCheckLine className='check_icon' /> */}
-            </div>
-            <div className="inp_paren">
-              <Input label="Last Name" isRequired={true} error={errors.lastName} {...register("lastName")} />
-              {/* <RiCheckLine className='check_icon' /> */}
-            </div>
-            <div className="inp_paren">
-              <Input label="Email" isRequired={true} error={errors.email} {...register("email")} />
-              {/* <RiCheckLine className='check_icon' /> */}
-            </div>
-            <div className="inp_paren text-base">
-              <p className='text-sm '>Contact <span>*</span> </p>
-              <div className="settings_input">
-                <PhoneInput
-                  defaultCountry="in"
-                  className="delivery__phone_btn"
-                  inputClassName="delivery__input__phone"
-                  enableSearch={true}   // allows searching countries
-                  inputStyle={{ width: "100%" }} // full width like other inputs
-                  buttonStyle={{ border: "none" }} // clean flag dropdown
-                  placeholder="Enter phone number"
-                  value={`+${user?.countryCode?.replace("+", "") || "91"}${user?.phoneNumber || ""
-                    }`}
-                  onChange={(value, metadata) => {
-                    const countryCode = `+${metadata?.country?.dialCode || 91
-                      }`;
-                    const numberOnly = value
-                      ?.replace(countryCode, "")
-                      .trim();
-
-                    setValue("countryCode", countryCode, {
-                      shouldValidate: true,
-                    });
-                    setValue("phoneNumber", numberOnly, {
-                      shouldValidate: true,
-                    });
-                  }}
-                />
-                <Input type="hidden" error={errors.countryCode} {...register("countryCode")} />
-                <Input type="hidden" error={errors.phoneNumber} {...register("phoneNumber")} />
+            <div className=" settings_inp_flex">
+              <div className="inp_paren">
+                <Input label="First Name" isRequired={true} error={errors.firstName} {...register("firstName")} />
+                {/* <RiCheckLine className='check_icon' /> */}
               </div>
-              {/* <RiCheckLine className='check_icon' /> */}
+              <div className="inp_paren">
+                <Input label="Last Name" isRequired={true} error={errors.lastName} {...register("lastName")} />
+                {/* <RiCheckLine className='check_icon' /> */}
+              </div>
             </div>
-            <GreenBoxBtn title={loading ? "Saving" : "Save"} loading={loading} />
-            <button type='button' onClick={() => setIsEditable(false)} className='cancel_form_btn'>
-              <p>
-                Cancel
-              </p>
-            </button>
+            <div className=" settings_inp_flex">
+
+              <div className="inp_paren">
+                <Input label="Email" isRequired={true} error={errors.email} {...register("email")} />
+                {/* <RiCheckLine className='check_icon' /> */}
+              </div>
+              <div className="inp_paren text-base">
+                <p className='text-sm '>Contact <span>*</span> </p>
+                <div className="settings_input">
+                  <PhoneInput
+                    defaultCountry="in"
+                    className="delivery__phone_btn"
+                    inputClassName="delivery__input__phone"
+                    enableSearch={true}   // allows searching countries
+                    inputStyle={{ width: "100%" }} // full width like other inputs
+                    buttonStyle={{ border: "none" }} // clean flag dropdown
+                    placeholder="Enter phone number"
+                    value={`+${user?.countryCode?.replace("+", "") || "91"}${user?.phoneNumber || ""
+                      }`}
+                    onChange={(value, metadata) => {
+                      const countryCode = `+${metadata?.country?.dialCode || 91
+                        }`;
+                      const numberOnly = value
+                        ?.replace(countryCode, "")
+                        .trim();
+
+                      setValue("countryCode", countryCode, {
+                        shouldValidate: true,
+                      });
+                      setValue("phoneNumber", numberOnly, {
+                        shouldValidate: true,
+                      });
+                    }}
+                  />
+                  <Input type="hidden" error={errors.countryCode} {...register("countryCode")} />
+                  <Input type="hidden" error={errors.phoneNumber} {...register("phoneNumber")} />
+                </div>
+                {/* <RiCheckLine className='check_icon' /> */}
+              </div>
+            </div>
+            <div className="settings_btn">
+              <GreenBoxBtn title={loading ? "Saving" : "Save"} loading={loading} />
+              <button type='button' onClick={() => setIsEditable(false)} className='cancel_form_btn'>
+                <p>
+                  Cancel
+                </p>
+              </button>
+            </div>
           </form>
         </div>
       </div>

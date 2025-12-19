@@ -14,7 +14,7 @@ const ContactDetail = ({ register, setValue, watch, errors }) => {
                 <div className="checkout_user_detailsHeader">
                     <p className="checkout_subHeading text-lg uppercase">Email</p>
                     {!isLoggedIn &&
-                        <Link href="/login">
+                        <Link scroll={false} href="/login">
                             <div className="settings__link">
                                 <p className="underline uppercase text-base">Login</p>
                             </div>

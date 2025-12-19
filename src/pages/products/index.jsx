@@ -3,13 +3,14 @@ import Link from 'next/link'
 import gsap from 'gsap'
 import SeoHeader from '@/components/seo/SeoHeader'
 import ProductCard from '@/components/common/ProductCard'
-import { GET_CLIENT_SIDE_CATEGORY_BY_SLUG } from '@/graphql'
 import { createApolloClient } from '@/lib/apolloClient'
 import { getProductPriceLabel } from '@/utils/Util'
-import { StatusCode } from '@/utils/Constant'
+import { GET_PRODUCTS } from '@/graphql'
+import { ProductStatus } from '@/utils/Constant'
 import Image from 'next/image'
+import ProductsFilterHeader from '@/components/product/ProductsFilterHeader'
 
-const Categories = ({ meta, data, productList }) => {
+const AllProducts = ({ meta, products }) => {
 
   useEffect(() => {
     var height
@@ -42,25 +43,22 @@ const Categories = ({ meta, data, productList }) => {
     <>
       <SeoHeader meta={meta} />
       <div className="products_hero-section ">
-        <Image fill  className='products_hero-img' src={data?.imgsrc} alt={data?.name || ""} />
+        <Image fill className='products_hero-img' src="/images/productpage/products_banner.avif" alt="loading" />
         <div className="products_content padding">
-          <h2 className='text-3xl '>{data?.name || ""}</h2>
+          <h2 className='text-3xl '>Timeless Elegance</h2>
           <p className='uppercase text-base thin'>
-            {data?.description || ""}
+            Discover timeless jewellery crafted with precision, elegance, and the finest materials — designed to elevate every moment.
           </p>
         </div>
       </div>
-      
-      <div className="category_products_header">
-        <p className="products_subtitle thin text-base uppercase">Crafted for Every Moment</p>
-        <h2 className="products_title text-3xl">{data?.name || ""}</h2>
-      </div>
+
+      <ProductsFilterHeader title={"Explore  Products"} desc={"Crafted for Every Moment"} />
 
       <div className="padding">
         <div className="allproducts_paren ">
-        {productList?.length == 0 && <h2 className='text-xl text-center'>No products found</h2>}
+        {products?.length == 0 && <h2 className='text-xl text-center'>No products found</h2>}
 
-          {productList?.map((item) => (
+          {products?.map((item) => (
             <Link key={item?._id} scroll={false} href={`/products/${item?.slug || item?._id}`}>
               <ProductCard
                 key={item?._id}
@@ -77,10 +75,10 @@ const Categories = ({ meta, data, productList }) => {
   )
 }
 
-export default Categories
+export default AllProducts
 
-export async function getServerSideProps({ params }) {
-  const slug = params?.categories || "";
+export async function getServerSideProps() {
+
   const meta = {
     title: "Shop by Category – Fine Jewellery by Nahara",
     description: "Browse jewellery categories including rings, earrings, necklaces, bracelets, and anklets crafted with gold, diamonds, and silver.",
@@ -105,28 +103,28 @@ export async function getServerSideProps({ params }) {
 
   try {
     const client = createApolloClient();
-    const response = await client.query({ query: GET_CLIENT_SIDE_CATEGORY_BY_SLUG, variables: { slug } });
-    const { _id, name, description, imgsrc, slug: categoriesSlug, meta: categoriesMeta, products } = response?.data?.getClientSideCategory;
+    const response = await client.query({
+      query: GET_PRODUCTS,
+      variables: {
+        offset: 0,
+        limit: 10,
+        filters: {
+          status: ProductStatus.PUBLISHED,
+        },
+      },
+    });
     return {
       props: {
-        meta: categoriesMeta || meta,
-        data: { _id, name, description, imgsrc, categoriesSlug } || {},
-        productList: products || [],
+        meta,
+        products: response?.data?.getClientSideProducts?.products || [],
       },
     };
   } catch (error) {
     console.error("Error fetching data:", error.message);
-    const status = error.errors[0].extensions.http.status;
-    if (status === StatusCode.NotFound) {
-      return {
-        notFound: true
-      }
-    };
     return {
       props: {
         meta,
-        data: {},
-        productList: [],
+        products: [],
       },
     };
   }

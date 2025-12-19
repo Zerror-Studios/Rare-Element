@@ -48,9 +48,9 @@ const ChangePassword = () => {
 
   useLayoutEffect(() => {
     if (isEdit) {
-      gsap.to(".password_form_paren", { height: "auto", paddingTop: "2rem", duration: 0.5, ease: "power2.out" })
+      gsap.to(".password_form_paren", { height: "auto",duration: 0.5, ease: "power2.out" })
     } else {
-      gsap.to(".password_form_paren", { height: "0vh", paddingTop: 0, duration: 0.5, ease: "power2.out" })
+      gsap.to(".password_form_paren", { height: "0vh",  duration: 0.5, ease: "power2.out" })
     }
   }, [isEdit])
 
@@ -103,28 +103,33 @@ const ChangePassword = () => {
                 <RiEyeOffLine size={18} className="check_icon" onClick={() => onVisibleChange("currentPassword")} />
               )}
             </div>
-            <div className="inp_paren text-base">
-              <Input type={visible?.newPassword ? "text" : "password"} label="Enter New Password" isRequired={true} error={errors.newPassword} {...register("newPassword")} />
-              {visible?.newPassword ? (
-                <RiEyeLine size={18} className="check_icon" onClick={() => onVisibleChange("newPassword")} />
-              ) : (
-                <RiEyeOffLine size={18} className="check_icon" onClick={() => onVisibleChange("newPassword")} />
-              )}
+            <div className="settings_inp_flex">
+              <div className="inp_paren text-base">
+                <Input type={visible?.newPassword ? "text" : "password"} label="Enter New Password" isRequired={true} error={errors.newPassword} {...register("newPassword")} />
+                {visible?.newPassword ? (
+                  <RiEyeLine size={18} className="check_icon" onClick={() => onVisibleChange("newPassword")} />
+                ) : (
+                  <RiEyeOffLine size={18} className="check_icon" onClick={() => onVisibleChange("newPassword")} />
+                )}
+              </div>
+              <div className="inp_paren text-base">
+                <Input type={visible?.renewPassword ? "text" : "password"} label="Confirm New Password" isRequired={true} error={errors.renewPassword} {...register("renewPassword")} />
+                {visible?.renewPassword ? (
+                  <RiEyeLine size={18} className="check_icon" onClick={() => onVisibleChange("renewPassword")} />
+                ) : (
+                  <RiEyeOffLine size={18} className="check_icon" onClick={() => onVisibleChange("renewPassword")} />
+                )}
+              </div>
             </div>
-            <div className="inp_paren text-base">
-              <Input type={visible?.renewPassword ? "text" : "password"} label="Confirm New Password" isRequired={true} error={errors.renewPassword} {...register("renewPassword")} />
-              {visible?.renewPassword ? (
-                <RiEyeLine size={18} className="check_icon" onClick={() => onVisibleChange("renewPassword")} />
-              ) : (
-                <RiEyeOffLine size={18} className="check_icon" onClick={() => onVisibleChange("renewPassword")} />
-              )}
+            <div className="settings_btn">
+
+              <GreenBoxBtn title="Save" loading={loading} />
+              <button type='button' onClick={() => setIsEdit(false)} className='cancel_form_btn'>
+                <p>
+                  Cancel
+                </p>
+              </button>
             </div>
-            <GreenBoxBtn title="Save" loading={loading} />
-            <button type='button' onClick={() => setIsEdit(false)} className='cancel_form_btn'>
-              <p>
-                Cancel
-              </p>
-            </button>
           </form>
         </div>
       </div>

@@ -6,6 +6,7 @@ import MobileHeader from "@/components/common/MobileHeader";
 import Footer from "@/components/common/Footer";
 import CartDrawer from "@/components/cart/CartDrawer";
 import { usePathname } from "next/navigation";
+import Introloader from "../common/Introloader";
 
 const Layout = ({ children }) => {
   const pathname = usePathname();
@@ -22,7 +23,9 @@ const Layout = ({ children }) => {
 
 
   return (
-    <>
+    <>  
+
+      <Introloader/>
 
       <a href="https://wa.me/910000000000">
         <div className="whatsapp_chat">

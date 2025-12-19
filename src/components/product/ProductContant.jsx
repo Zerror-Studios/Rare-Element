@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import GreenBoxBtn from "@/components/buttons/GreenBoxBtn";
 import { formatePrice, htmlParser } from "@/utils/Util";
@@ -75,7 +75,27 @@ const ProductContant = ({
   const clearVariants = () => {
     setSelectedVariants({});
     setCartBtn(false);
+    setOpenDropdown(null);
   };
+
+  const accordionData = useMemo(() => {
+    if (!data) return [];
+    const descriptionBlock = data.description
+      ? [
+        {
+          title: "Description",
+          description: (data.description),
+        },
+      ]
+      : [];
+    const additionalInfoBlocks =
+      data.additionalInfo?.map((item) => ({
+        ...item,
+        description: (item.description),
+      })) || [];
+
+    return [...descriptionBlock, ...additionalInfoBlocks];
+  }, [data]);
 
   if (!data) return null;
   return (
@@ -144,13 +164,16 @@ const ProductContant = ({
                             setAssetsFilter(choice?.assetsId)
                           }}
                           style={{
-                            opacity: selected ? 1 : 0.7,
+                            opacity: selected ? 1 : 0.5,
                           }}
 
                           className="select_color_paren">
                           {productOption?.optionName === "color" ? (
                             <>
-                              <div className="color_div">
+                              <div
+                                style={{
+                                  borderColor: selected ? "#174d38" : "#a5a5a5",
+                                }} className="color_div">
                                 <div className="color_inner" style={{ backgroundColor: choice?.name }}>
                                 </div>
                               </div>
@@ -160,7 +183,9 @@ const ProductContant = ({
                                 }} className="text-base capitalize">{choice?.name}</p>
                             </>
                           ) : (
-                            <div className=" size_div">
+                            <div style={{
+                              borderColor: selected ? "#174d38" : "#a5a5a5",
+                            }} className=" size_div">
                               <div className=" size_inner center">
                                 <p style={{
                                   textDecoration: selected ? "underline" : "none",
@@ -204,33 +229,39 @@ const ProductContant = ({
             </div>
           </div>
         </div>
-        {data?.additionalInfo?.length > 0 && (
+        {accordionData.length > 0 && (
           <div className="accordion_container">
-            {data?.additionalInfo?.map((item, index) => (
+            {accordionData.map((item, index) => (
               <div className="accordion_item" key={index}>
                 <button
                   className="accordion_header"
                   onClick={() => handleAccordionToggle(index)}
                 >
-                  <p className="text-sm accordion_title uppercase bold">{item?.title || ""}</p>
+                  <p className="text-sm accordion_title uppercase bold">
+                    {item.title}
+                  </p>
 
                   <img
-                    className={`productDetail_quantity_icon ${accordionIndex === index ? "rotated" : ""}`}
+                    className={`productDetail_quantity_icon ${accordionIndex === index ? "rotated" : ""
+                      }`}
                     src="/icons/LongArrowDown.svg"
-                    alt="loading"
+                    alt=""
                   />
                 </button>
 
                 <div
-                  className={`accordion_content ${accordionIndex === index ? "open" : ""}`}
+                  className={`accordion_content ${accordionIndex === index ? "open" : ""
+                    }`}
                 >
-                  <div className="text-base">{htmlParser(item?.description || "")}</div>
+                  <div className="text-base">
+                    {htmlParser(item.description)}
+                  </div>
                 </div>
               </div>
             ))}
-
           </div>
         )}
+
       </div>
 
     </div >

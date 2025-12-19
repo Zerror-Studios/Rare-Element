@@ -17,7 +17,7 @@ const Wishlist = ({ meta }) => {
 
           <div className="wishlist_box">
             {/* {ProductsData?.map((item, idx) => (
-              <Link key={idx} href={`/products/${item.slug}`} className='wishlist_card'>
+              <Link scroll={false} key={idx} href={`/products/${item.slug}`} className='wishlist_card'>
                 <ProductCard item={item} />
               </Link>
             ))} */}
