@@ -38,19 +38,7 @@ export const APPLY_CART_COUPON = gql`
 
 // REMOVE COUPON
 export const REMOVE_CART_COUPON = gql`
-  mutation RemoveCartCoupon(
-    $variantDetail: VariantInput
-    $token: String
-    $guestId: String
-    $productId: String
-    $isCompleteRemove: Boolean
-  ) {
-    removeCartCoupon(
-      variantDetail: $variantDetail
-      token: $token
-      guestId: $guestId
-      productId: $productId
-      isCompleteRemove: $isCompleteRemove
-    )
+  mutation RemoveCartCoupon($token: String, $guestId: String) {
+    removeCartCoupon(token: $token, guestId: $guestId)
   }
 `;
