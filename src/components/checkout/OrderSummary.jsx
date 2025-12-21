@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { useMutation } from "@apollo/client/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { APPLY_CART_COUPON } from "@/graphql";
+import { APPLY_CART_COUPON, REMOVE_CART_COUPON } from "@/graphql";
 import { useAuthStore } from "@/store/auth-store";
 import { AuthCookies } from "@/utils/AuthCookies";
 import { useVisitor } from "@/hooks/useVisitor";
@@ -28,6 +28,7 @@ const OrderSummary = ({ data, loading, refetch }) => {
   const { visitorId } = useVisitor();
   const { isLoggedIn } = useAuthStore((state) => state);
   const [applyCoupon, { loading: applyCouponLoading }] = useMutation(APPLY_CART_COUPON);
+  const [removeCoupon, { loading: removeCouponLoading }] = useMutation(REMOVE_CART_COUPON);
   const {
     register,
     handleSubmit,
@@ -56,33 +57,54 @@ const OrderSummary = ({ data, loading, refetch }) => {
       console.error(err);
       toast.error(err?.message || "Failed to apply coupon");
     } finally {
+      refetch();
+    }
+  };
+
+  const onRemove = async () => {
+    if (loading) return;
+    try {
+      const input = {
+        ...(isLoggedIn && token ? { token } : {}),
+        ...(!isLoggedIn && visitorId ? { guestId: visitorId } : {}),
+      };
+      const { data: response } = await removeCoupon({
+        variables: { ...input },
+      });
+      const data = response?.removeCartCoupon || null;
+      if (data) {
+        toast.success("Coupon Removed successfully!");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error(err?.message || "Failed to remove coupon");
+    } finally {
       reset();
       refetch();
     }
   };
+
   return (
     <div className="checkout_summaryContainer">
       <div className="checkout_summaryWrapper">
         <OrderItems data={cart} count={itemcount} />
-        {!isCouponApplied && (
-          <div className="coupon_div">
-            <Input
-              {...register("couponCode")}
-              placeholder="Discount Code"
-              className="checkout_couponInput"
-              style={{ width: "100%" }}
-              disabled={applyCouponLoading}
-              error={errors?.couponCode}
-              onChange={(e) => {
-                let value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
-                value = value.toUpperCase();
-                e.target.value = value;
-              }} />
-            <div className="checkout_couponBtn text-base uppercase">
-              <GreenBoxBtn type="button" title={"Apply"} loading={applyCouponLoading} onClick={handleSubmit(onSubmit)} />
-            </div>
+        <div className="coupon_div">
+          <Input
+            {...register("couponCode")}
+            placeholder="Discount Code"
+            className="checkout_couponInput"
+            style={{ width: "100%" }}
+            disabled={applyCouponLoading || removeCouponLoading || isCouponApplied}
+            error={errors?.couponCode}
+            onChange={(e) => {
+              let value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
+              value = value.toUpperCase();
+              e.target.value = value;
+            }} />
+          <div className="checkout_couponBtn text-base uppercase">
+            <GreenBoxBtn type="button" title={!isCouponApplied ? "Apply" : "Remove"} loading={applyCouponLoading || removeCouponLoading} onClick={!isCouponApplied ? handleSubmit(onSubmit) : handleSubmit(onRemove)} />
           </div>
-        )}
+        </div>
 
         <div className="checkout_row ">
           <p className="checkout_textBase text-lg uppercase">Subtotal</p>
