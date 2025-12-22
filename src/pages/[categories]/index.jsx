@@ -26,10 +26,10 @@ const Categories = ({ meta, data, productList }) => {
       ease: "ease-secondary"
     })
 
-    gsap.set(".products_content, .products_hero-img, .products_header ,.allproducts_paren", {
+    gsap.set(".products_content, .products_hero-img, .products_header ,.allproducts_paren, .category_products_header", {
       opacity: 0
     })
-    gsap.to(".products_content, .products_hero-img, .products_header ,.allproducts_paren", {
+    gsap.to(".products_content, .products_hero-img, .products_header ,.allproducts_paren, .category_products_header", {
       opacity: 1,
       delay: 0.5,
       stagger: 0.1,

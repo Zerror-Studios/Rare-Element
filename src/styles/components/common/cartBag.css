@@ -9,8 +9,9 @@
   pointer-events: none;
   z-index: 999;
 }
-.add_popup_paren{
+.add_popup_paren {
   pointer-events: none;
+  text-align: center;
   position: fixed;
   height: 100vh;
   width: 100%;
@@ -20,17 +21,36 @@
   backdrop-filter: blur(0.1rem);
   z-index: 99999;
 }
-.add_popup{
+.add_popup {
   padding: 1rem;
   padding-block: 1.5rem;
   text-align: center;
   width: 95%;
   background-color: white;
 }
-.wishlist_item_popup{
+.add_popup_under_txt {
+  margin-top: 0.5rem;
+  opacity: 0.7;
+  text-transform: uppercase;
+}
+@media (max-width: 750px) {
+  .add_popup_under_txt {
+    font-size: 0.8rem;
+  }
+  .wishlist_btn {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 1rem;
+    align-items: center;
+    justify-content: start;
+    width: 100%;
+    margin-top: 2rem;
+  }
+}
+.wishlist_item_popup {
   margin-top: 4rem;
   width: 100%;
-  display: flex; 
+  display: flex;
   gap: 1rem;
 }
 .wishlist_btn {
@@ -41,15 +61,15 @@
   width: 100%;
   margin-top: 2rem;
 }
-.cartBag_bagItemDetails.cartBag_bagItemDetails{
+.cartBag_bagItemDetails.cartBag_bagItemDetails {
   text-align: start;
   width: 100%;
 }
-.wishlist_item_popup_img_wrapper{
+.wishlist_item_popup_img_wrapper {
   aspect-ratio: 3/4;
   width: 30%;
 }
-.wishlist_item_popup_detail_wrapper{
+.wishlist_item_popup_detail_wrapper {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -57,11 +77,11 @@
 }
 
 @media (min-width: 750px) {
- .add_popup{
+  .add_popup {
     padding: 2rem;
-  padding-block: 3rem;
-  width: 30%;
-}
+    padding-block: 3rem;
+    width: 30%;
+  }
 }
 
 @media (min-width: 1020px) {
@@ -199,16 +219,16 @@
 .cartBag_itemHead {
   width: 70%;
 }
-.cart_varients_div{
-  margin-top: .5rem;
+.cart_varients_div {
+  margin-top: 0.5rem;
 }
 
 .cartBag_itemName {
-  margin-bottom: .5rem;
+  margin-bottom: 0.5rem;
   text-transform: uppercase;
 }
-.crt_itms_price{
-  transform: translateY(-.75rem);
+.crt_itms_price {
+  transform: translateY(-0.75rem);
 }
 .cartBag_itemSize {
   opacity: 0.8;
@@ -231,7 +251,7 @@
   width: 5.5rem;
   gap: 0.5rem;
 }
-.cartBag_bagItemDetails button{
+.cartBag_bagItemDetails button {
   color: black !important;
 }
 .cartBag_qtyControl p {

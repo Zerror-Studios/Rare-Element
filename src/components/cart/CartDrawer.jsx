@@ -20,7 +20,7 @@ const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
   const token = AuthCookies.get();
   const { visitorId } = useVisitor();
   const { user, isLoggedIn } = useAuthStore((state) => state);
-  const [popupActive, setPopupActive] = useState(false)
+  const [popupActive, setPopupActive] = useState(true)
 
   const [isBtnLoading, setIsBtnLoading] = useState(false);
 

@@ -32,7 +32,8 @@ const WishlistPopup = ({ item, popupActive, setPopupActive, handleAddItem, handl
         <>
             <div className="add_popup_paren center">
                 <div className="add_popup">
-                    <h2 className='text-xl'>Add to Wishlist</h2>
+                    <h2 className='text-xl'>Don’t want to lose this?</h2>
+                    <p className='add_popup_under_txt text-sm'>Save it to your wishlist so you can find it easily later.</p>
                     <div className="wishlist_item_popup">
                         <div className="wishlist_item_popup_img_wrapper">
                             <div className='cover'>
@@ -71,10 +72,10 @@ const WishlistPopup = ({ item, popupActive, setPopupActive, handleAddItem, handl
                             onClick={()=>setPopupActive(false)}
                             className="cancel_form_btn"
                         >
-                            Cancel
+                            Remove anyway
                         </button>
 
-                        <GreenBoxBtn title="Add" />
+                        <GreenBoxBtn title="Save to wishlist" />
                     </div>
 
                 </div>

@@ -237,7 +237,7 @@ const ProductContant = ({
                   className="accordion_header"
                   onClick={() => handleAccordionToggle(index)}
                 >
-                  <p className="text-sm accordion_title uppercase bold">
+                  <p className="text-base accordion_title uppercase bold">
                     {item.title}
                   </p>
 
@@ -253,7 +253,7 @@ const ProductContant = ({
                   className={`accordion_content ${accordionIndex === index ? "open" : ""
                     }`}
                 >
-                  <div className="text-base">
+                  <div className="text-lg primary-font">
                     {htmlParser(item.description)}
                   </div>
                 </div>

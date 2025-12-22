@@ -24,9 +24,7 @@ const Layout = ({ children }) => {
 
   return (
     <>  
-
-      <Introloader/>
-
+    
       <a href="https://wa.me/910000000000">
         <div className="whatsapp_chat">
           <div className="whatsapp_chat_img center">
