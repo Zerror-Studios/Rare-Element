@@ -10,22 +10,6 @@ gsap.registerPlugin(ScrollTrigger)
 const Hero = () => {
   const pathname = usePathname()
 
-  useGSAP(() => {
-    if (window.innerWidth < 1020) return
-    gsap.to(".home_hero_video", {
-      scrollTrigger: {
-        trigger: ".home_hero",
-        start: "top top",
-        end: "bottom top",
-        scrub: true,
-        // markers: true
-      },
-      y: 200,
-      ease: "linear"
-    })
-  }, [pathname])
-
-
   useEffect(() => {
     var height
 
@@ -36,25 +20,47 @@ const Hero = () => {
     }
 
     gsap.to(".home_hero", {
+      delay: 1.5,
       height: height,
       duration: 1,
       ease: "ease-secondary"
     })
-    if (window.innerWidth < 750) return
+    gsap.to(".info_header", {
+      opacity: 1,
+      delay: 1.4,
+      duration: 1,
+      ease: "ease-secondary"
+    })
     gsap.set(".home_hero_inner, .category_header, .home_category_paren", {
       opacity: 0
     })
-    gsap.to(".home_hero_inner, .category_header, .home_category_paren", {
+    gsap.to(".home_hero_inner, .category_header, .home_category_paren, .whatsapp_chat", {
       opacity: 1,
-      delay: 0.5,
+      delay: 2,
       stagger: 0.1,
       duration: 1,
       ease: "ease-secondary"
     })
+    gsap.to(".introloader_paren", {
+      opacity: 0,
+      delay: 1.5,
+      duration: .5,
+      ease: "ease-secondary"
+    })
+
+
   }, [pathname])
 
   return (
     <>
+
+      <div className="introloader_paren  center">
+        <img src="/green_logo.svg" alt="Logo" />
+        <div className="intro_loaderparen">
+          <span className="intro_loader"></span>
+        </div>
+      </div>
+
       {pathname === "/" && (
         <div className="info_header center">
           <p className='text-xs'> Free Shipping on orders above ₹  3,000 </p>

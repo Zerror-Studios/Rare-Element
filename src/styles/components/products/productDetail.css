@@ -481,9 +481,10 @@
   /* padding-bottom: 1rem; */
 }
 
-.accordion_content p {
+.primary-font {
   margin: 0;
   /* color: #333; */
+  line-height: 1.4rem;
   opacity: 0.7;
 }
 .productDetail_quantity button {
