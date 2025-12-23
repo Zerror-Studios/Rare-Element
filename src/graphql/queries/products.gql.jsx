@@ -11,6 +11,7 @@ export const GET_PRODUCTS = gql`
           path
           type
           altText
+          isFeatured
         }
         price
         discountedPrice
@@ -84,6 +85,8 @@ export const GET_PRODUCT_BY_ID = gql`
         path
         type
         altText
+        isSizeGuide
+        isFeatured
       }
       saleType
       saleValue

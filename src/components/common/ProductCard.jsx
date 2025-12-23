@@ -2,6 +2,9 @@ import Image from "next/image";
 import React from "react";
 
 const ProductCard = ({ name, ribbon, price, assets }) => {
+
+    const featuredAsset = assets?.find(a => a.isFeatured);
+
     return (
         <div className="shopCard_card">
             {ribbon?.name && (
@@ -34,8 +37,8 @@ const ProductCard = ({ name, ribbon, price, assets }) => {
             {/* Hover Image */}
             <div className="shopCard_hoverImg">
                 <Image
-                    src={assets?.[1]?.path || "/green_logo.svg"}
-                    alt={assets?.[1]?.altText || "loading"}
+                    src={featuredAsset?.path || "/green_logo.svg"}
+                    alt={featuredAsset?.altText || "loading"}
                     fill
                     loading="lazy"
                     quality={75}

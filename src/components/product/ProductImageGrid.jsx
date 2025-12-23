@@ -25,10 +25,13 @@ const ProductImageGrid = ({ filter, data }) => {
   };
 
   const filteredAssets = useMemo(() => {
-    if (!filter.length) return data
     const idSet = new Set(filter);
-    return data.filter(item => idSet.has(item._id));
-  }, [data, filter])
+    return data.filter(
+      item => !item.isSizeGuide && (!filter.length || idSet.has(item._id))
+    );
+  }, [data, filter]);
+
+  console.log(filteredAssets);
 
   return (
     <div className="productDetail_left">
@@ -44,7 +47,7 @@ const ProductImageGrid = ({ filter, data }) => {
                 : "MobileImageSlider_thumbnail--inactive"
                 }`}
             >
-              <Image width={150} height={200} src={item?.path} alt={item?.altText || ""} />
+              <Image width={150} height={200} src={item?.path || "/green_logo.svg"} alt={item?.altText || ""} />
             </div>
           ))}
         </div>
@@ -68,7 +71,7 @@ const ProductImageGrid = ({ filter, data }) => {
                 <Image
                   fill
                   // quality={5}
-                  src={item?.path}
+                  src={item?.path || "/green_logo.svg"}
                   alt={item?.altText || ""}
                   className="MobileImageSlider_slideImage"
                 />
