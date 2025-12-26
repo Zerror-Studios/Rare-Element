@@ -146,7 +146,7 @@ const MobileHeader = ({ openCart }) => {
             <RiArrowRightSLine size={16} />
           </Link>
           <div className="">
-            <Link scroll={false} href={"/rings"} className='menu_links_iner' onClick={() => closeMenu()}>
+            <Link scroll={false} href={"/products"} className='menu_links_iner' onClick={() => closeMenu()}>
               <h2 className='text-3xl capitalize '>Categories</h2>
               <RiArrowRightSLine size={16} />
             </Link>

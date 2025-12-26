@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import gsap from 'gsap'
 import SeoHeader from '@/components/seo/SeoHeader'
@@ -9,8 +9,10 @@ import { GET_PRODUCTS } from '@/graphql'
 import { ProductStatus } from '@/utils/Constant'
 import Image from 'next/image'
 import ProductsFilterHeader from '@/components/product/ProductsFilterHeader'
+import ProductsAside from '@/components/product/ProductsAside'
 
 const AllProducts = ({ meta, products }) => {
+  const [openFilter, setOpenFilter] = useState(false)
 
   useEffect(() => {
     var height
@@ -39,24 +41,44 @@ const AllProducts = ({ meta, products }) => {
     })
   }, [])
 
+  useEffect(() => {
+    if (openFilter) {
+      gsap.to(".products_aside_paren", {
+        left: 0,
+        duration: .8,
+        ease: "in-out-quint",
+
+      })
+    } else {
+      gsap.to(".products_aside_paren", {
+        left: "-100%",
+        duration: .8,
+        ease: "in-out-quint",
+      })
+    }
+  }, [openFilter])
+
+
   return (
     <>
       <SeoHeader meta={meta} />
-      <div className="products_hero-section ">
-        <Image fill className='products_hero-img' src="/images/productpage/products_banner.avif" alt="loading" />
-        <div className="products_content padding">
-          <h2 className='text-3xl '>Timeless Elegance</h2>
-          <p className='uppercase text-base thin'>
-            Discover timeless jewellery crafted with precision, elegance, and the finest materials — designed to elevate every moment.
+
+      <div className="products_header">
+        <div
+          onClick={() => setOpenFilter(true)}
+          className="open_filter">
+          <p>
+            »
           </p>
         </div>
+        <p className="products_subtitle thin text-base uppercase">Crafted for Every Moment</p>
+        <h2 className="products_title text-3xl">Explore  Products</h2>
       </div>
 
-      <ProductsFilterHeader title={"Explore  Products"} desc={"Crafted for Every Moment"} />
-
-      <div className="padding">
+      <div className=" products_layout_paren padding ">
+        <ProductsAside openFilter={openFilter} setOpenFilter={setOpenFilter} />
         <div className="allproducts_paren ">
-        {products?.length == 0 && <h2 className='text-xl text-center'>No products found</h2>}
+          {products?.length == 0 && <h2 className='text-xl text-center'>No products found</h2>}
 
           {products?.map((item) => (
             <Link key={item?._id} scroll={false} href={`/products/${item?.slug || item?._id}`}>

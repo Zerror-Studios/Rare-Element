@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { use, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import gsap from 'gsap'
 import SeoHeader from '@/components/seo/SeoHeader'
@@ -8,69 +8,94 @@ import { createApolloClient } from '@/lib/apolloClient'
 import { getProductPriceLabel } from '@/utils/Util'
 import { StatusCode } from '@/utils/Constant'
 import Image from 'next/image'
+import { usePathname } from 'next/navigation'
 
 const Categories = ({ meta, data, productList }) => {
+  const pathname = usePathname()
+  const containerRef = useRef(null)
 
-  useEffect(() => {
-    var height
+  useLayoutEffect(() => {
+    const ctx = gsap.context(() => {
+      const height = window.innerWidth > 750 ? "76vh" : "47.5rem"
 
-    if (window.innerWidth > 750) {
-      height = "76vh"
-    } else {
-      height = "47.5rem"
-    }
+      gsap.set([
+        ".products_content",
+        ".products_hero-img",
+        ".products_header",
+        ".allproducts_paren",
+        ".category_products_header"
+      ], { opacity: 0 })
 
-    gsap.to(".products_hero-section", {
-      height: height,
-      duration: 1,
-      ease: "ease-secondary"
-    })
+      gsap.fromTo(
+        ".products_hero-section",
+        { height: 0 },
+        {
+          height,
+          duration: 1,
+          delay:0.3,
+          ease: "ease-secondary"
+        }
+      )
 
-    gsap.set(".products_content, .products_hero-img, .products_header ,.allproducts_paren, .category_products_header", {
-      opacity: 0
-    })
-    gsap.to(".products_content, .products_hero-img, .products_header ,.allproducts_paren, .category_products_header", {
-      opacity: 1,
-      delay: 0.5,
-      stagger: 0.1,
-      duration: 1,
-      ease: "ease-secondary"
-    })
-  }, [])
+      gsap.to([
+        ".products_content",
+        ".products_hero-img",
+        ".products_header",
+        ".allproducts_paren",
+        ".category_products_header"
+      ], {
+        opacity: 1,
+        delay: 0.5,
+        stagger: 0.1,
+        duration: 1,
+        ease: "ease-secondary"
+      })
+
+      
+    }, containerRef)
+
+    return () => ctx.revert() 
+  }, [pathname])
+
 
   return (
     <>
       <SeoHeader meta={meta} />
-      <div className="products_hero-section ">
-        <Image fill  className='products_hero-img' src={data?.imgsrc} alt={data?.name || ""} />
-        <div className="products_content padding">
+      <div ref={containerRef}>
+        <div className="products_hero-section ">
+          <Image key={pathname} fill priority={true}
+            className='products_hero-img'
+            src={data?.imgsrc}
+            alt={data?.name || ""} />
+          {/* <div className="products_content padding">
           <h2 className='text-3xl '>{data?.name || ""}</h2>
           <p className='uppercase text-base thin'>
             {data?.description || ""}
           </p>
+        </div> */}
         </div>
-      </div>
-      
-      <div className="category_products_header">
-        <p className="products_subtitle thin text-base uppercase">Crafted for Every Moment</p>
-        <h2 className="products_title text-3xl">{data?.name || ""}</h2>
-      </div>
 
-      <div className="padding">
-        <div className="allproducts_paren ">
-        {productList?.length == 0 && <h2 className='text-xl text-center'>No products found</h2>}
+        <div className="category_products_header">
+          <p className="products_subtitle thin text-base uppercase">Crafted for Every Moment</p>
+          <h2 className="products_title text-3xl">{data?.name || ""}</h2>
+        </div>
 
-          {productList?.map((item) => (
-            <Link key={item?._id} scroll={false} href={`/products/${item?.slug || item?._id}`}>
-              <ProductCard
-                key={item?._id}
-                name={item?.name || ""}
-                ribbon={item?.ribbon || ""}
-                price={getProductPriceLabel(item?.variants, item?.discountedPrice)}
-                assets={item?.assets || []}
-              />
-            </Link>
-          ))}
+        <div className="padding">
+          <div className="allproducts_paren ">
+            {productList?.length == 0 && <h2 className='text-xl text-center'>No products found</h2>}
+
+            {productList?.map((item) => (
+              <Link key={item?._id} scroll={false} href={`/products/${item?.slug || item?._id}`}>
+                <ProductCard
+                  key={item?._id}
+                  name={item?.name || ""}
+                  ribbon={item?.ribbon || ""}
+                  price={getProductPriceLabel(item?.variants, item?.discountedPrice)}
+                  assets={item?.assets || []}
+                />
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </>

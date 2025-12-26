@@ -82,24 +82,24 @@ const ProductContant = ({
     setOpenDropdown(null);
   };
 
-  const accordionData = useMemo(() => {
-    if (!data) return [];
-    const descriptionBlock = data.description
-      ? [
-        {
-          title: "Description",
-          description: (data.description),
-        },
-      ]
-      : [];
-    const additionalInfoBlocks =
-      data.additionalInfo?.map((item) => ({
-        ...item,
-        description: (item.description),
-      })) || [];
+  // const accordionData = useMemo(() => {
+  //   if (!data) return [];
+  //   const descriptionBlock = data.description
+  //     ? [
+  //       {
+  //         title: "Description",
+  //         description: (data.description),
+  //       },
+  //     ]
+  //     : [];
+  //   const additionalInfoBlocks =
+  //     data.additionalInfo?.map((item) => ({
+  //       ...item,
+  //       description: (item.description),
+  //     })) || [];
 
-    return [...descriptionBlock, ...additionalInfoBlocks];
-  }, [data]);
+  //   return [...descriptionBlock, ...additionalInfoBlocks];
+  // }, [data]);
 
   const sizeGuideAsset = useMemo(() => {
     return assets?.find(asset => asset.isSizeGuide === true) || null;
@@ -125,6 +125,9 @@ const ProductContant = ({
                 )
               })}
               <h2 className="productDetail_title text-xl ">{data?.name || ""}</h2>
+              <div className="prd_desc text-base primary-font">
+                {htmlParser(data?.description)}
+              </div>
               <p className="productDetail_price text-xl ">{formatePrice(finalPrice || 0)}</p>
             </div>
           </div>
@@ -251,9 +254,9 @@ const ProductContant = ({
               </div>
             </div>
           </div>
-          {accordionData.length > 0 && (
+          {data?.additionalInfo.length > 0 && (
             <div className="accordion_container">
-              {accordionData.map((item, index) => (
+              {data?.additionalInfo.map((item, index) => (
                 <div className="accordion_item" key={index}>
                   <button
                     className="accordion_header"

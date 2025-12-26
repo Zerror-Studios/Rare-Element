@@ -149,11 +149,49 @@ button {
   height: 100svh;
   background-color: white;
 }
-.introloader_paren img {
+.loader_img {
+  position: relative;
+  width: fit-content;
+  overflow: hidden;
+}
+
+.loader_img img {
+  display: block;
+  width: 100%;
+}
+
+/* Shiny sweep */
+.loader_img::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -75%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.779) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(25deg);
+  animation: shine 1s infinite;
+}
+
+@keyframes shine {
+  0% {
+    left: -75%;
+  }
+  100% {
+    left: 125%;
+  }
+}
+
+.loader_img img {
   width: 70vw;
 }
 @media (min-width: 750px) {
-  .introloader_paren img {
+  .loader_img img {
     width: 30vw;
   }
 }

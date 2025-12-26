@@ -55,9 +55,8 @@ const Hero = () => {
     <>
 
       <div className="introloader_paren  center">
+        <div className="loader_img">
         <img src="/green_logo.svg" alt="Logo" />
-        <div className="intro_loaderparen">
-          <span className="intro_loader"></span>
         </div>
       </div>
 
