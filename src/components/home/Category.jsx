@@ -4,7 +4,7 @@ import Link from 'next/link';
 const Category = ({ data }) => {
     return (
         <>
-            <div className="padding">
+            <div className="padding category_paren">
                 <div className="category_header">
                     <p className='text-base uppercase thin'>Shop by Category</p>
                 </div>

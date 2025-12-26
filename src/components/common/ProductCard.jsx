@@ -58,12 +58,10 @@ const ProductCard = ({ name, ribbon, price, assets }) => {
 
             {/* Name + Price */}
             <div className="shopCard_card_info">
-                <div>
-                    <p className="shopCard_item_name text-sm uppercase">
+                    <p className="shopCard_item_name text-base uppercase">
                         {name || ""}
                     </p>
-                    <p className="shopCard_item_price text-sm">{price}</p>
-                </div>
+                    <p className="shopCard_item_price text-lg">{price}</p>
             </div>
         </div>
     );

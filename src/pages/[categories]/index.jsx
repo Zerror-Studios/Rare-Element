@@ -51,6 +51,19 @@ const Categories = ({ meta, data, productList }) => {
         ease: "ease-secondary"
       })
 
+      if(window.innerWidth < 750) return
+      gsap.to(".products_hero-img",{
+        y:200,
+        filter:"brightness(0.5)",
+        ease:"linear",
+        scrollTrigger:{
+          trigger: ".products_hero-section",
+          start: "top top",
+          end: "bottom top",
+          scrub: true
+        }
+      })
+
       
     }, containerRef)
 
@@ -81,7 +94,7 @@ const Categories = ({ meta, data, productList }) => {
         </div>
 
         <div className="padding">
-          <div className="allproducts_paren ">
+          <div className="allproducts_paren categories_paren ">
             {productList?.length == 0 && <h2 className='text-xl text-center'>No products found</h2>}
 
             {productList?.map((item) => (

@@ -125,12 +125,13 @@ const ProductContant = ({
                 )
               })}
               <h2 className="productDetail_title text-xl ">{data?.name || ""}</h2>
-              <div className="prd_desc text-base primary-font">
+              <div className="prd_desc text-lg primary-font">
                 {htmlParser(data?.description)}
               </div>
-              <p className="productDetail_price text-xl ">{formatePrice(finalPrice || 0)}</p>
+              <p className="productDetail_price text-2xl ">{formatePrice(finalPrice || 0)}</p>
             </div>
           </div>
+          <div className="">
           <div className="productDetail_options">
             <div className="clear_variatns_btn">
               <button type="button" onClick={clearVariants} className="">
@@ -254,6 +255,8 @@ const ProductContant = ({
               </div>
             </div>
           </div>
+          </div>
+          <div className="additional_info_paren">
           {data?.additionalInfo.length > 0 && (
             <div className="accordion_container">
               {data?.additionalInfo.map((item, index) => (
@@ -278,7 +281,7 @@ const ProductContant = ({
                     className={`accordion_content ${accordionIndex === index ? "open" : ""
                       }`}
                   >
-                    <div className="text-lg primary-font">
+                    <div className="accordion_content_desc text-lg primary-font">
                       {htmlParser(item.description)}
                     </div>
                   </div>
@@ -286,6 +289,7 @@ const ProductContant = ({
               ))}
             </div>
           )}
+          </div>
 
         </div>
 

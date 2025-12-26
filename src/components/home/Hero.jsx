@@ -31,7 +31,7 @@ const Hero = () => {
       duration: 1,
       ease: "ease-secondary"
     })
-    gsap.set(".home_hero_inner, .category_header, .home_category_paren", {
+    gsap.set(".home_hero_inner, .category_header", {
       opacity: 0
     })
     gsap.to(".home_hero_inner, .category_header, .home_category_paren, .whatsapp_chat", {

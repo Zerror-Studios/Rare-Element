@@ -10,6 +10,7 @@ import { ProductStatus } from '@/utils/Constant'
 import Image from 'next/image'
 import ProductsFilterHeader from '@/components/product/ProductsFilterHeader'
 import ProductsAside from '@/components/product/ProductsAside'
+import { RiEqualizerLine, RiFilterLine } from '@remixicon/react'
 
 const AllProducts = ({ meta, products }) => {
   const [openFilter, setOpenFilter] = useState(false)
@@ -64,15 +65,17 @@ const AllProducts = ({ meta, products }) => {
       <SeoHeader meta={meta} />
 
       <div className="products_header">
-        <div
-          onClick={() => setOpenFilter(true)}
-          className="open_filter">
-          <p>
-            »
-          </p>
-        </div>
         <p className="products_subtitle thin text-base uppercase">Crafted for Every Moment</p>
         <h2 className="products_title text-3xl">Explore  Products</h2>
+      </div>
+
+      <div className="w-full center">
+        <button type="button" onClick={() => setOpenFilter(true)} className="open_filter  text-xs uppercase">
+            <RiEqualizerLine size={14}/>
+          <p className="uppercase text-base">
+            Apply Filter
+          </p>
+        </button>
       </div>
 
       <div className=" products_layout_paren padding ">

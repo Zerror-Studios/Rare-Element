@@ -78,21 +78,28 @@ const Header = ({ openCart }) => {
           </Link>
         </div>
         <div className="nav_links">
-          <Link scroll={false} href="/products">
-            <p className='text-sm  hover_text'>All</p>
-          </Link>
-          {
-            MenuData.map((item, index) => {
-              if (item.link === "/anklets") return null;
-              return (
-                <Link scroll={false} href={item.link} key={index}>
-                  <p className="text-sm hover_text">{item.title}</p>
-                </Link>
-              );
-            })
-          }
+      <Link scroll={false} href="/products">
+        <p className={`text-sm hover_text ${pathname === "/products" ? "active" : ""}`}>
+          All
+        </p>
+      </Link>
 
-        </div>
+      {MenuData.map((item, index) => {
+        if (item.link === "/anklets") return null;
+
+        return (
+          <Link scroll={false} href={item.link} key={index}>
+            <p
+              className={`text-sm hover_text ${
+                pathname === item.link ? "active" : ""
+              }`}
+            >
+              {item.title}
+            </p>
+          </Link>
+        );
+      })}
+    </div>
         <div className="short_links">
           <Link scroll={false} href={isLoggedIn ? "/account/wishlist" : "/login"}>
             <img className='short_links_icon' src="/icons/heart.svg" alt="loading" />

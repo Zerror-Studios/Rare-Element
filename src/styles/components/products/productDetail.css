@@ -12,6 +12,13 @@
   width: 100%;
 }
 @media (max-width: 750px) {
+  .suggestion_parent {
+    margin-top: 1rem !important;
+  }
+  .clear_variatns_btn p {
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+  }
   .productDetail_left {
     aspect-ratio: 3/4;
     /* padding-right: .05rem; */
@@ -134,9 +141,9 @@
 }
 
 .MobileImageSlider_arrow {
-  border: 1px solid #a5a5a5;
-  width: 3rem;
-  height: 3rem;
+  border: 1px solid #174d38;
+  width: 2.5rem;
+  height: 2.5rem;
   border-radius: 100%;
   flex-shrink: 0;
   background-color: #fff;
@@ -147,13 +154,22 @@
   cursor: pointer;
   transition: all 0.2s ease;
 }
+@media (min-width: 1020px) {
+  .MobileImageSlider_arrow {
+    width: 3rem;
+    height: 3rem;
+  }
+  .MobileImageSlider_arrow img {
+    width: 0.5rem;
+  }
+  .MobileImageSlider_arrow:hover {
+    scale: 1.1;
+  }
+}
+
 .MobileImageSlider_arrow img {
   width: 0.5rem;
 }
-.MobileImageSlider_arrow:hover {
-  scale: 1.1;
-}
-
 .productDetail_block {
   width: 100%;
   height: 100vh;
@@ -170,9 +186,8 @@
 }
 
 .productDetail_sticky {
-  padding-bottom: 2rem;
   display: flex;
-  gap: 3rem;
+  gap: 1rem;
   flex-direction: column;
   justify-content: space-between;
 }
@@ -231,16 +246,21 @@
     padding-bottom: 2rem;
     display: flex;
     width: 60%;
+    gap: 2.5rem;
     flex-direction: column;
     justify-content: center;
   }
 }
 
 .productDetail_title {
-  margin: 0.5rem 0rem;
+  margin-bottom: 0.5rem;
+  margin-top: 1.75rem;
 }
 .prd_desc {
-  line-height: 1.25rem !important;
+  line-height: 1.4rem !important;
+}
+.productDetail_price {
+  margin-top: 0.5rem;
 }
 .productDetail_info {
   width: 100%;
@@ -425,6 +445,7 @@
 }
 
 .productDetail_addtocart {
+  margin-top: 1rem;
   position: relative;
   width: 100%;
   display: flex;
@@ -443,7 +464,7 @@
 .productDetail_btn_icon {
   height: 3.5rem;
   aspect-ratio: 1/1;
-  border: 2px solid #174d38;
+  border: 1px solid #174d38;
 }
 .productDetail_btn_icon img {
   transform: translateY(0.1rem);
@@ -454,6 +475,9 @@
   height: 33%;
 }
 
+.additional_info_paren {
+  margin-top: 2rem;
+}
 .accordion_container {
   width: 100%;
   height: 12rem;
@@ -472,13 +496,16 @@
   outline: none;
   width: 100%;
   /* padding: 1rem 0; */
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   text-align: left;
   transition: max-height 0.8s cubic-bezier(0.23, 1, 0.32, 1);
   cursor: pointer;
+}
+.accordion_content_desc p {
+  line-height: 1.6rem !important;
 }
 .accordion_title {
   color: black !important;

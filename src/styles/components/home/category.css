@@ -8,8 +8,10 @@
   text-align: center;
 }
 
-.home_category_paren {
+.category_paren .home_category_paren {
   opacity: 0;
+}
+.category_paren .home_category_paren {
   margin: 1rem 0;
   width: 100%;
   display: flex;

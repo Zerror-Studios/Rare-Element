@@ -36,19 +36,24 @@
 
 .shopCard_card_info {
   background: white;
-  height: 15%;
-  display: flex;
-  align-items: flex-start;
+  height: 25%;
   width: 100%;
   padding: 0.75rem; /* 12px */
-  justify-content: space-between;
+}
+.shopCard_item_name {
+  width: 90%;
+  /* white-space: nowrap;      */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .shopCard_item_price {
+  line-height: 1.5rem;
+  margin-top: 0.25rem;
   opacity: 0.7;
 }
 
-.ribbon_btn{
+.ribbon_btn {
   position: absolute;
   z-index: 99;
   top: 1rem;
@@ -56,11 +61,11 @@
   background-color: #174d38;
   color: white;
   backdrop-filter: blur(0.25rem);
-  padding-inline: .5rem;
-  padding-block: .3rem;
+  padding-inline: 0.5rem;
+  padding-block: 0.3rem;
 }
-.ribbon_btn p{
-  transform: translateY(.05rem);
+.ribbon_btn p {
+  transform: translateY(0.05rem);
 }
 .heart_icon {
   position: absolute;
@@ -138,14 +143,12 @@
   .shopCard_card_info {
     background: white;
     height: 12%;
-    display: flex;
-    align-items: flex-start;
     width: 100%;
     padding: 1rem; /* 12px */
-    justify-content: space-between;
   }
 
   .shopCard_item_price {
+    margin-top: 0.1rem;
     opacity: 0.7;
   }
 
