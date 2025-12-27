@@ -172,7 +172,7 @@ const Footer = () => {
 
                 <div className="footer_links_column">
                   {col.links.map((item, idx) => (
-                    <Link key={idx} href={item.href} scroll={false}>
+                    <Link prefetch key={idx} href={item.href} scroll={false}>
                       <p className="text-base thin">{item.label}</p>
                     </Link>
                   ))}
@@ -192,7 +192,7 @@ const Footer = () => {
             <div className="uppercase text-xs copyright_txt">
               <p>
                 Developed by &nbsp;
-                <a href="https://www.zerrorstudios.com/" target="_blank">Zerror Studios</a>
+                <Link  href="https://www.zerrorstudios.com/" target="_blank">Zerror Studios</Link>
               </p>
             </div>
           </div>

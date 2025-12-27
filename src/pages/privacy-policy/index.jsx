@@ -1,5 +1,6 @@
 import React from "react";
 import SeoHeader from "@/components/seo/SeoHeader";
+import Link from "next/link";
 
 const privacyPolicy = ({ meta }) => {
   return (
@@ -68,9 +69,9 @@ const privacyPolicy = ({ meta }) => {
             If you believe that any information we hold about you is inaccurate
             or incomplete, please contact us promptly. You can reach us by
             writing or emailing us at{" "}
-            <a target="_blank" href="https://mail.google.com/mail/u/0/#inbox?compose=GTvVlcSKjgCNjxJKkzZhJktdvrWdssGbJXkRJqFwsZljDKHnPDRLXcrkzLKSLVtRgNBJQQtgTCQjs">
+            <Link target="_blank" href="https://mail.google.com/mail/u/0/#inbox?compose=GTvVlcSKjgCNjxJKkzZhJktdvrWdssGbJXkRJqFwsZljDKHnPDRLXcrkzLKSLVtRgNBJQQtgTCQjs">
               contact@nahara.co.in
-            </a>
+            </Link>
             , and we will promptly make the necessary updates or corrections.
           </p>
           <p>

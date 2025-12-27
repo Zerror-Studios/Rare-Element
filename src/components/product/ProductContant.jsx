@@ -119,7 +119,7 @@ const ProductContant = ({
             <div className="productDetail_info_left">
               {data?.categories?.map((item) => {
                 return (
-                  <Link key={item?._id} scroll={false} href={`/${item?.slug || ""}`}>
+                  <Link prefetch key={item?._id} scroll={false} href={`/${item?.slug || ""}`}>
                     <p className="productDetail_category text-lg">{item?.name || ""}</p>
                   </Link>
                 )
@@ -167,7 +167,6 @@ const ProductContant = ({
               {data?.productOptions?.map((productOption, i) => {
                 return (
                   <div key={`option-dropdown-${i}`} className={`productDetail_selction ${openDropdown === productOption?.optionName ? "open" : ""}`}>
-                    {productOption?.optionName === "size" && <a href="" className="text-xs underline size_link uppercase">Size guide</a>}
                     <div className="color_selection">
                       {productOption.choices?.map((choice, j) => {
                         const selected = selectedVariants[productOption.optionName] === `${choice.name}`;

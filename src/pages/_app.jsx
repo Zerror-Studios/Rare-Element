@@ -17,14 +17,14 @@ export default function App({ Component, pageProps }) {
   const router = useRouter();
   const client = createApolloClient();
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      ScrollTrigger.refresh();
-      if (window.lenis) window.lenis.resize();
-    }, 500);
-    return () => clearTimeout(timeout);
-  }, [router.asPath]);
-  
+useEffect(() => {
+  if (typeof window === "undefined") return;
+
+  requestAnimationFrame(() => {
+    ScrollTrigger.refresh();
+    window.lenis?.resize();
+  });
+}, [router.asPath]);  
 
   return (
     <>

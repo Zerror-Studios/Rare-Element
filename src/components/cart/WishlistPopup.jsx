@@ -49,7 +49,7 @@ const WishlistPopup = ({ item, popupActive, setPopupActive, handleAddItem, handl
                         <div className="cartBag_bagItemDetails">
                             <div className="cartBag_bagItemTop">
                                 <div className="cartBag_itemHead">
-                                    <Link scroll={false} href={`/products/`} className="cartBag_itemName text-base">
+                                     <Link prefetch scroll={false} href={`/products/`} className="cartBag_itemName text-base">
                                         <p>
                                             {item?.name}
                                         </p>

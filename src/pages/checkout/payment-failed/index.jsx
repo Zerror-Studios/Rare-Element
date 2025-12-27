@@ -16,7 +16,7 @@ const PaymentFailed = ({ meta }) => {
             <p className="uppercase">Unfortunately, your payment could not be processed.</p>
             <p></p>
             <p>Have Question? Contact Us at: </p>
-            <a className="text_decoration_underline" target="_blank" href="https://mail.google.com/mail/u/0/#inbox?compose=GTvVlcSKjgCNjxJKkzZhJktdvrWdssGbJXkRJqFwsZljDKHnPDRLXcrkzLKSLVtRgNBJQQtgTCQjs">contact@nahara.co.in</a>
+            <Link className="text_decoration_underline" target="_blank" href="https://mail.google.com/mail/u/0/#inbox?compose=GTvVlcSKjgCNjxJKkzZhJktdvrWdssGbJXkRJqFwsZljDKHnPDRLXcrkzLKSLVtRgNBJQQtgTCQjs">contact@nahara.co.in</Link>
             <div className="w-full">
             <GreenBoxBtn title="Continue Shopping" href="/" />
             </div>

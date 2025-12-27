@@ -15,7 +15,7 @@ const OrderItems = ({ data }) => {
             const price = formatePrice(item?.variantDetail?.variantPrice || null);
             return (
               <div key={index} className="checkout_item">
-                <Link scroll={false} href={`/products/${item?.product?.slug}`} className="checkout_imgWrapper">
+                <Link prefetch scroll={false} href={`/products/${item?.product?.slug}`} className="checkout_imgWrapper">
                   <Image
                     width={150}
                     height={200}
@@ -28,7 +28,7 @@ const OrderItems = ({ data }) => {
                 <div className="checkout_details">
                   <div className="checkout_topRow">
                     <div>
-                      <Link scroll={false} href={`/products/${item?.product?.slug}`} className="checkout_productName text-base">{item?.name}</Link>
+                      <Link prefetch scroll={false} href={`/products/${item?.product?.slug}`} className="checkout_productName text-base">{item?.name}</Link>
                       <div className="cart_varients_div">
                         {renderVariants(item?.product?.productOptions || [], item?.variantDetail?.selectedOptions || [])}
                       </div>

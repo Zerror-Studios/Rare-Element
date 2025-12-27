@@ -78,7 +78,7 @@ const Header = ({ openCart }) => {
           </Link>
         </div>
         <div className="nav_links">
-      <Link scroll={false} href="/products">
+      <Link prefetch scroll={false} href="/products">
         <p className={`text-sm hover_text ${pathname === "/products" ? "active" : ""}`}>
           All
         </p>
@@ -88,7 +88,7 @@ const Header = ({ openCart }) => {
         if (item.link === "/anklets") return null;
 
         return (
-          <Link scroll={false} href={item.link} key={index}>
+          <Link prefetch scroll={false} href={item.link} key={index}>
             <p
               className={`text-sm hover_text ${
                 pathname === item.link ? "active" : ""

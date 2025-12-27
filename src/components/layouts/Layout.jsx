@@ -10,6 +10,8 @@ import Introloader from "../common/Introloader";
 import { RiCloseLine } from "@remixicon/react";
 import { useSizeGuideStore } from "@/store/sizeguide-store";
 import Image from "next/image";
+import { useGSAP } from "@gsap/react";
+import Link from "next/link";
 
 const Layout = ({ children }) => {
   const pathname = usePathname();
@@ -17,7 +19,6 @@ const Layout = ({ children }) => {
   const { isSizeGuideOpen, sizeGuideImage, closeSizeGuide } = useSizeGuideStore((state) => state);
 
   const overlayRef = useRef()
-
 
   useEffect(() => {
     const isOverlayActive = isCartOpen || isSizeGuideOpen;
@@ -86,17 +87,27 @@ const Layout = ({ children }) => {
     }
   }, [isSizeGuideOpen])
 
+  useGSAP(() => {
+    gsap.to(".whatsapp_chat", {
+      opacity: 1,
+      delay: 2,
+      stagger: 0.1,
+      duration: 1,
+      ease: "ease-secondary"
+    })
+  })
+
   return (
     <>
 
-      <a href="https://wa.me/910000000000">
+      <Link target="_blank" href="https://wa.me/910000000000">
         <div className="whatsapp_chat">
           <div className="whatsapp_chat_img center">
             <img className="cover" src="/gifs/whatsapp.gif" alt="loading" />
           </div>
           <p className="bold">CHAT</p>
         </div>
-      </a>
+      </Link>
       <div className="ring_size_guide">
         <div className="ring_size_guide_img_paren center">
           <Image

@@ -38,7 +38,7 @@ const CartItem = ({
     <div className="cartBag_bagItem">
       <div className="cartBag_bagItemInner">
         <div className="cartBag_bagImageWrapper">
-          <Link scroll={false} onClick={onClose} href={`/products/${item?.product?.slug}`} className='cartBag_bagImage'>
+          <Link prefetch scroll={false} onClick={onClose} href={`/products/${item?.product?.slug}`} className='cartBag_bagImage'>
             <Image
               width={150}
               height={200}
@@ -51,7 +51,7 @@ const CartItem = ({
         <div className="cartBag_bagItemDetails">
           <div className="cartBag_bagItemTop">
             <div className="cartBag_itemHead">
-              <Link scroll={false} onClick={onClose} href={`/products/${item?.product?.slug}`} className="cartBag_itemName text-base">
+              <Link prefetch scroll={false} onClick={onClose} href={`/products/${item?.product?.slug}`} className="cartBag_itemName text-base">
               <p>
                 {item?.name}
                 </p>
