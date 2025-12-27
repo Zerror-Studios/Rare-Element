@@ -203,13 +203,13 @@ const CheckoutPage = ({ meta }) => {
               <label className="">
                 <p>
                   By continuing, I confirm that I have read and accept the{" "}
-                  <a  href="/terms-of-service" target="_blank" className="text_decoration_underline ">
+                  <Link href="/terms-of-service" target="_blank" className="text_decoration_underline ">
                     Terms and Conditions
-                  </a >{" "}
+                  </Link >{" "}
                   and the{" "}
-                  <a  href="/privacy-policy" target="_blank" className="text_decoration_underline ">
+                  <Link href="/privacy-policy" target="_blank" className="text_decoration_underline ">
                     Privacy Policy
-                  </a >
+                  </Link >
                 </p>
               </label>
             </div>

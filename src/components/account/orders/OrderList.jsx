@@ -57,7 +57,7 @@ const OrderList = () => {
             <div className="purchases_orderFooter">
               <p className="purchases_itemCount text-base">{cart.length} Items</p>
               <div className="purchases_orderFooter_inner">
-                <Link scroll={false} href={`/account/order/${item?._id}`} className="text-sm">
+                <Link prefetch scroll={false} href={`/account/order/${item?._id}`} className="text-sm">
                   <p className="text-sm">View order</p>
                 </Link>
               </div>

@@ -1,4 +1,4 @@
-import React, { use, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import React, { Suspense, use, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import gsap from 'gsap'
 import SeoHeader from '@/components/seo/SeoHeader'
@@ -9,6 +9,7 @@ import { getProductPriceLabel } from '@/utils/Util'
 import { StatusCode } from '@/utils/Constant'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
+import ProductCardSkeleton from '@/components/skeletons/ProductCardSkeleton'
 
 const Categories = ({ meta, data, productList }) => {
   const pathname = usePathname()
@@ -32,7 +33,7 @@ const Categories = ({ meta, data, productList }) => {
         {
           height,
           duration: 1,
-          delay:0.3,
+          delay: 0.3,
           ease: "ease-secondary"
         }
       )
@@ -51,12 +52,12 @@ const Categories = ({ meta, data, productList }) => {
         ease: "ease-secondary"
       })
 
-      if(window.innerWidth < 750) return
-      gsap.to(".products_hero-img",{
-        y:200,
-        filter:"brightness(0.5)",
-        ease:"linear",
-        scrollTrigger:{
+      if (window.innerWidth < 750) return
+      gsap.to(".products_hero-img", {
+        y: 200,
+        filter: "brightness(0.5)",
+        ease: "linear",
+        scrollTrigger: {
           trigger: ".products_hero-section",
           start: "top top",
           end: "bottom top",
@@ -64,53 +65,67 @@ const Categories = ({ meta, data, productList }) => {
         }
       })
 
-      
+
     }, containerRef)
 
-    return () => ctx.revert() 
+    return () => ctx.revert()
   }, [pathname])
 
 
   return (
     <>
       <SeoHeader meta={meta} />
-      <div ref={containerRef}>
-        <div className="products_hero-section ">
-          <Image key={pathname} fill priority={true}
-            className='products_hero-img'
-            src={data?.imgsrc}
-            alt={data?.name || ""} />
-          {/* <div className="products_content padding">
+      <Suspense fallback={<ProductCardSkeleton />}>
+        <div ref={containerRef}>
+          <div className="products_hero-section ">
+            <Image key={pathname} fill priority={true}
+              className='products_hero-img'
+              src={data?.imgsrc}
+              alt={data?.name || ""} />
+            {/* <div className="products_content padding">
           <h2 className='text-3xl '>{data?.name || ""}</h2>
           <p className='uppercase text-base thin'>
             {data?.description || ""}
           </p>
         </div> */}
-        </div>
+          </div>
 
-        <div className="category_products_header">
-          <p className="products_subtitle thin text-base uppercase">Crafted for Every Moment</p>
-          <h2 className="products_title text-3xl">{data?.name || ""}</h2>
-        </div>
+          <div className="category_products_header">
+            <p className="products_subtitle thin text-base uppercase">Crafted for Every Moment</p>
+            <h2 className="products_title text-3xl">{data?.name || ""}</h2>
+          </div>
 
-        <div className="padding">
-          <div className="allproducts_paren categories_paren ">
-            {productList?.length == 0 && <h2 className='text-xl text-center'>No products found</h2>}
+          <div className="padding">
+            <div className="allproducts_paren categories_paren ">
+              {/* <Suspense fallback={<ProductCardSkeleton />}> */}
+              {productList?.length > 0 ? (
+                productList?.map((item) => (
+                  <Link
+                    key={item._id}
+                    scroll={false}
+                    href={`/products/${item.slug || item._id}`}
+                  >
+                    <ProductCard
+                      name={item.name || ""}
+                      ribbon={item.ribbon || ""}
+                      price={getProductPriceLabel(
+                        item.variants,
+                        item.discountedPrice
+                      )}
+                      assets={item.assets || []}
+                    />
+                  </Link>
+                ))
+              ) : (
+                <h2 className='text-xl text-center'>No products found</h2>
+              )
+              }
+              {/* </Suspense> */}
 
-            {productList?.map((item) => (
-              <Link key={item?._id} scroll={false} href={`/products/${item?.slug || item?._id}`}>
-                <ProductCard
-                  key={item?._id}
-                  name={item?.name || ""}
-                  ribbon={item?.ribbon || ""}
-                  price={getProductPriceLabel(item?.variants, item?.discountedPrice)}
-                  assets={item?.assets || []}
-                />
-              </Link>
-            ))}
+            </div>
           </div>
         </div>
-      </div>
+      </Suspense>
     </>
   )
 }
