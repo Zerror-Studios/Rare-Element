@@ -15,24 +15,29 @@ export const useVisitor = () => {
     if (isLoggedIn) return;
 
     const storedVisitorId = localStorage.getItem("visitorId");
-    const storedExpire = localStorage.getItem("visitorExpire");
-    const now = new Date();
+    // const storedExpire = localStorage.getItem("visitorExpire"); // No longer treating it as hard expiry for ID reuse
+    // const now = new Date();
 
-    const isExpired = !storedExpire || new Date(storedExpire) < now;
+    // const isExpired = !storedExpire || new Date(storedExpire) < now;
 
-    if (!storedVisitorId || isExpired) {
+    // Always extend expiration on visit (Sliding Expiration)
+    const expireDate = new Date();
+    expireDate.setDate(expireDate.getDate() + 7);
+    const newExpireIso = expireDate.toISOString();
+
+    if (storedVisitorId) {
+      // If ID exists, reuse it and just extend the session
+      setVisitorId(storedVisitorId);
+      setVisitorExpire(newExpireIso);
+      localStorage.setItem("visitorExpire", newExpireIso);
+    } else {
+      // If no ID, generate new one
       const newVisitorId = uuidv4();
-      const expireDate = new Date();
-      expireDate.setDate(expireDate.getDate() + 7);
+      setVisitorId(newVisitorId);
+      setVisitorExpire(newExpireIso);
 
       localStorage.setItem("visitorId", newVisitorId);
-      localStorage.setItem("visitorExpire", expireDate.toISOString());
-
-      setVisitorId(newVisitorId);
-      setVisitorExpire(expireDate.toISOString());
-    } else {
-      setVisitorId(storedVisitorId);
-      setVisitorExpire(storedExpire);
+      localStorage.setItem("visitorExpire", newExpireIso);
     }
   }, []);
 

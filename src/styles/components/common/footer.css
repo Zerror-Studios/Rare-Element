@@ -6,6 +6,9 @@
   color: white;
   padding: 1rem;
 }
+.featured_icon_custom{
+  width: 4.25rem;
+}
 
 @media (min-width: 750px) {
   .footer_classname_wrapper {
