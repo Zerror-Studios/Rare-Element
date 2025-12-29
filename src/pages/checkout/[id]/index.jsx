@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import { useAuthStore } from "@/store/auth-store";
@@ -24,6 +24,7 @@ const CheckoutPage = ({ meta }) => {
   const [isPageLoading, setIsPageLoading] = useState(false);
   const { isLoggedIn, user } = useAuthStore((state) => state);
   const [checkoutOrder] = useMutation(CHECKOUT_ORDER);
+  const callbackProcessedRef = useRef(false);
   const cartListPayload = {
     cartId: router?.query?.id,
   };
@@ -118,19 +119,32 @@ const CheckoutPage = ({ meta }) => {
 
   const launchNimbblSonicCheckout = async (token) => {
     try {
+      // Reset the callback processed flag for new checkout session
+      callbackProcessedRef.current = false;
+
       const checkout = new Checkout({ token });
 
       checkout.open({
         callback_handler: async function (response) {
           try {
+            // Guard against multiple callback executions
+            if (callbackProcessedRef.current) {
+              console.log("Callback already processed, skipping duplicate execution");
+              return;
+            }
+
             if (
               response?.event_type === "globalCloseCheckoutModal" &&
               response?.payload
             ) {
+              // Mark callback as processed before executing
+              callbackProcessedRef.current = true;
               await handleOrderPayment(response.payload);
             }
           } catch (err) {
             console.error("Error in callback_handler:", err);
+            // Reset flag on error to allow retry if needed
+            callbackProcessedRef.current = false;
           }
         },
       });
