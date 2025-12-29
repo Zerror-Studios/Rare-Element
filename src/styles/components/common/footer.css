@@ -8,6 +8,8 @@
 }
 .featured_icon_custom{
   width: 4.25rem;
+  height:2rem;
+  transform: translateY(-1.5rem);
 }
 
 @media (min-width: 750px) {
