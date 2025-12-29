@@ -1,35 +1,36 @@
 import React from 'react'
 
 
+
 export const SocialCardData = [
   {
     id: 1,
     img: "https://www.buccellati.com/media/.renditions/wysiwyg/1_HP_Mobile_Cover.jpg",
     vid: "https://www.buccellati.com/media/wysiwyg/videos/PLP_Hawaii_CUT_1_1.mp4",
-    title: "Customisation Available",
-    description: "Craft jewellery that reflects your unique style. Tailored designs, personalized details, and unmatched craftsmanship.",
+    title: "Bespoke Jewellery Design",
+    description: "Exclusively to reflect your personality and timeless elegance.",
   },
   {
     id: 2,
     img: "https://www.buccellati.com/media/.renditions/wysiwyg/1_HP_Cover_Mobile_ADV23.jpg",
     vid: "https://www.buccellati.com/media/wysiwyg/videos/PLP_Tulle_CUT_1_1.mp4",
-    title: "Free Shipping",
-    description: "Enjoy seamless delivery at no extra cost. Fast, secure, and insured shipping for every order.",
+    title: "Luxury Handcrafted Rings",
+    description: "Artistry meets precision in every detail.",
   },
   {
     id: 3,
     img: "https://www.buccellati.com/media/.renditions/wysiwyg/7_HP_Cover_video_Mobile.jpg",
-    title: "Years of Industry Experience",
+    title: "Modern Elegance",
     titleSpan: "50+",
     vid: "https://www.buccellati.com/media/wysiwyg/videos/PLP_Opera_CUT_1_1.mp4",
-    description: "A legacy of trust and excellence. Decades of mastery ensure precision, quality, and timeless design.",
+    description: "Sophisticated designs for every occasion.",
   },
   {
     id: 4,
     img: "https://www.buccellati.com/media/wysiwyg/SOA_HP.jpg",
     vid: "https://www.buccellati.com/media/wysiwyg/videos/PLP_Ramage_Cut_1_1.mp4",
-    title: "Dedicated Customer Service",
-    description: "Our team is always ready to assist you. From inquiries to support, experience smooth and personalised service.",
+    title: "Heritage Craftsmanship",
+    description: "A timeless fusion of tradition and innovation.",
   },
 ]
 
@@ -54,10 +55,10 @@ const SocialReels = () => {
             </div>
 
             <h2 className="socialCard_title text-xl  uppercase">
-              <span className=" text-4xl thin">{item.titleSpan}</span>{" "}
+              {/* <span className=" text-4xl thin">{item.titleSpan}</span>{" "} */}
               {item.title}
             </h2>
-            <p className="socialCard_description thin text-base">
+            <p className="socialCard_description thin text-xl">
               {item.description}
             </p>
           </div>

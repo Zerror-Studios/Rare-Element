@@ -1,48 +1,54 @@
 import { useGSAP } from '@gsap/react';
-import gsap from 'gsap';
 import React, { useEffect, useRef } from 'react';
-import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import Lottie from 'lottie-react';
 import SecureLock from "../../../public/icons/animationJson/SecureLock.json";
+import Crafting from "../../../public/icons/animationJson/crafting.json";
 import FreeShipping from "../../../public/icons/animationJson/FreeShipping.json";
 import ChatSupport from "../../../public/icons/animationJson/ChatSupport.json";
 import StoresRetail from "../../../public/icons/animationJson/StoresRetail.json";
 import StretchArrow from "../../../public/icons/animationJson/StretchArrow.json";
 import Link from 'next/link';
-
-
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger)
+
+
 
 export const featureData = [
   {
-    title: "Secure Payment",
-    href: "/privacy-policy",
+    id:1,
+    title: "Customisation Available",
+    href: "",
+    animationData: Crafting,
     img: "/icons/lock.svg",
-    animationData: SecureLock,
-    desc: "Your transactions are encrypted and fully protected for safe checkout.",
+    desc: "Bespoke jewellery crafted to your vision, from design to final detail.",
   },
   {
+    id:2,
     title: "Free Shipping",
     href: "/shipping-returns",
     img: "/icons/shipping.svg",
     animationData: FreeShipping,
-    desc: "Enjoy complimentary shipping on all domestic orders with no minimum spend.",
+    desc: "Enjoy seamless, complimentary delivery across India on orders above ₹3,000.",
   },
   {
-    title: "Store & Retail",
+    title: "50+ years of industry experience",
+    id: 3,
     href: "",
     img: "/icons/store.svg",
-    animationData: StoresRetail,
-    desc: "Visit our boutique stores for an exclusive hands-on shopping experience.",
+    animationData: SecureLock,
+    desc: "Over 50 years of master craftsmanship shaping fine jewellery.",
   },
   {
-    title: "Chat Support",
+    id:4,
+    title: "Dedicated Customer Service",
     href: "https://wa.me/0000000000",
     img: "/icons/chat.svg",
     animationData: ChatSupport,
-    desc: "Need help? Our support team is available 24/7 to assist you instantly.",
+    desc: "Our friendly support team is always ready to help you with orders, queries, and guidance.",
   },
 ];
+
 
 const footerLinksData = [
   {
@@ -120,14 +126,30 @@ const Footer = () => {
                 }}
                 className="footer_classname_featureCard"
               >
-                <div className="featured_icon">
-                  <Lottie
-                    lottieRef={mainRef}
-                    animationData={item?.animationData}
-                    autoplay={false}
-                    loop={false}
-                  />
-                </div>
+                {
+                  item?.id === 1 ? (
+                    <div className="featured_icon_custom">
+                      <Lottie
+                        lottieRef={mainRef}
+                        animationData={item?.animationData}
+                        autoplay={false}
+                        loop={false}
+                        onDOMLoaded={() => {
+                          mainRef.current?.goToAndPlay(0, true);
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <div className="featured_icon">
+                      <Lottie
+                        lottieRef={mainRef}
+                        animationData={item?.animationData}
+                        autoplay={false}
+                        loop={false}
+                      />
+                    </div>
+                  )
+                }
 
                 <p className="footer_classname_featureTitle bold text-sm uppercase">
                   {item.title}
@@ -192,7 +214,7 @@ const Footer = () => {
             <div className="uppercase text-xs copyright_txt">
               <p>
                 Developed by &nbsp;
-                <Link  href="https://www.zerrorstudios.com/" target="_blank">Zerror Studios</Link>
+                <Link href="https://www.zerrorstudios.com/" target="_blank">Zerror Studios</Link>
               </p>
             </div>
           </div>
