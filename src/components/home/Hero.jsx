@@ -11,13 +11,41 @@ const Hero = () => {
   const pathname = usePathname()
   const videoRef = useRef(null);
 
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
+useEffect(() => {
+  const video = videoRef.current;
+  if (!video) return;
 
-    video.muted = true;
-    video.play().catch(() => { });
-  }, []);
+  // Force iOS-required attributes
+  video.setAttribute("muted", "");
+  video.setAttribute("playsinline", "");
+  video.setAttribute("webkit-playsinline", "");
+  video.setAttribute("preload", "auto");
+
+  video.muted = true;
+  video.playsInline = true;
+  video.loop = true;
+  video.autoplay = true;
+  video.controls = false;
+
+  const tryPlay = () => {
+    const promise = video.play();
+    if (promise !== undefined) {
+      promise.catch(() => {});
+    }
+  };
+
+  // iOS needs metadata before autoplay
+  video.addEventListener("loadedmetadata", tryPlay);
+
+  // Fallback for older iOS
+  setTimeout(tryPlay, 100);
+
+  return () => {
+    video.removeEventListener("loadedmetadata", tryPlay);
+  };
+}, []);
+
+
 
 
   useEffect(() => {
@@ -77,7 +105,16 @@ const Hero = () => {
       )}
       <div className="dummy_hero_div"></div>
       <div className="home_hero">
-        <video ref={videoRef} className=' home_hero_video cover' loop playsInline preload="auto" src="/videos/hero_video.mp4"></video>
+        <video
+          ref={videoRef}
+          className="home_hero_video cover"
+          src="/videos/hero_video.mp4"
+          muted
+          playsInline
+          preload="auto"
+          loop
+          autoPlay
+        />
         <div className="home_hero_inner">
           <h2 className='text-3xl'>World of Nahara</h2>
           <Link scroll={false} href="/products">

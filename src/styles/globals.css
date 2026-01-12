@@ -19,6 +19,14 @@ body::-webkit-scrollbar {
   -webkit-touch-callout: none;
   -webkit-tap-highlight-color: transparent;
 }
+
+video::-webkit-media-controls {
+  display: none !important;
+}
+video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+}
+
 .w-full {
   width: 100% !important;
 }
