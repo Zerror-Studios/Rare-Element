@@ -73,42 +73,41 @@ const Header = ({ openCart }) => {
       <div className="header padding">
         <div className="header_bg"></div>
         <div className="logo_paren">
-          <Link scroll={false} href="/">
-            <img className='header_logo' src="/logo.svg" alt="loading" />
+          <Link scroll={false} href="/" title='home'>
+            <img className='header_logo' src="/logo.svg" alt="loading" title='logo' />
           </Link>
         </div>
         <div className="nav_links">
-      <Link prefetch scroll={false} href="/products">
-        <p className={`text-sm hover_text ${pathname === "/products" ? "active" : ""}`}>
-          All
-        </p>
-      </Link>
-
-      {MenuData.map((item, index) => {
-        if (item.link === "/anklets") return null;
-
-        return (
-          <Link prefetch scroll={false} href={item.link} key={index}>
-            <p
-              className={`text-sm hover_text ${
-                pathname === item.link ? "active" : ""
-              }`}
-            >
-              {item.title}
+          <Link prefetch scroll={false} href="/products" title='View all products'>
+            <p className={`text-sm hover_text ${pathname === "/products" ? "active" : ""}`}>
+              All
             </p>
           </Link>
-        );
-      })}
-    </div>
+
+          {MenuData.map((item, index) => {
+            if (item.link === "/anklets") return null;
+
+            return (
+              <Link prefetch scroll={false} href={item.link} key={index} title={item.title}>
+                <p
+                  className={`text-sm hover_text ${pathname === item.link ? "active" : ""
+                    }`}
+                >
+                  {item.title}
+                </p>
+              </Link>
+            );
+          })}
+        </div>
         <div className="short_links">
-          <Link scroll={false} href={isLoggedIn ? "/account/wishlist" : "/login"}>
-            <img className='short_links_icon' src="/icons/heart.svg" alt="loading" />
+          <Link scroll={false} href={isLoggedIn ? "/account/wishlist" : "/login"} title='Wishlist'>
+            <img className='short_links_icon' src="/icons/heart.svg" title='Wishlist' alt="loading" />
           </Link>
-          <Link scroll={false} href={isLoggedIn ? "/account/settings" : "/login"}>
-            <img className='short_links_icon' src="/icons/profile.svg" alt="loading" />
+          <Link scroll={false} href={isLoggedIn ? "/account/settings" : "/login"} title='profile'>
+            <img className='short_links_icon' src="/icons/profile.svg" title=' profile' alt="loading" />
           </Link>
           <button onClick={openCart}>
-            <img className='short_links_icon' src="/icons/cart.svg" alt="loading" />
+            <img className='short_links_icon' src="/icons/cart.svg" title='cart' alt="loading" />
           </button>
         </div>
       </div>

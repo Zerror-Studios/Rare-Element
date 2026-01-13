@@ -26,7 +26,7 @@ const OrderList = () => {
       {data.length === 0 && (
         <div className="wishlist_empty_box_inner">
           <p className="text-xl ">No orders found</p>
-          <Link href="/products" className="underline">
+          <Link href="/products" title="Go to Shopping" className="underline">
             Go to Shopping
           </Link>
         </div>
@@ -54,6 +54,7 @@ const OrderList = () => {
                         className="purchases_itemImg"
                         src={cartItem?.asset?.path || ""}
                         alt={cartItem?.asset?.altText || ""}
+                        title={cartItem?.asset?.altText || ""}
                       />
                     </div>
                   </>
@@ -64,7 +65,7 @@ const OrderList = () => {
             <div className="purchases_orderFooter">
               <p className="purchases_itemCount text-base">{cart.length} Items</p>
               <div className="purchases_orderFooter_inner">
-                <Link prefetch scroll={false} href={`/account/order/${item?._id}`} className="text-sm">
+                <Link prefetch scroll={false} href={`/account/order/${item?._id}`} title="View order" className="text-sm">
                   <p className="text-sm">View order</p>
                 </Link>
               </div>

@@ -15,7 +15,7 @@ const Settings = ({ meta }) => {
       <AccountLayout>
         <AccountBreadcrumb title={"Setting"} />
         <div className="settings__content">
-          <h2 className="settings__title text-xl">Settings</h2>
+          <h1 className="settings__title text-xl">Settings</h1>
           <div className="settings__sections text-base">
             <ProfileDetails />
             <AddressBlock />

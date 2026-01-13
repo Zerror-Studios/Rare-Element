@@ -94,7 +94,7 @@ useEffect(() => {
 
       <div className="introloader_paren  center">
         <div className="loader_img">
-          <img src="/green_logo.svg" alt="Logo" />
+          <img src="/green_logo.svg" alt="Logo" title='logo' />
         </div>
       </div>
 
@@ -116,8 +116,8 @@ useEffect(() => {
           autoPlay
         />
         <div className="home_hero_inner">
-          <h2 className='text-3xl'>World of Nahara</h2>
-          <Link scroll={false} href="/products">
+          <h1 className='text-3xl'>World of Nahara</h1>
+          <Link scroll={false} href="/products" title='view all products'>
             <WhiteBorderBtn text={"Discover"} />
           </Link>
         </div>

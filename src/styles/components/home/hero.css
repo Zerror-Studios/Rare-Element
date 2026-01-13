@@ -61,6 +61,7 @@
   z-index: -1;
 }
 .home_hero_inner {
+  font-family: safira;
   position: absolute;
   white-space: nowrap;
   display: flex;

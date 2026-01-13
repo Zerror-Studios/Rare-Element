@@ -119,6 +119,7 @@ const Footer = () => {
               <Link
                 scroll={false}
                 href={item.href}
+                title={item.title}
                 key={i}
                 onMouseEnter={() => {
                   mainRef.current?.goToAndPlay(0, true);
@@ -179,8 +180,8 @@ const Footer = () => {
 
             {/* ABOUT TEXT — stays static */}
             <div className="footer_classname_about">
-              <Link scroll={false} href="/">
-                <img className="footer_logo" src="/logo.svg" alt="Nahara Logo" />
+              <Link scroll={false} href="/" title='home'>
+                <img className="footer_logo" src="/logo.svg" alt="Nahara Logo" title='logo' />
               </Link>
               <p className=" footer_about text-base thin">
                 Nahara brings a bold, playful edge to modern jewellery. Designed and crafted in-house, each piece blends inventive ideas with refined details, creating a fresh kind of elegance spirited, stylish, and made to stand out.
@@ -194,7 +195,7 @@ const Footer = () => {
 
                 <div className="footer_links_column">
                   {col.links.map((item, idx) => (
-                    <Link prefetch key={idx} href={item.href} scroll={false}>
+                    <Link prefetch key={idx} href={item.href} title={item.label} scroll={false}>
                       <p className="text-base thin">{item.label}</p>
                     </Link>
                   ))}
@@ -205,8 +206,8 @@ const Footer = () => {
 
           {/* Footer Bottom Section */}
           <div className="footer_classname_bottom">
-            <Link scroll={false} href="/">
-              <img className="footer_logo" src="/logo.svg" alt="Nahara Logo" />
+            <Link scroll={false} href="/" title='home'>
+              <img className="footer_logo" src="/logo.svg" alt="Nahara Logo" title='logo' />
             </Link>
             <div className="uppercase text-xs copyright_txt">
               <p>© {currentYear} Nahara. All rights reserved.</p>
@@ -214,7 +215,7 @@ const Footer = () => {
             <div className="uppercase text-xs copyright_txt">
               <p>
                 Developed by &nbsp;
-                <Link href="https://www.zerrorstudios.com/" target="_blank">Zerror Studios</Link>
+                <Link href="https://www.zerrorstudios.com/" title='zerror studios' target="_blank">Zerror Studios</Link>
               </p>
             </div>
           </div>

@@ -69,7 +69,7 @@ const AllProducts = ({ meta, products }) => {
         <>
           <div className="products_header">
             <p className="products_subtitle thin text-base uppercase">Crafted for Every Moment</p>
-            <h2 className="products_title text-3xl">Explore  Products</h2>
+            <h1 className="products_title text-3xl">Explore  Products</h1>
           </div>
 
           <div className="w-full center">
@@ -87,7 +87,7 @@ const AllProducts = ({ meta, products }) => {
               {products?.length == 0 && <h2 className='text-xl text-center'>No products found</h2>}
 
               {products?.map((item) => (
-                <Link prefetch key={item?._id} scroll={false} href={`/products/${item?.slug || item?._id}`}>
+                <Link prefetch key={item?._id} scroll={false} title={item?.name || ""} href={`/products/${item?.slug || item?._id}`}>
                   <ProductCard
                     key={item?._id}
                     productId={item?._id}

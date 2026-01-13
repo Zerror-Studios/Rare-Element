@@ -28,7 +28,7 @@ const Introloader = () => {
 
   return (
     <div className="introloader_paren center">
-      <img src="/green_logo.svg" alt="Logo" />
+      <img src="/green_logo.svg" alt="Logo" title="logo" />
 
       <div className="intro_loaderparen">
         <span className="intro_loader"></span>

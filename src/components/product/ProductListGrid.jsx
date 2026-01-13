@@ -13,7 +13,7 @@ const ProductListGrid = ({ title, data }) => {
       </div>
       <div className="suggestion_scroll relative">
         {data?.map((item) => (
-          <Link prefetch key={item?._id} scroll={false} href={`/products/${item?.slug || item?._id}`}>
+          <Link prefetch key={item?._id} scroll={false} href={`/products/${item?.slug || item?._id}`} title={item?.name || ""}>
             <div className="suggestion_shopcard">
               <ProductCard
                 key={item?._id}

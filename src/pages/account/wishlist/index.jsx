@@ -28,14 +28,14 @@ const Wishlist = ({ meta }) => {
       <AccountLayout>
         <AccountBreadcrumb title={"Wishlist"} />
         <div className="settings__content">
-          <h2 className="settings__title text-xl">My Wishlist</h2>
+          <h1 className="settings__title text-xl">My Wishlist</h1>
           <div className="wishlist_empty_box">
             {loading && <p>Loading wishlist...</p>}
             {/* {error && <p className="text-red-500">Error loading wishlist: {error.message}</p>} */}
             {!loading && wishlistItems.length === 0 && (
               <div className="wishlist_empty_box_inner">
                 <p className="text-xl ">Your wishlist is empty.</p>
-                <Link href="/products" className="underline">
+                <Link href="/products" className="underline" title='go to shopping'>
                   Go to Shopping
                 </Link>
               </div>
@@ -44,7 +44,7 @@ const Wishlist = ({ meta }) => {
           {wishlistItems.length > 0 && (
             <div className="wishlist_box">
               {wishlistItems.map((item) => (
-                <Link scroll={false} key={item._id} href={`/products/${item.product?.slug || item.product?._id}`} className='wishlist_card'>
+                <Link scroll={false} key={item._id} title={item.product?.name} href={`/products/${item.product?.slug || item.product?._id}`} className='wishlist_card'>
                   <ProductCard
                     productId={item.product?._id}
                     name={item.product?.name}

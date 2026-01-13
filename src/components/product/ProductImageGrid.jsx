@@ -6,7 +6,7 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import Image from "next/image";
 
-const ProductImageGrid = ({ filter, data }) => {
+const ProductImageGrid = ({ filter, data , title }) => {
   const [swiperInstance, setSwiperInstance] = useState(null);
   const [selectedAssetIndex, setSelectedAssetIndex] = useState(0);
 
@@ -38,7 +38,7 @@ const ProductImageGrid = ({ filter, data }) => {
     <div className="productDetail_left">
       <div className="MobileImageSlider_container scroller_none">
         {/* Thumbnails */}
-        <div  className="MobileImageSlider_thumbnails scroller_none">
+        <div className="MobileImageSlider_thumbnails scroller_none">
           {filteredAssets.map((item, index) => {
             const src = item?.path || "/green_logo.svg";
             const video = isVideo(src);
@@ -54,7 +54,7 @@ const ProductImageGrid = ({ filter, data }) => {
               >
                 {video ? (
                   <div className="thumbnail_video center">
-                    <img className="play_btn_img" src="/icons/play_btn.png" alt="" />
+                    <img className="play_btn_img" src="/icons/play_btn.png" alt="loading" title="play" />
                     <video muted
                       playsInline src={src} className="cover" type="video/mp4" />
                   </div>
@@ -63,7 +63,8 @@ const ProductImageGrid = ({ filter, data }) => {
                     width={150}
                     height={200}
                     src={src}
-                    alt={item?.altText || ""}
+                    alt={title}
+                    title={title}
                   />
                 )}
               </div>
@@ -108,7 +109,8 @@ const ProductImageGrid = ({ filter, data }) => {
                     <Image
                       fill
                       src={src}
-                      alt={item?.altText || ""}
+                      alt={title}
+                      title={title}
                       className="MobileImageSlider_slideImage"
                     />
                   )}
@@ -123,13 +125,19 @@ const ProductImageGrid = ({ filter, data }) => {
             className="MobileImageSlider_arrow left"
             onClick={() => swiperInstance?.slidePrev()}
           >
-            <img src="/icons/arrowLeft.svg" alt="loading" />
+            <img src="/icons/arrowLeft.svg"
+              alt="loading"
+              title="Back"
+            />
           </button>
           <button
             className="MobileImageSlider_arrow right"
             onClick={() => swiperInstance?.slideNext()}
           >
-            <img src="/icons/arrowRight.svg" alt="loading" />
+            <img src="/icons/arrowRight.svg"
+              alt="loading"
+              title="Next"
+            />
 
           </button>
         </div>

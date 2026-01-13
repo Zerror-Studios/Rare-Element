@@ -106,6 +106,7 @@ const Categories = ({ meta, data, productList }) => {
               className="products_hero-img"
               src={data?.imgsrc}
               alt={data?.name || ""}
+              title={data?.name || ""}
               onLoadingComplete={() => setImageReady(true)}
             />
 
@@ -119,7 +120,7 @@ const Categories = ({ meta, data, productList }) => {
 
           <div className="category_products_header">
             <p className="products_subtitle thin text-base uppercase">Crafted for Every Moment</p>
-            <h2 className="products_title text-3xl">{data?.name || ""}</h2>
+            <h1 className="products_title text-3xl">{data?.name || ""}</h1>
           </div>
 
           <div className="padding">
@@ -131,6 +132,7 @@ const Categories = ({ meta, data, productList }) => {
                     key={item._id}
                     scroll={false}
                     href={`/products/${item.slug || item._id}`}
+                    title={item.name || ""}
                   >
                     <ProductCard
                       productId={item._id}

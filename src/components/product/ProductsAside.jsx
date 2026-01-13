@@ -38,7 +38,7 @@ const ProductsAside = ({ setOpenFilter }) => {
         <div className="products_aside_close">
           <img
             onClick={() => setOpenFilter(false)}
-            src="/icons/close.svg" alt="loading" />
+            src="/icons/close.svg" alt="loading" title='close icon' />
         </div>
         <div className="filter_boxes_paren">
           {filterOptions.map((item, i) => {

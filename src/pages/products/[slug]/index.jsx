@@ -104,7 +104,7 @@ const ProductDetail = ({ meta, data, productList }) => {
     <>
       <SeoHeader meta={meta} productData={data} breadcrumbList={breadcrumbList} />
       <div className="productDetail_main padding">
-        <ProductImageGrid filter={assetsFilter} data={data?.assets || []} />
+        <ProductImageGrid filter={assetsFilter} data={data?.assets || []} title={data?.name} />
         <ProductContant
           data={data || {}}
           finalPrice={finalPrice}
