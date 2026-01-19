@@ -29,8 +29,7 @@ const Purchases = ({ meta }) => {
       <AccountLayout>
         <AccountBreadcrumb title={"Offers"} />
         <div className="purchases_rightSection">
-          <h1 className="account_heading text-xl">Account and Rewards</h2>
-
+          <h1 className="account_heading text-xl">Account and Rewards</h1>
           <div className="account_gridBox">
             {offers.map((offer, index) => (
               <div key={index} className="account_offerCard">
@@ -44,14 +43,18 @@ const Purchases = ({ meta }) => {
                 </div>
 
                 <div className="account_offerText">
-                  <p className="account_offerTitle text-base uppercase">{offer.title}</p>
-                  <p className="account_offerValidity text-base">{offer.validity}</p>
+                  <p className="account_offerTitle text-base uppercase">
+                    {offer.title}
+                  </p>
+                  <p className="account_offerValidity text-base">
+                    {offer.validity}
+                  </p>
                 </div>
-
               </div>
             ))}
           </div>
         </div>
+
       </AccountLayout>
     </>
   )
