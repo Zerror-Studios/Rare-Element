@@ -108,7 +108,13 @@ const OrderSummary = ({ data, loading, refetch }) => {
 
         <div className="checkout_row ">
           <p className="checkout_textBase text-lg uppercase">Subtotal</p>
-          <p className="checkout_textBase text-lg uppercase">{formatePrice(totalprice)}</p>
+          <p className="checkout_textBase text-lg uppercase">
+            {formatePrice(
+              data?.pricesIncludeTax
+                ? totalprice - (data?.totalTax || 0)
+                : totalprice
+            )}
+          </p>
         </div>
         {!!totalDiscount && (
           <div className="checkout_row ">
@@ -116,30 +122,30 @@ const OrderSummary = ({ data, loading, refetch }) => {
             <p className="checkout_textBase text-lg uppercase">-{formatePrice(totalDiscount)}</p>
           </div>
         )}
-        <div className="checkout_borderRow ">
+        <div className="checkout_borderRow">
           <p className="checkout_textSm text-lg uppercase">Shipping Charge</p>
           <p className="checkout_textSm text-lg uppercase">{isFreeShippingEnabled ? "Free" : formatePrice(0)}</p>
         </div>
 
         {/* Tax Breakdown */}
         {data?.taxBreakdown?.length > 0 && (
-          <div className="checkout_row flex flex-col gap-1 py-2">
+          <div className="tax_breakdown_section">
             {data.taxBreakdown.map((tax, index) => (
-              <div key={index} className="flex justify-between w-full">
-                <p className="checkout_textBase text-sm uppercase text-gray-500">
+              <div key={index} className="tax_row">
+                <p className="tax_name">
                   {tax.name} ({tax.rate}%)
                 </p>
-                <p className="checkout_textBase text-sm uppercase text-gray-500">
+                <p className="tax_amount">
                   {formatePrice(tax.amount)}
                 </p>
               </div>
             ))}
-            <div className="flex justify-between w-full mt-1 border-t pt-2">
-              <p className="checkout_textBase text-base uppercase">Total Tax</p>
-              <p className="checkout_textBase text-base uppercase">{formatePrice(data.totalTax)}</p>
+            <div className="total_tax_row">
+              <p className="total_tax_label">Total Tax</p>
+              <p className="total_tax_value">{formatePrice(data.totalTax)}</p>
             </div>
             {data.pricesIncludeTax && (
-              <p className="text-xs text-gray-400 mt-1 italic">* Prices are inclusive of tax</p>
+              <p className="inclusive_tax_msg">* Inclusive of all taxes</p>
             )}
           </div>
         )}
