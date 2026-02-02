@@ -29,7 +29,7 @@ export const featureData = [
     href: "/shipping-returns",
     img: "/icons/shipping.svg",
     animationData: FreeShipping,
-    desc: "Enjoy seamless, complimentary delivery across India on orders above ₹3,000.",
+    desc: "Enjoy seamless, complimentary delivery across India on all orders.",
   },
   {
     title: "50+ years of industry experience",
