@@ -121,6 +121,29 @@ const OrderSummary = ({ data, loading, refetch }) => {
           <p className="checkout_textSm text-lg uppercase">{isFreeShippingEnabled ? "Free" : formatePrice(0)}</p>
         </div>
 
+        {/* Tax Breakdown */}
+        {data?.taxBreakdown?.length > 0 && (
+          <div className="checkout_row flex flex-col gap-1 py-2">
+            {data.taxBreakdown.map((tax, index) => (
+              <div key={index} className="flex justify-between w-full">
+                <p className="checkout_textBase text-sm uppercase text-gray-500">
+                  {tax.name} ({tax.rate}%)
+                </p>
+                <p className="checkout_textBase text-sm uppercase text-gray-500">
+                  {formatePrice(tax.amount)}
+                </p>
+              </div>
+            ))}
+            <div className="flex justify-between w-full mt-1 border-t pt-2">
+              <p className="checkout_textBase text-base uppercase">Total Tax</p>
+              <p className="checkout_textBase text-base uppercase">{formatePrice(data.totalTax)}</p>
+            </div>
+            {data.pricesIncludeTax && (
+              <p className="text-xs text-gray-400 mt-1 italic">* Prices are inclusive of tax</p>
+            )}
+          </div>
+        )}
+
         <div className="checkout_row semibold uppercase text-2xl">
           <p className="checkout_subtotalText bold">Total</p>
           <p className="checkout_subtotalValue bold">{formatePrice(discountedPrice)}</p>

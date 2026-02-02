@@ -56,6 +56,13 @@ export const CART_LIST = gql`
       coupon {
         couponId
       }
+      totalTax
+      taxBreakdown {
+        name
+        rate
+        amount
+      }
+      pricesIncludeTax
       nimbblOrderId
       nimbblInvoiceId
       nimbblTransanctionId
