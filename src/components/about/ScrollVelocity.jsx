@@ -12,10 +12,11 @@ const ScrollVelocity = () => {
       scrollTrigger: {
         trigger: ".about_mr_pr",
         start: "top top",
-        pin: true,
-        anticipatePin: 1,
-        end:"+=200%",
-        scrub: .4,
+        end:"bottom bottom",
+        // pin: true,
+        // anticipatePin: 1,
+        // end:"+=200%",
+        scrub: true,
         // markers:true
       },
       xPercent: -58,
@@ -25,6 +26,7 @@ const ScrollVelocity = () => {
 
   return (
     <div className='about_mr_pr'>
+      <div className="about_marquee_paren_sticky">
       <div className="about_marquee_paren">
 
         <div className="about_marque_img_paren_1">
@@ -104,6 +106,7 @@ const ScrollVelocity = () => {
           </div>
         </div>
 
+      </div>
       </div>
     </div>
   )

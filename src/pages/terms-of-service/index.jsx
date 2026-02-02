@@ -6,7 +6,7 @@ const TermsOfService = ({ meta }) => {
     <>
       <SeoHeader meta={meta} />
       <div id="legal-page" className="text-lg">
-        <h2 className="text-2xl">Terms Of Service</h2>
+        <h1 className="text-2xl">Terms Of Service</h1>
         <div className="legal-container">
           <p>
             By using our website ("Service"), you agree to the following terms:

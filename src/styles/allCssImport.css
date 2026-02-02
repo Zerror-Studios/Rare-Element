@@ -1,4 +1,5 @@
 @import "./fontSetting.css";
+@import "./toastify.css";
 
 @import "./pages/login.css";
 @import "./pages/checkout.css";

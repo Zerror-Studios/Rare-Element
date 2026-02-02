@@ -192,7 +192,7 @@ const CheckoutPage = ({ meta }) => {
       <SeoHeader meta={meta} />
       <div className="checkout_section">
         <div className="checkout_section_inner">
-          <h2 className=" text-2xl uppercase checkout_heading">Checkout</h2>
+          <h1 className=" text-2xl uppercase checkout_heading">Checkout</h1>
           <form onSubmit={handleSubmit(onSubmit)} className="checkout_Wrapper">
             <div className="checkout_leftContainer">
 
@@ -217,11 +217,11 @@ const CheckoutPage = ({ meta }) => {
               <label className="">
                 <p>
                   By continuing, I confirm that I have read and accept the{" "}
-                  <Link href="/terms-of-service" target="_blank" className="text_decoration_underline ">
+                  <Link href="/terms-of-service" target="_blank" title="Terms and Conditions" className="text_decoration_underline ">
                     Terms and Conditions
                   </Link >{" "}
                   and the{" "}
-                  <Link href="/privacy-policy" target="_blank" className="text_decoration_underline ">
+                  <Link href="/privacy-policy" target="_blank" title="Privacy Policy" className="text_decoration_underline ">
                     Privacy Policy
                   </Link >
                 </p>

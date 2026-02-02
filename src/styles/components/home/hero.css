@@ -27,7 +27,23 @@
   height: 0;
 }
 
+.home_hero_video {
+  object-position: 0%;
+  pointer-events: none;
+}
+
+.home_hero_video::-webkit-media-controls {
+  display: none !important;
+}
+
+.home_hero_video::-webkit-media-controls-play-button {
+  display: none !important;
+}
+
 @media (min-width: 750px) {
+  .home_hero_video {
+    object-position: center;
+  }
   .dummy_hero_div {
     height: 66vh;
     pointer-events: none;
@@ -48,6 +64,7 @@
   z-index: -1;
 }
 .home_hero_inner {
+  font-family: safira;
   position: absolute;
   white-space: nowrap;
   display: flex;

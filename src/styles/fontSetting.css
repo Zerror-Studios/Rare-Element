@@ -37,7 +37,7 @@ a {
 }
 .primary-font {
   letter-spacing: 0.05rem;
-  font-family: railway-medium;
+  font-family: railway-medium, sans-serif;
 }
 p,
 a,
@@ -47,24 +47,25 @@ input,
 li,
 button {
   letter-spacing: 0.05rem;
-  font-family: railway-medium;
+  font-family: railway-medium, sans-serif;
   cursor: pointer;
 }
+h1,
 h2 {
   font-weight: 100;
   letter-spacing: 0.1rem;
-  font-family: safira;
+  font-family: safira, serif;
 }
 .thin {
   font-weight: 100 !important;
   color: black !important;
-  font-family: railway-regular !important;
+  font-family: railway-regular, sans-serif !important;
 }
 .bold {
   font-weight: 1000 !important;
   /* opacity: .9; */
   color: black !important;
-  font-family: railway-medium !important;
+  font-family: railway-medium, sans-serif !important;
 }
 .text-xxs {
   font-size: 0.625rem; /* 10px */

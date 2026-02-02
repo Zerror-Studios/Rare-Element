@@ -220,12 +220,12 @@ const ProductContant = ({
             <div className="productDetail_info_left">
               {data?.categories?.map((item) => {
                 return (
-                  <Link prefetch key={item?._id} scroll={false} href={`/${item?.slug || ""}`}>
+                  <Link prefetch key={item?._id} scroll={false} href={`/${item?.slug || ""}`} title={item?.name || ""}>
                     <p className="productDetail_category text-lg">{item?.name || ""}</p>
                   </Link>
                 )
               })}
-              <h2 className="productDetail_title text-xl ">{data?.name || ""}</h2>
+              <h1 className="productDetail_title text-xl ">{data?.name || ""}</h1>
               <div className="prd_desc text-lg primary-font">
                 {htmlParser(data?.description)}
               </div>
@@ -256,6 +256,7 @@ const ProductContant = ({
                             }`}
                           src="/icons/LongArrowDown.svg"
                           alt="loading"
+                          title="Dropdown"
                         />
                       </button>
                     </div>
@@ -354,6 +355,7 @@ const ProductContant = ({
                     className={`short_links_icon_heart ${isWishlisted ? 'hidden' : ''}`}
                     src="/icons/greenHeart.svg"
                     alt="heart"
+                    title="Wishlist"
                     width={24}
                     height={24}
                     priority={false}
@@ -362,6 +364,7 @@ const ProductContant = ({
                     className={`short_links_icon_heart_hover ${isWishlisted ? 'show_filled' : ''}`}
                     src="/icons/heartFill.svg"
                     alt="heart filled"
+                    title="Wishlist"
                     width={24}
                     height={24}
                     priority={false}
@@ -387,7 +390,8 @@ const ProductContant = ({
                         className={`productDetail_quantity_icon ${accordionIndex === index ? "rotated" : ""
                           }`}
                         src="/icons/LongArrowDown.svg"
-                        alt=""
+                        alt="loading"
+                        title="Dropdown"
                       />
                     </button>
 

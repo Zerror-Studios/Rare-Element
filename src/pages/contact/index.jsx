@@ -35,12 +35,13 @@ const ContactSupport = ({ meta }) => {
   useGSAP(() => {
     var tl = gsap.timeline({
       scrollTrigger: {
-        trigger: "#contact_form",
+        trigger: ".contact_form_paren",
+        end:"bottom bottom",
         start: "top top",
-        anticipatePin: 1,
-        scrub: .4,
+        // anticipatePin: 1,
+        scrub: true,
         // markers:true,
-        pin: true,
+        // pin: true,
       },
     })
 
@@ -48,7 +49,6 @@ const ContactSupport = ({ meta }) => {
       tl.to(".slider_box_paren", {
         xPercent: -100,
         ease: "linear",
-        duration: .5,
       })
       tl.to(".contact_img_paren", {
         width: "60%",
@@ -60,15 +60,13 @@ const ContactSupport = ({ meta }) => {
       }, "<")
       tl.from("#form", {
         opacity: 0,
-        duration: .5,
         ease: "linear",
       }, "<0.25")
 
     } else {
       tl.to(".slider_box_paren", {
-        xPercent: -90,
+        xPercent: -100,
         ease: "linear",
-        duration: .5,
       })
     }
 
@@ -78,28 +76,30 @@ const ContactSupport = ({ meta }) => {
   return (
     <>
       <SeoHeader meta={meta} />
-      <section id="contact_form" >
-        <div className="contact_img_paren ">
-          <img className='contact_bg_img' src="https://images.unsplash.com/photo-1711462579127-d25e6ea88244?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="loading" />
-          <div className="ct_box">
-            <h2 className=' text-3xl font-semibold'>Contact Us</h2>
-            <p className='text-base uppercase'>Need help? Contact Nahara for support, product inquiries, custom jewellery requests, and order assistance.</p>
-          </div>
-
-        </div>
-        <div className="slider_box_paren">
-          {slideBoxData?.map((item, i) => (
-            <div key={i} className="slider_box">
-              <p className='text-lg'>( 0{item.id} )</p>
-              <h2 className='text-xl font-semibold'>{item.title}</h2>
-              <div className="desc_prn">
-                <p className='text-lg'>{item.desc}</p>
-              </div>
+      <div className="contact_form_paren">
+        <section id="contact_form" >
+          <div className="contact_img_paren ">
+            <img className='contact_bg_img' src="https://images.unsplash.com/photo-1711462579127-d25e6ea88244?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="loading" title='loading' />
+            <div className="ct_box">
+              <h1 className=' text-3xl font-semibold'>Contact Us</h1>
+              <p className='text-base uppercase'>Need help? Contact Nahara for support, product inquiries, custom jewellery requests, and order assistance.</p>
             </div>
-          ))}
-        </div>
-        <ContactForm />
-      </section>
+
+          </div>
+          <div className="slider_box_paren">
+            {slideBoxData?.map((item, i) => (
+              <div key={i} className="slider_box">
+                <p className='text-lg'>( 0{item.id} )</p>
+                <h2 className='text-xl font-semibold'>{item.title}</h2>
+                <div className="desc_prn">
+                  <p className='text-lg'>{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <ContactForm />
+        </section>
+      </div>
       <Faq />
     </>
   )

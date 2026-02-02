@@ -277,7 +277,7 @@ const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
               cursor: count === 0 ? "not-allowed" : "pointer",
             }}
           />
-          <p className="text-base  crt_btn_txt"> Free shipping on orders above ₹3,000, with easy returns and fast support—always.</p>
+          <p className="text-base  crt_btn_txt"> Free shipping on all orders , with easy returns and fast support—always.</p>
         </div>
       </div>
     </div>

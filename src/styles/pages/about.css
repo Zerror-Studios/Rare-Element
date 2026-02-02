@@ -9,19 +9,27 @@
 }
 .abt_img_galry img,
 .abt_mob_txt img {
-    opacity: 0;
+  opacity: 0;
 }
-.about_mr_pr{
+.about_mr_pr {
   width: 100%;
-  display: flex;
-  align-items: center;
-  height: 100vh;
+  height: 400vh;
 }
 .about_marquee_paren {
+  /* width: 100%; */
+  /* height: 100vh; */
   padding-left: 2rem;
   /* overflow: hidden; */
   /* width: 100%; */
   display: flex;
+}
+.about_marquee_paren_sticky {
+  position: sticky;
+  display: flex;
+  align-items: center;
+  top: 0;
+  width: 100%;
+  height: 100vh;
 }
 .marq_img_paren {
   display: flex;
@@ -227,8 +235,8 @@
     position: relative;
   }
   .marq_img_6 {
-  width: 50vw;
-}
+    width: 50vw;
+  }
 
   .abt_mob_txt {
     padding: 5rem 1rem;
@@ -255,7 +263,7 @@
   .about_txt_img {
     width: 55%;
   }
-  .about_sticker_section{
+  .about_sticker_section {
     height: 80vh;
   }
   .mobile_sticker_1 {

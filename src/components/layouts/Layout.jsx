@@ -100,10 +100,10 @@ const Layout = ({ children }) => {
   return (
     <>
 
-      <Link target="_blank" href="https://wa.me/+919137159898">
+      <Link target="_blank" href="https://wa.me/+919137159898" title="whatsapp">
         <div className="whatsapp_chat">
           <div className="whatsapp_chat_img center">
-            <img className="cover" src="/gifs/whatsapp.gif" alt="loading" />
+            <img className="cover" src="/gifs/whatsapp.gif" alt="loading" title="whatsapp" />
           </div>
           <p className="bold">CHAT</p>
         </div>
@@ -115,6 +115,7 @@ const Layout = ({ children }) => {
             width={960}
             src={sizeGuideImage?.path || "/green_logo.svg"}
             alt={sizeGuideImage?.altText || "Size guide"}
+            title={sizeGuideImage?.altText || "Size guide"}
             className="w-full h-auto"
           />
         </div>

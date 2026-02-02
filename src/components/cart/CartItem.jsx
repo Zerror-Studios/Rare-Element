@@ -38,24 +38,25 @@ const CartItem = ({
     <div className="cartBag_bagItem">
       <div className="cartBag_bagItemInner">
         <div className="cartBag_bagImageWrapper">
-          <Link prefetch scroll={false} onClick={onClose} href={`/products/${item?.product?.slug}`} className='cartBag_bagImage'>
+          <Link prefetch scroll={false} onClick={onClose} href={`/products/${item?.product?.slug}`} title={item?.name} className='cartBag_bagImage'>
             <Image
               width={150}
               height={200}
               className="cartBag_bagImage"
               src={item?.asset?.path || "/green_logo.svg"}
-              alt={item?.asset?.altText || "loading"}
+              alt={item?.name}
+              title={item?.name}
             />
           </Link>
         </div>
         <div className="cartBag_bagItemDetails">
           <div className="cartBag_bagItemTop">
             <div className="cartBag_itemHead">
-              <Link prefetch scroll={false} onClick={onClose} href={`/products/${item?.product?.slug}`} className="cartBag_itemName text-base">
-              <p>
-                {item?.name}
+              <Link prefetch scroll={false} onClick={onClose} href={`/products/${item?.product?.slug}`} title={item?.name} className="cartBag_itemName text-base">
+                <p>
+                  {item?.name}
                 </p>
-                </Link>
+              </Link>
               <div className="cart_varients_div">
                 {renderVariants(item?.product?.productOptions || [], item?.variantDetail?.selectedOptions || [])}
               </div>

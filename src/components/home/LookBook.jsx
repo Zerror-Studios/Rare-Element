@@ -178,7 +178,7 @@ const LookBook = ({ data }) => {
                                     <Image
                                         fill
                                         quality={50}
-                                        className="cover" src={item?.assets?.[1]?.path || "/green_logo.svg"} alt={item?.assets?.[1]?.altText || "loading"} />
+                                        className="cover" src={item?.assets?.[1]?.path || "/green_logo.svg"} alt=  {item?.name || ""} title=  {item?.name || ""} />
                                 </div>
                             </SwiperSlide>
                         ))}
@@ -209,7 +209,7 @@ const LookBook = ({ data }) => {
                                     <div className="lookbookSlider_card">
                                         <div className="lookbookSlider_card_image">
                                             <Image width={600}
-                                                height={800} className="cover" src={item?.assets?.[1]?.path || "/green_logo.svg"} alt={item?.assets?.[1]?.altText || "loading"} />
+                                                height={800} className="cover" src={item?.assets?.[1]?.path || "/green_logo.svg"} alt=  {item?.name || ""} title=  {item?.name || ""} />
                                         </div>
                                         <p className="lookbookSlider_card_description uppercase text-xl">
                                             {item?.name || ""}

@@ -22,6 +22,7 @@
   z-index: 99999;
 }
 .add_popup {
+  position: relative;
   padding: 1rem;
   padding-block: 1.5rem;
   text-align: center;
@@ -76,6 +77,25 @@
   align-items: start;
 }
 
+.popup_close_icon {
+  cursor: pointer;
+}
+
+.popup_close_icon {
+  width: 1.75rem;
+  height: 1.75rem;
+  flex-shrink: 0;
+  position: absolute;
+  right: .75rem;
+  top: .75rem;
+  z-index: 9;
+  background-color: #174d38;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+}
 @media (min-width: 750px) {
   .add_popup {
     padding: 2rem;

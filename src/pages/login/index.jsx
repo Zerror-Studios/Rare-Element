@@ -17,12 +17,14 @@ const UserLogin = ({ meta }) => {
             <img
               src="https://palmonas.com/cdn/shop/files/BR093-B_b2505079-b550-4521-8d72-32af352050af.jpg?v=1744526386&width=900"
               alt="image"
+              title="img"
             />
           </div>
           <div className="left-one">
             <img
               src="https://www.apm.mc/cdn/shop/files/AB5616OX-apm-monaco-pave-bracelet-jewelry_6406ed76-f49c-44d3-95ba-7e51e631a327.jpg?v=1755764670&width=600"
               alt="image"
+              title="img"
             />
           </div>
         </div>

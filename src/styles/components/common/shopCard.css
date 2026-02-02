@@ -1,5 +1,6 @@
 .shopCard_card {
   aspect-ratio: 3/ 4;
+  overflow: hidden;
   width: 100%;
   padding-bottom: 0.75rem;
   background: white;
@@ -125,6 +126,7 @@
 
   .shopCard_card {
     aspect-ratio: 3/ 4;
+    overflow: hidden;
     width: 100%;
     padding-bottom: 0rem;
     background: white;
@@ -157,7 +159,7 @@
   }
 
   .shopCard_img_wrapper img {
-    width: 100%;
+    scale: 1.5;
     object-fit: contain;
   }
 

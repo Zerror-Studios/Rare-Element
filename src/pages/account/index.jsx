@@ -10,7 +10,7 @@ const Account = ({ meta }) => {
       <SeoHeader meta={meta} />
       <AccountLayout>
         <div className="account_rightSection">
-          <h2 className="purchases_heading text-xl">My purchases</h2>
+          <h1 className="purchases_heading text-xl">My purchases</h1>
           <OrderList />
         </div>
       </AccountLayout>

@@ -13,7 +13,7 @@ const filterOptions = [
   },
   {
     label: "price",
-    options: ["below ₹2,000", "₹2000 - ₹5,000", "₹5000 - ₹10,000", "above ₹10,000"]
+    options: ["under ₹5,000", "₹5000 - ₹7,500", "₹7,500 - ₹10,000", "above ₹10,000"]
   },
 ]
 
@@ -38,7 +38,7 @@ const ProductsAside = ({ setOpenFilter }) => {
         <div className="products_aside_close">
           <img
             onClick={() => setOpenFilter(false)}
-            src="/icons/close.svg" alt="loading" />
+            src="/icons/close.svg" alt="loading" title='close icon' />
         </div>
         <div className="filter_boxes_paren">
           {filterOptions.map((item, i) => {

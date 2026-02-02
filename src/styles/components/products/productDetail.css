@@ -92,6 +92,7 @@
 
 .MobileImageSlider_thumbnail img {
   width: 100%;
+  scale: 1.75;
   height: 100%;
   object-fit: contain;
 }
@@ -109,6 +110,7 @@
 }
 
 .MobileImageSlider_slide {
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -126,6 +128,7 @@
 .MobileImageSlider_slideImage {
   width: 100%;
   height: 100%;
+  scale: 1.5;
   object-fit: contain;
 }
 

@@ -43,7 +43,7 @@ const AccountAside = () => {
 
         <div className="accountLeftSlide_nav">
           <div className="accountLeftSlide_navItem_hidden">
-            <Link scroll={false} href={"/account"}>
+            <Link scroll={false} href={"/account"}  title='/account' >
               <p
                 className={`accountLeftSlide_navLink uppercase text-2xl ${router.pathname === "/account" ? "active" : ""
                   }`}
@@ -53,8 +53,8 @@ const AccountAside = () => {
             </Link>
           </div>
 
-          {/* <div>
-            <Link scroll={false} href={"/account/wishlist"}>
+          <div>
+            <Link scroll={false} href={"/account/wishlist"} title='/account/wishlist'>
               <p
                 className={`accountLeftSlide_navLink uppercase text-2xl ${router.pathname === "/account/wishlist" ? "active" : ""
                   }`}
@@ -62,11 +62,11 @@ const AccountAside = () => {
                 Wishlist
               </p>
             </Link>
-          </div> */}
+          </div>
 
 
           <div >
-            <Link scroll={false} href={"/account/offers"}>
+            <Link scroll={false} href={"/account/offers"} title='/account/offers'>
               <p
                 className={`accountLeftSlide_navLink uppercase text-2xl ${router.pathname === "/account/offers" ? "active" : ""
                   }`}
@@ -77,7 +77,7 @@ const AccountAside = () => {
           </div>
 
           <div>
-            <Link scroll={false} href={"/account/settings"}>
+            <Link scroll={false} href={"/account/settings"} title='/account/settings' >
               <p
                 className={`accountLeftSlide_navLink uppercase text-2xl ${router.pathname === "/account/settings" ? "active" : ""
                   }`}

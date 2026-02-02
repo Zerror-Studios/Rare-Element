@@ -6,7 +6,7 @@ const shippingReturns = ({ meta }) => {
     <>
       <SeoHeader meta={meta} />
       <div id="legal-page" className="text-lg">
-        <h2 className=" text-2xl">Shipping And Returns</h2>
+        <h1 className=" text-2xl">Shipping And Returns</h1>
 
         <div className="legal-container">
           <p className="text-2xl ">Shipping Policy</p>

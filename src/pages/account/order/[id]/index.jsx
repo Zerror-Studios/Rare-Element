@@ -21,7 +21,7 @@ const OrderDetail = ({ meta }) => {
         <AccountBreadcrumb title={"Order Details"} />
         <div className="account_rightSection">
 
-          <h2 className="purchases_heading text-xl uppercase">Order details</h2>
+          <h1 className="purchases_heading text-xl uppercase">Order details</h1>
 
           <div className="purchases_ordersList text-base">
             <div className="">
@@ -99,12 +99,13 @@ const OrderDetail = ({ meta }) => {
                   <div key={index} className="order_detailsBagItem">
                     <div className="cartBag_bagItemInner">
                       <div className="cartBag_bagImageWrapper">
-                        <Link prefetch scroll={false} key={item?.product?._id} href={`/products/${item?.product?.slug}`} className='cartBag_bagImage'>
+                        <Link prefetch scroll={false} key={item?.product?._id} href={`/products/${item?.product?.slug}`} title={item?.asset?.altText || ""} className='cartBag_bagImage'>
                           <Image
                             width={150}
                             height={200}
                             className="cartBag_bagImage"
                             src={item?.asset?.path || ""}
+                            title={item?.asset?.altText || ""}
                             alt={item?.asset?.altText || ""}
                           />
                         </Link>
@@ -118,7 +119,7 @@ const OrderDetail = ({ meta }) => {
                           <p className='text-xl'>{formatePrice(item?.finalPrice || 0)}</p>
                         </div>
                         <div className="purchases_orderFooter_inner">
-                          <Link prefetch scroll={false} href={`/products/${item?.product?.slug}`} className="text-sm">
+                          <Link prefetch scroll={false} href={`/products/${item?.product?.slug}`} title={item?.name} className="text-sm">
                             <p className="text-sm">View Product</p>
                           </Link>
                         </div>
@@ -137,7 +138,7 @@ const OrderDetail = ({ meta }) => {
             <p className='uppercase bold text-base'>Return & Refund Information</p>
 
             <div className="purchases_orderFooter_inner order_open_prdct">
-              <Link scroll={false} href={`/shipping-returns`} className="text-sm">
+              <Link scroll={false} href={`/shipping-returns`} title='Shipping & Returns' className="text-sm">
                 <p className="text-sm">Shipping & Returns</p>
               </Link>
             </div>

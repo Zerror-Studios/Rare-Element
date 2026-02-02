@@ -1,4 +1,4 @@
-import React, { Suspense, use, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import React, { Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import gsap from 'gsap'
 import SeoHeader from '@/components/seo/SeoHeader'
@@ -10,6 +10,7 @@ import { StatusCode } from '@/utils/Constant'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import CategoryPageSkeleton from '@/components/skeletons/CategoryPageSkeleton'
+import ScrollTrigger from 'gsap/dist/ScrollTrigger'
 
 const Categories = ({ meta, data, productList }) => {
   const breadcrumbList = [
@@ -17,130 +18,98 @@ const Categories = ({ meta, data, productList }) => {
   ];
   const pathname = usePathname()
   const containerRef = useRef(null)
+  const [imageReady, setImageReady] = useState(false);
 
   useLayoutEffect(() => {
-    const ctx = gsap.context(() => {
-      const height = window.innerWidth > 750 ? "76vh" : "47.5rem"
+    if (!imageReady || !containerRef.current) return;
 
-      gsap.set([
-        ".products_content",
-        ".products_hero-img",
-        ".products_header",
-        ".allproducts_paren",
-        ".category_products_header"
-      ], { opacity: 0 })
+    const ctx = gsap.context(() => {
+      const height = window.innerWidth > 750 ? "76vh" : "47.5rem";
+      const heroSection = containerRef.current.querySelector(".products_hero-section");
+      const heroImg = containerRef.current.querySelector(".products_hero-img");
+
+      if (!heroSection || !heroImg) return;
+
+      // reset state
+      gsap.set(
+        [
+          ".products_content",
+          ".products_hero-img",
+          ".products_header",
+          ".allproducts_paren",
+          ".category_products_header",
+        ],
+        { opacity: 0 }
+      );
 
       gsap.fromTo(
-        ".products_hero-section",
+        heroSection,
         { height: 0 },
         {
           height,
           duration: 1,
-          delay: 0.3,
-          ease: "ease-secondary"
+          ease: "ease-secondary",
         }
-      )
+      );
 
-      gsap.to([
-        ".products_content",
-        ".products_hero-img",
-        ".products_header",
-        ".allproducts_paren",
-        ".category_products_header"
-      ], {
-        opacity: 1,
-        delay: 0.5,
-        stagger: 0.1,
-        duration: 1,
-        ease: "ease-secondary"
-      })
-
-      if (window.innerWidth < 750) return
-      gsap.to(".products_hero-img", {
-        y: 200,
-        filter: "brightness(0.5)",
-        ease: "linear",
-        scrollTrigger: {
-          trigger: ".products_hero-section",
-          start: "top top",
-          end: "bottom top",
-          scrub: true
+      gsap.to(
+        [
+          ".products_content",
+          ".products_hero-img",
+          ".products_header",
+          ".allproducts_paren",
+          ".category_products_header",
+        ],
+        {
+          opacity: 1,
+          delay: 0.4,
+          stagger: 0.1,
+          duration: 1,
+          ease: "ease-secondary",
         }
-      })
+      );
 
+      if (window.innerWidth >= 750) {
+        gsap.to(heroImg, {
+          y: 200,
+          filter: "brightness(0.5)",
+          ease: "linear",
+          scrollTrigger: {
+            trigger: heroSection,
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+          },
+        });
+      }
 
-    }, containerRef)
+      ScrollTrigger.refresh(true);
+    }, containerRef);
 
-    return () => ctx.revert()
-  }, [pathname])
+    return () => ctx.revert();
+  }, [imageReady, pathname]);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      const height = window.innerWidth > 750 ? "76vh" : "47.5rem"
-
-      gsap.set([
-        ".products_content",
-        ".products_hero-img",
-        ".products_header",
-        ".allproducts_paren",
-        ".category_products_header"
-      ], { opacity: 0 })
-
-      gsap.fromTo(
-        ".products_hero-section",
-        { height: 0 },
-        {
-          height,
-          duration: 1,
-          delay: 0.3,
-          ease: "ease-secondary"
-        }
-      )
-
-      gsap.to([
-        ".products_content",
-        ".products_hero-img",
-        ".products_header",
-        ".allproducts_paren",
-        ".category_products_header"
-      ], {
-        opacity: 1,
-        delay: 0.5,
-        stagger: 0.1,
-        duration: 1,
-        ease: "ease-secondary"
-      })
-
-      if (window.innerWidth < 750) return
-      gsap.to(".products_hero-img", {
-        y: 200,
-        filter: "brightness(0.5)",
-        ease: "linear",
-        scrollTrigger: {
-          trigger: ".products_hero-section",
-          start: "top top",
-          end: "bottom top",
-          scrub: true
-        }
-      })
-
-
-    }, containerRef)
-
-    return () => ctx.revert()
-  }, [pathname])
-
+    setImageReady(false);
+  }, [pathname]);
 
   return (
     <>
       <SeoHeader meta={meta} breadcrumbList={breadcrumbList} />
       <Suspense fallback={<CategoryPageSkeleton />}>
         <div ref={containerRef}>
-          <div className="products_hero-section ">
-            <Image key={pathname} fill priority={true}
-              className='products_hero-img'
+          <div className="products_hero-section">
+            <Image
+              key={data?.imgsrc}
+              fill
+              priority
+              className="products_hero-img"
               src={data?.imgsrc}
-              alt={data?.name || ""} />
+              alt={data?.name || ""}
+              title={data?.name || ""}
+              onLoadingComplete={() => setImageReady(true)}
+            />
+
             {/* <div className="products_content padding">
           <h2 className='text-3xl '>{data?.name || ""}</h2>
           <p className='uppercase text-base thin'>
@@ -151,7 +120,7 @@ const Categories = ({ meta, data, productList }) => {
 
           <div className="category_products_header">
             <p className="products_subtitle thin text-base uppercase">Crafted for Every Moment</p>
-            <h2 className="products_title text-3xl">{data?.name || ""}</h2>
+            <h1 className="products_title text-3xl">{data?.name || ""}</h1>
           </div>
 
           <div className="padding">
@@ -163,6 +132,7 @@ const Categories = ({ meta, data, productList }) => {
                     key={item._id}
                     scroll={false}
                     href={`/products/${item.slug || item._id}`}
+                    title={item.name || ""}
                   >
                     <ProductCard
                       productId={item._id}

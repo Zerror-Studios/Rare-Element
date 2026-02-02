@@ -1,7 +1,13 @@
 /* ---------- CONTACT FORM MAIN ---------- */
+
+.contact_form_paren{
+  height: 300vh;
+  width: 100%;
+}
 #contact_form {
   width: 100%;
-  position: relative;
+  position: sticky;
+  top: 0;
   overflow: hidden;
   display: flex;
   padding-top: 10rem;

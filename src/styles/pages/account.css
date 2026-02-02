@@ -47,6 +47,17 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 2.5rem 1.25rem; /* gap-y-10 gap-x-5 */
 }
+.wishlist_empty_box {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+.wishlist_empty_box_inner {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
 .wishlist_box {
   margin-top: 2rem;
   width: fit-content;
@@ -56,15 +67,17 @@
 }
 .wishlist_card {
   width: 100%;
+  border-top: 1px solid #e6e6e6;
+  border-right: 1px solid #e6e6e6;
 }
 
 @media (min-width: 768px) {
   .wishlist_box {
-    border-top: 1px solid #e6e6e6;
-    border-right: 1px solid #e6e6e6;
+    /* border-top: 1px solid #e6e6e6;
+    border-right: 1px solid #e6e6e6; */
     margin-top: 2rem;
     /* width: 50rem; */
-    grid-template-columns: 25rem 25rem 25rem ;
+    grid-template-columns: 25rem 25rem 25rem;
     display: grid;
   }
   .account_gridBox {

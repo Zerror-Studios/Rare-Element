@@ -1,16 +1,18 @@
 import { formatePrice, renderVariants } from '@/utils/Util';
 import Image from 'next/image'
 import Link from 'next/link';
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import GreenBoxBtn from '../buttons/GreenBoxBtn';
 import gsap from 'gsap';
 import { useMutation } from '@apollo/client/react';
 import { ADD_TO_WISHLIST, GET_WISHLIST_ITEMS } from '@/graphql';
 import { useAuthStore } from '@/store/auth-store';
 import { toast } from 'react-toastify';
+import { RiCloseLine } from '@remixicon/react';
 
 const WishlistPopup = ({ item, popupActive, setPopupActive, handleAddItem, handleRemoveItem, onClose }) => {
     const { user } = useAuthStore();
+    const popupRef = useRef(null);
     const userId = user?._id || user?.id;
 
     const [addToWishlist, { loading }] = useMutation(ADD_TO_WISHLIST, {
@@ -80,11 +82,33 @@ const WishlistPopup = ({ item, popupActive, setPopupActive, handleAddItem, handl
         setPopupActive(false);
     };
 
+    useEffect(() => {
+        if (!popupActive) return;
+
+        const handleOutsideClick = (e) => {
+            if (popupRef.current && !popupRef.current.contains(e.target)) {
+                setPopupActive(false);
+                onClose?.();
+            }
+        };
+
+        document.addEventListener("mousedown", handleOutsideClick);
+
+        return () => {
+            document.removeEventListener("mousedown", handleOutsideClick);
+        };
+    }, [popupActive]);
+
     const firstAsset = item?.product?.assets?.[0]?.path || "/images/homepage/category/bracelets.svg";
     return (
         <>
             <div className="add_popup_paren center">
-                <div className="add_popup">
+                <div ref={popupRef} className="add_popup">
+                    <div
+                        onClick={() => setPopupActive(false)}
+                        className="popup_close_icon">
+                        <RiCloseLine size={14} />
+                    </div>
                     <h2 className='text-xl'>Don’t want to lose this?</h2>
                     <p className='add_popup_under_txt text-sm'>Save it to your wishlist so you can find it easily later.</p>
                     <div className="wishlist_item_popup">
@@ -95,14 +119,15 @@ const WishlistPopup = ({ item, popupActive, setPopupActive, handleAddItem, handl
                                     height={250}
                                     className="cover"
                                     src={firstAsset}
-                                    alt={item?.name || "loading"}
+                                    alt={item?.name || ""}
+                                    title={item?.name || ""}
                                 />
                             </div>
                         </div>
                         <div className="cartBag_bagItemDetails">
                             <div className="cartBag_bagItemTop">
                                 <div className="cartBag_itemHead">
-                                    <Link prefetch scroll={false} href={`/products/${item?.product?.slug || item?.productId}`} className="cartBag_itemName text-base">
+                                    <Link prefetch scroll={false} href={`/products/${item?.product?.slug || item?.productId}`} title={item?.name || ""} className="cartBag_itemName text-base">
                                         <p>
                                             {item?.name}
                                         </p>

@@ -1,7 +1,7 @@
 import { useGSAP } from '@gsap/react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import WhiteBorderBtn from '../buttons/WhiteBorderBtn'
@@ -9,6 +9,44 @@ gsap.registerPlugin(ScrollTrigger)
 
 const Hero = () => {
   const pathname = usePathname()
+  const videoRef = useRef(null);
+
+useEffect(() => {
+  const video = videoRef.current;
+  if (!video) return;
+
+  // Force iOS-required attributes
+  video.setAttribute("muted", "");
+  video.setAttribute("playsinline", "");
+  video.setAttribute("webkit-playsinline", "");
+  video.setAttribute("preload", "auto");
+
+  video.muted = true;
+  video.playsInline = true;
+  video.loop = true;
+  video.autoplay = true;
+  video.controls = false;
+
+  const tryPlay = () => {
+    const promise = video.play();
+    if (promise !== undefined) {
+      promise.catch(() => {});
+    }
+  };
+
+  // iOS needs metadata before autoplay
+  video.addEventListener("loadedmetadata", tryPlay);
+
+  // Fallback for older iOS
+  setTimeout(tryPlay, 100);
+
+  return () => {
+    video.removeEventListener("loadedmetadata", tryPlay);
+  };
+}, []);
+
+
+
 
   useEffect(() => {
     var height
@@ -56,21 +94,30 @@ const Hero = () => {
 
       <div className="introloader_paren  center">
         <div className="loader_img">
-        <img src="/green_logo.svg" alt="Logo" />
+          <img src="/green_logo.svg" alt="Logo" title='logo' />
         </div>
       </div>
 
       {pathname === "/" && (
         <div className="info_header center">
-          <p className='text-xs'> Free Shipping on orders above ₹  3,000 </p>
+          <p className='text-xs'> Free Shipping on all orders </p>
         </div>
       )}
       <div className="dummy_hero_div"></div>
       <div className="home_hero">
-        <video className=' home_hero_video cover' loop muted playsInline autoPlay src="/videos/hero_video.mp4"></video>
+        <video
+          ref={videoRef}
+          className="home_hero_video cover"
+          src="/videos/hero_video.mp4"
+          muted
+          playsInline
+          preload="auto"
+          loop
+          autoPlay
+        />
         <div className="home_hero_inner">
-          <h2 className='text-3xl'>World of Nahara</h2>
-          <Link scroll={false} href="/products">
+          <h1 className='text-3xl'>World of Nahara</h1>
+          <Link scroll={false} href="/products" title='view all products'>
             <WhiteBorderBtn text={"Discover"} />
           </Link>
         </div>

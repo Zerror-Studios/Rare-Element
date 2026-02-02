@@ -28,30 +28,33 @@ const Wishlist = ({ meta }) => {
       <AccountLayout>
         <AccountBreadcrumb title={"Wishlist"} />
         <div className="settings__content">
-          <h2 className="settings__title text-xl">My Wishlist</h2>
-
-          <div className="wishlist_box">
+          <h1 className="settings__title text-xl">My Wishlist</h1>
+          <div className="wishlist_empty_box">
             {loading && <p>Loading wishlist...</p>}
-            {error && <p className="text-red-500">Error loading wishlist: {error.message}</p>}
+            {/* {error && <p className="text-red-500">Error loading wishlist: {error.message}</p>} */}
             {!loading && wishlistItems.length === 0 && (
-              <div className="text-center py-10">
-                <p className="text-lg text-gray-500">Your wishlist is empty.</p>
-                <Link href="/products" className="text-blue-600 underline mt-4 inline-block">
-                  Go Shopping
+              <div className="wishlist_empty_box_inner">
+                <p className="text-xl ">Your wishlist is empty.</p>
+                <Link href="/products" className="underline" title='go to shopping'>
+                  Go to Shopping
                 </Link>
               </div>
             )}
-            {wishlistItems.map((item) => (
-              <Link scroll={false} key={item._id} href={`/products/${item.product?.slug || item.product?._id}`} className='wishlist_card'>
-                <ProductCard
-                  productId={item.product?._id}
-                  name={item.product?.name}
-                  price={getProductPriceLabel(item.product?.variants, item.product?.discountedPrice)}
-                  assets={item.product?.assets}
-                />
-              </Link>
-            ))}
           </div>
+          {wishlistItems.length > 0 && (
+            <div className="wishlist_box">
+              {wishlistItems.map((item) => (
+                <Link scroll={false} key={item._id} title={item.product?.name} href={`/products/${item.product?.slug || item.product?._id}`} className='wishlist_card'>
+                  <ProductCard
+                    productId={item.product?._id}
+                    name={item.product?.name}
+                    price={getProductPriceLabel(item.product?.variants, item.product?.discountedPrice)}
+                    assets={item.product?.assets}
+                  />
+                </Link>
+              ))}
+            </div>
+          )}
 
         </div>
       </AccountLayout>

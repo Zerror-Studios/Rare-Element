@@ -6,7 +6,7 @@ const AccountBreadcrumb = ({ title }) => {
 
   return (
     <div className="settings__breadcrumb">
-      <Link scroll={false} href={"/account"}>
+      <Link scroll={false} href={"/account"} title="/account" >
         <p className="settings__breadcrumb_faded text-sm">Account</p>
       </Link>
       <RiArrowRightSLine size={14} />

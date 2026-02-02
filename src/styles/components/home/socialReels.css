@@ -46,9 +46,7 @@
 
 /* Background Image */
 .socialCard_image_wrapper {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
+  display: none;
 }
 
 .socialCard_image {
@@ -62,7 +60,7 @@
 .socialCard_box_vid {
   position: absolute;
   inset: 0;
-  opacity: 0;
+  opacity: 1;
   transition: opacity 0.6s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
@@ -86,10 +84,16 @@
    DESKTOP (≥ 750px)
 --------------------------------------------- */
 @media (min-width: 750px) {
+  .socialCard_image_wrapper {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
   .socialCard_title {
-  width: 90%;
-  line-height: 2.5rem !important;
-}
+    width: 80%;
+    line-height: 2.5rem !important;
+  }
   /* Header spacing adjustment */
   .social_header {
     margin-top: 8rem;
@@ -108,6 +112,9 @@
     padding: 3rem 0;
   }
 
+  .socialCard_box_vid {
+    opacity: 0;
+  }
   /* Show video on hover */
   .socialCard_box:hover .socialCard_box_vid {
     opacity: 1;

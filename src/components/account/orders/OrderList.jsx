@@ -23,7 +23,14 @@ const OrderList = () => {
   if (!data || data.length === 0) null;
   return (
     <div className="purchases_ordersList">
-      {data.length === 0 && <p className="text-xl">No orders found</p>}
+      {data.length === 0 && (
+        <div className="wishlist_empty_box_inner">
+          <p className="text-xl ">No orders found</p>
+          <Link href="/products" title="Go to Shopping" className="underline">
+            Go to Shopping
+          </Link>
+        </div>
+      )}
       {data?.map((item) => {
         const cart = item?.cart && item?.cart?.length > 0 ? item?.cart : [];
         return (
@@ -47,6 +54,7 @@ const OrderList = () => {
                         className="purchases_itemImg"
                         src={cartItem?.asset?.path || ""}
                         alt={cartItem?.asset?.altText || ""}
+                        title={cartItem?.asset?.altText || ""}
                       />
                     </div>
                   </>
@@ -57,7 +65,7 @@ const OrderList = () => {
             <div className="purchases_orderFooter">
               <p className="purchases_itemCount text-base">{cart.length} Items</p>
               <div className="purchases_orderFooter_inner">
-                <Link prefetch scroll={false} href={`/account/order/${item?._id}`} className="text-sm">
+                <Link prefetch scroll={false} href={`/account/order/${item?._id}`} title="View order" className="text-sm">
                   <p className="text-sm">View order</p>
                 </Link>
               </div>

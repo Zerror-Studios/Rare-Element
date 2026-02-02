@@ -124,40 +124,40 @@ const MobileHeader = ({ openCart }) => {
 
         <div className="mobile_menu_classname_close_icon_container">
           <img onClick={() => closeMenu()}
-            src="/icons/close.svg" alt="loading" />
+            src="/icons/close.svg" alt="loading" title='close icon' />
         </div>
         <div className="mobile_menu_header">
           {isLoggedIn ? (
             <div className="login_header">
-              <Link scroll={false} onClick={() => closeMenu()} href={isLoggedIn ? "/account/settings" : "/login"}>
-                <img className='short_links_icon' src="/icons/profile.svg" alt="loading" />
+              <Link scroll={false} onClick={() => closeMenu()} href={isLoggedIn ? "/account/settings" : "/login"} title="profile">
+                <img className='short_links_icon' src="/icons/profile.svg" alt="loading" title='profile' />
               </Link>
               <h2 className='text-xl'>Welcome Sunny</h2>
             </div>
           ) : (
-            <Link scroll={false} href={"/login"} onClick={() => closeMenu()}>
+            <Link scroll={false} href={"/login"} onClick={() => closeMenu()} title='login'>
               <p className='text-base uppercase '>Login/Signup</p>
             </Link>
           )}
         </div>
 
         <div className="links_paren">
-          <Link scroll={false} href={"/"} className='menu_links_iner' onClick={() => closeMenu()}>
+          <Link scroll={false} href={"/"} className='menu_links_iner' onClick={() => closeMenu()} title='home'>
             <h2 className='text-3xl capitalize '>Home</h2>
             <RiArrowRightSLine size={16} />
           </Link>
           <div className="">
-            <Link prefetch scroll={false} href={"/products"} className='menu_links_iner' onClick={() => closeMenu()}>
+            <Link prefetch scroll={false} href={"/products"} className='menu_links_iner' onClick={() => closeMenu()} title='view all products'>
               <h2 className='text-3xl capitalize '>Categories</h2>
               <RiArrowRightSLine size={16} />
             </Link>
             <div className="home_category_paren scroller_none">
               <div className="home_category_inner scroller_none">
                 {MenuData?.map((item, index) => (
-                  <Link prefetch scroll={false} key={index} href={`${item?.link}`} onClick={() => closeMenu()}>
+                  <Link prefetch scroll={false} key={index} href={`${item?.link}`} onClick={() => closeMenu()} title={item?.title || ""}>
                     <div className="category_box">
                       <div className="category_box_img_paren">
-                        <Image width={200} height={200} src={item?.image} className='category_box_img' alt={item?.title || ""} />
+                        <Image width={200} height={200} src={item?.image} className='category_box_img' alt={item?.title || ""} title={item?.title || ""} />
                       </div>
                       <p className='text-sm bold uppercase'>{item?.title || ""}</p>
                     </div>
@@ -167,12 +167,12 @@ const MobileHeader = ({ openCart }) => {
             </div>
           </div>
 
-          <Link scroll={false} href={"/about"} className='menu_links_iner' onClick={() => closeMenu()}>
+          <Link scroll={false} href={"/about"} title='about us' className='menu_links_iner' onClick={() => closeMenu()}>
             <h2 className='text-3xl capitalize '>about</h2>
             <RiArrowRightSLine size={16} />
           </Link>
 
-          <Link scroll={false} href={"/contact"} className='menu_links_iner' onClick={() => closeMenu()}>
+          <Link scroll={false} href={"/contact"} title='contact' className='menu_links_iner' onClick={() => closeMenu()}>
             <h2 className='text-3xl capitalize '>contact</h2>
             <RiArrowRightSLine size={16} />
           </Link>
@@ -184,7 +184,7 @@ const MobileHeader = ({ openCart }) => {
               <div key={index} className="">
                 <p className='text-base menu_footer_title uppercase '>{item?.title}</p>
                 {footer_links[index]?.links?.map((item, index) => (
-                  <Link scroll={false} key={index} href={`${item?.href}`} onClick={() => closeMenu()}>
+                  <Link scroll={false} key={index} href={`${item?.href}`} title={item?.label} onClick={() => closeMenu()}>
                     <p className='text-sm menu_footer_title_inner'>{item?.label}</p>
                   </Link>
                 ))}
@@ -200,18 +200,18 @@ const MobileHeader = ({ openCart }) => {
       <div className="mobile_header padding">
         <div className="mobile_header_bg"></div>
         <div className="mobile_menu_icon_paren">
-          <img onClick={openMenu} className='short_links_icon' src="/icons/menu.svg" alt="loading" />
+          <img onClick={openMenu} className='short_links_icon' src="/icons/menu.svg" alt="loading" title='menu' />
         </div>
         <div className="mobile_logo_paren">
-          <Link scroll={false} href="/">
-            <img className='mobile_logo' src="/logo.svg" alt="loading" />
+          <Link scroll={false} href="/" title='home'>
+            <img className='mobile_logo' src="/logo.svg" alt="loading" title='logo' />
           </Link>
         </div>
         <div className=" mobile_header_right ">
-          <Link scroll={false} href={isLoggedIn ? "/account/wishlist" : "/login"}>
-            <img className='short_links_icon' src="/icons/heart.svg" alt="loading" />
+          <Link scroll={false} title='wishlist' href={isLoggedIn ? "/account/wishlist" : "/login"}>
+            <img className='short_links_icon' src="/icons/heart.svg" alt="loading" title='Wishlist' />
           </Link>
-          <img onClick={openCart} className='short_links_icon' src="/icons/cart.svg" alt="loading" />
+          <img onClick={openCart} className='short_links_icon' src="/icons/cart.svg" alt="loading" title='cart' />
         </div>
       </div>
     </>
