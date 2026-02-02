@@ -6,7 +6,7 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import Image from "next/image";
 
-const ProductImageGrid = ({ filter, data , title }) => {
+const ProductImageGrid = ({ filter, data, title }) => {
   const [swiperInstance, setSwiperInstance] = useState(null);
   const [selectedAssetIndex, setSelectedAssetIndex] = useState(0);
 
@@ -38,7 +38,7 @@ const ProductImageGrid = ({ filter, data , title }) => {
     <div className="productDetail_left">
       <div className="MobileImageSlider_container scroller_none">
         {/* Thumbnails */}
-        <div className="MobileImageSlider_thumbnails scroller_none">
+        <div data-lenis-prevent className="MobileImageSlider_thumbnails scroller_none">
           {filteredAssets.map((item, index) => {
             const src = item?.path || "/green_logo.svg";
             const video = isVideo(src);
@@ -59,13 +59,15 @@ const ProductImageGrid = ({ filter, data , title }) => {
                       playsInline src={src} className="cover" type="video/mp4" />
                   </div>
                 ) : (
-                  <Image
-                    width={150}
-                    height={200}
-                    src={src}
-                    alt={title}
-                    title={title}
-                  />
+                  <div className="thumbnail_video center">
+                    <Image
+                      width={150}
+                      height={200}
+                      src={src}
+                      alt={title}
+                      title={title}
+                    />
+                  </div>
                 )}
               </div>
             );
