@@ -368,7 +368,7 @@
 .color_div {
   width: 3rem;
   padding: 0.2rem;
-  border: 1px solid #a5a5a5;
+  border: 1px solid #000000;
   height: 3rem;
   border-radius: 0%;
 }
@@ -379,7 +379,7 @@
 }
 .size_div {
   padding-inline: 1.5rem;
-  border: 1px solid #a5a5a5;
+  border: 1px solid #000000;
   height: 3rem;
   border-radius: 0%;
 }

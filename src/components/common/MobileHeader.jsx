@@ -124,13 +124,13 @@ const MobileHeader = ({ openCart }) => {
 
         <div className="mobile_menu_classname_close_icon_container">
           <img onClick={() => closeMenu()}
-            src="/icons/close.svg" alt="loading" title='close icon' />
+            src="/icons/close.svg" alt="img" title='close icon' />
         </div>
         <div className="mobile_menu_header">
           {isLoggedIn ? (
             <div className="login_header">
               <Link scroll={false} onClick={() => closeMenu()} href={isLoggedIn ? "/account/settings" : "/login"} title="profile">
-                <img className='short_links_icon' src="/icons/profile.svg" alt="loading" title='profile' />
+                <img className='short_links_icon' src="/icons/profile.svg" alt="img" title='profile' />
               </Link>
               <h2 className='text-xl'>Welcome Sunny</h2>
             </div>
@@ -200,18 +200,18 @@ const MobileHeader = ({ openCart }) => {
       <div className="mobile_header padding">
         <div className="mobile_header_bg"></div>
         <div className="mobile_menu_icon_paren">
-          <img onClick={openMenu} className='short_links_icon' src="/icons/menu.svg" alt="loading" title='menu' />
+          <img onClick={openMenu} className='short_links_icon' src="/icons/menu.svg" alt="img" title='menu' />
         </div>
         <div className="mobile_logo_paren">
           <Link scroll={false} href="/" title='home'>
-            <img className='mobile_logo' src="/logo.svg" alt="loading" title='logo' />
+            <img className='mobile_logo' src="/logo.svg" alt="img" title='logo' />
           </Link>
         </div>
         <div className=" mobile_header_right ">
           <Link scroll={false} title='wishlist' href={isLoggedIn ? "/account/wishlist" : "/login"}>
-            <img className='short_links_icon' src="/icons/heart.svg" alt="loading" title='Wishlist' />
+            <img className='short_links_icon' src="/icons/heart.svg" alt="img" title='Wishlist' />
           </Link>
-          <img onClick={openCart} className='short_links_icon' src="/icons/cart.svg" alt="loading" title='cart' />
+          <img onClick={openCart} className='short_links_icon' src="/icons/cart.svg" alt="img" title='cart' />
         </div>
       </div>
     </>

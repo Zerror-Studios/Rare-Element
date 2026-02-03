@@ -44,7 +44,7 @@
   margin-top: 2rem;
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(1, minmax(0, 1fr));
   gap: 2.5rem 1.25rem; /* gap-y-10 gap-x-5 */
 }
 .wishlist_empty_box {
@@ -61,7 +61,7 @@
 .wishlist_box {
   margin-top: 2rem;
   width: fit-content;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(1, minmax(0, 1fr));
   display: grid;
   /* gap: 1.5rem 0.75rem; gap-y-10 gap-x-5 */
 }
@@ -117,5 +117,5 @@
 }
 
 .account_offerTitle {
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.5rem;
 }

@@ -74,7 +74,7 @@ const Header = ({ openCart }) => {
         <div className="header_bg"></div>
         <div className="logo_paren">
           <Link scroll={false} href="/" title='home'>
-            <img className='header_logo' src="/logo.svg" alt="loading" title='logo' />
+            <img className='header_logo' src="/logo.svg" alt="img" title='logo' />
           </Link>
         </div>
         <div className="nav_links">
@@ -101,13 +101,13 @@ const Header = ({ openCart }) => {
         </div>
         <div className="short_links">
           <Link scroll={false} href={isLoggedIn ? "/account/wishlist" : "/login"} title='Wishlist'>
-            <img className='short_links_icon' src="/icons/heart.svg" title='Wishlist' alt="loading" />
+            <img className='short_links_icon' src="/icons/heart.svg" title='Wishlist' alt="img" />
           </Link>
           <Link scroll={false} href={isLoggedIn ? "/account/settings" : "/login"} title='profile'>
-            <img className='short_links_icon' src="/icons/profile.svg" title=' profile' alt="loading" />
+            <img className='short_links_icon' src="/icons/profile.svg" title=' profile' alt="img" />
           </Link>
           <button onClick={openCart}>
-            <img className='short_links_icon' src="/icons/cart.svg" title='cart' alt="loading" />
+            <img className='short_links_icon' src="/icons/cart.svg" title='cart' alt="img" />
           </button>
         </div>
       </div>

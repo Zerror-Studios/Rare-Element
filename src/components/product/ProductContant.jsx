@@ -255,7 +255,7 @@ const ProductContant = ({
                           className={`productDetail_quantity_icon productDetail_select_inner_elem_img ${openDropdown === item?.optionName ? "rotate_icon" : ""
                             }`}
                           src="/icons/LongArrowDown.svg"
-                          alt="loading"
+                          alt="img"
                           title="Dropdown"
                         />
                       </button>
@@ -271,9 +271,24 @@ const ProductContant = ({
                     <div key={`option-dropdown-${i}`} className={`productDetail_selction ${openDropdown === productOption?.optionName ? "open" : ""}`}>
                       <div className="color_selection">
                         {productOption.choices?.map((choice, j) => {
-                          const selected = selectedVariants[productOption.optionName] === `${choice.name}`;
+                          const selected =
+                            selectedVariants[productOption.optionName] === choice.name;
+
+                          const hasSelection = Boolean(
+                            selectedVariants[productOption.optionName]
+                          );
+
+                          const opacity = hasSelection
+                            ? selected
+                              ? 1
+                              : 0.5
+                            : 1;
                           return (
                             <div
+                              style={{
+                                opacity,
+                                transition: "opacity 0.25s ease",
+                              }}
                               key={`option-value-${j}`}
                               onClick={() => {
                                 handleVariants(
@@ -282,17 +297,10 @@ const ProductContant = ({
                                 );
                                 setAssetsFilter(choice?.assetsId)
                               }}
-                              style={{
-                                opacity: selected ? 1 : 0.5,
-                              }}
-
                               className="select_color_paren">
                               {productOption?.optionName === "color" ? (
                                 <>
-                                  <div
-                                    style={{
-                                      borderColor: selected ? "#174d38" : "#a5a5a5",
-                                    }} className="color_div">
+                                  <div className="color_div">
                                     <div className="color_inner" style={{ backgroundColor: choice?.name }}>
                                     </div>
                                   </div>
@@ -303,9 +311,7 @@ const ProductContant = ({
                                 </>
                               ) : (
                                 <>
-                                  <div style={{
-                                    borderColor: selected ? "#174d38" : "#a5a5a5",
-                                  }} className=" size_div">
+                                  <div className=" size_div">
                                     <div className=" size_inner center">
                                       <p style={{
                                         textDecoration: selected ? "underline" : "none",
@@ -332,11 +338,11 @@ const ProductContant = ({
 
               {/* <div className="productDetail_quantity text-xl">
             <button className="productDetail_quantity_btn">
-              <img className="productDetail_quantity_icon" src="/icons/minus.svg" alt="loading" />
+              <img className="productDetail_quantity_icon" src="/icons/minus.svg" alt="img" />
             </button>
             <p>1</p>
             <button className="productDetail_quantity_btn">
-              <img className="productDetail_quantity_icon" src="/icons/plus.svg" alt="loading" />
+              <img className="productDetail_quantity_icon" src="/icons/plus.svg" alt="img" />
             </button>
           </div> */}
             </div>
@@ -390,7 +396,7 @@ const ProductContant = ({
                         className={`productDetail_quantity_icon ${accordionIndex === index ? "rotated" : ""
                           }`}
                         src="/icons/LongArrowDown.svg"
-                        alt="loading"
+                        alt="img"
                         title="Dropdown"
                       />
                     </button>

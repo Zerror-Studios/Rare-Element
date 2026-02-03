@@ -35,7 +35,7 @@ const Wishlist = ({ meta }) => {
             {!loading && wishlistItems.length === 0 && (
               <div className="wishlist_empty_box_inner">
                 <p className="text-xl ">Your wishlist is empty.</p>
-                <Link href="/products" className="underline" title='go to shopping'>
+                <Link href="/products" className="text_decoration_underline" title='go to shopping'>
                   Go to Shopping
                 </Link>
               </div>

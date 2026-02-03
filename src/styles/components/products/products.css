@@ -132,7 +132,7 @@
   flex-shrink: 0;
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(1, 1fr);
 }
 .allproducts_paren .shopCard_card:nth-child(1) {
   border-left: 1px solid #e6e6e6;

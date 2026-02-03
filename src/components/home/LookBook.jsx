@@ -134,7 +134,7 @@ const LookBook = ({ data }) => {
 
                 <div className="lookbookCard_box">
                     <div className="lookbookCard_image">
-                        <img className='cover' src="/images/homepage/bookletbox1.svg" alt="loading" />
+                        <img className='cover' src="/images/homepage/bookletbox1.svg" alt="img" />
                     </div>
                     <div className="lookbookCard_text">
                         <h2 className="lookbookCard_title text-xl uppercase">Iconic Gifts</h2>
@@ -144,7 +144,7 @@ const LookBook = ({ data }) => {
 
                 <div className="lookbookCard_box">
                     <div className="lookbookCard_image">
-                        <img className='cover' src="/images/homepage/bookletbox2.svg" alt="loading" />
+                        <img className='cover' src="/images/homepage/bookletbox2.svg" alt="img" />
                     </div>
                     <div className="lookbookCard_text">
                         <h2 className="lookbookCard_title text-xl uppercase">Iconic Gifts</h2>
@@ -164,25 +164,35 @@ const LookBook = ({ data }) => {
                     <Swiper
                         modules={[Autoplay]}
                         onSwiper={(swiper) => (leftSwiperRef.current = swiper)}
-                        centeredSlides={true}
+                        centeredSlides
                         spaceBetween={0}
-                        loop={true}
+                        loop
                         speed={800}
-                        autoplay={false}              // <-- disable auto-start
+                        autoplay={false}
                         allowTouchMove={false}
                         className="lookbook_swiper_left"
                     >
-                        {data.map((item) => (
-                            <SwiperSlide key={item?._id}>
-                                <div className="lookbookSlider_card_image_left">
-                                    <Image
-                                        fill
-                                        quality={50}
-                                        className="cover" src={item?.assets?.[1]?.path || "/green_logo.svg"} alt=  {item?.name || ""} title=  {item?.name || ""} />
-                                </div>
-                            </SwiperSlide>
-                        ))}
+                        {data.map((item) => {
+                            const hoverAsset = item?.assets?.find(a => a.isHover === true);
+                            const imageAsset = hoverAsset || item?.assets?.[0];
+
+                            return (
+                                <SwiperSlide key={item?._id}>
+                                    <div className="lookbookSlider_card_image_left">
+                                        <Image
+                                            fill
+                                            quality={50}
+                                            className="cover"
+                                            src={imageAsset?.path || "/green_logo.svg"}
+                                            alt={item?.name || ""}
+                                            title={item?.name || ""}
+                                        />
+                                    </div>
+                                </SwiperSlide>
+                            );
+                        })}
                     </Swiper>
+
                 </div>
 
                 {/* RIGHT SWIPER */}
@@ -195,34 +205,51 @@ const LookBook = ({ data }) => {
                         <Swiper
                             modules={[Autoplay]}
                             onSwiper={(swiper) => (rightSwiperRef.current = swiper)}
-                            slidesPerView={"auto"}
-                            centeredSlides={true}
+                            slidesPerView="auto"
+                            centeredSlides
                             spaceBetween={150}
-                            loop={true}
+                            loop
                             speed={800}
-                            autoplay={false}             // <-- disable auto-start
+                            autoplay={false}
                             allowTouchMove={false}
                             className="lookbook_swiper"
                         >
-                            {data?.map((item) => (
-                                <SwiperSlide key={item?._id} className="lookbookSlider_card">
-                                    <div className="lookbookSlider_card">
-                                        <div className="lookbookSlider_card_image">
-                                            <Image width={600}
-                                                height={800} className="cover" src={item?.assets?.[1]?.path || "/green_logo.svg"} alt=  {item?.name || ""} title=  {item?.name || ""} />
-                                        </div>
-                                        <p className="lookbookSlider_card_description uppercase text-xl">
-                                            {item?.name || ""}
-                                        </p>
-                                        <div className="center ">
-                                            <div className="lookbook_button_paren">
-                                                <GreenBoxBtn title={"shop Now"} href={`/products/${item?.slug || item?._id}`} />
+                            {data?.map((item) => {
+                                const hoverAsset = item?.assets?.find(a => a.isHover === true);
+                                const imageAsset = hoverAsset || item?.assets?.[0];
+
+                                return (
+                                    <SwiperSlide key={item?._id} className="lookbookSlider_card">
+                                        <div className="lookbookSlider_card">
+                                            <div className="lookbookSlider_card_image">
+                                                <Image
+                                                    width={600}
+                                                    height={800}
+                                                    className="cover"
+                                                    src={imageAsset?.path || "/green_logo.svg"}
+                                                    alt={item?.name || ""}
+                                                    title={item?.name || ""}
+                                                />
+                                            </div>
+
+                                            <p className="lookbookSlider_card_description uppercase text-xl">
+                                                {item?.name || ""}
+                                            </p>
+
+                                            <div className="center">
+                                                <div className="lookbook_button_paren">
+                                                    <GreenBoxBtn
+                                                        title="shop Now"
+                                                        href={`/products/${item?.slug || item?._id}`}
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </SwiperSlide>
-                            ))}
+                                    </SwiperSlide>
+                                );
+                            })}
                         </Swiper>
+
                     </div>
                 </div>
             </div>

@@ -72,7 +72,7 @@ const ProductDetail = ({ meta, data, productList }) => {
       openCart();
     } catch (err) {
       console.error(err);
-      toast.error(err.message || "Failed to add item to cart");
+      toast.error("Failed to add item to cart");
     }
   };
 
@@ -96,7 +96,7 @@ const ProductDetail = ({ meta, data, productList }) => {
       toast.success("You’ll be notified when this item is back in stock!");
     } catch (err) {
       console.error(err);
-      toast.error(err.message || "Failed to notify");
+      toast.error("Failed to notify");
     }
   };
 

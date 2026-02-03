@@ -25,6 +25,7 @@ export const ORDER_LIST = gql`
           path
           type
           isFeatured
+          isHover
           altText
         }
         qty
@@ -108,6 +109,7 @@ query GetClientSidePaymentByOrderId($getClientSidePaymentByOrderIdId: ID!) {
           altText
           _id
           isFeatured
+          isHover
           path
           type
         }

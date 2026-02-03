@@ -54,8 +54,8 @@ const OrderSummary = ({ data, loading, refetch }) => {
         toast.success("Coupon Applied successfully!");
       }
     } catch (err) {
-      console.error(err);
-      toast.error(err?.message || "Failed to apply coupon");
+      // console.error(err);
+      toast.error("Failed to apply coupon");
     } finally {
       refetch();
     }
@@ -76,8 +76,8 @@ const OrderSummary = ({ data, loading, refetch }) => {
         toast.success("Coupon Removed successfully!");
       }
     } catch (err) {
-      console.error(err);
-      toast.error(err?.message || "Failed to remove coupon");
+      // console.error(err);
+      toast.error("Failed to remove coupon");
     } finally {
       reset();
       refetch();

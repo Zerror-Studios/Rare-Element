@@ -73,7 +73,7 @@ const WishlistPopup = ({ item, popupActive, setPopupActive, handleAddItem, handl
             await handleRemoveItem(item?.productId, item?.variantDetail?.variantDetailId, true);
             setPopupActive(false);
         } catch (error) {
-            toast.error(error.message || "Failed to save to wishlist");
+            toast.error("Failed to save to wishlist");
         }
     };
 

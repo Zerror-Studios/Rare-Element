@@ -15,7 +15,7 @@ const Category = ({ data }) => {
                             <Link prefetch scroll={false} key={index} href={`${item?.link}`} title={item?.title || ""}>
                                 <div className="category_box">
                                     <div className="category_box_img_paren">
-                                        <Image width={200} height={200} src={item?.image} className='category_box_img' alt={item?.title || ""} title={item?.title || ""} />
+                                        <Image width={150} height={150} src={item?.image} className='category_box_img' alt={item?.title || ""} title={item?.title || ""} />
                                     </div>
                                     <p className='text-sm bold uppercase'>{item?.title || ""}</p>
                                 </div>

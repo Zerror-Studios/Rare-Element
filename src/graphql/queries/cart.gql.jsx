@@ -19,6 +19,7 @@ export const CART_LIST = gql`
           path
           type
           isFeatured
+          isHover
           altText
         }
         qty

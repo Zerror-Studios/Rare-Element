@@ -38,6 +38,7 @@ export const GET_LOOKBOOK_BY_ID = gql`
         type
         altText
         isFeatured
+        isHover
       }
       productIds
       products {

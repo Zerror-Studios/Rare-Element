@@ -64,44 +64,44 @@ const AllProducts = ({ meta, products }) => {
   return (
     <>
       <SeoHeader meta={meta} />
-      <Suspense fallback={<AllProductsPageSkeleton />}>
+      {/* <Suspense fallback={<AllProductsPageSkeleton />}> */}
 
-        <>
-          <div className="products_header">
-            <p className="products_subtitle thin text-base uppercase">Crafted for Every Moment</p>
-            <h1 className="products_title text-3xl">Explore  Products</h1>
+      <>
+        <div className="products_header">
+          <p className="products_subtitle thin text-base uppercase">Crafted for Every Moment</p>
+          <h1 className="products_title text-3xl">Explore  Products</h1>
+        </div>
+
+        <div className="w-full center">
+          <button type="button" onClick={() => setOpenFilter(true)} className="open_filter  text-xs uppercase">
+            <RiEqualizerLine size={14} />
+            <p className="uppercase text-base">
+              Apply Filter
+            </p>
+          </button>
+        </div>
+
+        <div className=" products_layout_paren padding ">
+          <ProductsAside openFilter={openFilter} setOpenFilter={setOpenFilter} />
+          <div className="allproducts_paren ">
+            {products?.length == 0 && <h2 className='text-xl text-center'>No products found</h2>}
+
+            {products?.map((item) => (
+              <Link prefetch key={item?._id} scroll={false} title={item?.name || ""} href={`/products/${item?.slug || item?._id}`}>
+                <ProductCard
+                  key={item?._id}
+                  productId={item?._id}
+                  name={item?.name || ""}
+                  ribbon={item?.ribbon || ""}
+                  price={getProductPriceLabel(item?.variants, item?.discountedPrice)}
+                  assets={item?.assets || []}
+                />
+              </Link>
+            ))}
           </div>
-
-          <div className="w-full center">
-            <button type="button" onClick={() => setOpenFilter(true)} className="open_filter  text-xs uppercase">
-              <RiEqualizerLine size={14} />
-              <p className="uppercase text-base">
-                Apply Filter
-              </p>
-            </button>
-          </div>
-
-          <div className=" products_layout_paren padding ">
-            <ProductsAside openFilter={openFilter} setOpenFilter={setOpenFilter} />
-            <div className="allproducts_paren ">
-              {products?.length == 0 && <h2 className='text-xl text-center'>No products found</h2>}
-
-              {products?.map((item) => (
-                <Link prefetch key={item?._id} scroll={false} title={item?.name || ""} href={`/products/${item?.slug || item?._id}`}>
-                  <ProductCard
-                    key={item?._id}
-                    productId={item?._id}
-                    name={item?.name || ""}
-                    ribbon={item?.ribbon || ""}
-                    price={getProductPriceLabel(item?.variants, item?.discountedPrice)}
-                    assets={item?.assets || []}
-                  />
-                </Link>
-              ))}
-            </div>
-          </div>
-        </>
-      </Suspense>
+        </div>
+      </>
+      {/* </Suspense> */}
 
     </>
   )

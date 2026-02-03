@@ -95,7 +95,7 @@ const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
       await refetch();
     } catch (err) {
       console.error(err);
-      toast.error(err.message || "Failed to add item in cart");
+      toast.error("Failed to add item in cart");
     }
   };
 
@@ -118,8 +118,8 @@ const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
       toast.success(message || "Item removed successfully!");
       await refetch();
     } catch (err) {
-      console.error(err);
-      toast.error(err.message || "Failed to remove item from cart");
+      // console.error(err);
+      toast.error("Failed to remove item from cart");
     }
   };
 

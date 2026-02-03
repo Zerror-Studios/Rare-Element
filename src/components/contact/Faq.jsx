@@ -79,7 +79,7 @@ const Faq = () => {
                                 onClick={() => toggleFAQ(faq.id)}
                             >
                                 <h2 className='text-xl'>{faq.title}</h2>
-                                <img className={`faq_drop_close ${openId === faq.id ? "open" : ""}`} src="/icons/close.svg" alt="loading" title='close icon' />
+                                <img className={`faq_drop_close ${openId === faq.id ? "open" : ""}`} src="/icons/close.svg" alt="img" title='close icon' />
                             </div>
                             <div
                                 className="faq_drop_desc"

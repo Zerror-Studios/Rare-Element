@@ -19,6 +19,7 @@ export const GET_WISHLIST_ITEMS = gql`
             type
             altText
             isFeatured
+            isHover
           }
           price
           discountedPrice

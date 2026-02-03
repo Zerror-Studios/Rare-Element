@@ -36,7 +36,7 @@ const ContactSupport = ({ meta }) => {
     var tl = gsap.timeline({
       scrollTrigger: {
         trigger: ".contact_form_paren",
-        end:"bottom bottom",
+        end: "bottom bottom",
         start: "top top",
         // anticipatePin: 1,
         scrub: true,
@@ -79,7 +79,7 @@ const ContactSupport = ({ meta }) => {
       <div className="contact_form_paren">
         <section id="contact_form" >
           <div className="contact_img_paren ">
-            <img className='contact_bg_img' src="https://images.unsplash.com/photo-1711462579127-d25e6ea88244?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="loading" title='loading' />
+            <img className='contact_bg_img' src="https://images.unsplash.com/photo-1711462579127-d25e6ea88244?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="img" title='loading' />
             <div className="ct_box">
               <h1 className=' text-3xl font-semibold'>Contact Us</h1>
               <p className='text-base uppercase'>Need help? Contact Nahara for support, product inquiries, custom jewellery requests, and order assistance.</p>

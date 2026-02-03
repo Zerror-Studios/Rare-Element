@@ -50,8 +50,12 @@ const Login = ({ setToggle }) => {
         toast.error("Invalid login credentials.");
       }
     } catch (err) {
-      // console.error("Login error:", err);
-      toast.error("Invalid login credentials.");
+      // console.error(err);
+      if (err.message === 'Error in Save user for client: Nahara for Error "User not found!!"') {
+        toast.error("User not found with this email.");
+      } else {
+        toast.error("Incorrect password.");
+      }
     }
   };
 
@@ -74,7 +78,11 @@ const Login = ({ setToggle }) => {
               {...register("email")}
             />
             {errors?.email && (
-              <div className="error-p">{errors?.email?.message || ""}</div>
+              <div className="error-p">
+                <p>
+                  {errors?.email?.message || ""}
+                </p>
+              </div>
             )}
           </div>
 
@@ -93,11 +101,16 @@ const Login = ({ setToggle }) => {
               {...register("password")}
             />
             {errors?.password && (
-              <div className="error-p">{errors?.password?.message || ""}</div>
+              <div className="error-p">
+                <p>
+                  {errors?.password?.message || ""}
+                </p>
+              </div>
             )}
           </div>
-
-          <GreenBoxBtn title={"Login"} loading={loading} />
+          <div className="signup_btn">
+            <GreenBoxBtn title={"Login"} loading={loading} />
+          </div>
         </form>
 
         <div className="not-up">

@@ -183,7 +183,7 @@ const CheckoutPage = ({ meta }) => {
     } catch (err) {
       setIsLoading(false);
       console.error(err);
-      toast.error(err.message || "Failed");
+      toast.error("Failed");
     }
   };
 

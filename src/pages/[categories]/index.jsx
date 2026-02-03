@@ -96,7 +96,7 @@ const Categories = ({ meta, data, productList }) => {
   return (
     <>
       <SeoHeader meta={meta} breadcrumbList={breadcrumbList} />
-      <Suspense fallback={<CategoryPageSkeleton />}>
+      {/* <Suspense fallback={<CategoryPageSkeleton />}> */}
         <div ref={containerRef}>
           <div className="products_hero-section">
             <Image
@@ -155,7 +155,7 @@ const Categories = ({ meta, data, productList }) => {
             </div>
           </div>
         </div>
-      </Suspense>
+      {/* </Suspense> */}
     </>
   )
 }
