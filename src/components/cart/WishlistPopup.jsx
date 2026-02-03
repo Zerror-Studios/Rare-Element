@@ -70,6 +70,7 @@ const WishlistPopup = ({ item, popupActive, setPopupActive, handleAddItem, handl
                 }
             });
             // Remove from cart
+            toast.success("Saved to wishlist");
             await handleRemoveItem(item?.productId, item?.variantDetail?.variantDetailId, true);
             setPopupActive(false);
         } catch (error) {
@@ -99,7 +100,7 @@ const WishlistPopup = ({ item, popupActive, setPopupActive, handleAddItem, handl
         };
     }, [popupActive]);
 
-    const firstAsset = item?.product?.assets?.[0]?.path || "/images/homepage/category/bracelets.svg";
+    const firstAsset = item?.asset?.path || "/images/homepage/category/bracelets.svg";
     return (
         <>
             <div className="add_popup_paren center">

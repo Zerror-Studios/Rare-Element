@@ -313,7 +313,7 @@
 }
 .cartBag_qtyControl_dec:hover,
 .cartBag_qtyControl_inc:hover {
-  color: white;
+  color: white !important;
 }
 .cartBag_qtyControl_dec:hover::after,
 .cartBag_qtyControl_inc:hover:after {

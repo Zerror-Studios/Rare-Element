@@ -65,7 +65,7 @@ const AccountAside = () => {
           </div>
 
 
-          <div >
+          {/* <div >
             <Link scroll={false} href={"/account/offers"} title='/account/offers'>
               <p
                 className={`accountLeftSlide_navLink uppercase text-2xl ${router.pathname === "/account/offers" ? "active" : ""
@@ -74,7 +74,7 @@ const AccountAside = () => {
                 Discounts & Offers
               </p>
             </Link>
-          </div>
+          </div> */}
 
           <div>
             <Link scroll={false} href={"/account/settings"} title='/account/settings' >

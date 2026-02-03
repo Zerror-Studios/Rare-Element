@@ -19,7 +19,7 @@ export default function PageTransition({ children, routeKey }) {
         gsap.set(el, { autoAlpha: 0 });
         gsap.to(el, {
           autoAlpha: 1,
-          duration: 0.5,
+          duration: 0.01,
           ease: "ease-secondary",
           onComplete: resolve,
         });
@@ -46,7 +46,7 @@ export default function PageTransition({ children, routeKey }) {
 
     gsap.to(overlayRef.current, {
       autoAlpha: 0,
-      duration: 0.5,
+      duration: 0.01,
       ease: "ease-secondary",
       onComplete: () => ScrollTrigger.refresh(),
     });
@@ -55,7 +55,7 @@ export default function PageTransition({ children, routeKey }) {
 
   return (
     <>
-      <div>{displayChildren}</div>
+      <>{displayChildren}</>
 
       {/* Simple white overlay */}
       <div
@@ -66,9 +66,8 @@ export default function PageTransition({ children, routeKey }) {
           left: 0,
           width: "100%",
           height: "100%",
-          backgroundColor: "#ffffff",
           opacity: 0,
-          zIndex: 9999,
+          zIndex: 99,
           pointerEvents: "none",
         }}
       />
