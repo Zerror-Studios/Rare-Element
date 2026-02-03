@@ -87,7 +87,7 @@ const AllProducts = ({ meta, products }) => {
             {products?.length == 0 && <h2 className='text-xl text-center'>No products found</h2>}
 
             {products?.map((item) => (
-              <Link prefetch key={item?._id} scroll={false} title={item?.name || ""} href={`/products/${item?.slug || item?._id}`}>
+              <Link prefetch key={item?._id} scroll={false}  href={`/products/${item?.slug || item?._id}`}>
                 <ProductCard
                   key={item?._id}
                   productId={item?._id}

@@ -20,7 +20,7 @@ const UserLogin = ({ meta }) => {
               height={600}
               src="/images/homepage/footer_reels/bracelet.JPG"
               alt="image"
-              title="img"
+            
             />
           </div>
           <div className="left-one">
@@ -29,7 +29,7 @@ const UserLogin = ({ meta }) => {
               height={600}
               src="/images/homepage/footer_reels/rings.JPG"
               alt="image"
-              title="img"
+            
             />
           </div>
         </div>

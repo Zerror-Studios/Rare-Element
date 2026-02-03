@@ -121,14 +121,13 @@ const WishlistPopup = ({ item, popupActive, setPopupActive, handleAddItem, handl
                                     className="cover"
                                     src={firstAsset}
                                     alt={item?.name || ""}
-                                    title={item?.name || ""}
                                 />
                             </div>
                         </div>
                         <div className="cartBag_bagItemDetails">
                             <div className="cartBag_bagItemTop">
                                 <div className="cartBag_itemHead">
-                                    <Link prefetch scroll={false} href={`/products/${item?.product?.slug || item?.productId}`} title={item?.name || ""} className="cartBag_itemName text-base">
+                                    <Link prefetch scroll={false} href={`/products/${item?.product?.slug || item?.productId}`} className="cartBag_itemName text-base">
                                         <p>
                                             {item?.name}
                                         </p>

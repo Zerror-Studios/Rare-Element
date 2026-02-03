@@ -124,6 +124,11 @@ const ProductContant = ({
   const [openDropdown, setOpenDropdown] = useState(null); // "color" | "size" | null
   const [accordionIndex, setAccordionIndex] = useState(null);
   const { openSizeGuide } = useSizeGuideStore((state) => state);
+
+  const options = data?.productOptions || [];
+  const selectedCount = Object.keys(selectedVariants).length;
+  const allSelected = selectedCount === options.length;
+
   const assets = data.assets;
 
   // Initialize default variants and color
@@ -211,6 +216,31 @@ const ProductContant = ({
     openSizeGuide(sizeGuideAsset);
   };
 
+  const handleMainButtonClick = () => {
+    if (loading || isOutOfStock) return;
+
+    if (!allSelected) {
+      const nextOption = options[selectedCount];
+      if (nextOption) {
+        setOpenDropdown(nextOption.optionName);
+      }
+      return;
+    }
+
+    handleAddToCart();
+  };
+
+  const buttonTitle = loading
+    ? "Loading..."
+    : isOutOfStock
+      ? StockStatus.OUT_OF_STOCK
+      : allSelected
+        ? "Add To Cart"
+        : selectedCount === 0
+          ? "Buy Now"
+          : "Select Options";
+
+
   if (!data) return null;
   return (
     <>
@@ -220,7 +250,7 @@ const ProductContant = ({
             <div className="productDetail_info_left">
               {data?.categories?.map((item) => {
                 return (
-                  <Link prefetch key={item?._id} scroll={false} href={`/${item?.slug || ""}`} title={item?.name || ""}>
+                  <Link prefetch key={item?._id} scroll={false} href={`/${item?.slug || ""}`} >
                     <p className="productDetail_category text-lg">{item?.name || ""}</p>
                   </Link>
                 )
@@ -256,7 +286,7 @@ const ProductContant = ({
                             }`}
                           src="/icons/LongArrowDown.svg"
                           alt="img"
-                          title="Dropdown"
+                
                         />
                       </button>
                     </div>
@@ -347,21 +377,22 @@ const ProductContant = ({
           </div> */}
             </div>
             <div className="productDetail_addtocart">
+
               {isOutOfStock && (
                 <GreenBoxBtn title={notifyLoading ? "Loading..." : "Notify me"} onClick={handleNotifyMe} />
               )}
               <GreenBoxBtn
                 loading={loading}
-                title={loading ? "Loading..." : !cartBtn ? "Select Options" : isOutOfStock ? StockStatus.OUT_OF_STOCK : "Add To Cart"}
-                onClick={handleAddToCart}
+                title={buttonTitle}
+                onClick={handleMainButtonClick}
               />
+
               <div className="productDetail_btn_icon center" onClick={handleWishlistToggle}>
                 <div className="icon_pr">
                   <Image
                     className={`short_links_icon_heart ${isWishlisted ? 'hidden' : ''}`}
                     src="/icons/greenHeart.svg"
                     alt="heart"
-                    title="Wishlist"
                     width={24}
                     height={24}
                     priority={false}
@@ -370,7 +401,6 @@ const ProductContant = ({
                     className={`short_links_icon_heart_hover ${isWishlisted ? 'show_filled' : ''}`}
                     src="/icons/heartFill.svg"
                     alt="heart filled"
-                    title="Wishlist"
                     width={24}
                     height={24}
                     priority={false}
@@ -397,7 +427,7 @@ const ProductContant = ({
                           }`}
                         src="/icons/LongArrowDown.svg"
                         alt="img"
-                        title="Dropdown"
+                     
                       />
                     </button>
 

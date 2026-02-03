@@ -5,7 +5,7 @@ const ProductBanner = () => {
     <div className="padding">
       <div className="image_banner_paren">
         <div className="image_banner_paren_left">
-          <img className='cover' src="/images/productpage/giftsHeroimg.svg" alt="img" title='giftsHeroimg' />
+          <img className='cover' src="/images/productpage/giftsHeroimg.svg" alt="img"/>
         </div>
         <div className="image_banner_paren_right">
           <div className="image_banner_paren_left_txt">

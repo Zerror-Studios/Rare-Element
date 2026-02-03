@@ -185,7 +185,7 @@ const LookBook = ({ data }) => {
                                             className="cover"
                                             src={imageAsset?.path || "/green_logo.svg"}
                                             alt={item?.name || ""}
-                                            title={item?.name || ""}
+                                       
                                         />
                                     </div>
                                 </SwiperSlide>
@@ -228,7 +228,7 @@ const LookBook = ({ data }) => {
                                                     className="cover"
                                                     src={imageAsset?.path || "/green_logo.svg"}
                                                     alt={item?.name || ""}
-                                                    title={item?.name || ""}
+                          
                                                 />
                                             </div>
 

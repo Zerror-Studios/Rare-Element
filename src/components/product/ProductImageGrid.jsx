@@ -54,7 +54,7 @@ const ProductImageGrid = ({ filter, data, title }) => {
               >
                 {video ? (
                   <div className="thumbnail_video center">
-                    <img className="play_btn_img" src="/icons/play_btn.png" alt="img" title="play" />
+                    <img className="play_btn_img" src="/icons/play_btn.png" alt="img" />
                     <video muted
                       playsInline src={src} className="cover" type="video/mp4" />
                   </div>
@@ -66,7 +66,7 @@ const ProductImageGrid = ({ filter, data, title }) => {
                       height={200}
                       src={src}
                       alt={title}
-                      title={title}
+                   
                     />
                   </div>
                 )}
@@ -113,7 +113,7 @@ const ProductImageGrid = ({ filter, data, title }) => {
                       fill
                       src={src}
                       alt={title}
-                      title={title}
+                   
                       className="MobileImageSlider_slideImage"
                     />
                   )}
@@ -130,7 +130,7 @@ const ProductImageGrid = ({ filter, data, title }) => {
           >
             <img src="/icons/arrowLeft.svg"
               alt="img"
-              title="Back"
+             
             />
           </button>
           <button
@@ -139,7 +139,7 @@ const ProductImageGrid = ({ filter, data, title }) => {
           >
             <img src="/icons/arrowRight.svg"
               alt="img"
-              title="Next"
+            
             />
 
           </button>

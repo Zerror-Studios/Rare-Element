@@ -12,7 +12,7 @@ const RouteLoader = () => {
       aria-hidden={!isLoading}
     >
       <div className="loader_img">
-        <img src="/green_logo.svg" alt="Logo" title="logo" />
+        <img src="/green_logo.svg" alt="Logo"/>
       </div>
     </div>
   );

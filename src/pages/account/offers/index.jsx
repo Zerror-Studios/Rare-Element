@@ -31,7 +31,7 @@ const Purchases = ({ meta }) => {
                     className="account_img"
                     src={offer.img}
                     alt={offer.title}
-                    title={offer.title}
+
                   />
                 </div>
 

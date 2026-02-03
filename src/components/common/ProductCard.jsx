@@ -131,13 +131,11 @@ const ProductCard = React.memo(({ productId, name, ribbon, price, assets }) => {
                         width={24}
                         height={24}
                         priority={false}
-                        title="Wishlist"
                     />
                     <Image
                         className={`short_links_icon_heart_hover ${isWishlisted ? 'show_filled' : ''}`}
                         src="/icons/heartFill.svg"
                         alt="heart filled"
-                        title="Wishlist"
                         width={24}
                         height={24}
                         priority={false}
@@ -152,7 +150,6 @@ const ProductCard = React.memo(({ productId, name, ribbon, price, assets }) => {
                         className="w-full h-full"
                         src={hoverImage?.path || "/green_logo.svg"}
                         alt={name || "Rare Element Product"}
-                        title={name || "Rare Element Product"}
                         width={600}
                         height={800}
                     />
@@ -166,7 +163,6 @@ const ProductCard = React.memo(({ productId, name, ribbon, price, assets }) => {
                         className="w-full h-full"
                         src={mainImage?.path || "/green_logo.svg"}
                         alt={name || "Rare Element Product"}
-                        title={name || "Rare Element Product"}
                         width={600}
                         height={800}
                     />
