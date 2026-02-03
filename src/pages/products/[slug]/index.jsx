@@ -62,6 +62,7 @@ const ProductDetail = ({ meta, data, productList }) => {
       const payload = {
         input: {
           productId,
+          categoryId: data?.categoryIds?.[0],
           variantDetail: variantMatched,
           ...(isLoggedIn && token ? { token } : {}),
         },
