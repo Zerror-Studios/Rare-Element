@@ -92,6 +92,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   useEffect(() => {
+    if (window.innerWidth < 1024) return
     gsap.to(".footer_below", {
       scrollTrigger: {
         trigger: ".footer_classname_wrapper",
@@ -194,7 +195,7 @@ const Footer = () => {
 
                 <div className="footer_links_column">
                   {col.links.map((item, idx) => (
-                    <Link prefetch key={idx} href={item.href}  scroll={false} target={item.target}>
+                    <Link prefetch key={idx} href={item.href} scroll={false} target={item.target}>
                       <p className="text-base thin">{item.label}</p>
                     </Link>
                   ))}
@@ -206,7 +207,7 @@ const Footer = () => {
           {/* Footer Bottom Section */}
           <div className="footer_classname_bottom">
             <Link scroll={false} href="/" >
-              <img className="footer_logo" src="/logo.svg" alt="Nahara Logo"  />
+              <img className="footer_logo" src="/logo.svg" alt="Nahara Logo" />
             </Link>
             <div className="uppercase text-xs copyright_txt">
               <p>© {currentYear} Nahara. All rights reserved.</p>

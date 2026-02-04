@@ -28,9 +28,20 @@ export default function App({ Component, pageProps }) {
   const start = useRouteLoaderStore((s) => s.start);
   const stop = useRouteLoaderStore((s) => s.stop);
 
+  const isAccountPath = (path) => path.startsWith("/account");
+
   useEffect(() => {
     const handleStart = (url, { shallow }) => {
-      if (!shallow) start();
+      if (shallow) return;
+
+      const fromAccount = isAccountPath(router.pathname);
+      const toAccount = isAccountPath(url);
+
+      if (fromAccount && toAccount) return;
+
+      if (!fromAccount && toAccount) return;
+
+      start();
     };
 
     const handleStop = () => stop();
@@ -44,7 +55,8 @@ export default function App({ Component, pageProps }) {
       router.events.off("routeChangeComplete", handleStop);
       router.events.off("routeChangeError", handleStop);
     };
-  }, [router.events, start, stop]);
+  }, [router.pathname, router.events, start, stop]);
+
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -57,7 +69,7 @@ export default function App({ Component, pageProps }) {
 
   return (
     <>
-      <RouteLoader />
+      {!isAccountPath(router.pathname) && <RouteLoader />}
 
       <ApolloProvider client={client}>
         <AuthProvider>

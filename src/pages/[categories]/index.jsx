@@ -24,7 +24,7 @@ const Categories = ({ meta, data, productList }) => {
     if (!imageReady || !containerRef.current) return;
 
     const ctx = gsap.context(() => {
-      const height = window.innerWidth > 750 ? "76vh" : "50vh";
+      const height = window.innerWidth > 750 ? "76vh" : "40vh";
       const heroSection = containerRef.current.querySelector(".products_hero-section");
       const heroImg = containerRef.current.querySelector(".products_hero-img");
 

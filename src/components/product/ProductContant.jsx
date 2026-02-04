@@ -125,6 +125,7 @@ const ProductContant = ({
   const [accordionIndex, setAccordionIndex] = useState(null);
   const { openSizeGuide } = useSizeGuideStore((state) => state);
 
+  const [selectionMode, setSelectionMode] = useState(false);
   const options = data?.productOptions || [];
   const selectedCount = Object.keys(selectedVariants).length;
   const allSelected = selectedCount === options.length;
@@ -173,13 +174,28 @@ const ProductContant = ({
     }
   };
 
-  const handleVariants = (name, value) => {
-    const updated = { ...selectedVariants, [name]: value };
-    setSelectedVariants(updated);
-    setCartBtn(Object.keys(updated).length === data.productOptions?.length);
-    updatePriceBasedOnVariant(updated);
+const handleVariants = (name, value) => {
+  const updated = { ...selectedVariants, [name]: value };
+  setSelectedVariants(updated);
+  updatePriceBasedOnVariant(updated);
+
+  const nextIndex = Object.keys(updated).length;
+  const nextOption = options[nextIndex];
+
+  // ✅ IMPORTANT: update cart button readiness
+  setCartBtn(nextIndex === options.length);
+
+  if (nextOption) {
+    setOpenDropdown(nextOption.optionName);
+    setSelectionMode(false);
+  } else {
+    // All selected
     setOpenDropdown(null);
-  };
+    setSelectionMode(false);
+  }
+};
+
+
 
   const clearVariants = () => {
     setAssetsFilter([]);
@@ -216,19 +232,25 @@ const ProductContant = ({
     openSizeGuide(sizeGuideAsset);
   };
 
-  const handleMainButtonClick = () => {
-    if (loading || isOutOfStock) return;
+const handleMainButtonClick = () => {
+  if (loading || isOutOfStock) return;
 
-    if (!allSelected) {
-      const nextOption = options[selectedCount];
-      if (nextOption) {
-        setOpenDropdown(nextOption.optionName);
-      }
-      return;
-    }
-
+  // ✅ ALWAYS allow add to cart when all selected
+  if (allSelected) {
     handleAddToCart();
-  };
+    return;
+  }
+
+  // Start selection flow
+  setSelectionMode(true);
+
+  const nextOption = options[selectedCount];
+  if (nextOption) {
+    setOpenDropdown(nextOption.optionName);
+  }
+};
+
+
 
   const buttonTitle = loading
     ? "Loading..."
@@ -236,9 +258,10 @@ const ProductContant = ({
       ? StockStatus.OUT_OF_STOCK
       : allSelected
         ? "Add To Cart"
-        : selectedCount === 0
-          ? "Buy Now"
-          : "Select Options";
+        : selectionMode
+          ? "Select Options first"
+          : "Buy Now";
+
 
 
   if (!data) return null;
@@ -286,7 +309,7 @@ const ProductContant = ({
                             }`}
                           src="/icons/LongArrowDown.svg"
                           alt="img"
-                
+
                         />
                       </button>
                     </div>
@@ -427,7 +450,7 @@ const ProductContant = ({
                           }`}
                         src="/icons/LongArrowDown.svg"
                         alt="img"
-                     
+
                       />
                     </button>
 

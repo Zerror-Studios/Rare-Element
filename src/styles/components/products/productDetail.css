@@ -12,9 +12,9 @@
   width: 100%;
 }
 @media (max-width: 750px) {
-  .size_guide_btn{
-  transform: translateY(.8rem) !important;
-}
+  .size_guide_btn {
+    transform: translateY(0.8rem) !important;
+  }
   .suggestion_parent {
     margin-top: 1rem !important;
   }
@@ -294,8 +294,8 @@
   display: flex;
   justify-content: flex-end;
 }
-.size_guide_btn{
-  transform: translateY(.5rem);
+.size_guide_btn {
+  transform: translateY(0.5rem);
 }
 .clear_variatns_btn button p {
   color: #174d38 !important;
@@ -585,22 +585,27 @@
   text-align: center;
 }
 .suggestion_shopcard {
-  border-top: 1px solid #f5f5f5;
-  /* border-bottom: 1px solid #f5f5f5; */
   width: 100%;
   flex-shrink: 0;
 }
-.suggestion_scroll .suggestion_shopcard:last-child .shopCard_card {
-  border-right: 1px solid #f5f5f5;
-}
 
 .suggestion_scroll {
+  border: 1px solid #f5f5f5;
+  border-bottom: 0;
   width: 100%;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  border-right: 1px solid #f5f5f5;
   margin-top: 2.5rem;
 }
+
+.suggestion_scroll .shopCard_card {
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.suggestion_scroll > :nth-child(odd) .shopCard_card {
+  border-right: 1px solid #f5f5f5;
+}
+
 .suggestion_scroll::-webkit-scrollbar {
   display: none; /* Chrome/Safari */
 }
@@ -639,8 +644,10 @@
     width: 100%;
     display: flex;
     overflow-x: scroll;
-    border-right: 1px solid #f5f5f5;
     margin-top: 2.5rem;
+  }
+  .suggestion_scroll .shopCard_card {
+    border-right: 1px solid #f5f5f5;
   }
   .image_banner_paren_left {
     width: 50%;

@@ -166,7 +166,7 @@ export async function getServerSideProps({ params }) {
         query: GET_PRODUCTS,
         variables: {
           offset: 0,
-          limit: 5,
+          limit: 12,
           filters: {
             status: ProductStatus.PUBLISHED,
             slugNotInclude: slug,
