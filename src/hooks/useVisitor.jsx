@@ -9,12 +9,8 @@ export const useVisitor = () => {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    // const userAuth = localStorage.getItem("user-data");
-    // const isLoggedIn = userAuth && JSON.parse(userAuth)?.state?.isLoggedIn;
-    const isLoggedIn = AuthCookies.get();
-    if (isLoggedIn) return;
-
     const storedVisitorId = localStorage.getItem("visitorId");
+
     // const storedExpire = localStorage.getItem("visitorExpire"); // No longer treating it as hard expiry for ID reuse
     // const now = new Date();
 

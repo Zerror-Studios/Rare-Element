@@ -11,7 +11,7 @@ import { SIGN_UP_USER } from "@/graphql";
 import { useAuthStore } from "@/store/auth-store";
 import { UserStatus } from "@/utils/Constant"
 import { toast } from "react-toastify";
-import { AuthCookies } from "@/utils/AuthCookies";
+import { TokenManager } from "@/utils/tokenManager";
 import "react-international-phone/style.css";
 
 const SignupSchema = z
@@ -58,12 +58,12 @@ const Signup = ({ setToggle }) => {
         status: UserStatus.ACTIVE,
       };
       const { data: response } = await signupUser({ variables: { input } });
-      const { user, userToken } = response?.clientUserSave || {};
-      if (userToken && Object.keys(user).length > 0) {
+      const { user, accessToken, refreshToken } = response?.clientUserSave || {};
+      if (accessToken && refreshToken && Object.keys(user).length > 0) {
         localStorage.removeItem("visitorId");
         localStorage.removeItem("visitorExpire");
-        AuthCookies.remove(); // clear previous
-        AuthCookies.set(userToken);
+        TokenManager.clearTokens(); // clear previous
+        TokenManager.setTokens(accessToken, refreshToken);
         setUser(user);
         setIsLoggedIn(true);
         toast.success("Account created successfully!");

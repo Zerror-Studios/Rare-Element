@@ -32,14 +32,27 @@ const OrderSummary = ({ data, loading, refetch }) => {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
     reset,
   } = useForm({
     resolver: zodResolver(couponSchema),
   });
 
+  React.useEffect(() => {
+    if (isCouponApplied && data?.coupon?.couponCode) {
+      setValue("couponCode", data.coupon.couponCode);
+    } else if (!isCouponApplied) {
+      setValue("couponCode", "");
+    }
+  }, [isCouponApplied, data, setValue]);
+
   const onSubmit = async (data) => {
     if (loading) return;
+    if (!isLoggedIn && !visitorId) {
+      toast.warn("Initializing session, please try again...");
+      return;
+    }
     try {
       const input = {
         ...(isLoggedIn && token ? { token } : {}),
@@ -63,6 +76,10 @@ const OrderSummary = ({ data, loading, refetch }) => {
 
   const onRemove = async () => {
     if (loading) return;
+    if (!isLoggedIn && !visitorId) {
+      toast.warn("Initializing session, please try again...");
+      return;
+    }
     try {
       const input = {
         ...(isLoggedIn && token ? { token } : {}),

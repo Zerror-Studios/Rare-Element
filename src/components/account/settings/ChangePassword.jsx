@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 import GreenBoxBtn from "@/components/buttons/GreenBoxBtn";
 import { RiEyeLine, RiEyeOffLine } from "@remixicon/react";
 import Input from "@/components/ui/Input";
-import { AuthCookies } from "@/utils/AuthCookies";
+import { TokenManager } from "@/utils/tokenManager";
 
 const passwordSchema = z
   .object({
@@ -48,9 +48,9 @@ const ChangePassword = () => {
 
   useLayoutEffect(() => {
     if (isEdit) {
-      gsap.to(".password_form_paren", { height: "auto",duration: 0.5, ease: "power2.out" })
+      gsap.to(".password_form_paren", { height: "auto", duration: 0.5, ease: "power2.out" })
     } else {
-      gsap.to(".password_form_paren", { height: "0vh",  duration: 0.5, ease: "power2.out" })
+      gsap.to(".password_form_paren", { height: "0vh", duration: 0.5, ease: "power2.out" })
     }
   }, [isEdit])
 
@@ -68,9 +68,9 @@ const ChangePassword = () => {
       const { data: response } = await updatePassword({
         variables: { ...input },
       });
-      const { userToken } = response?.changeUserPassword || {};
-      if (userToken) {
-        AuthCookies.set(userToken);
+      const { accessToken, refreshToken } = response?.changeUserPassword || {};
+      if (accessToken && refreshToken) {
+        TokenManager.setTokens(accessToken, refreshToken);
         reset();
         toast.success("Password Updated successfully!");
       }

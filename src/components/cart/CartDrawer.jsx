@@ -52,7 +52,7 @@ const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
   );
 
   const cartListPayload = isLoggedIn
-    ? { token }
+    ? { token: token || null }
     : visitorId
       ? { guestId: visitorId }
       : {};
@@ -62,7 +62,7 @@ const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
     loading,
     refetch,
   } = useQuery(CART_LIST, {
-    skip: !isOpen,
+    skip: !isOpen || (!isLoggedIn && !visitorId),
     variables: cartListPayload,
     fetchPolicy: "network-only",
     nextFetchPolicy: "cache-first",

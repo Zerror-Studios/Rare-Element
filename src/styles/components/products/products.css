@@ -7,6 +7,7 @@
   position: relative;
   overflow: hidden;
 }
+
 .products_hero-img {
   opacity: 0;
   filter: brightness(1);
@@ -14,6 +15,7 @@
   height: 100%;
   object-fit: cover;
 }
+
 .products_content {
   color: black;
   width: 100%;
@@ -41,6 +43,7 @@
   margin-bottom: 2rem;
   margin-top: 4rem;
 }
+
 .products_header {
   width: 100%;
   display: flex;
@@ -52,6 +55,7 @@
   gap: 0.25rem;
   margin-bottom: 2rem;
 }
+
 .open_filter {
   margin: 1rem;
   /* text-decoration: underline; */
@@ -134,12 +138,15 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
 }
+
 .allproducts_paren .shopCard_card:nth-child(1) {
   border-left: 1px solid #e6e6e6;
 }
+
 .allproducts_paren .shopCard_card:last-child {
   border-right: 1px solid #e6e6e6;
 }
+
 .allproducts_paren .shopCard_card:nth-child(1),
 .allproducts_paren .shopCard_card:nth-child(2),
 .allproducts_paren .shopCard_card:nth-child(3),
@@ -160,6 +167,7 @@
   height: 100dvh;
   background-color: white;
 }
+
 .product_aside_header {
   position: relative;
   display: flex;
@@ -170,39 +178,51 @@
   cursor: pointer;
   justify-content: space-between;
 }
+
 .products_aside_close {
   position: absolute;
   right: 1rem;
   top: 1rem;
 }
+
 .products_aside_close img {
   width: 2rem;
 }
+
 .aside_arrow {
   transform: rotate(90deg) translateY(-0.3rem);
   font-size: 1.5rem;
   line-height: 0;
   transition: all 0.3s ease;
 }
+
 .aside_arrow.rotate {
   transform: rotate(-90deg);
   font-size: 1.5rem;
   line-height: 0;
 }
+
 .filter_boxes_paren {
   padding-top: 4rem;
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 1rem;
 }
+
 .products_aside_box {
   border-bottom: 1px solid #e6e6e6;
   padding-bottom: 1rem;
   padding-top: 2rem;
 }
+
 .products_aside_box:first-child {
   padding-top: 0rem;
 }
+
 .products_aside_box:nth-last-child(1) {
   border: none;
 }
+
 .products_aside_options {
   padding-left: 0.5rem;
   max-height: 0;
@@ -213,11 +233,13 @@
   padding-bottom: 0rem;
   transition: max-height 0.4s ease, opacity 0.3s ease, transform 0.3s ease;
 }
+
 .products_aside_option {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
+
 .products_aside_options.open {
   max-height: 150px;
   opacity: 1;
@@ -228,9 +250,14 @@
   line-height: 1.5rem;
   text-transform: capitalize;
 }
+
 .filter_apply_btn {
   width: 100%;
-  margin-top: 2rem;
+  position: sticky;
+  bottom: 0;
+  background-color: white;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 
 @media (min-width: 750px) {
@@ -242,6 +269,7 @@
     padding: 3rem 0rem;
     position: relative;
   }
+
   .products_aside_close,
   .open_filter {
     display: none;
@@ -252,6 +280,7 @@
     padding-block: 3rem;
     margin-left: 3rem;
   }
+
   .products_content h2 {
     margin-bottom: 1.5rem;
   }
@@ -278,6 +307,7 @@
     gap: 1rem;
     display: flex;
   }
+
   .products_aside_paren {
     padding-right: 2rem;
     padding-left: 0;
@@ -289,9 +319,11 @@
     top: 8rem;
     width: 16%;
   }
+
   .filter_boxes_paren {
     padding-top: 0rem;
   }
+
   .product_aside_header {
     position: relative;
     display: flex;
@@ -301,25 +333,30 @@
     cursor: pointer;
     justify-content: space-between;
   }
+
   .aside_arrow {
     transform: rotate(90deg) translateY(-0.3rem);
     font-size: 1.5rem;
     line-height: 0;
     transition: all 0.3s ease;
   }
+
   .aside_arrow.rotate {
     transform: rotate(-90deg);
     font-size: 1.5rem;
     line-height: 0;
   }
+
   .products_aside_box {
     border-bottom: 1px solid #e6e6e6;
     padding-top: 1.5rem;
     padding-bottom: 1rem;
   }
+
   .products_aside_box:first-child {
     padding-top: 0rem;
   }
+
   .products_aside_options {
     padding-left: 0.5rem;
     max-height: 0;
@@ -330,11 +367,13 @@
     padding-bottom: 0rem;
     transition: max-height 0.4s ease, opacity 0.3s ease, transform 0.3s ease;
   }
+
   .products_aside_option {
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
+
   .products_aside_options.open {
     max-height: 150px;
     opacity: 1;
@@ -345,17 +384,20 @@
     line-height: 1.5rem;
     text-transform: capitalize;
   }
+
   .filter_apply_btn {
     width: 100%;
     margin-top: 2rem;
   }
+
   .allproducts_paren {
     flex-shrink: 0;
     width: 84%;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
   }
-  .categories_paren{
+
+  .categories_paren {
     width: 100% !important;
   }
 }

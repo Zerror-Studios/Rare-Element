@@ -1,19 +1,16 @@
-import Cookies from "js-cookie";
+import { TokenManager } from "./tokenManager";
 
 export const AuthCookies = {
   set(token) {
-    Cookies.set("token", token, {
-      httpOnly: false,       // frontend library – true only in server response
-      secure: true,
-      sameSite: "Strict",
-      expires: 7,
-      path: "/",
-    });
+    // For legacy support, we only handle the access token part here
+    // But ideally components should use TokenManager.setTokens(access, refresh)
+    localStorage.setItem("access_token", token);
   },
   get() {
-    return Cookies.get("token") || null;
+    return TokenManager.getAccessToken();
   },
   remove() {
-    Cookies.remove("token", { path: "/" });
+    TokenManager.clearTokens();
   }
 };
+

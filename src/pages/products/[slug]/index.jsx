@@ -15,7 +15,7 @@ import ProductImageGrid from '@/components/product/ProductImageGrid';
 import ProductContant from '@/components/product/ProductContant';
 import ProductListGrid from "@/components/product/ProductListGrid";
 import ProductBanner from "@/components/product/ProductBanner";
-import { AuthCookies } from "@/utils/AuthCookies";
+import { TokenManager } from "@/utils/tokenManager";
 gsap.registerPlugin(ScrollTrigger);
 
 const ProductDetail = ({ meta, data, productList }) => {
@@ -35,7 +35,7 @@ const ProductDetail = ({ meta, data, productList }) => {
   const [cartBtn, setCartBtn] = useState(false);
   const { user, isLoggedIn } = useAuthStore((state) => state);
   const { openCart } = useCartStore((state) => state);
-  const token = AuthCookies.get();
+  const token = TokenManager.getAccessToken();
   const [addItemToCart, { loading }] = useMutation(ADD_ITEM_TO_CART);
   const [createNotifyRequest, { loading: notifyLoading }] = useMutation(CREATE_BACK_IN_STOCK_REQUEST);
 
@@ -59,12 +59,18 @@ const ProductDetail = ({ meta, data, productList }) => {
       const productId = data?._id;
       if (!productId) throw new Error("Product ID not found");
 
+      if (!isLoggedIn && !visitorId) {
+        toast.warn("Initializing session, please try again...");
+        return;
+      }
+
+      const currentToken = TokenManager.getAccessToken();
       const payload = {
         input: {
           productId,
           categoryId: data?.categoryIds?.[0],
           variantDetail: variantMatched,
-          ...(isLoggedIn && token ? { token } : {}),
+          ...(isLoggedIn && currentToken ? { token: currentToken } : {}),
         },
         ...(!isLoggedIn && visitorId ? { guestId: visitorId } : {}),
       };

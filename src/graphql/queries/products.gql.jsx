@@ -133,3 +133,16 @@ export const GET_PRODUCT_BY_ID = gql`
     }
   }
 `;
+
+export const GET_FILTER_OPTIONS = gql`
+  query GetFilterOptions($categoryIds: [ID]) {
+    getFilterOptions(categoryIds: $categoryIds) {
+      minPrice
+      maxPrice
+      attributes {
+        key
+        values
+      }
+    }
+  }
+`;

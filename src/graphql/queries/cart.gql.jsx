@@ -55,6 +55,7 @@ export const CART_LIST = gql`
       }
       coupon {
         couponId
+        couponCode
       }
       totalTax
       taxBreakdown {

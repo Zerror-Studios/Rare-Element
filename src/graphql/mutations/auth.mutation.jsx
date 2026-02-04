@@ -1,5 +1,20 @@
 import { gql } from "@apollo/client";
 
+export const REFRESH_TOKEN = gql`
+  query RefreshToken($refreshToken: String!) {
+    refreshToken(refreshToken: $refreshToken) {
+      accessToken
+      refreshToken
+    }
+  }
+`;
+
+export const LOGOUT = gql`
+  mutation UserLogout($userId: ID!) {
+    userLogout(userId: $userId)
+  }
+`;
+
 // Sign Up
 export const SIGN_UP_USER = gql`
   mutation ClientUserSave($input: CreateUserInput!) {
@@ -37,7 +52,8 @@ export const SIGN_UP_USER = gql`
         emailSubscribedStatus
         status
       }
-      userToken
+      accessToken
+      refreshToken
     }
   }
 `;
@@ -94,7 +110,11 @@ export const UPDATE_USER_PASSWORD = gql`
       currentPassword: $currentPassword
       newPassword: $newPassword
     ) {
-      userToken
+      accessToken
+      refreshToken
+      user {
+        _id
+      }
     }
   }
 `;

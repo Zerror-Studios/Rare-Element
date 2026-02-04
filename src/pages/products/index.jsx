@@ -1,20 +1,47 @@
-import React, { Suspense, useEffect, useState } from 'react'
+import React, { useEffect, useState, startTransition } from 'react'
 import Link from 'next/link'
 import gsap from 'gsap'
 import SeoHeader from '@/components/seo/SeoHeader'
 import ProductCard from '@/components/common/ProductCard'
 import { createApolloClient } from '@/lib/apolloClient'
 import { getProductPriceLabel } from '@/utils/Util'
-import { GET_PRODUCTS } from '@/graphql'
+import { GET_PRODUCTS, GET_CLIENT_SIDE_CATEGORIES, GET_FILTER_OPTIONS } from '@/graphql'
 import { ProductStatus } from '@/utils/Constant'
 import Image from 'next/image'
 import ProductsFilterHeader from '@/components/product/ProductsFilterHeader'
 import ProductsAside from '@/components/product/ProductsAside'
 import { RiEqualizerLine, RiFilterLine } from '@remixicon/react'
-import AllProductsPageSkeleton from '@/components/skeletons/AllProductsPageSkeleton'
+import { useQuery } from "@apollo/client/react";
 
-const AllProducts = ({ meta, products }) => {
+const AllProducts = ({ meta, products: initialProducts, categories, filterOptions }) => {
   const [openFilter, setOpenFilter] = useState(false)
+  const [filters, setFilters] = useState({})
+  const [isHydrated, setIsHydrated] = useState(false)
+
+  // Ensure hydration is complete before running queries
+  useEffect(() => {
+    setIsHydrated(true)
+  }, [])
+
+  const { data, loading } = useQuery(GET_PRODUCTS, {
+    variables: {
+      offset: 0,
+      limit: 10,
+      filters: {
+        status: ProductStatus.PUBLISHED,
+        ...filters
+      }
+    },
+    skip: !isHydrated || Object.keys(filters).length === 0 // Wait for hydration and filters
+  });
+
+  const products = (Object.keys(filters).length === 0) ? initialProducts : (data?.getClientSideProducts?.products || []);
+
+  const handleApplyFilter = (newFilters) => {
+    startTransition(() => {
+      setFilters(newFilters);
+    });
+  };
 
   useEffect(() => {
     var height
@@ -64,45 +91,45 @@ const AllProducts = ({ meta, products }) => {
   return (
     <>
       <SeoHeader meta={meta} />
-      <Suspense fallback={<AllProductsPageSkeleton />}>
+      <div className="products_header">
+        <p className="products_subtitle thin text-base uppercase">Crafted for Every Moment</p>
+        <h1 className="products_title text-3xl">Explore  Products</h1>
+      </div>
 
-        <>
-          <div className="products_header">
-            <p className="products_subtitle thin text-base uppercase">Crafted for Every Moment</p>
-            <h1 className="products_title text-3xl">Explore  Products</h1>
-          </div>
+      <div className="w-full center">
+        <button type="button" onClick={() => setOpenFilter(true)} className="open_filter  text-xs uppercase">
+          <RiEqualizerLine size={14} />
+          <p className="uppercase text-base">
+            Apply Filter
+          </p>
+        </button>
+      </div>
 
-          <div className="w-full center">
-            <button type="button" onClick={() => setOpenFilter(true)} className="open_filter  text-xs uppercase">
-              <RiEqualizerLine size={14} />
-              <p className="uppercase text-base">
-                Apply Filter
-              </p>
-            </button>
-          </div>
+      <div className=" products_layout_paren padding ">
+        <ProductsAside
+          openFilter={openFilter}
+          setOpenFilter={setOpenFilter}
+          categories={categories}
+          filterOptions={filterOptions}
+          onApply={handleApplyFilter}
+        />
+        <div className={`allproducts_paren ${loading ? "opacity-50" : ""}`}>
+          {products?.length == 0 && !loading && <h2 className='text-xl text-center'>No products found</h2>}
 
-          <div className=" products_layout_paren padding ">
-            <ProductsAside openFilter={openFilter} setOpenFilter={setOpenFilter} />
-            <div className="allproducts_paren ">
-              {products?.length == 0 && <h2 className='text-xl text-center'>No products found</h2>}
-
-              {products?.map((item) => (
-                <Link prefetch key={item?._id} scroll={false} title={item?.name || ""} href={`/products/${item?.slug || item?._id}`}>
-                  <ProductCard
-                    key={item?._id}
-                    productId={item?._id}
-                    name={item?.name || ""}
-                    ribbon={item?.ribbon || ""}
-                    price={getProductPriceLabel(item?.variants, item?.discountedPrice)}
-                    assets={item?.assets || []}
-                  />
-                </Link>
-              ))}
-            </div>
-          </div>
-        </>
-      </Suspense>
-
+          {products?.map((item) => (
+            <Link prefetch key={item?._id} scroll={false} title={item?.name || ""} href={`/products/${item?.slug || item?._id}`}>
+              <ProductCard
+                key={item?._id}
+                productId={item?._id}
+                name={item?.name || ""}
+                ribbon={item?.ribbon || ""}
+                price={getProductPriceLabel(item?.variants, item?.discountedPrice)}
+                assets={item?.assets || []}
+              />
+            </Link>
+          ))}
+        </div>
+      </div>
     </>
   )
 }
@@ -135,7 +162,9 @@ export async function getServerSideProps() {
 
   try {
     const client = createApolloClient();
-    const response = await client.query({
+
+    // Fetch Products
+    const productsPromise = client.query({
       query: GET_PRODUCTS,
       variables: {
         offset: 0,
@@ -145,10 +174,32 @@ export async function getServerSideProps() {
         },
       },
     });
+
+    // Fetch Categories
+    const categoriesPromise = client.query({
+      query: GET_CLIENT_SIDE_CATEGORIES,
+      variables: {
+        limit: 100, // Fetch enough categories
+        filter: {} // Add any filter if needed, e.g. status
+      }
+    });
+
+    // Fetch Filter Options
+    const filterOptionsPromise = client.query({
+      query: GET_FILTER_OPTIONS,
+      variables: {
+        categoryIds: [] // Empty for all products, can be filtered later
+      }
+    });
+
+    const [productsResponse, categoriesResponse, filterOptionsResponse] = await Promise.all([productsPromise, categoriesPromise, filterOptionsPromise]);
+
     return {
       props: {
         meta,
-        products: response?.data?.getClientSideProducts?.products || [],
+        products: productsResponse?.data?.getClientSideProducts?.products || [],
+        categories: categoriesResponse?.data?.getClientSideCategories?.categories || [],
+        filterOptions: filterOptionsResponse?.data?.getFilterOptions || { minPrice: 0, maxPrice: 0, attributes: [] },
       },
     };
   } catch (error) {
@@ -157,6 +208,8 @@ export async function getServerSideProps() {
       props: {
         meta,
         products: [],
+        categories: [],
+        filterOptions: { minPrice: 0, maxPrice: 0, attributes: [] },
       },
     };
   }
