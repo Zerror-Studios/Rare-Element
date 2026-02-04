@@ -41,7 +41,7 @@ const SocialReels = () => {
       <div className="social_header">
         <p className="social_subtitle text-base thin uppercase">Follow us on</p>
         <h2 className="social_title text-3xl">Instagram</h2>
-        <Link alt="Instagram" title='Instagram' href={"https://www.instagram.com/nahara.jewellery/?igsh=MXgwcmQ2ODhnaTR3ag%3D%3D#"} target="_blank" className='text-base  underline '>@nahara.jewellery</Link>
+        <Link alt="Instagram"  href={"https://www.instagram.com/nahara.jewellery/?igsh=MXgwcmQ2ODhnaTR3ag%3D%3D#"} target="_blank" className='text-base  underline '>@nahara.jewellery</Link>
       </div>
       <div className="socialCard_section scroller_none padding">
         {SocialCardData?.map((item, i) => (
@@ -53,8 +53,8 @@ const SocialReels = () => {
                 height={800}
                 className="socialCard_image"
                 src={item.img}
-                alt="Bespoke Jewellery Design"
-                title='Bespoke Jewellery Design'
+                alt="image"
+            
               />
             </div>
 

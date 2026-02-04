@@ -101,8 +101,8 @@ const ContactForm = () => {
         toast.error("Failed to submit the form.");
       }
     } catch (err) {
-      console.error(err);
-      toast.error(err.message || "Failed to submitted contact form");
+      // console.error(err);
+      toast.error("Failed to submitted contact form");
     }
   };
 

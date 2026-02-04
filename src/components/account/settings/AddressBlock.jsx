@@ -123,7 +123,7 @@ const AddressBlock = () => {
       toast.success("Address saved successfully!");
       await refetch(listPayload);
     } catch (err) {
-      toast.error(err?.message || "Failed to save");
+      toast.error("Failed to save");
     } finally {
       reset();
       setIsOpen(null);

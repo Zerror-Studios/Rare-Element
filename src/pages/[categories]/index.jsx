@@ -24,7 +24,7 @@ const Categories = ({ meta, data, productList }) => {
     if (!imageReady || !containerRef.current) return;
 
     const ctx = gsap.context(() => {
-      const height = window.innerWidth > 750 ? "76vh" : "47.5rem";
+      const height = window.innerWidth > 750 ? "76vh" : "40vh";
       const heroSection = containerRef.current.querySelector(".products_hero-section");
       const heroImg = containerRef.current.querySelector(".products_hero-img");
 
@@ -96,7 +96,7 @@ const Categories = ({ meta, data, productList }) => {
   return (
     <>
       <SeoHeader meta={meta} breadcrumbList={breadcrumbList} />
-      <Suspense fallback={<CategoryPageSkeleton />}>
+      {/* <Suspense fallback={<CategoryPageSkeleton />}> */}
         <div ref={containerRef}>
           <div className="products_hero-section">
             <Image
@@ -106,7 +106,6 @@ const Categories = ({ meta, data, productList }) => {
               className="products_hero-img"
               src={data?.imgsrc}
               alt={data?.name || ""}
-              title={data?.name || ""}
               onLoadingComplete={() => setImageReady(true)}
             />
 
@@ -132,7 +131,6 @@ const Categories = ({ meta, data, productList }) => {
                     key={item._id}
                     scroll={false}
                     href={`/products/${item.slug || item._id}`}
-                    title={item.name || ""}
                   >
                     <ProductCard
                       productId={item._id}
@@ -155,7 +153,7 @@ const Categories = ({ meta, data, productList }) => {
             </div>
           </div>
         </div>
-      </Suspense>
+      {/* </Suspense> */}
     </>
   )
 }

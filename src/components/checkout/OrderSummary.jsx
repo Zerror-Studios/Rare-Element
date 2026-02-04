@@ -67,8 +67,8 @@ const OrderSummary = ({ data, loading, refetch }) => {
         toast.success("Coupon Applied successfully!");
       }
     } catch (err) {
-      console.error(err);
-      toast.error(err?.message || "Failed to apply coupon");
+      // console.error(err);
+      toast.error("Failed to apply coupon");
     } finally {
       refetch();
     }
@@ -93,8 +93,8 @@ const OrderSummary = ({ data, loading, refetch }) => {
         toast.success("Coupon Removed successfully!");
       }
     } catch (err) {
-      console.error(err);
-      toast.error(err?.message || "Failed to remove coupon");
+      // console.error(err);
+      toast.error("Failed to remove coupon");
     } finally {
       reset();
       refetch();
@@ -143,6 +143,10 @@ const OrderSummary = ({ data, loading, refetch }) => {
           <p className="checkout_textSm text-lg uppercase">Shipping Charge</p>
           <p className="checkout_textSm text-lg uppercase">{isFreeShippingEnabled ? "Free" : formatePrice(0)}</p>
         </div>
+        <div className="checkout_row">
+          <p className="checkout_textSm text-lg uppercase">Taxes & Charges</p>
+          <p className="checkout_textSm text-lg uppercase"></p>
+        </div>
 
         {/* Tax Breakdown */}
         {data?.taxBreakdown?.length > 0 && (
@@ -157,19 +161,13 @@ const OrderSummary = ({ data, loading, refetch }) => {
                 </p>
               </div>
             ))}
-            <div className="total_tax_row">
-              <p className="total_tax_label">Total Tax</p>
-              <p className="total_tax_value">{formatePrice(data.totalTax)}</p>
-            </div>
-            {data.pricesIncludeTax && (
-              <p className="inclusive_tax_msg">* Inclusive of all taxes</p>
-            )}
+
           </div>
         )}
 
         <div className="checkout_row semibold uppercase text-2xl">
           <p className="checkout_subtotalText bold">Total</p>
-          <p className="checkout_subtotalValue bold">{formatePrice(discountedPrice)}</p>
+          <p className="checkout_subtotalValue ">{formatePrice(discountedPrice)}</p>
         </div>
 
         <div className="checkout_btn text-base uppercase">

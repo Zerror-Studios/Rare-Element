@@ -124,6 +124,12 @@ const ProductContant = ({
   const [openDropdown, setOpenDropdown] = useState(null); // "color" | "size" | null
   const [accordionIndex, setAccordionIndex] = useState(null);
   const { openSizeGuide } = useSizeGuideStore((state) => state);
+
+  const [selectionMode, setSelectionMode] = useState(false);
+  const options = data?.productOptions || [];
+  const selectedCount = Object.keys(selectedVariants).length;
+  const allSelected = selectedCount === options.length;
+
   const assets = data.assets;
 
   // Initialize default variants and color
@@ -168,13 +174,28 @@ const ProductContant = ({
     }
   };
 
-  const handleVariants = (name, value) => {
-    const updated = { ...selectedVariants, [name]: value };
-    setSelectedVariants(updated);
-    setCartBtn(Object.keys(updated).length === data.productOptions?.length);
-    updatePriceBasedOnVariant(updated);
+const handleVariants = (name, value) => {
+  const updated = { ...selectedVariants, [name]: value };
+  setSelectedVariants(updated);
+  updatePriceBasedOnVariant(updated);
+
+  const nextIndex = Object.keys(updated).length;
+  const nextOption = options[nextIndex];
+
+  // ✅ IMPORTANT: update cart button readiness
+  setCartBtn(nextIndex === options.length);
+
+  if (nextOption) {
+    setOpenDropdown(nextOption.optionName);
+    setSelectionMode(false);
+  } else {
+    // All selected
     setOpenDropdown(null);
-  };
+    setSelectionMode(false);
+  }
+};
+
+
 
   const clearVariants = () => {
     setAssetsFilter([]);
@@ -211,6 +232,38 @@ const ProductContant = ({
     openSizeGuide(sizeGuideAsset);
   };
 
+const handleMainButtonClick = () => {
+  if (loading || isOutOfStock) return;
+
+  // ✅ ALWAYS allow add to cart when all selected
+  if (allSelected) {
+    handleAddToCart();
+    return;
+  }
+
+  // Start selection flow
+  setSelectionMode(true);
+
+  const nextOption = options[selectedCount];
+  if (nextOption) {
+    setOpenDropdown(nextOption.optionName);
+  }
+};
+
+
+
+  const buttonTitle = loading
+    ? "Loading..."
+    : isOutOfStock
+      ? StockStatus.OUT_OF_STOCK
+      : allSelected
+        ? "Add To Cart"
+        : selectionMode
+          ? "Select Options first"
+          : "Buy Now";
+
+
+
   if (!data) return null;
   return (
     <>
@@ -220,7 +273,7 @@ const ProductContant = ({
             <div className="productDetail_info_left">
               {data?.categories?.map((item) => {
                 return (
-                  <Link prefetch key={item?._id} scroll={false} href={`/${item?.slug || ""}`} title={item?.name || ""}>
+                  <Link prefetch key={item?._id} scroll={false} href={`/${item?.slug || ""}`} >
                     <p className="productDetail_category text-lg">{item?.name || ""}</p>
                   </Link>
                 )
@@ -255,8 +308,8 @@ const ProductContant = ({
                           className={`productDetail_quantity_icon productDetail_select_inner_elem_img ${openDropdown === item?.optionName ? "rotate_icon" : ""
                             }`}
                           src="/icons/LongArrowDown.svg"
-                          alt="loading"
-                          title="Dropdown"
+                          alt="img"
+
                         />
                       </button>
                     </div>
@@ -271,9 +324,24 @@ const ProductContant = ({
                     <div key={`option-dropdown-${i}`} className={`productDetail_selction ${openDropdown === productOption?.optionName ? "open" : ""}`}>
                       <div className="color_selection">
                         {productOption.choices?.map((choice, j) => {
-                          const selected = selectedVariants[productOption.optionName] === `${choice.name}`;
+                          const selected =
+                            selectedVariants[productOption.optionName] === choice.name;
+
+                          const hasSelection = Boolean(
+                            selectedVariants[productOption.optionName]
+                          );
+
+                          const opacity = hasSelection
+                            ? selected
+                              ? 1
+                              : 0.5
+                            : 1;
                           return (
                             <div
+                              style={{
+                                opacity,
+                                transition: "opacity 0.25s ease",
+                              }}
                               key={`option-value-${j}`}
                               onClick={() => {
                                 handleVariants(
@@ -282,17 +350,10 @@ const ProductContant = ({
                                 );
                                 setAssetsFilter(choice?.assetsId)
                               }}
-                              style={{
-                                opacity: selected ? 1 : 0.5,
-                              }}
-
                               className="select_color_paren">
                               {productOption?.optionName === "color" ? (
                                 <>
-                                  <div
-                                    style={{
-                                      borderColor: selected ? "#174d38" : "#a5a5a5",
-                                    }} className="color_div">
+                                  <div className="color_div">
                                     <div className="color_inner" style={{ backgroundColor: choice?.name }}>
                                     </div>
                                   </div>
@@ -303,9 +364,7 @@ const ProductContant = ({
                                 </>
                               ) : (
                                 <>
-                                  <div style={{
-                                    borderColor: selected ? "#174d38" : "#a5a5a5",
-                                  }} className=" size_div">
+                                  <div className=" size_div">
                                     <div className=" size_inner center">
                                       <p style={{
                                         textDecoration: selected ? "underline" : "none",
@@ -332,30 +391,31 @@ const ProductContant = ({
 
               {/* <div className="productDetail_quantity text-xl">
             <button className="productDetail_quantity_btn">
-              <img className="productDetail_quantity_icon" src="/icons/minus.svg" alt="loading" />
+              <img className="productDetail_quantity_icon" src="/icons/minus.svg" alt="img" />
             </button>
             <p>1</p>
             <button className="productDetail_quantity_btn">
-              <img className="productDetail_quantity_icon" src="/icons/plus.svg" alt="loading" />
+              <img className="productDetail_quantity_icon" src="/icons/plus.svg" alt="img" />
             </button>
           </div> */}
             </div>
             <div className="productDetail_addtocart">
+
               {isOutOfStock && (
                 <GreenBoxBtn title={notifyLoading ? "Loading..." : "Notify me"} onClick={handleNotifyMe} />
               )}
               <GreenBoxBtn
                 loading={loading}
-                title={loading ? "Loading..." : !cartBtn ? "Select Options" : isOutOfStock ? StockStatus.OUT_OF_STOCK : "Add To Cart"}
-                onClick={handleAddToCart}
+                title={buttonTitle}
+                onClick={handleMainButtonClick}
               />
+
               <div className="productDetail_btn_icon center" onClick={handleWishlistToggle}>
                 <div className="icon_pr">
                   <Image
                     className={`short_links_icon_heart ${isWishlisted ? 'hidden' : ''}`}
                     src="/icons/greenHeart.svg"
                     alt="heart"
-                    title="Wishlist"
                     width={24}
                     height={24}
                     priority={false}
@@ -364,7 +424,6 @@ const ProductContant = ({
                     className={`short_links_icon_heart_hover ${isWishlisted ? 'show_filled' : ''}`}
                     src="/icons/heartFill.svg"
                     alt="heart filled"
-                    title="Wishlist"
                     width={24}
                     height={24}
                     priority={false}
@@ -390,8 +449,8 @@ const ProductContant = ({
                         className={`productDetail_quantity_icon ${accordionIndex === index ? "rotated" : ""
                           }`}
                         src="/icons/LongArrowDown.svg"
-                        alt="loading"
-                        title="Dropdown"
+                        alt="img"
+
                       />
                     </button>
 

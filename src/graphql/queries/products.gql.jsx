@@ -12,6 +12,7 @@ export const GET_PRODUCTS = gql`
           type
           altText
           isFeatured
+          isHover
         }
         price
         discountedPrice
@@ -87,6 +88,7 @@ export const GET_PRODUCT_BY_ID = gql`
         altText
         isSizeGuide
         isFeatured
+        isHover
       }
       saleType
       saleValue

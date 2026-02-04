@@ -36,14 +36,14 @@ const AccountAside = () => {
               Points <span className="accountLeftSlide_highlight">400/1000</span>
             </p>
             <div className="bar_code_img_paren">
-              <img className='bar_code_img' src="/images/Black-barcode-icon.png" alt="loading" />
+              <img className='bar_code_img' src="/images/Black-barcode-icon.png" alt="img" />
             </div>
           </div> */}
         </div>
 
         <div className="accountLeftSlide_nav">
           <div className="accountLeftSlide_navItem_hidden">
-            <Link scroll={false} href={"/account"}  title='/account' >
+            <Link scroll={false} href={"/account"}>
               <p
                 className={`accountLeftSlide_navLink uppercase text-2xl ${router.pathname === "/account" ? "active" : ""
                   }`}
@@ -54,7 +54,7 @@ const AccountAside = () => {
           </div>
 
           <div>
-            <Link scroll={false} href={"/account/wishlist"} title='/account/wishlist'>
+            <Link scroll={false} href={"/account/wishlist"}>
               <p
                 className={`accountLeftSlide_navLink uppercase text-2xl ${router.pathname === "/account/wishlist" ? "active" : ""
                   }`}
@@ -65,19 +65,19 @@ const AccountAside = () => {
           </div>
 
 
-          <div >
-            <Link scroll={false} href={"/account/offers"} title='/account/offers'>
+          {/* <div >
+            <Link scroll={false} href={"/account/offers"}>
               <p
                 className={`accountLeftSlide_navLink uppercase text-2xl ${router.pathname === "/account/offers" ? "active" : ""
                   }`}
               >
-                Rewards & Offers
+                Discounts & Offers
               </p>
             </Link>
-          </div>
+          </div> */}
 
           <div>
-            <Link scroll={false} href={"/account/settings"} title='/account/settings' >
+            <Link scroll={false} href={"/account/settings"}>
               <p
                 className={`accountLeftSlide_navLink uppercase text-2xl ${router.pathname === "/account/settings" ? "active" : ""
                   }`}

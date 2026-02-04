@@ -35,7 +35,7 @@ const Wishlist = ({ meta }) => {
             {!loading && wishlistItems.length === 0 && (
               <div className="wishlist_empty_box_inner">
                 <p className="text-xl ">Your wishlist is empty.</p>
-                <Link href="/products" className="underline" title='go to shopping'>
+                <Link href="/products" className="text_decoration_underline">
                   Go to Shopping
                 </Link>
               </div>
@@ -44,7 +44,7 @@ const Wishlist = ({ meta }) => {
           {wishlistItems.length > 0 && (
             <div className="wishlist_box">
               {wishlistItems.map((item) => (
-                <Link scroll={false} key={item._id} title={item.product?.name} href={`/products/${item.product?.slug || item.product?._id}`} className='wishlist_card'>
+                <Link scroll={false} key={item._id}  href={`/products/${item.product?.slug || item.product?._id}`} className='wishlist_card'>
                   <ProductCard
                     productId={item.product?._id}
                     name={item.product?.name}

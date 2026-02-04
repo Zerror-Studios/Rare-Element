@@ -34,7 +34,7 @@ const FeaturedCollection = ({ data }) => {
         >
           {data?.map((item) => (
             <SwiperSlide key={item?._id} className="featured_shopcard">
-              <Link prefetch scroll={false} href={`/products/${item?.slug || item?._id}`} title={item?.name || ""}>
+              <Link prefetch scroll={false} href={`/products/${item?.slug || item?._id}`}>
                 <div className="featured_shopcard">
                   <ProductCard
                     key={item?._id}

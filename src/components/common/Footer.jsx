@@ -16,7 +16,7 @@ gsap.registerPlugin(ScrollTrigger)
 
 export const featureData = [
   {
-    id:1,
+    id: 1,
     title: "Customisation Available",
     href: "",
     animationData: Crafting,
@@ -24,7 +24,7 @@ export const featureData = [
     desc: "Bespoke jewellery crafted to your vision, from design to final detail.",
   },
   {
-    id:2,
+    id: 2,
     title: "Free Shipping",
     href: "/shipping-returns",
     img: "/icons/shipping.svg",
@@ -40,7 +40,7 @@ export const featureData = [
     desc: "Over 50 years of master craftsmanship shaping fine jewellery.",
   },
   {
-    id:4,
+    id: 4,
     title: "Dedicated Customer Service",
     href: "https://wa.me/+919137159898",
     img: "/icons/chat.svg",
@@ -80,9 +80,9 @@ const footerLinksData = [
   {
     title: "Contact Us",
     links: [
-      { label: "Instagram", href: "https://www.instagram.com/nahara.jewellery/?igsh=MXgwcmQ2ODhnaTR3ag%3D%3D#" },
-      { label: "WhatsApp", href: "https://wa.me/+919137159898" },
-      { label: "hello@nahara.co.in", href: "https://mail.google.com/mail/u/0/#inbox?compose=https://mail.google.com/mail/u/0/#inbox?compose=DmwnWsCZFQTSPKdBWzqptmWzRGSXbXPcgGKFLkKhbNnbbmlgJgCbMhkZCbbJRRqmCSbHhCHFkrGB" },
+      { label: "Instagram", href: "https://www.instagram.com/nahara.jewellery/?igsh=MXgwcmQ2ODhnaTR3ag%3D%3D#", target: "_blank" },
+      { label: "WhatsApp", href: "https://wa.me/+919137159898", target: "_blank" },
+      { label: "hello@nahara.co.in", href: "https://mail.google.com/mail/u/0/#inbox?compose=https://mail.google.com/mail/u/0/#inbox?compose=DmwnWsCZFQTSPKdBWzqptmWzRGSXbXPcgGKFLkKhbNnbbmlgJgCbMhkZCbbJRRqmCSbHhCHFkrGB", target: "_blank" },
     ],
   },
 ];
@@ -92,6 +92,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   useEffect(() => {
+    if (window.innerWidth < 1024) return
     gsap.to(".footer_below", {
       scrollTrigger: {
         trigger: ".footer_classname_wrapper",
@@ -119,7 +120,6 @@ const Footer = () => {
               <Link
                 scroll={false}
                 href={item.href}
-                title={item.title}
                 key={i}
                 onMouseEnter={() => {
                   mainRef.current?.goToAndPlay(0, true);
@@ -180,8 +180,8 @@ const Footer = () => {
 
             {/* ABOUT TEXT — stays static */}
             <div className="footer_classname_about">
-              <Link scroll={false} href="/" title='home'>
-                <img className="footer_logo" src="/logo.svg" alt="Nahara Logo" title='logo' />
+              <Link scroll={false} href="/">
+                <img className="footer_logo" src="/logo.svg" alt="Nahara Logo" />
               </Link>
               <p className=" footer_about text-base thin">
                 Nahara brings a bold, playful edge to modern jewellery. Designed and crafted in-house, each piece blends inventive ideas with refined details, creating a fresh kind of elegance spirited, stylish, and made to stand out.
@@ -195,7 +195,7 @@ const Footer = () => {
 
                 <div className="footer_links_column">
                   {col.links.map((item, idx) => (
-                    <Link prefetch key={idx} href={item.href} title={item.label} scroll={false}>
+                    <Link prefetch key={idx} href={item.href} scroll={false} target={item.target}>
                       <p className="text-base thin">{item.label}</p>
                     </Link>
                   ))}
@@ -206,8 +206,8 @@ const Footer = () => {
 
           {/* Footer Bottom Section */}
           <div className="footer_classname_bottom">
-            <Link scroll={false} href="/" title='home'>
-              <img className="footer_logo" src="/logo.svg" alt="Nahara Logo" title='logo' />
+            <Link scroll={false} href="/" >
+              <img className="footer_logo" src="/logo.svg" alt="Nahara Logo" />
             </Link>
             <div className="uppercase text-xs copyright_txt">
               <p>© {currentYear} Nahara. All rights reserved.</p>
@@ -215,7 +215,7 @@ const Footer = () => {
             <div className="uppercase text-xs copyright_txt">
               <p>
                 Developed by &nbsp;
-                <Link href="https://www.zerrorstudios.com/" title='zerror studios' target="_blank">Zerror Studios</Link>
+                <Link href="https://www.zerrorstudios.com/" target="_blank">Zerror Studios</Link>
               </p>
             </div>
           </div>

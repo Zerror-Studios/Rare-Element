@@ -54,18 +54,19 @@ const ProductImageGrid = ({ filter, data, title }) => {
               >
                 {video ? (
                   <div className="thumbnail_video center">
-                    <img className="play_btn_img" src="/icons/play_btn.png" alt="loading" title="play" />
+                    <img className="play_btn_img" src="/icons/play_btn.png" alt="img" />
                     <video muted
                       playsInline src={src} className="cover" type="video/mp4" />
                   </div>
                 ) : (
                   <div className="thumbnail_video center">
                     <Image
+                      priority
                       width={150}
                       height={200}
                       src={src}
                       alt={title}
-                      title={title}
+                   
                     />
                   </div>
                 )}
@@ -112,7 +113,7 @@ const ProductImageGrid = ({ filter, data, title }) => {
                       fill
                       src={src}
                       alt={title}
-                      title={title}
+                   
                       className="MobileImageSlider_slideImage"
                     />
                   )}
@@ -128,8 +129,8 @@ const ProductImageGrid = ({ filter, data, title }) => {
             onClick={() => swiperInstance?.slidePrev()}
           >
             <img src="/icons/arrowLeft.svg"
-              alt="loading"
-              title="Back"
+              alt="img"
+             
             />
           </button>
           <button
@@ -137,8 +138,8 @@ const ProductImageGrid = ({ filter, data, title }) => {
             onClick={() => swiperInstance?.slideNext()}
           >
             <img src="/icons/arrowRight.svg"
-              alt="loading"
-              title="Next"
+              alt="img"
+            
             />
 
           </button>

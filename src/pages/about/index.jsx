@@ -39,20 +39,7 @@ const About = () => {
         // markers: true
       },
     })
-    tl.from(".about_sticker_1", {
-      y: 10,
-      opacity: 0,
-      rotate: 25,
-      duration: .5,
-      ease: "expo.out"
-    })
-    tl.from(".about_sticker_2", {
-      y: 10,
-      opacity: 0,
-      rotate: -25,
-      duration: .5,
-      ease: "expo.out"
-    }, "<+=0.1")
+
 
     gsap.fromTo(".about_sticker_2", {
       bottom: "2rem",
@@ -85,20 +72,20 @@ const About = () => {
         <div className="about_marque_img_paren_1">
           <div className="marq_img_paren">
             <div className="marq_img_1">
-              <img className='cover' src="https://images.unsplash.com/photo-1617038220319-276d3cfab638?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" title='loading' alt="loading" />
+              <img className='cover' src="https://images.unsplash.com/photo-1617038220319-276d3cfab638?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"  alt="img" />
             </div>
             <div className="marq_img_2">
-              <img className='cover' src="https://images.unsplash.com/photo-1631982690223-8aa4be0a2497?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" title='loading' alt="loading" />
+              <img className='cover' src="https://images.unsplash.com/photo-1631982690223-8aa4be0a2497?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"  alt="img" />
             </div>
           </div>
           <div className="marq_img_3">
-            <img className='cover' src="https://images.unsplash.com/photo-1619119069152-a2b331eb392a?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" title='loading' alt="loading" />
+            <img className='cover' src="https://images.unsplash.com/photo-1619119069152-a2b331eb392a?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"  alt="img" />
           </div>
         </div>
       </div>
       <div className="abt_mob_txt">
         <div className="about_txt_img">
-          <img className='cover' src="https://images.unsplash.com/photo-1620656798579-1984d9e87df7?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" title='loading' alt="loading" />
+          <img className='cover' src="https://images.unsplash.com/photo-1620656798579-1984d9e87df7?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"  alt="img" />
         </div>
         <p className='  text-base bold uppercase '>Behind Rare Element</p>
         <div className=" text-base">
@@ -107,7 +94,7 @@ const About = () => {
       </div>
       <div className=" abt_mob_txt_2">
         <div className="marq_img_6">
-          <img className='cover' src="https://plus.unsplash.com/premium_photo-1681276169939-5ad54d5de5fd?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" title='loading' alt="loading" />
+          <img className='cover' src="https://plus.unsplash.com/premium_photo-1681276169939-5ad54d5de5fd?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"  alt="img" />
         </div>
         <p className='  text-base bold uppercase '>Quiet Craftsmanship</p>
         <div className=" text-base">
@@ -115,15 +102,15 @@ const About = () => {
         </div>
       </div>
 
-        <ScrollVelocityThree />
+      <ScrollVelocityThree />
 
       <div className="about_sticker_section">
-        <img className=' sticker_bg_img cover' src="/images/aboutpage/about_sticker_bg.webp" title='loading' alt="loading" />
+        <img className=' sticker_bg_img cover' src="/images/aboutpage/about_sticker_bg.webp"  alt="img" />
 
-        <img className='mobile_sticker_1' src="/images/aboutpage/mobile_stickr_1.png" title='loading' alt="loading" />
-        <img className='about_sticker_1' src="/images/aboutpage/desktop_sticker_1.png" title='loading' alt="loading" />
+        <img className='mobile_sticker_1' src="/images/aboutpage/mobile_stickr_1.png"  alt="img" />
+        <img className='about_sticker_1' src="/images/aboutpage/desktop_sticker_1.png"  alt="img" />
 
-        <img className='about_sticker_2' src="/images/aboutpage/sticker_2.png" title='loading' alt="loading" />
+        <img className='about_sticker_2' src="/images/aboutpage/sticker_2.png"  alt="img" />
       </div>
 
     </>

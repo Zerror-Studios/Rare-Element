@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import SeoHeader from "@/components/seo/SeoHeader";
 import Login from "@/components/login/Login";
 import Signup from "@/components/login/Signup";
+import Image from "next/image";
 
 const UserLogin = ({ meta }) => {
   const [toggle, setToggle] = useState(false);
@@ -14,17 +15,21 @@ const UserLogin = ({ meta }) => {
           style={{ transform: toggle ? "translateY(0%)" : "translateY(-50%)" }}
         >
           <div className="left-one">
-            <img
-              src="https://palmonas.com/cdn/shop/files/BR093-B_b2505079-b550-4521-8d72-32af352050af.jpg?v=1744526386&width=900"
+            <Image
+              width={600}
+              height={600}
+              src="/images/homepage/footer_reels/bracelet.JPG"
               alt="image"
-              title="img"
+            
             />
           </div>
           <div className="left-one">
-            <img
-              src="https://www.apm.mc/cdn/shop/files/AB5616OX-apm-monaco-pave-bracelet-jewelry_6406ed76-f49c-44d3-95ba-7e51e631a327.jpg?v=1755764670&width=600"
+            <Image
+              width={600}
+              height={600}
+              src="/images/homepage/footer_reels/rings.JPG"
               alt="image"
-              title="img"
+            
             />
           </div>
         </div>

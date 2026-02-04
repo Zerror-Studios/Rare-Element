@@ -100,7 +100,19 @@ const ProductCard = React.memo(({ productId, name, ribbon, price, assets }) => {
         }
     };
 
-    const featuredAsset = assets?.find(a => a.isFeatured);
+
+    const featuredAsset = assets?.find(a => a.isFeatured === true);
+    const hoverAsset = assets?.find(a => a.isHover === true);
+
+    const mainImage =
+        featuredAsset && hoverAsset
+            ? featuredAsset
+            : assets?.[0];
+
+    const hoverImage =
+        featuredAsset && hoverAsset
+            ? hoverAsset
+            : assets?.[1];
 
     return (
         <div className="shopCard_card">
@@ -119,13 +131,11 @@ const ProductCard = React.memo(({ productId, name, ribbon, price, assets }) => {
                         width={24}
                         height={24}
                         priority={false}
-                        title="Wishlist"
                     />
                     <Image
                         className={`short_links_icon_heart_hover ${isWishlisted ? 'show_filled' : ''}`}
                         src="/icons/heartFill.svg"
                         alt="heart filled"
-                        title="Wishlist"
                         width={24}
                         height={24}
                         priority={false}
@@ -134,28 +144,31 @@ const ProductCard = React.memo(({ productId, name, ribbon, price, assets }) => {
             </div>
 
             {/* Hover Image */}
-            <div className="shopCard_hoverImg">
-                <Image
-                    src={featuredAsset?.path || "/green_logo.svg"}
-                    alt={featuredAsset?.altText || name || "Rare Element Product"}
-                    title={featuredAsset?.altText || name || "Rare Element Product"}
-                    fill
-                    loading="lazy"
-                    quality={75}
-                />
+            <div className="shopCard_hoverImg center">
+                <div className="shopCard_img_wrapper_img">
+                    <Image
+                        className="w-full h-full"
+                        src={hoverImage?.path || "/green_logo.svg"}
+                        alt={name || "Rare Element Product"}
+                        width={600}
+                        height={800}
+                    />
+                </div>
             </div>
 
             {/* Main Image */}
             <div className="shopCard_img_wrapper center">
-                <Image
-                    src={assets?.[0]?.path || "/green_logo.svg"}
-                    alt={assets?.[0]?.altText || name || "Rare Element Product"}
-                    title={assets?.[0]?.altText || name || "Rare Element Product"}
-                    fill
-                    loading="lazy"
-                    quality={75}
-                />
+                <div className="shopCard_img_wrapper_img">
+                    <Image
+                        className="w-full h-full"
+                        src={mainImage?.path || "/green_logo.svg"}
+                        alt={name || "Rare Element Product"}
+                        width={600}
+                        height={800}
+                    />
+                </div>
             </div>
+
 
             {/* Name + Price */}
             <div className="shopCard_card_info">

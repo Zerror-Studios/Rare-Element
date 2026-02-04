@@ -70,8 +70,12 @@ const Signup = ({ setToggle }) => {
         router.back();
       }
     } catch (err) {
-      console.error(err);
-      toast.error(err.message || "Signup failed");
+      // console.error(err);
+      if (err.message === 'Error in Save user for client: Nahara for Error "User Already Exists!!"') {
+        toast.error("User already exists with this email")
+      }else{
+        toast.error("Signup failed");
+      }
     }
   };
 
@@ -95,7 +99,9 @@ const Signup = ({ setToggle }) => {
               />
               {errors?.firstName && (
                 <div className="error-p">
-                  {errors?.firstName?.message || ""}
+                  <p>
+                    {errors?.firstName?.message || ""}
+                  </p>
                 </div>
               )}
             </div>
@@ -108,7 +114,9 @@ const Signup = ({ setToggle }) => {
               />
               {errors?.lastName && (
                 <div className="error-p">
-                  {errors?.lastName?.message || ""}
+                  <p>
+                    {errors?.lastName?.message || ""}
+                  </p>
                 </div>
               )}
             </div>
@@ -131,7 +139,9 @@ const Signup = ({ setToggle }) => {
             <input type="hidden" {...register("phoneNumber")} />
             {errors?.phoneNumber && (
               <div className="error-p phone-error">
-                {errors?.phoneNumber?.message || ""}
+                <p>
+                  {errors?.phoneNumber?.message || ""}
+                </p>
               </div>
             )}
           </div>
@@ -145,7 +155,11 @@ const Signup = ({ setToggle }) => {
               {...register("email")}
             />
             {errors?.email && (
-              <div className="error-p">{errors?.email?.message || ""}</div>
+              <div className="error-p">
+                <p>
+                  {errors?.email?.message || ""}
+                </p>
+              </div>
             )}
           </div>
 
@@ -164,7 +178,11 @@ const Signup = ({ setToggle }) => {
               {...register("password")}
             />
             {errors?.password && (
-              <div className="error-p">{errors?.password?.message || ""}</div>
+              <div className="error-p">
+                <p>
+                  {errors?.password?.message || ""}
+                </p>
+              </div>
             )}
           </div>
 
@@ -184,12 +202,16 @@ const Signup = ({ setToggle }) => {
             />
             {errors?.confirmPassword && (
               <div className="error-p">
-                {errors?.confirmPassword?.message}
+                <p>
+                  {errors?.confirmPassword?.message}
+                </p>
               </div>
             )}
           </div>
 
-          <GreenBoxBtn title={"Signup"} loading={loading} />
+          <div className="signup_btn">
+            <GreenBoxBtn title={"Signup"} loading={loading} />
+          </div>
 
         </form>
 

@@ -15,7 +15,6 @@
 @media (min-width: 750px) {
   .footer_classname_wrapper {
     padding: 2rem;
-    padding-bottom: 7rem;
   }
 }
 
@@ -70,18 +69,21 @@
   }
 }
 
-/* Animation Below */
-.footer_below {
-  transform: translateY(-100%);
-  opacity: 0;
+@media (min-width:1020px) {
+  .footer_below {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
 }
+/* Animation Below */
 .footer_below p {
   color: white !important;
 }
 
 /* ========== Links Grid Section ========== */
 .footer_classname_linksGrid {
-  margin: 4rem 0;
+  margin: 1rem 0;
+  margin-bottom: 3rem;
   width: 100%;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -162,11 +164,11 @@
 
 @media (min-width: 750px) {
   .footer_logo {
-    width: 17vw;
+    width: 15.5vw;
   }
   .footer_classname_bottom {
+    margin-top: 8rem;
     flex-direction: column;
-    align-items: flex-end;
     gap: 0.25rem;
     display: flex;
   }

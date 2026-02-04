@@ -10,13 +10,13 @@ const PaymentFailed = ({ meta }) => {
       <div className="status_section center">
         <div className="status_section_inner">
           <div className="status_img_pren center">
-            <img className="cover" src="/gifs/payment_failed.webp" alt="error gif" title="error" />
+            <img className="cover" src="/gifs/payment_failed.webp" alt="error gif" />
           </div>
             <h1 className="text-3xl">Payment Failed</h1>
             <p className="uppercase">Unfortunately, your payment could not be processed.</p>
             <p></p>
             <p>Have Question? Contact Us at: </p>
-            <Link className="text_decoration_underline" target="_blank" title="contact@nahara.co.in" href="https://mail.google.com/mail/u/0/#inbox?compose=GTvVlcSKjgCNjxJKkzZhJktdvrWdssGbJXkRJqFwsZljDKHnPDRLXcrkzLKSLVtRgNBJQQtgTCQjs">contact@nahara.co.in</Link>
+            <Link className="text_decoration_underline" target="_blank" href="https://mail.google.com/mail/u/0/#inbox?compose=GTvVlcSKjgCNjxJKkzZhJktdvrWdssGbJXkRJqFwsZljDKHnPDRLXcrkzLKSLVtRgNBJQQtgTCQjs">contact@nahara.co.in</Link>
             <div className="w-full">
             <GreenBoxBtn title="Continue Shopping" href="/" />
             </div>

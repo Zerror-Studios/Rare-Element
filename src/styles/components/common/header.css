@@ -31,7 +31,7 @@
   width: 100vw;
   height: 4rem;
   display: none;
-  z-index: 99;
+  z-index: 500;
   align-items: center;
   justify-content: space-between;
 }

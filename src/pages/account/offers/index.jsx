@@ -2,23 +2,14 @@ import React from 'react'
 import SeoHeader from '@/components/seo/SeoHeader';
 import AccountLayout from '@/components/layouts/AccountLayout';
 import AccountBreadcrumb from '@/components/account/AccountBreadcrumb';
+import Image from 'next/image';
 
 
 const offers = [
   {
-    img: "https://image.hm.com/content/dam/Hm_Member_and_Loyalty/seasonal-images-loyalty/AW25/1012a_101_09_020_4x5.jpg?imwidth=1536",
-    title: "For members who love music",
-    validity: "Valid until: 04/10/2025",
-  },
-  {
-    img: "https://image.hm.com/content/dam/Hm_Member_and_Loyalty/cms/2025/july/7022D-4x5-hotel-deluxe-bed.jpg?imwidth=1536",
-    title: "Flat 20% off on Home purchase",
-    validity: "Valid until: 04/10/2025",
-  },
-  {
-    img: "https://image.hm.com/content/dam/Hm_Member_and_Loyalty/cms/2024/october/spotifypremium_reward_4x5.jpg?imwidth=1536",
-    title: "For members who love music",
-    validity: "Valid until: 04/10/2025",
+    img: "/images/homepage/footer_reels/rings.JPG",
+    title: "Flat 90% off on any purchase",
+    code: "NAHARA90",
   },
 ];
 
@@ -34,11 +25,13 @@ const Purchases = ({ meta }) => {
             {offers.map((offer, index) => (
               <div key={index} className="account_offerCard">
                 <div className="account_imgBox">
-                  <img
+                  <Image
+                    width={150}
+                    height={200}
                     className="account_img"
                     src={offer.img}
                     alt={offer.title}
-                    title={offer.title}
+
                   />
                 </div>
 
@@ -47,7 +40,8 @@ const Purchases = ({ meta }) => {
                     {offer.title}
                   </p>
                   <p className="account_offerValidity text-base">
-                    {offer.validity}
+                    Code : &nbsp;
+                    {offer.code}
                   </p>
                 </div>
               </div>
