@@ -76,7 +76,6 @@ const AllProducts = ({ meta, products: initialProducts, categories, filterOption
         left: 0,
         duration: .8,
         ease: "in-out-quint",
-
       })
     } else {
       gsap.to(".products_aside_paren", {
@@ -87,6 +86,9 @@ const AllProducts = ({ meta, products: initialProducts, categories, filterOption
     }
   }, [openFilter])
 
+  const handleClearFilter = () => {
+    setFilters({})
+  }
 
   return (
     <>
@@ -112,9 +114,17 @@ const AllProducts = ({ meta, products: initialProducts, categories, filterOption
           categories={categories}
           filterOptions={filterOptions}
           onApply={handleApplyFilter}
+          handleClearFilter={handleClearFilter}
         />
         <div className={`allproducts_paren ${loading ? "opacity-50" : ""}`}>
-          {products?.length == 0 && !loading && <h2 className='text-xl text-center'>No products found</h2>}
+          {products?.length == 0 && !loading && (
+            <div className="empty_products_box">
+              <h2 className='text-xl'>No products found</h2>
+              <p onClick={handleClearFilter} className='text_decoration_underline'>Clear Filter</p>
+            </div>
+          )
+          }
+
 
           {products?.map((item) => (
             <Link prefetch key={item?._id} scroll={false} title={item?.name || ""} href={`/products/${item?.slug || item?._id}`}>

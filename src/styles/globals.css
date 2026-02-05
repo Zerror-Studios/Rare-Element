@@ -30,7 +30,7 @@ video::-webkit-media-controls-start-playback-button {
 .w-full {
   width: 100% !important;
 }
-.h-full{
+.h-full {
   height: 100% !important;
 }
 button {
@@ -162,7 +162,7 @@ button {
 }
 .routeloader_paren {
   position: fixed;
-  z-index:999999;
+  z-index: 999999;
   pointer-events: none;
   backdrop-filter: blur(0.5rem);
   top: 0;
@@ -183,7 +183,6 @@ button {
 .routeloader_parent.is-visible {
   opacity: 1;
 }
-
 
 .loader_img {
   position: relative;
@@ -245,38 +244,61 @@ button {
   right: 0;
   margin: auto;
   transform: translateZ(0);
-  animation: mltShdSpin 1.5s infinite ease, round 1.5s infinite ease;
+  animation:
+    mltShdSpin 1.5s infinite ease,
+    round 1.5s infinite ease;
 }
 
 @keyframes mltShdSpin {
   0% {
-    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em,
-      0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+    box-shadow:
+      0 -0.83em 0 -0.4em,
+      0 -0.83em 0 -0.42em,
+      0 -0.83em 0 -0.44em,
+      0 -0.83em 0 -0.46em,
+      0 -0.83em 0 -0.477em;
   }
   5%,
   95% {
-    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em,
-      0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+    box-shadow:
+      0 -0.83em 0 -0.4em,
+      0 -0.83em 0 -0.42em,
+      0 -0.83em 0 -0.44em,
+      0 -0.83em 0 -0.46em,
+      0 -0.83em 0 -0.477em;
   }
   10%,
   59% {
-    box-shadow: 0 -0.83em 0 -0.4em, -0.087em -0.825em 0 -0.42em,
-      -0.173em -0.812em 0 -0.44em, -0.256em -0.789em 0 -0.46em,
+    box-shadow:
+      0 -0.83em 0 -0.4em,
+      -0.087em -0.825em 0 -0.42em,
+      -0.173em -0.812em 0 -0.44em,
+      -0.256em -0.789em 0 -0.46em,
       -0.297em -0.775em 0 -0.477em;
   }
   20% {
-    box-shadow: 0 -0.83em 0 -0.4em, -0.338em -0.758em 0 -0.42em,
-      -0.555em -0.617em 0 -0.44em, -0.671em -0.488em 0 -0.46em,
+    box-shadow:
+      0 -0.83em 0 -0.4em,
+      -0.338em -0.758em 0 -0.42em,
+      -0.555em -0.617em 0 -0.44em,
+      -0.671em -0.488em 0 -0.46em,
       -0.749em -0.34em 0 -0.477em;
   }
   38% {
-    box-shadow: 0 -0.83em 0 -0.4em, -0.377em -0.74em 0 -0.42em,
-      -0.645em -0.522em 0 -0.44em, -0.775em -0.297em 0 -0.46em,
+    box-shadow:
+      0 -0.83em 0 -0.4em,
+      -0.377em -0.74em 0 -0.42em,
+      -0.645em -0.522em 0 -0.44em,
+      -0.775em -0.297em 0 -0.46em,
       -0.82em -0.09em 0 -0.477em;
   }
   100% {
-    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em,
-      0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+    box-shadow:
+      0 -0.83em 0 -0.4em,
+      0 -0.83em 0 -0.42em,
+      0 -0.83em 0 -0.44em,
+      0 -0.83em 0 -0.46em,
+      0 -0.83em 0 -0.477em;
   }
 }
 
@@ -290,7 +312,7 @@ button {
 }
 
 .ring_size_guide {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   z-index: 99999;
   height: 100vh;
   width: 100vw;
