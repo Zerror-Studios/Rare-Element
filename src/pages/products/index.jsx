@@ -180,7 +180,7 @@ export async function getServerSideProps() {
       query: GET_CLIENT_SIDE_CATEGORIES,
       variables: {
         limit: 100, // Fetch enough categories
-        filter: {} // Add any filter if needed, e.g. status
+        filter: { isSpecialCategory: false } // Add any filter if needed, e.g. status
       }
     });
 

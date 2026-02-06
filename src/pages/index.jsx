@@ -3,21 +3,21 @@ import SeoHeader from '@/components/seo/SeoHeader'
 import Hero from '@/components/home/Hero'
 import Category from '@/components/home/Category'
 import FeaturedCollection from '@/components/home/FeaturedCollection'
-import LookBook from '@/components/home/LookBook'
+import GiftGuide from '@/components/home/GiftGuide'
 import SocialReels from '@/components/home/SocialReels'
 import { GET_PRODUCTS } from '@/graphql'
 import { createApolloClient } from '@/lib/apolloClient'
 import { ProductStatus } from '@/utils/Constant'
 import { MenuData } from '@/helpers/MenuData'
 
-const Home = ({ meta, products }) => {
+const Home = ({ meta, products, giftGuideProducts }) => {
   return (
     <>
       <SeoHeader meta={meta} />
       <Hero />
       <Category data={MenuData} />
       <FeaturedCollection data={products} />
-      <LookBook data={products} />
+      <GiftGuide data={giftGuideProducts} />
       <SocialReels />
     </>
   )
@@ -57,16 +57,21 @@ export async function getServerSideProps() {
       query: GET_PRODUCTS,
       variables: {
         offset: 0,
-        limit: 10,
+        limit: 100,
         filters: {
           status: ProductStatus.PUBLISHED,
         },
       },
     });
+
+    const allProducts = response?.data?.getClientSideProducts?.products || [];
+    const giftGuideProducts = allProducts.filter(p => p.categoryIds?.includes('698529d2d65a2d1f309b3fdf'));
+
     return {
       props: {
         meta,
-        products: response?.data?.getClientSideProducts?.products || [],
+        products: allProducts.slice(0, 10), // Still show top 10 as featured
+        giftGuideProducts: giftGuideProducts,
       },
     };
   } catch (error) {
@@ -75,6 +80,7 @@ export async function getServerSideProps() {
       props: {
         meta,
         products: [],
+        giftGuideProducts: [],
       },
     };
   }

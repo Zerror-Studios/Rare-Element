@@ -25,6 +25,7 @@ export const GET_PRODUCTS = gql`
           name
           ribbonId
         }
+        categoryIds
         variants {
           selectedOptions
           priceDifference

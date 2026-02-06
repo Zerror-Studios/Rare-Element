@@ -12,7 +12,7 @@ import GreenBoxBtn from "../buttons/GreenBoxBtn";
 import Image from "next/image";
 gsap.registerPlugin(ScrollTrigger)
 
-const LookBook = ({ data }) => {
+const GiftGuide = ({ data }) => {
 
     const leftSwiperRef = useRef(null);
     const rightSwiperRef = useRef(null);
@@ -185,7 +185,7 @@ const LookBook = ({ data }) => {
                                             className="cover"
                                             src={imageAsset?.path || "/green_logo.svg"}
                                             alt={item?.name || ""}
-                                       
+
                                         />
                                     </div>
                                 </SwiperSlide>
@@ -228,7 +228,7 @@ const LookBook = ({ data }) => {
                                                     className="cover"
                                                     src={imageAsset?.path || "/green_logo.svg"}
                                                     alt={item?.name || ""}
-                          
+
                                                 />
                                             </div>
 
@@ -259,4 +259,4 @@ const LookBook = ({ data }) => {
     )
 }
 
-export default LookBook
+export default GiftGuide
