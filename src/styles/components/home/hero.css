@@ -64,6 +64,7 @@
   z-index: -1;
 }
 .home_hero_inner {
+  pointer-events: none;
   font-family: safira;
   position: absolute;
   white-space: nowrap;

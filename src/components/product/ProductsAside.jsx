@@ -2,12 +2,8 @@ import React, { useState, useEffect, useMemo } from 'react'
 import Checkbox from '../ui/Checkbox'
 import GreenBoxBtn from '../buttons/GreenBoxBtn'
 
-const ProductsAside = ({ setOpenFilter, categories = [], filterOptions = { minPrice: 0, maxPrice: 0, attributes: [] }, onApply }) => {
-  const [openSections, setOpenSections] = useState({
-    category: true,
-    attributes: true,
-    price: true
-  });
+const ProductsAside = ({ setOpenFilter, categories = [], filterOptions = { minPrice: 0, maxPrice: 0, attributes: [] }, onApply, handleClearFilter }) => {
+  const [openSection, setOpenSection] = useState("category"); // default open
 
   // Generate price ranges dynamically from min/max
   const priceRanges = useMemo(() => {
@@ -30,8 +26,9 @@ const ProductsAside = ({ setOpenFilter, categories = [], filterOptions = { minPr
   const [selectedPrices, setSelectedPrices] = useState([]);
 
   const toggleSection = (section) => {
-    setOpenSections(prev => ({ ...prev, [section]: !prev[section] }));
+    setOpenSection(prev => (prev === section ? null : section));
   };
+
 
   const handleCategoryChange = (catId) => {
     setSelectedCategories(prev =>
@@ -98,61 +95,75 @@ const ProductsAside = ({ setOpenFilter, categories = [], filterOptions = { minPr
   return (
     <>
       <div className="products_aside_paren ">
+
+        <div className="clear_filter_btn">
+          <p onClick={handleClearFilter} className='text_decoration_underline'>Clear Filter</p>
+        </div>
+
         <div className="products_aside_close">
           <img
             onClick={() => setOpenFilter(false)}
             src="/icons/close.svg" alt="img" />
         </div>
-        <div className="filter_boxes_paren">
+        <div data-lenis-prevent className=" scroller_none filter_boxes_paren">
 
           {/* Category Filter */}
           <div className="products_aside_box">
             <div className="product_aside_header" onClick={() => toggleSection('category')}>
               <p className="uppercase bold">Category</p>
-              <p className={`aside_arrow ${openSections.category ? "rotate" : ""}`}>›</p>
+              <p className={`aside_arrow ${openSection === 'category' ? "rotate" : ""}`}>›</p>
             </div>
-            <div className={`products_aside_options ${openSections.category ? "open" : ""}`}>
-              {categories.map((cat, idx) => (
-                <div key={cat._id || idx} className="products_aside_option">
-                  <Checkbox
-                    checked={selectedCategories.includes(cat._id)}
-                    onChange={() => handleCategoryChange(cat._id)}
-                  />
-                  <p className="text-lg thin">{cat.name}</p>
-                </div>
-              ))}
+            <div className={`products_aside_options ${openSection === 'category' ? "open" : ""}`}>              {categories.map((cat, idx) => (
+              <div key={cat._id || idx} className="products_aside_option">
+                <Checkbox
+                  checked={selectedCategories.includes(cat._id)}
+                  onChange={() => handleCategoryChange(cat._id)}
+                />
+                <p className="text-lg thin">{cat.name}</p>
+              </div>
+            ))}
             </div>
           </div>
 
           {/* Dynamic Attribute Filters */}
-          {filterOptions.attributes && filterOptions.attributes.map((attr, idx) => (
-            <div key={idx} className="products_aside_box">
-              <div className="product_aside_header" onClick={() => toggleSection(`attr_${idx}`)}>
-                <p className="uppercase bold">{attr.key}</p>
-                <p className={`aside_arrow ${openSections[`attr_${idx}`] !== false ? "rotate" : ""}`}>›</p>
+          {filterOptions.attributes && filterOptions.attributes.map((attr, idx) => {
+            const sectionKey = `attr_${attr.key}`;
+
+            return (
+              <div key={idx} className="products_aside_box">
+                <div
+                  className="product_aside_header"
+                  onClick={() => toggleSection(sectionKey)}
+                >
+                  <p className="uppercase bold">{attr.key}</p>
+                  <p className={`aside_arrow ${openSection === sectionKey ? "rotate" : ""}`}>›</p>
+                </div>
+
+                <div className={`products_aside_options ${openSection === sectionKey ? "open" : ""}`}>
+                  {attr.values.map((value, vIdx) => (
+                    <div key={vIdx} className="products_aside_option">
+                      <Checkbox
+                        checked={(selectedAttributes[attr.key] || []).includes(value)}
+                        onChange={() => handleAttributeChange(attr.key, value)}
+                      />
+                      <p className="text-lg thin capitalize">{value}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className={`products_aside_options ${openSections[`attr_${idx}`] !== false ? "open" : ""}`}>
-                {attr.values.map((value, vIdx) => (
-                  <div key={vIdx} className="products_aside_option">
-                    <Checkbox
-                      checked={(selectedAttributes[attr.key] || []).includes(value)}
-                      onChange={() => handleAttributeChange(attr.key, value)}
-                    />
-                    <p className="text-lg thin capitalize">{value}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
+            );
+          })}
+
 
           {/* Price Filter */}
           {priceRanges.length > 0 && (
             <div className="products_aside_box">
               <div className="product_aside_header" onClick={() => toggleSection('price')}>
                 <p className="uppercase bold">Price</p>
-                <p className={`aside_arrow ${openSections.price ? "rotate" : ""}`}>›</p>
+                <p className={`aside_arrow ${openSection === 'price' ? "rotate" : ""}`}>›</p>
               </div>
-              <div className={`products_aside_options ${openSections.price ? "open" : ""}`}>
+
+              <div className={`products_aside_options ${openSection === 'price' ? "open" : ""}`}>
                 {priceRanges.map((option, idx) => (
                   <div key={idx} className="products_aside_option">
                     <Checkbox
