@@ -131,6 +131,7 @@ const ProductCard = React.memo(({ productId, name, ribbon, price, assets }) => {
                         width={24}
                         height={24}
                         priority={false}
+                        sizes="24px"
                     />
                     <Image
                         className={`short_links_icon_heart_hover ${isWishlisted ? 'show_filled' : ''}`}
@@ -139,6 +140,7 @@ const ProductCard = React.memo(({ productId, name, ribbon, price, assets }) => {
                         width={24}
                         height={24}
                         priority={false}
+                        sizes="24px"
                     />
                 </div>
             </div>
@@ -152,6 +154,7 @@ const ProductCard = React.memo(({ productId, name, ribbon, price, assets }) => {
                         alt={name || "Rare Element Product"}
                         width={600}
                         height={800}
+                        sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
                     />
                 </div>
             </div>
@@ -165,6 +168,7 @@ const ProductCard = React.memo(({ productId, name, ribbon, price, assets }) => {
                         alt={name || "Rare Element Product"}
                         width={600}
                         height={800}
+                        sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
                     />
                 </div>
             </div>

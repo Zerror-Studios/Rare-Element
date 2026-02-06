@@ -1,22 +1,31 @@
 @font-face {
   font-family: railway-medium;
   src: url(../../public/fonts/raleway/Raleway-Medium.ttf);
+  font-display: swap;
 }
+
 @font-face {
   font-family: railway-light;
   src: url(../../public/fonts/raleway/Raleway-Light.ttf);
+  font-display: swap;
 }
+
 @font-face {
   font-family: railway-regular;
   src: url(../../public/fonts/raleway/Raleway-Regular.ttf);
+  font-display: swap;
 }
+
 @font-face {
   font-family: railway-bold;
   src: url(../../public/fonts/raleway/Raleway-Bold.ttf);
+  font-display: swap;
 }
+
 @font-face {
   font-family: safira;
   src: url(../../public/fonts/safira/SafiraMarchPersonalUse-gxeKY.otf);
+  font-display: swap;
 }
 
 html,
@@ -24,21 +33,26 @@ body {
   width: 100%;
   font-size: 12px;
 }
+
 @media (min-width: 750px) {
+
   html,
   body {
     font-size: 0.8vw;
   }
 }
+
 a {
   text-decoration: none;
   cursor: pointer;
   color: black !important;
 }
+
 .primary-font {
   letter-spacing: 0.05rem;
   font-family: railway-medium, sans-serif;
 }
+
 p,
 a,
 u,
@@ -50,100 +64,134 @@ button {
   font-family: railway-medium, sans-serif;
   cursor: pointer;
 }
+
 h1,
 h2 {
   font-weight: 100;
   letter-spacing: 0.1rem;
   font-family: safira, serif;
 }
+
 .thin {
   font-weight: 100 !important;
   color: black !important;
   font-family: railway-regular, sans-serif !important;
 }
+
 .bold {
   font-weight: 1000 !important;
   /* opacity: .9; */
   color: black !important;
   font-family: railway-medium, sans-serif !important;
 }
+
 .text-xxs {
-  font-size: 0.625rem; /* 10px */
-  line-height: 0.875rem; /* ~14px, optional for balance */
+  font-size: 0.625rem;
+  /* 10px */
+  line-height: 0.875rem;
+  /* ~14px, optional for balance */
 }
 
 .text-xs {
-  font-size: 0.75rem; /* 12px */
-  line-height: 1rem; /* 16px */
+  font-size: 0.75rem;
+  /* 12px */
+  line-height: 1rem;
+  /* 16px */
 }
 
 .text-sm {
-  font-size: 0.9rem; /* 14px */
-  line-height: 1.25rem; /* 20px */
+  font-size: 0.9rem;
+  /* 14px */
+  line-height: 1.25rem;
+  /* 20px */
 }
 
 .text-base {
-  font-size: 1rem; /* 16px */
-  line-height: 1.25rem; /* 20px */
+  font-size: 1rem;
+  /* 16px */
+  line-height: 1.25rem;
+  /* 20px */
 }
 
 .text-lg {
-  font-size: 1.125rem; /* 18px */
+  font-size: 1.125rem;
+  /* 18px */
   letter-spacing: 0rem;
-  line-height: 2rem; /* 28px */
+  line-height: 2rem;
+  /* 28px */
 }
 
 .text-xl {
-  font-size: 1rem; /* 20px */
-  line-height: 2.5rem; /* 28px */
+  font-size: 1rem;
+  /* 20px */
+  line-height: 2.5rem;
+  /* 28px */
 }
 
 .text-2xl {
-  font-size: 1.5rem; /* 24px */
-  line-height: 3.25rem; /* 32px */
+  font-size: 1.5rem;
+  /* 24px */
+  line-height: 3.25rem;
+  /* 32px */
 }
 
 .text-3xl {
-  font-size: 1.25rem; /* 30px */
-  line-height: 2rem; /* 36px */
+  font-size: 1.25rem;
+  /* 30px */
+  line-height: 2rem;
+  /* 36px */
 }
+
 @media (min-width: 750px) {
   .text-xl {
-    font-size: 1.25rem; /* 20px */
-    line-height: 2.5rem; /* 28px */
+    font-size: 1.25rem;
+    /* 20px */
+    line-height: 2.5rem;
+    /* 28px */
   }
+
   .text-3xl {
-    font-size: 1.875rem; /* 30px */
-    line-height: 3.5rem; /* 36px */
+    font-size: 1.875rem;
+    /* 30px */
+    line-height: 3.5rem;
+    /* 36px */
   }
 }
 
 .text-4xl {
-  font-size: 2.25rem; /* 36px */
-  line-height: 4rem; /* 40px */
+  font-size: 2.25rem;
+  /* 36px */
+  line-height: 4rem;
+  /* 40px */
 }
 
 .text-5xl {
-  font-size: 3rem; /* 48px */
-  line-height: 2.75rem; /* 1x font size */
+  font-size: 3rem;
+  /* 48px */
+  line-height: 2.75rem;
+  /* 1x font size */
 }
 
 .text-6xl {
-  font-size: 3.75rem; /* 60px */
+  font-size: 3.75rem;
+  /* 60px */
   line-height: 1;
 }
 
 .text-7xl {
-  font-size: 4.5rem; /* 72px */
+  font-size: 4.5rem;
+  /* 72px */
   line-height: 1;
 }
 
 .text-8xl {
-  font-size: 6rem; /* 96px */
+  font-size: 6rem;
+  /* 96px */
   line-height: 1;
 }
 
 .text-9xl {
-  font-size: 8rem; /* 128px */
+  font-size: 8rem;
+  /* 128px */
   line-height: 1;
 }

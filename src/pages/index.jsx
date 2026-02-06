@@ -1,10 +1,11 @@
-import React from 'react'
+import dynamic from 'next/dynamic'
 import SeoHeader from '@/components/seo/SeoHeader'
 import Hero from '@/components/home/Hero'
 import Category from '@/components/home/Category'
 import FeaturedCollection from '@/components/home/FeaturedCollection'
-import GiftGuide from '@/components/home/GiftGuide'
-import SocialReels from '@/components/home/SocialReels'
+
+const GiftGuide = dynamic(() => import('@/components/home/GiftGuide'), { ssr: true })
+const SocialReels = dynamic(() => import('@/components/home/SocialReels'), { ssr: false })
 import { GET_PRODUCTS } from '@/graphql'
 import { createApolloClient } from '@/lib/apolloClient'
 import { ProductStatus } from '@/utils/Constant'
@@ -72,6 +73,7 @@ export async function getServerSideProps() {
         meta,
         products: allProducts.slice(0, 10), // Still show top 10 as featured
         giftGuideProducts: giftGuideProducts,
+        initialApolloState: client.cache.extract(),
       },
     };
   } catch (error) {

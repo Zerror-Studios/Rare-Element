@@ -153,10 +153,29 @@ const httpLink = new HttpLink({
 // -------------------------------------------
 // FINAL APOLLO CLIENT
 // -------------------------------------------
-export function createApolloClient() {
-  return new ApolloClient({
+let apolloClient;
+
+export function createApolloClient(initialState = null) {
+  const _apolloClient = apolloClient ?? new ApolloClient({
     ssrMode: typeof window === "undefined",
     link: ApolloLink.from([errorLink, authLink, httpLink]),
     cache: new InMemoryCache(),
   });
+
+  // If we have an initial state, hydrate the cache
+  if (initialState) {
+    const existingCache = _apolloClient.extract();
+    _apolloClient.cache.restore({
+      ...existingCache,
+      ...initialState,
+    });
+  }
+
+  // For SSG and SSR always create a new Apollo Client
+  if (typeof window === "undefined") return _apolloClient;
+
+  // Create the Apollo Client once in the client
+  if (!apolloClient) apolloClient = _apolloClient;
+
+  return _apolloClient;
 }

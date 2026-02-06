@@ -39,7 +39,8 @@ const AllProducts = ({ meta, products: initialProducts, totalCount: initialTotal
 
   const { data: filterData } = useQuery(GET_FILTER_OPTIONS, {
     variables: { categoryIds: [] },
-    skip: !isHydrated
+    skip: !isHydrated,
+    fetchPolicy: "cache-first"
   });
 
   useEffect(() => {
@@ -56,7 +57,8 @@ const AllProducts = ({ meta, products: initialProducts, totalCount: initialTotal
         status: ProductStatus.PUBLISHED,
       }
     },
-    skip: true // We manually trigger refetch/fetchMore
+    skip: true, // We manually trigger refetch/fetchMore
+    fetchPolicy: "cache-first"
   });
 
   const handleApplyFilter = async (newFilters) => {
@@ -284,6 +286,7 @@ export async function getServerSideProps() {
         totalCount: productsResponse?.data?.getClientSideProducts?.totalCount || 0,
         categories: categoriesResponse?.data?.getClientSideCategories?.categories || [],
         filterOptions: { minPrice: 0, maxPrice: 0, attributes: [] },
+        initialApolloState: client.cache.extract(),
       },
     };
   } catch (error) {

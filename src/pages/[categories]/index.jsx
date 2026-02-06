@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import gsap from 'gsap'
 import SeoHeader from '@/components/seo/SeoHeader'
@@ -9,7 +9,6 @@ import { getProductPriceLabel } from '@/utils/Util'
 import { StatusCode } from '@/utils/Constant'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import CategoryPageSkeleton from '@/components/skeletons/CategoryPageSkeleton'
 import ScrollTrigger from 'gsap/dist/ScrollTrigger'
 
 const Categories = ({ meta, data, productList }) => {
@@ -97,62 +96,62 @@ const Categories = ({ meta, data, productList }) => {
     <>
       <SeoHeader meta={meta} breadcrumbList={breadcrumbList} />
       {/* <Suspense fallback={<CategoryPageSkeleton />}> */}
-        <div ref={containerRef}>
-          <div className="products_hero-section">
-            <Image
-              key={data?.imgsrc}
-              fill
-              priority
-              className="products_hero-img"
-              src={data?.imgsrc}
-              alt={data?.name || ""}
-              onLoadingComplete={() => setImageReady(true)}
-            />
+      <div ref={containerRef}>
+        <div className="products_hero-section">
+          <Image
+            key={data?.imgsrc}
+            fill
+            priority
+            className="products_hero-img"
+            src={data?.imgsrc}
+            alt={data?.name || ""}
+            onLoadingComplete={() => setImageReady(true)}
+          />
 
-            {/* <div className="products_content padding">
+          {/* <div className="products_content padding">
           <h2 className='text-3xl '>{data?.name || ""}</h2>
           <p className='uppercase text-base thin'>
             {data?.description || ""}
           </p>
         </div> */}
-          </div>
+        </div>
 
-          <div className="category_products_header">
-            <p className="products_subtitle thin text-base uppercase">Crafted for Every Moment</p>
-            <h1 className="products_title text-3xl">{data?.name || ""}</h1>
-          </div>
+        <div className="category_products_header">
+          <p className="products_subtitle thin text-base uppercase">Crafted for Every Moment</p>
+          <h1 className="products_title text-3xl">{data?.name || ""}</h1>
+        </div>
 
-          <div className="padding">
-            <div className="allproducts_paren categories_paren ">
-              {/* <Suspense fallback={<ProductCardSkeleton />}> */}
-              {productList?.length > 0 ? (
-                productList?.map((item) => (
-                  <Link
-                    key={item._id}
-                    scroll={false}
-                    href={`/products/${item.slug || item._id}`}
-                  >
-                    <ProductCard
-                      productId={item._id}
-                      name={item.name || ""}
-                      ribbon={item.ribbon || ""}
-                      price={getProductPriceLabel(
-                        item.variants,
-                        item.discountedPrice
-                      )}
-                      assets={item.assets || []}
-                    />
-                  </Link>
-                ))
-              ) : (
-                <h2 className='text-xl text-center'>No products found</h2>
-              )
-              }
-              {/* </Suspense> */}
+        <div className="padding">
+          <div className="allproducts_paren categories_paren ">
+            {/* <Suspense fallback={<ProductCardSkeleton />}> */}
+            {productList?.length > 0 ? (
+              productList?.map((item) => (
+                <Link
+                  key={item._id}
+                  scroll={false}
+                  href={`/products/${item.slug || item._id}`}
+                >
+                  <ProductCard
+                    productId={item._id}
+                    name={item.name || ""}
+                    ribbon={item.ribbon || ""}
+                    price={getProductPriceLabel(
+                      item.variants,
+                      item.discountedPrice
+                    )}
+                    assets={item.assets || []}
+                  />
+                </Link>
+              ))
+            ) : (
+              <h2 className='text-xl text-center'>No products found</h2>
+            )
+            }
+            {/* </Suspense> */}
 
-            </div>
           </div>
         </div>
+      </div>
       {/* </Suspense> */}
     </>
   )
@@ -193,6 +192,7 @@ export async function getServerSideProps({ params }) {
         meta: categoriesMeta || meta,
         data: { _id, name, description, imgsrc, categoriesSlug } || {},
         productList: products || [],
+        initialApolloState: client.cache.extract(),
       },
     };
   } catch (error) {

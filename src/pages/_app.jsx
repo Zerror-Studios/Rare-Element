@@ -23,7 +23,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();
-  const client = createApolloClient();
+  const client = createApolloClient(pageProps.initialApolloState);
 
   const start = useRouteLoaderStore((s) => s.start);
   const stop = useRouteLoaderStore((s) => s.stop);

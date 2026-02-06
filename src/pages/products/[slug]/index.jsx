@@ -188,6 +188,7 @@ export async function getServerSideProps({ params }) {
         data: productRes?.data?.getClientSideProductById || {},
         productList:
           productListRes?.data?.getClientSideProducts?.products || [],
+        initialApolloState: client.cache.extract(),
       },
     };
   } catch (error) {

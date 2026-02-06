@@ -11,39 +11,39 @@ const Hero = () => {
   const pathname = usePathname()
   const videoRef = useRef(null);
 
-useEffect(() => {
-  const video = videoRef.current;
-  if (!video) return;
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
 
-  // Force iOS-required attributes
-  video.setAttribute("muted", "");
-  video.setAttribute("playsinline", "");
-  video.setAttribute("webkit-playsinline", "");
-  video.setAttribute("preload", "auto");
+    // Force iOS-required attributes
+    video.setAttribute("muted", "");
+    video.setAttribute("playsinline", "");
+    video.setAttribute("webkit-playsinline", "");
+    video.setAttribute("preload", "auto");
 
-  video.muted = true;
-  video.playsInline = true;
-  video.loop = true;
-  video.autoplay = true;
-  video.controls = false;
+    video.muted = true;
+    video.playsInline = true;
+    video.loop = true;
+    video.autoplay = true;
+    video.controls = false;
 
-  const tryPlay = () => {
-    const promise = video.play();
-    if (promise !== undefined) {
-      promise.catch(() => {});
-    }
-  };
+    const tryPlay = () => {
+      const promise = video.play();
+      if (promise !== undefined) {
+        promise.catch(() => { });
+      }
+    };
 
-  // iOS needs metadata before autoplay
-  video.addEventListener("loadedmetadata", tryPlay);
+    // iOS needs metadata before autoplay
+    video.addEventListener("loadedmetadata", tryPlay);
 
-  // Fallback for older iOS
-  setTimeout(tryPlay, 100);
+    // Fallback for older iOS
+    setTimeout(tryPlay, 100);
 
-  return () => {
-    video.removeEventListener("loadedmetadata", tryPlay);
-  };
-}, []);
+    return () => {
+      video.removeEventListener("loadedmetadata", tryPlay);
+    };
+  }, []);
 
 
 
@@ -94,7 +94,7 @@ useEffect(() => {
 
       <div className="introloader_paren  center">
         <div className="loader_img">
-          <img src="/green_logo.svg" alt="Logo"  />
+          <img src="/green_logo.svg" alt="Logo" />
         </div>
       </div>
 
@@ -109,6 +109,7 @@ useEffect(() => {
           ref={videoRef}
           className="home_hero_video cover"
           src="/videos/hero_video.mp4"
+          poster="/images/homepage/hero_poster.png"
           muted
           playsInline
           preload="auto"
