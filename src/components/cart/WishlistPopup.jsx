@@ -1,6 +1,7 @@
 import { formatePrice, renderVariants } from '@/utils/Util';
-import Image from 'next/image'
 import Link from 'next/link';
+import Image from 'next/image'
+import { useRouter } from 'next/router';
 import React, { useEffect, useRef } from 'react'
 import GreenBoxBtn from '../buttons/GreenBoxBtn';
 import gsap from 'gsap';
@@ -11,7 +12,8 @@ import { toast } from 'react-toastify';
 import { RiCloseLine } from '@remixicon/react';
 
 const WishlistPopup = ({ item, popupActive, setPopupActive, handleAddItem, handleRemoveItem, onClose }) => {
-    const { user } = useAuthStore();
+    const router = useRouter();
+    const { user, isLoggedIn } = useAuthStore();
     const popupRef = useRef(null);
     const userId = user?._id || user?.id;
 
@@ -59,6 +61,12 @@ const WishlistPopup = ({ item, popupActive, setPopupActive, handleAddItem, handl
     }, [popupActive])
 
     const handleSaveToWishlist = async () => {
+        if (!isLoggedIn) {
+            setPopupActive(false);
+            onClose?.();
+            router.push('/login');
+            return;
+        }
         try {
             await addToWishlist({
                 variables: {

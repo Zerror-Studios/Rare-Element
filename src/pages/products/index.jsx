@@ -7,41 +7,114 @@ import { createApolloClient } from '@/lib/apolloClient'
 import { getProductPriceLabel } from '@/utils/Util'
 import { GET_PRODUCTS, GET_CLIENT_SIDE_CATEGORIES, GET_FILTER_OPTIONS } from '@/graphql'
 import { ProductStatus } from '@/utils/Constant'
-import Image from 'next/image'
-import ProductsFilterHeader from '@/components/product/ProductsFilterHeader'
 import ProductsAside from '@/components/product/ProductsAside'
-import { RiEqualizerLine, RiFilterLine } from '@remixicon/react'
-import { useQuery } from "@apollo/client/react";
+import { RiEqualizerLine } from '@remixicon/react'
+import { useQuery } from '@apollo/client/react'
+import useProductStore from '@/store/product-store'
+import GreenBoxBtn from '@/components/buttons/GreenBoxBtn'
 
-const AllProducts = ({ meta, products: initialProducts, categories, filterOptions }) => {
+const AllProducts = ({ meta, products: initialProducts, totalCount: initialTotalCount, categories, filterOptions: initialFilterOptions }) => {
   const [openFilter, setOpenFilter] = useState(false)
-  const [filters, setFilters] = useState({})
   const [isHydrated, setIsHydrated] = useState(false)
+  const [filterOptions, setFilterOptions] = useState(initialFilterOptions || { minPrice: 0, maxPrice: 0, attributes: [] })
 
-  // Ensure hydration is complete before running queries
+  const {
+    products,
+    filters,
+    offset,
+    limit,
+    hasMore,
+    loading,
+    setInitialProducts,
+    appendProducts,
+    setFilters,
+    setLoading
+  } = useProductStore()
+
+  // Ensure hydration is complete
   useEffect(() => {
     setIsHydrated(true)
+    setInitialProducts(initialProducts, initialTotalCount)
   }, [])
 
-  const { data, loading } = useQuery(GET_PRODUCTS, {
-    variables: {
-      offset: 0,
-      limit: 10,
-      filters: {
-        status: ProductStatus.PUBLISHED,
-        ...filters
-      }
-    },
-    skip: !isHydrated || Object.keys(filters).length === 0 // Wait for hydration and filters
+  const { data: filterData } = useQuery(GET_FILTER_OPTIONS, {
+    variables: { categoryIds: [] },
+    skip: !isHydrated
   });
 
-  const products = (Object.keys(filters).length === 0) ? initialProducts : (data?.getClientSideProducts?.products || []);
+  useEffect(() => {
+    if (filterData?.getFilterOptions) {
+      setFilterOptions(filterData.getFilterOptions);
+    }
+  }, [filterData]);
 
-  const handleApplyFilter = (newFilters) => {
-    startTransition(() => {
-      setFilters(newFilters);
-    });
+  const { refetch, fetchMore } = useQuery(GET_PRODUCTS, {
+    variables: {
+      offset: 0,
+      limit: limit,
+      filters: {
+        status: ProductStatus.PUBLISHED,
+      }
+    },
+    skip: true // We manually trigger refetch/fetchMore
+  });
+
+  const handleApplyFilter = async (newFilters) => {
+    setLoading(true)
+    setFilters(newFilters)
+    setOpenFilter(false)
+
+    try {
+      const { data } = await refetch({
+        offset: 0,
+        limit: limit,
+        filters: {
+          status: ProductStatus.PUBLISHED,
+          ...newFilters
+        }
+      })
+
+      if (data?.getClientSideProducts) {
+        setInitialProducts(
+          data.getClientSideProducts.products,
+          data.getClientSideProducts.totalCount
+        )
+      }
+    } catch (error) {
+      console.error("Error applying filters:", error)
+    } finally {
+      setLoading(false)
+    }
   };
+
+  const handleLoadMore = async () => {
+    if (loading || !hasMore) return
+    setLoading(true)
+
+    try {
+      const { data } = await fetchMore({
+        variables: {
+          offset: offset,
+          limit: limit,
+          filters: {
+            status: ProductStatus.PUBLISHED,
+            ...filters
+          }
+        }
+      })
+
+      if (data?.getClientSideProducts) {
+        appendProducts(
+          data.getClientSideProducts.products,
+          data.getClientSideProducts.totalCount
+        )
+      }
+    } catch (error) {
+      console.error("Error loading more products:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
     var height
@@ -87,7 +160,7 @@ const AllProducts = ({ meta, products: initialProducts, categories, filterOption
   }, [openFilter])
 
   const handleClearFilter = () => {
-    setFilters({})
+    handleApplyFilter({})
   }
 
   return (
@@ -95,11 +168,11 @@ const AllProducts = ({ meta, products: initialProducts, categories, filterOption
       <SeoHeader meta={meta} />
       <div className="products_header">
         <p className="products_subtitle thin text-base uppercase">Crafted for Every Moment</p>
-        <h1 className="products_title text-3xl">Explore  Products</h1>
+        <h1 className="products_title text-3xl">Explore Products</h1>
       </div>
 
       <div className="w-full center">
-        <button type="button" onClick={() => setOpenFilter(true)} className="open_filter  text-xs uppercase">
+        <button type="button" onClick={() => setOpenFilter(true)} className="open_filter text-xs uppercase">
           <RiEqualizerLine size={14} />
           <p className="uppercase text-base">
             Apply Filter
@@ -107,7 +180,7 @@ const AllProducts = ({ meta, products: initialProducts, categories, filterOption
         </button>
       </div>
 
-      <div className=" products_layout_paren padding ">
+      <div className="products_layout_paren padding">
         <ProductsAside
           openFilter={openFilter}
           setOpenFilter={setOpenFilter}
@@ -116,33 +189,41 @@ const AllProducts = ({ meta, products: initialProducts, categories, filterOption
           onApply={handleApplyFilter}
           handleClearFilter={handleClearFilter}
         />
-        <div className={`allproducts_paren ${loading ? "opacity-50" : ""}`}>
-          {products?.length == 0 && !loading && (
-            <div className="empty_products_box">
-              <h2 className='text-xl'>No products found</h2>
-              <p onClick={handleClearFilter} className='text_decoration_underline'>Clear Filter</p>
+        <div className="allproducts_paren_warp">
+          <div className={`allproducts_paren ${loading ? "opacity-50" : ""}`}>
+            {products?.length == 0 && !loading && (
+              <div className="empty_products_box">
+                <h2 className='text-xl'>No products found</h2>
+                <p onClick={handleClearFilter} className='text_decoration_underline'>Clear Filter</p>
+              </div>
+            )
+            }
+
+            {products?.map((item) => (
+              <Link prefetch key={item?._id} scroll={false} title={item?.name || ""} href={`/products/${item?.slug || item?._id}`}>
+                <ProductCard
+                  key={item?._id}
+                  productId={item?._id}
+                  name={item?.name || ""}
+                  ribbon={item?.ribbon || ""}
+                  price={getProductPriceLabel(item?.variants, item?.discountedPrice)}
+                  assets={item?.assets || []}
+                />
+              </Link>
+            ))}
+          </div>
+
+          {hasMore && (
+            <div className="load_more_container">
+              <GreenBoxBtn title="Load More" onClick={handleLoadMore} loading={loading} />
             </div>
-          )
-          }
-
-
-          {products?.map((item) => (
-            <Link prefetch key={item?._id} scroll={false} title={item?.name || ""} href={`/products/${item?.slug || item?._id}`}>
-              <ProductCard
-                key={item?._id}
-                productId={item?._id}
-                name={item?.name || ""}
-                ribbon={item?.ribbon || ""}
-                price={getProductPriceLabel(item?.variants, item?.discountedPrice)}
-                assets={item?.assets || []}
-              />
-            </Link>
-          ))}
+          )}
         </div>
       </div>
     </>
   )
 }
+
 
 export default AllProducts
 
@@ -178,7 +259,7 @@ export async function getServerSideProps() {
       query: GET_PRODUCTS,
       variables: {
         offset: 0,
-        limit: 100,
+        limit: 20,
         filters: {
           status: ProductStatus.PUBLISHED,
         },
@@ -194,22 +275,15 @@ export async function getServerSideProps() {
       }
     });
 
-    // Fetch Filter Options
-    const filterOptionsPromise = client.query({
-      query: GET_FILTER_OPTIONS,
-      variables: {
-        categoryIds: [] // Empty for all products, can be filtered later
-      }
-    });
-
-    const [productsResponse, categoriesResponse, filterOptionsResponse] = await Promise.all([productsPromise, categoriesPromise, filterOptionsPromise]);
+    const [productsResponse, categoriesResponse] = await Promise.all([productsPromise, categoriesPromise]);
 
     return {
       props: {
         meta,
         products: productsResponse?.data?.getClientSideProducts?.products || [],
+        totalCount: productsResponse?.data?.getClientSideProducts?.totalCount || 0,
         categories: categoriesResponse?.data?.getClientSideCategories?.categories || [],
-        filterOptions: filterOptionsResponse?.data?.getFilterOptions || { minPrice: 0, maxPrice: 0, attributes: [] },
+        filterOptions: { minPrice: 0, maxPrice: 0, attributes: [] },
       },
     };
   } catch (error) {

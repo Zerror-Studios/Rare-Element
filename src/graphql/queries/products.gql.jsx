@@ -6,7 +6,8 @@ export const GET_PRODUCTS = gql`
       products {
         _id
         name
-        description
+        slug
+        discountedPrice
         assets {
           path
           type
@@ -14,38 +15,12 @@ export const GET_PRODUCTS = gql`
           isFeatured
           isHover
         }
-        price
-        discountedPrice
-        costOfGoods
-        productType
-        slug
-        status
-        isDeleted
-          ribbon {
+        ribbon {
           name
           ribbonId
         }
-        categoryIds
         variants {
-          selectedOptions
-          priceDifference
           variantPrice
-          sku
-          variantCostOfGoods
-          shippingWeight
-          trackInventory
-          stockQuantity
-          status
-          stockStatus
-          visibility
-        }
-        productOptions {
-          choices {
-            assetsId
-            name
-          }
-          optionName
-          showInProductPageAs
         }
       }
       totalCount

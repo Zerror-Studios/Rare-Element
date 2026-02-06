@@ -128,7 +128,7 @@ const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
     variantDetailId,
     isCompleteRemove = true
   ) => {
-    if (isCompleteRemove && isLoggedIn) {
+    if (isCompleteRemove) {
       const item = cart.find(
         (i) =>
           i.productId === productId &&
