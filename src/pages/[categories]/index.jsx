@@ -19,7 +19,8 @@ const Categories = ({ meta, data, productList }) => {
   const containerRef = useRef(null)
   const [imageReady, setImageReady] = useState(false);
 
-  useLayoutEffect(() => {
+  // Replace useLayoutEffect with useEffect to avoid SSR mismatch warning
+  useEffect(() => {
     if (!imageReady || !containerRef.current) return;
 
     const ctx = gsap.context(() => {
@@ -105,7 +106,7 @@ const Categories = ({ meta, data, productList }) => {
             className="products_hero-img"
             src={data?.imgsrc}
             alt={data?.name || ""}
-            onLoadingComplete={() => setImageReady(true)}
+            onLoad={() => setImageReady(true)}
           />
 
           {/* <div className="products_content padding">
@@ -159,7 +160,7 @@ const Categories = ({ meta, data, productList }) => {
 
 export default Categories
 
-export async function getServerSideProps({ params }) {
+export async function getStaticProps({ params }) {
   const slug = params?.categories || "";
   const meta = {
     title: "Shop by Category – Fine Jewellery by Nahara",
@@ -194,13 +195,15 @@ export async function getServerSideProps({ params }) {
         productList: products || [],
         initialApolloState: client.cache.extract(),
       },
+      revalidate: 60,
     };
   } catch (error) {
     console.error("Error fetching data:", error.message);
-    const status = error.errors[0].extensions.http.status;
+    const status = error.errors?.[0]?.extensions?.http?.status;
     if (status === StatusCode.NotFound) {
       return {
-        notFound: true
+        notFound: true,
+        revalidate: 60,
       }
     };
     return {
@@ -209,6 +212,14 @@ export async function getServerSideProps({ params }) {
         data: {},
         productList: [],
       },
+      revalidate: 60,
     };
   }
+}
+
+export async function getStaticPaths() {
+  return {
+    paths: [],
+    fallback: 'blocking',
+  };
 }

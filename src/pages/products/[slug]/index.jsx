@@ -8,7 +8,7 @@ import { createApolloClient } from '@/lib/apolloClient';
 import { useMutation } from '@apollo/client/react';
 import { useAuthStore } from '@/store/auth-store';
 import { useCartStore } from '@/store/cart-store';
-import { Const, ProductStatus } from '@/utils/Constant';
+import { Const, ProductStatus, StatusCode } from '@/utils/Constant';
 import { ADD_ITEM_TO_CART, CREATE_BACK_IN_STOCK_REQUEST, GET_PRODUCT_BY_ID, GET_PRODUCTS } from "@/graphql";
 import SeoHeader from "@/components/seo/SeoHeader";
 import ProductImageGrid from '@/components/product/ProductImageGrid';
@@ -136,7 +136,7 @@ const ProductDetail = ({ meta, data, productList }) => {
 
 export default ProductDetail;
 
-export async function getServerSideProps({ params }) {
+export async function getStaticProps({ params }) {
   const slug = params?.slug || "";
   const meta = {
     title: "Shop All Jewellery – Nahara Fine Jewellery Collection",
@@ -182,6 +182,15 @@ export async function getServerSideProps({ params }) {
     ].filter(Boolean);
 
     const [productRes, productListRes] = await Promise.all(queries);
+
+    // Check if product exists
+    if (!productRes?.data?.getClientSideProductById) {
+      return {
+        notFound: true,
+        revalidate: 60
+      }
+    }
+
     return {
       props: {
         meta: productRes?.data?.getClientSideProductById?.meta || meta,
@@ -190,15 +199,31 @@ export async function getServerSideProps({ params }) {
           productListRes?.data?.getClientSideProducts?.products || [],
         initialApolloState: client.cache.extract(),
       },
+      revalidate: 60,
     };
   } catch (error) {
     console.error("Error fetching data:", error.message);
+    const status = error.errors?.[0]?.extensions?.http?.status;
+    if (status === StatusCode.NotFound) {
+      return {
+        notFound: true,
+        revalidate: 60,
+      }
+    };
     return {
       props: {
         meta,
         data: {},
         productList: [],
       },
+      revalidate: 60,
     };
   }
+}
+
+export async function getStaticPaths() {
+  return {
+    paths: [],
+    fallback: 'blocking',
+  };
 }

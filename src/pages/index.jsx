@@ -26,7 +26,7 @@ const Home = ({ meta, products, giftGuideProducts }) => {
 
 export default Home
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
   const meta = {
     title: "Nahara – Luxury Fine Jewellery Crafted for Modern Elegance",
     description: "Discover handcrafted fine jewellery at Nahara featuring diamonds, gold, sterling silver, and contemporary designs made for modern women. Shop rings, earrings, bracelets, necklaces, and more.",
@@ -75,6 +75,7 @@ export async function getServerSideProps() {
         giftGuideProducts: giftGuideProducts,
         initialApolloState: client.cache.extract(),
       },
+      revalidate: 60,
     };
   } catch (error) {
     console.error("Error fetching data:", error.message);
@@ -84,6 +85,7 @@ export async function getServerSideProps() {
         products: [],
         giftGuideProducts: [],
       },
+      revalidate: 60,
     };
   }
 }
