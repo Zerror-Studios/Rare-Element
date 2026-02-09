@@ -151,7 +151,7 @@ const ProductCard = React.memo(({ productId, name, ribbon, price, assets }) => {
                     <Image
                         className="w-full h-full"
                         src={hoverImage?.path || "/green_logo.svg"}
-                        alt={name || "Rare Element Product"}
+                        alt={hoverImage?.altText || name || "Rare Element Product"}
                         width={600}
                         height={800}
                         sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
@@ -165,7 +165,7 @@ const ProductCard = React.memo(({ productId, name, ribbon, price, assets }) => {
                     <Image
                         className="w-full h-full"
                         src={mainImage?.path || "/green_logo.svg"}
-                        alt={name || "Rare Element Product"}
+                        alt={mainImage?.altText || name || "Rare Element Product"}
                         width={600}
                         height={800}
                         sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
