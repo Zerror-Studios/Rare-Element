@@ -4,10 +4,15 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head>
-        <link rel="preconnect" href="https://assets.nahara.co.in" />
+        <link rel="preconnect" href="https://assets.nahara.co.in" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://assets.nahara.co.in" />
         {/* Preconnect to GraphQL API */}
         <link rel="preconnect" href={process.env.NEXT_PUBLIC_GRAPHQL_API_URL} />
+        {/* Preconnect to Google Tag Manager to reduce latency */}
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        {/* Preload home page hero poster for faster LCP */}
+        <link rel="preload" as="image" href="/images/homepage/hero_poster.png" fetchpriority="high" />
         {/* Google Tag Manager - Global base code */}
         <script
           dangerouslySetInnerHTML={{
@@ -20,20 +25,7 @@ export default function Document() {
           `,
           }}
         />
-        {/* Global site tag (gtag.js) - Google Analytics */}
-        <script
-          src="https://www.googletagmanager.com/gtag/js?id=G-0FTD3SQ58J"
-        />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-0FTD3SQ58J');
-          `,
-          }}
-        />
+
       </Head>
       <body>
         {/* <!-- Google Tag Manager (noscript) --> */}

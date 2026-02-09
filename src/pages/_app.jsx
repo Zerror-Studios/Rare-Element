@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
+import Script from "next/script";
 import gsap from "gsap";
 import Layout from "@/components/layouts/Layout";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
@@ -57,6 +58,20 @@ export default function App({ Component, pageProps }) {
 
   return (
     <>
+      {/* Google Analytics - Deferred Loading */}
+      <Script
+        src="https://www.googletagmanager.com/gtag/js?id=G-0FTD3SQ58J"
+        strategy="afterInteractive"
+      />
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-0FTD3SQ58J');
+        `}
+      </Script>
+
       {/* {!isAccountPath(router.pathname) && <RouteLoader />} */}
 
       <ApolloProvider client={client}>

@@ -159,6 +159,9 @@ const Categories = ({ meta, data, products: initialProducts, totalCount: initial
             key={data?.imgsrc}
             fill
             priority
+            fetchPriority="high"
+            sizes="100vw"
+            quality={75}
             className="products_hero-img"
             src={data?.imgsrc}
             alt={data?.name || ""}
