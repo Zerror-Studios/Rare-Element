@@ -20,7 +20,7 @@ export const GET_CLIENT_SIDE_CATEGORIES = gql`
 `;
 
 export const GET_CLIENT_SIDE_CATEGORY_BY_SLUG = gql`
-  query GetClientSideCategory($slug: String) {
+  query GetClientSideCategory($slug: String, $limit: Int, $offset: Int) {
     getClientSideCategory(slug: $slug) {
       _id
       name
@@ -46,7 +46,7 @@ export const GET_CLIENT_SIDE_CATEGORY_BY_SLUG = gql`
           image
         }
       }
-      products {
+      products(limit: $limit, offset: $offset) {
        _id
         name
         description
@@ -54,31 +54,25 @@ export const GET_CLIENT_SIDE_CATEGORY_BY_SLUG = gql`
           path
           type
           altText
+          isFeatured
+          isHover
         }
         price
         discountedPrice
-        costOfGoods
-        productType
         slug
         status
-          ribbon {
+        ribbon {
           name
           ribbonId
         }
         variants {
-          selectedOptions
-          priceDifference
           variantPrice
-          sku
-          variantCostOfGoods
-          shippingWeight
-          trackInventory
           stockQuantity
-          status
           stockStatus
-          visibility
+          status
         }
       }
+      productsCount
     }
   }
 `;

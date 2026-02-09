@@ -1,4 +1,4 @@
-import React, { useEffect, useState, startTransition } from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import gsap from 'gsap'
 import SeoHeader from '@/components/seo/SeoHeader'
@@ -15,7 +15,6 @@ import GreenBoxBtn from '@/components/buttons/GreenBoxBtn'
 
 const AllProducts = ({ meta, products: initialProducts, totalCount: initialTotalCount, categories, filterOptions: initialFilterOptions }) => {
   const [openFilter, setOpenFilter] = useState(false)
-  const [isHydrated, setIsHydrated] = useState(false)
   const [filterOptions, setFilterOptions] = useState(initialFilterOptions || { minPrice: 0, maxPrice: 0, attributes: [] })
 
   const {
@@ -31,23 +30,9 @@ const AllProducts = ({ meta, products: initialProducts, totalCount: initialTotal
     setLoading
   } = useProductStore()
 
-  // Ensure hydration is complete
   useEffect(() => {
-    setIsHydrated(true)
     setInitialProducts(initialProducts, initialTotalCount)
   }, [])
-
-  const { data: filterData } = useQuery(GET_FILTER_OPTIONS, {
-    variables: { categoryIds: [] },
-    skip: !isHydrated,
-    fetchPolicy: "cache-first"
-  });
-
-  useEffect(() => {
-    if (filterData?.getFilterOptions) {
-      setFilterOptions(filterData.getFilterOptions);
-    }
-  }, [filterData]);
 
   const { refetch, fetchMore } = useQuery(GET_PRODUCTS, {
     variables: {
@@ -229,7 +214,7 @@ const AllProducts = ({ meta, products: initialProducts, totalCount: initialTotal
 
 export default AllProducts
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
 
   const meta = {
     title: "Shop by Category – Fine Jewellery by Nahara",
@@ -277,7 +262,18 @@ export async function getServerSideProps() {
       }
     });
 
-    const [productsResponse, categoriesResponse] = await Promise.all([productsPromise, categoriesPromise]);
+    // Fetch Filter Options
+    const filterOptionsPromise = client.query({
+      query: GET_FILTER_OPTIONS,
+      variables: { categoryIds: [] } // Empty array for all categories
+    });
+
+
+    const [productsResponse, categoriesResponse, filterOptionsResponse] = await Promise.all([
+      productsPromise,
+      categoriesPromise,
+      filterOptionsPromise
+    ]);
 
     return {
       props: {
@@ -285,9 +281,10 @@ export async function getServerSideProps() {
         products: productsResponse?.data?.getClientSideProducts?.products || [],
         totalCount: productsResponse?.data?.getClientSideProducts?.totalCount || 0,
         categories: categoriesResponse?.data?.getClientSideCategories?.categories || [],
-        filterOptions: { minPrice: 0, maxPrice: 0, attributes: [] },
+        filterOptions: filterOptionsResponse?.data?.getFilterOptions || { minPrice: 0, maxPrice: 0, attributes: [] },
         initialApolloState: client.cache.extract(),
       },
+      revalidate: 300, // Revalidate every 5 minutes
     };
   } catch (error) {
     console.error("Error fetching data:", error.message);
@@ -298,6 +295,7 @@ export async function getServerSideProps() {
         categories: [],
         filterOptions: { minPrice: 0, maxPrice: 0, attributes: [] },
       },
+      revalidate: 60,
     };
   }
 }

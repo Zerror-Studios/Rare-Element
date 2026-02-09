@@ -21,6 +21,9 @@ export const GET_PRODUCTS = gql`
         }
         variants {
           variantPrice
+          stockQuantity
+          stockStatus
+          status
         }
         categoryIds
       }

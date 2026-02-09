@@ -1,23 +1,21 @@
-import "../styles/globals.css";
-import "../styles/allCssImport.css";
-
-import React, { useEffect } from "react";
-import { useRouter } from "next/router";
-
-import LenisScroll from "@/components/common/LenisScroll";
-import Layout from "@/components/layouts/Layout";
-import PageTransition from "@/components/common/PageTransition";
-import RouteLoader from "@/components/common/RouteLoader";
-
-import ScrollTrigger from "gsap/dist/ScrollTrigger";
+import React, { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import gsap from "gsap";
-
+import Layout from "@/components/layouts/Layout";
+import ScrollTrigger from "gsap/dist/ScrollTrigger";
+import { useRouter } from "next/router";
 import { ToastContainer, Zoom } from "react-toastify";
 import { ApolloProvider } from "@apollo/client/react";
 import { createApolloClient } from "@/lib/apolloClient";
 import { AuthProvider } from "@/context/AuthContext";
 
-import { useRouteLoaderStore } from "@/store/useRouteLoader-store";
+const LenisScroll = dynamic(() => import("@/components/common/LenisScroll"), { ssr: false });
+// const PageTransition = dynamic(() => import("@/components/common/PageTransition"), { ssr: false });
+// const RouteLoader = dynamic(() => import("@/components/common/RouteLoader"), { ssr: false });
+
+
+import "../styles/globals.css";
+import "../styles/allCssImport.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -25,26 +23,16 @@ export default function App({ Component, pageProps }) {
   const router = useRouter();
   const client = createApolloClient(pageProps.initialApolloState);
 
-  const start = useRouteLoaderStore((s) => s.start);
-  const stop = useRouteLoaderStore((s) => s.stop);
-
-  const isAccountPath = (path) => path.startsWith("/account");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const handleStart = (url, { shallow }) => {
-      if (shallow) return;
-
-      const fromAccount = isAccountPath(router.pathname);
-      const toAccount = isAccountPath(url);
-
-      if (fromAccount && toAccount) return;
-
-      if (!fromAccount && toAccount) return;
-
-      start();
+      if (!shallow) {
+        setIsLoading(true);
+      }
     };
 
-    const handleStop = () => stop();
+    const handleStop = () => setIsLoading(false);
 
     router.events.on("routeChangeStart", handleStart);
     router.events.on("routeChangeComplete", handleStop);
@@ -55,7 +43,7 @@ export default function App({ Component, pageProps }) {
       router.events.off("routeChangeComplete", handleStop);
       router.events.off("routeChangeError", handleStop);
     };
-  }, [router.pathname, router.events, start, stop]);
+  }, []);
 
 
   useEffect(() => {
@@ -69,17 +57,18 @@ export default function App({ Component, pageProps }) {
 
   return (
     <>
-      {!isAccountPath(router.pathname) && <RouteLoader />}
+      {/* {!isAccountPath(router.pathname) && <RouteLoader />} */}
 
       <ApolloProvider client={client}>
         <AuthProvider>
           <LenisScroll />
 
-          <PageTransition routeKey={router.asPath}>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-          </PageTransition>
+          {/* <PageTransition routeKey={router.asPath}> */}
+          <Layout>
+            {/* <RouteLoader isLoading={isLoading} /> */}
+            <Component {...pageProps} />
+          </Layout>
+          {/* </PageTransition> */}
         </AuthProvider>
 
         <ToastContainer

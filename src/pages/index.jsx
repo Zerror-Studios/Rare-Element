@@ -1,23 +1,23 @@
 import dynamic from 'next/dynamic'
 import SeoHeader from '@/components/seo/SeoHeader'
 import Hero from '@/components/home/Hero'
-import Category from '@/components/home/Category'
-import FeaturedCollection from '@/components/home/FeaturedCollection'
-
-const GiftGuide = dynamic(() => import('@/components/home/GiftGuide'), { ssr: true })
-const SocialReels = dynamic(() => import('@/components/home/SocialReels'), { ssr: false })
-import { GET_PRODUCTS } from '@/graphql'
+import { GET_CLIENT_SIDE_CATEGORY_BY_SLUG } from '@/graphql'
 import { createApolloClient } from '@/lib/apolloClient'
-import { ProductStatus } from '@/utils/Constant'
 import { MenuData } from '@/helpers/MenuData'
 
-const Home = ({ meta, products, giftGuideProducts }) => {
+// Dynamic imports for better performance
+const Category = dynamic(() => import('@/components/home/Category'), { ssr: true })
+const FeaturedCollection = dynamic(() => import('@/components/home/FeaturedCollection'), { ssr: true })
+const GiftGuide = dynamic(() => import('@/components/home/GiftGuide'), { ssr: true })
+const SocialReels = dynamic(() => import('@/components/home/SocialReels'), { ssr: false })
+
+const Home = ({ meta, newEleganceProducts, giftGuideProducts }) => {
   return (
     <>
       <SeoHeader meta={meta} />
-      <Hero />
+      <Hero categories={MenuData} />
       <Category data={MenuData} />
-      <FeaturedCollection data={products} />
+      <FeaturedCollection data={newEleganceProducts} />
       <GiftGuide data={giftGuideProducts} />
       <SocialReels />
     </>
@@ -53,36 +53,30 @@ export async function getStaticProps() {
   };
 
   try {
+    const newEleganceSlug = "new-elegance";
+    const giftGuideSlug = "gift-guide";
     const client = createApolloClient();
-    const response = await client.query({
-      query: GET_PRODUCTS,
-      variables: {
-        offset: 0,
-        limit: 100,
-        filters: {
-          status: ProductStatus.PUBLISHED,
-        },
-      },
-    });
-
-    const allProducts = response?.data?.getClientSideProducts?.products || [];
-    const giftGuideProducts = allProducts.filter(p => p.categoryIds?.includes('698529d2d65a2d1f309b3fdf'));
-
+    const [newEleganceResponse, giftGuideResponse] = await Promise.all([
+      client.query({ query: GET_CLIENT_SIDE_CATEGORY_BY_SLUG, variables: { slug: newEleganceSlug } }),
+      client.query({ query: GET_CLIENT_SIDE_CATEGORY_BY_SLUG, variables: { slug: giftGuideSlug } })
+    ]);
+    const { products: newEleganceProducts } = newEleganceResponse?.data?.getClientSideCategory;
+    const { products: giftGuideProducts } = giftGuideResponse?.data?.getClientSideCategory;
     return {
       props: {
-        meta,
-        products: allProducts.slice(0, 10), // Still show top 10 as featured
-        giftGuideProducts: giftGuideProducts,
+        meta: meta,
+        newEleganceProducts: newEleganceProducts || [],
+        giftGuideProducts: giftGuideProducts || [],
         initialApolloState: client.cache.extract(),
       },
-      revalidate: 60,
+      revalidate: 300,
     };
   } catch (error) {
     console.error("Error fetching data:", error.message);
     return {
       props: {
         meta,
-        products: [],
+        newEleganceProducts: [],
         giftGuideProducts: [],
       },
       revalidate: 60,

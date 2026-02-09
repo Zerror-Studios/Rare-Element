@@ -10,14 +10,74 @@ import { StatusCode } from '@/utils/Constant'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import ScrollTrigger from 'gsap/dist/ScrollTrigger'
+import { useQuery } from '@apollo/client/react'
+import useCategoryStore from '@/store/category-store'
+import GreenBoxBtn from '@/components/buttons/GreenBoxBtn'
 
-const Categories = ({ meta, data, productList }) => {
+const Categories = ({ meta, data, products: initialProducts, totalCount: initialTotalCount, }) => {
+  // Zustand store state and actions
+  const {
+    products,
+    offset,
+    limit,
+    hasMore,
+    loading,
+    setInitialProducts,
+    appendProducts,
+    setLoading,
+    resetStore
+  } = useCategoryStore();
+
   const breadcrumbList = [
     { name: data?.name, slug: `/${data?.categoriesSlug || data?.slug}` }
   ];
   const pathname = usePathname()
   const containerRef = useRef(null)
   const [imageReady, setImageReady] = useState(false);
+
+  // Reset state when pathname changes
+  useEffect(() => {
+    setImageReady(false);
+    resetStore();
+    setInitialProducts(initialProducts, initialTotalCount);
+  }, [pathname, initialProducts, initialTotalCount]);
+
+  // Client-side query for loading more products
+  const { fetchMore } = useQuery(
+    GET_CLIENT_SIDE_CATEGORY_BY_SLUG,
+    {
+      variables: {
+        slug: data?.slug || data?.categoriesSlug,
+        limit: limit,
+        offset: 0,
+      },
+      skip: true, // We manually trigger refetch/fetchMore
+      fetchPolicy: 'cache-first',
+    }
+  );
+
+  const handleLoadMore = async () => {
+    if (loading || !hasMore) return;
+    setLoading(true);
+
+    try {
+      const { data: result } = await fetchMore({
+        variables: {
+          slug: data?.slug || data?.categoriesSlug,
+          limit: limit,
+          offset: offset,
+        }
+      });
+
+      if (result?.getClientSideCategory?.products) {
+        appendProducts(result.getClientSideCategory.products, result.getClientSideCategory.productsCount);
+      }
+    } catch (error) {
+      console.error("Error loading more products:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Replace useLayoutEffect with useEffect to avoid SSR mismatch warning
   useEffect(() => {
@@ -89,10 +149,6 @@ const Categories = ({ meta, data, productList }) => {
     return () => ctx.revert();
   }, [imageReady, pathname]);
 
-  useEffect(() => {
-    setImageReady(false);
-  }, [pathname]);
-
   return (
     <>
       <SeoHeader meta={meta} breadcrumbList={breadcrumbList} />
@@ -125,8 +181,8 @@ const Categories = ({ meta, data, productList }) => {
         <div className="padding">
           <div className="allproducts_paren categories_paren ">
             {/* <Suspense fallback={<ProductCardSkeleton />}> */}
-            {productList?.length > 0 ? (
-              productList?.map((item) => (
+            {products?.length > 0 ? (
+              products?.map((item) => (
                 <Link
                   key={item._id}
                   scroll={false}
@@ -151,6 +207,13 @@ const Categories = ({ meta, data, productList }) => {
             {/* </Suspense> */}
 
           </div>
+
+          {/* Load More Button */}
+          {hasMore && (
+            <div className="load_more_container">
+              <GreenBoxBtn title="Load More" onClick={handleLoadMore} loading={loading} />
+            </div>
+          )}
         </div>
       </div>
       {/* </Suspense> */}
@@ -186,16 +249,24 @@ export async function getStaticProps({ params }) {
 
   try {
     const client = createApolloClient();
-    const response = await client.query({ query: GET_CLIENT_SIDE_CATEGORY_BY_SLUG, variables: { slug } });
-    const { _id, name, description, imgsrc, slug: categoriesSlug, meta: categoriesMeta, products } = response?.data?.getClientSideCategory;
+    const response = await client.query({
+      query: GET_CLIENT_SIDE_CATEGORY_BY_SLUG,
+      variables: {
+        slug,
+        limit: 12,
+        offset: 0
+      }
+    });
+    const { _id, name, description, imgsrc, slug: categoriesSlug, meta: categoriesMeta, products, productsCount } = response?.data?.getClientSideCategory;
     return {
       props: {
         meta: categoriesMeta || meta,
         data: { _id, name, description, imgsrc, categoriesSlug } || {},
-        productList: products || [],
+        products: products || [],
+        totalCount: productsCount || 0,
         initialApolloState: client.cache.extract(),
       },
-      revalidate: 60,
+      revalidate: 300,
     };
   } catch (error) {
     console.error("Error fetching data:", error.message);
@@ -210,7 +281,8 @@ export async function getStaticProps({ params }) {
       props: {
         meta,
         data: {},
-        productList: [],
+        products: [],
+        totalCount: 0,
       },
       revalidate: 60,
     };

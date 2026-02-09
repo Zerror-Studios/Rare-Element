@@ -1,21 +1,25 @@
-import { useRouteLoaderStore } from "@/store/useRouteLoader-store";
-import React from "react";
+import React, { memo } from 'react';
+import Image from 'next/image';
 
-const RouteLoader = () => {
-  const isLoading = useRouteLoaderStore((s) => s.isLoading);
-
+const RouteLoader = ({ isLoading }) => {
   return (
     <div
-      className={`routeloader_parent center ${
-        isLoading ? "is-visible" : ""
-      }`}
-      aria-hidden={!isLoading}
+      className={`routeloader_parent center ${isLoading ? "is-visible" : ""}`}
+      role="status"
+      aria-live="polite"
+      aria-label="Loading"
     >
       <div className="loader_img">
-        <img src="/green_logo.svg" alt="Logo"/>
+        <Image
+          src="/green_logo.svg"
+          alt="Logo"
+          width={500}
+          height={500}
+          priority
+        />
       </div>
     </div>
   );
 };
 
-export default RouteLoader;
+export default memo(RouteLoader);

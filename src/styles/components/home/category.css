@@ -3,14 +3,15 @@
 ----------------------------------- */
 
 .category_header {
-  opacity: 0;
+  /* opacity: 0; */
   margin-top: 5rem;
   text-align: center;
 }
 
-.category_paren .home_category_paren {
+/* .category_paren .home_category_paren {
   opacity: 0;
-}
+} */
+
 .category_paren .home_category_paren {
   margin: 1rem 0;
   width: 100%;
@@ -31,7 +32,8 @@
   display: flex;
   gap: 0.5rem;
 
-  width: max-content; /* ✅ KEY FIX */
+  width: max-content;
+  /* ✅ KEY FIX */
 }
 
 /* -----------------------------------
@@ -72,6 +74,7 @@
   .category_box_img_paren:hover .category_box_img {
     transform: scale(1.05);
   }
+
   .category_header {
     margin-top: 6rem;
   }

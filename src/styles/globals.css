@@ -1,9 +1,11 @@
 body::-webkit-scrollbar {
   display: none;
 }
+
 .scroller_none::-webkit-scrollbar {
   display: none;
 }
+
 * {
   margin: 0;
   padding: 0;
@@ -11,8 +13,10 @@ body::-webkit-scrollbar {
 
   /* Disable text selection */
   user-select: none;
-  -webkit-user-select: none; /* iOS Safari */
-  -ms-user-select: none; /* Old Edge */
+  -webkit-user-select: none;
+  /* iOS Safari */
+  -ms-user-select: none;
+  /* Old Edge */
   -moz-user-select: none;
 
   /* Disable long-press menu (iOS) */
@@ -23,6 +27,7 @@ body::-webkit-scrollbar {
 video::-webkit-media-controls {
   display: none !important;
 }
+
 video::-webkit-media-controls-start-playback-button {
   display: none !important;
 }
@@ -30,18 +35,22 @@ video::-webkit-media-controls-start-playback-button {
 .w-full {
   width: 100% !important;
 }
+
 .h-full {
   height: 100% !important;
 }
+
 button {
   background-color: transparent;
   border: transparent;
 }
+
 .center {
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
 [data-lenis-prevent] {
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
@@ -50,42 +59,53 @@ button {
 .padding {
   padding: 0rem 1rem;
 }
+
 @media (min-width: 750px) {
   .padding {
     padding: 0rem 2rem;
   }
 }
+
 .uppercase {
   text-transform: uppercase;
 }
+
 .capitalize {
   text-transform: capitalize;
 }
+
 .invert {
   filter: invert(1);
 }
+
 .cover {
   object-fit: cover;
   width: 100%;
   height: 100%;
 }
+
 .text_decoration_underline {
   text-decoration: underline;
 }
+
 .underline:hover {
   text-decoration: underline !important;
 }
+
 .flex {
   display: flex;
 }
+
 .italic {
   font-style: italic;
 }
+
 .under_anim {
   position: relative;
   width: fit-content;
   cursor: pointer;
 }
+
 .under_anim::after {
   content: "";
   display: block;
@@ -98,6 +118,7 @@ button {
   background-color: black;
   transition: width 0.3s ease;
 }
+
 .under_anim:hover::after {
   width: 100%;
 }
@@ -119,6 +140,7 @@ button {
 .scroller span {
   flex-shrink: 0;
 }
+
 .hidden {
   opacity: 0;
 }
@@ -139,13 +161,16 @@ button {
   cursor: pointer;
   transition: all 0.3s ease-in-out;
 }
+
 .whatsapp_chat_img {
   width: 3rem;
   aspect-ratio: 1/1;
 }
+
 .whatsapp_chat:hover {
   transform: scale(1.05);
 }
+
 .whatsapp_chat:hover p {
   text-decoration: underline;
 }
@@ -160,6 +185,7 @@ button {
   height: 100svh;
   background-color: white;
 }
+
 .routeloader_paren {
   position: fixed;
   z-index: 999999;
@@ -170,6 +196,7 @@ button {
   width: 100%;
   height: 100svh;
 }
+
 .routeloader_parent {
   position: fixed;
   inset: 0;
@@ -182,6 +209,7 @@ button {
 
 .routeloader_parent.is-visible {
   opacity: 1;
+  pointer-events: all;
 }
 
 .loader_img {
@@ -203,12 +231,10 @@ button {
   left: -75%;
   width: 50%;
   height: 200%;
-  background: linear-gradient(
-    120deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.779) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
+  background: linear-gradient(120deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.779) 50%,
+      rgba(255, 255, 255, 0) 100%);
   transform: rotate(25deg);
   animation: shine 1s infinite;
 }
@@ -217,6 +243,7 @@ button {
   0% {
     left: -75%;
   }
+
   100% {
     left: 125%;
   }
@@ -225,11 +252,13 @@ button {
 .loader_img img {
   width: 70vw;
 }
+
 @media (min-width: 750px) {
   .loader_img img {
     width: 30vw;
   }
 }
+
 .intro_loader {
   color: #174d38;
   font-size: 2rem;
@@ -258,6 +287,7 @@ button {
       0 -0.83em 0 -0.46em,
       0 -0.83em 0 -0.477em;
   }
+
   5%,
   95% {
     box-shadow:
@@ -267,6 +297,7 @@ button {
       0 -0.83em 0 -0.46em,
       0 -0.83em 0 -0.477em;
   }
+
   10%,
   59% {
     box-shadow:
@@ -276,6 +307,7 @@ button {
       -0.256em -0.789em 0 -0.46em,
       -0.297em -0.775em 0 -0.477em;
   }
+
   20% {
     box-shadow:
       0 -0.83em 0 -0.4em,
@@ -284,6 +316,7 @@ button {
       -0.671em -0.488em 0 -0.46em,
       -0.749em -0.34em 0 -0.477em;
   }
+
   38% {
     box-shadow:
       0 -0.83em 0 -0.4em,
@@ -292,6 +325,7 @@ button {
       -0.775em -0.297em 0 -0.46em,
       -0.82em -0.09em 0 -0.477em;
   }
+
   100% {
     box-shadow:
       0 -0.83em 0 -0.4em,
@@ -306,6 +340,7 @@ button {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -324,15 +359,18 @@ button {
   position: fixed;
   top: 0;
 }
+
 .ring_size_guide .cartBag_menuHeaderClose {
   margin: 1rem;
   top: 0;
   position: absolute;
 }
+
 .ring_size_guide_img_paren {
   object-fit: contain;
   width: 100%;
 }
+
 .ring_size_guide_img_paren img {
   height: 100%;
 }
@@ -342,6 +380,7 @@ button {
     width: 50vw;
     right: -51vw;
   }
+
   .ring_size_guide_img_paren {
     object-fit: contain;
     height: 100%;

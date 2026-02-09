@@ -199,7 +199,7 @@ export async function getStaticProps({ params }) {
           productListRes?.data?.getClientSideProducts?.products || [],
         initialApolloState: client.cache.extract(),
       },
-      revalidate: 60,
+      revalidate: 300,
     };
   } catch (error) {
     console.error("Error fetching data:", error.message);

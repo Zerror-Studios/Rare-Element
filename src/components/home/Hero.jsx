@@ -1,110 +1,106 @@
-import { useGSAP } from '@gsap/react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import React, { useEffect, useRef } from 'react'
-import gsap from 'gsap'
+import React, {
+  useLayoutEffect,
+  useRef,
+  useEffect,
+  memo
+} from 'react';
+
+import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
-import WhiteBorderBtn from '../buttons/WhiteBorderBtn'
-gsap.registerPlugin(ScrollTrigger)
+import Link from 'next/link';
+import WhiteBorderBtn from '../buttons/WhiteBorderBtn';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const Hero = () => {
-  const pathname = usePathname()
+  const heroRef = useRef(null);
   const videoRef = useRef(null);
+  const innerRef = useRef(null);
+  const infoRef = useRef(null);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    // Force iOS-required attributes
-    video.setAttribute("muted", "");
-    video.setAttribute("playsinline", "");
-    video.setAttribute("webkit-playsinline", "");
-    video.setAttribute("preload", "auto");
-
     video.muted = true;
     video.playsInline = true;
     video.loop = true;
-    video.autoplay = true;
-    video.controls = false;
+    video.preload = 'metadata';
 
-    const tryPlay = () => {
-      const promise = video.play();
-      if (promise !== undefined) {
-        promise.catch(() => { });
-      }
-    };
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          video.play().catch(() => { });
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
 
-    // iOS needs metadata before autoplay
-    video.addEventListener("loadedmetadata", tryPlay);
+    observer.observe(video);
 
-    // Fallback for older iOS
-    setTimeout(tryPlay, 100);
-
-    return () => {
-      video.removeEventListener("loadedmetadata", tryPlay);
-    };
+    return () => observer.disconnect();
   }, []);
 
-
-
-
-  useEffect(() => {
-    var height
-
-    if (window.innerWidth > 750) {
-      height = "72vh"
-    } else {
-      height = "45rem"
+  useLayoutEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion)').matches) {
+      return;
     }
+    if (!heroRef.current) return;
 
-    gsap.to(".home_hero", {
-      delay: 1.5,
-      height: height,
-      duration: 1,
-      ease: "ease-secondary"
-    })
-    gsap.to(".info_header", {
-      opacity: 1,
-      delay: 1.4,
-      duration: 1,
-      ease: "ease-secondary"
-    })
-    gsap.set(".home_hero_inner, .category_header", {
-      opacity: 0
-    })
-    gsap.to(".home_hero_inner, .category_header, .home_category_paren, .whatsapp_chat", {
-      opacity: 1,
-      delay: 2,
-      stagger: 0.1,
-      duration: 1,
-      ease: "ease-secondary"
-    })
-    gsap.to(".introloader_paren", {
-      opacity: 0,
-      delay: 1.5,
-      duration: .5,
-      ease: "ease-secondary"
-    })
+    const height =
+      window.innerWidth > 750 ? '72vh' : '45rem';
 
+    // Initial states
+    gsap.set(innerRef.current, { opacity: 0 });
+    gsap.set(infoRef.current, { opacity: 0 });
 
-  }, [pathname])
+    const tl = gsap.timeline();
+
+    tl.to(heroRef.current, {
+      height,
+      duration: 1,
+      ease: 'power2.out',
+    })
+      .to(
+        infoRef.current,
+        {
+          opacity: 1,
+          duration: 0.6,
+        },
+        '-=0.4'
+      )
+      .to(
+        innerRef.current,
+        {
+          opacity: 1,
+          duration: 0.8,
+        },
+        '-=0.2'
+      );
+
+    return () => tl.kill();
+  }, []);
 
   return (
     <>
-
-      <div className="introloader_paren  center">
-        <div className="loader_img">
-          <img src="/green_logo.svg" alt="Logo" />
-        </div>
+      {/* Info Bar */}
+      <div
+        ref={infoRef}
+        className="info_header center"
+      >
+        <p className="text-xs">
+          Free Shipping on all orders
+        </p>
       </div>
 
-      {pathname === "/" && (
-        <div className="info_header center">
-          <p className='text-xs'> Free Shipping on all orders </p>
-        </div>
-      )}
-      <div className="dummy_hero_div"></div>
-      <div className="home_hero">
+      <div className="dummy_hero_div" />
+
+      {/* Hero */}
+      <div
+        ref={heroRef}
+        className="home_hero"
+      >
         <video
           ref={videoRef}
           className="home_hero_video cover"
@@ -112,19 +108,25 @@ const Hero = () => {
           poster="/images/homepage/hero_poster.png"
           muted
           playsInline
-          preload="auto"
           loop
-          autoPlay
+          preload="metadata"
         />
-        <div className="home_hero_inner">
-          <h1 className='text-3xl'>World of Nahara</h1>
-          <Link scroll={false} href="/products" >
-            <WhiteBorderBtn text={"Discover"} />
+
+        <div
+          ref={innerRef}
+          className="home_hero_inner"
+        >
+          <h1 className="text-3xl">
+            World of Nahara
+          </h1>
+
+          <Link scroll={false} href="/products">
+            <WhiteBorderBtn text="Discover" />
           </Link>
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default Hero
+export default memo(Hero);
