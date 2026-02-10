@@ -1,8 +1,19 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
 
 const Category = ({ data }) => {
+
+    useGSAP(() => {
+        gsap.to(([".category_header", ".home_category_paren"]), {
+            opacity: 1,
+            delay: 1.5,
+            stagger: 0.2
+        })
+    })
+
     return (
         <div className="padding category_paren">
             <div className="category_header">

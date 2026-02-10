@@ -3,14 +3,14 @@
 ----------------------------------- */
 
 .category_header {
-  /* opacity: 0; */
+  opacity: 0;
   margin-top: 5rem;
   text-align: center;
 }
 
-/* .category_paren .home_category_paren {
+.category_paren .home_category_paren {
   opacity: 0;
-} */
+}
 
 .category_paren .home_category_paren {
   margin: 1rem 0;

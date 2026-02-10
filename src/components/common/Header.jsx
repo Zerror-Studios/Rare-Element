@@ -7,7 +7,10 @@ import { usePathname } from 'next/navigation';
 import { useAuthStore } from "@/store/auth-store";
 import { MenuData } from '@/helpers/MenuData';
 import CustomEase from 'gsap/dist/CustomEase';
+import { useGSAP } from '@gsap/react';
 gsap.registerPlugin(ScrollTrigger, CustomEase)
+
+CustomEase.create("ease-secondary", "0.16, 1, 0.35, 1");
 
 const Header = ({ openCart }) => {
   const pathname = usePathname()
@@ -37,7 +40,7 @@ const Header = ({ openCart }) => {
     if (window.innerWidth < 750) return
     if (pathname !== "/") {
       gsap.set(".dummy_paren", { display: "none" });
-      gsap.set(".header", { top: 0, position: "fixed", left: 0 });
+      gsap.set(".header", { top: 0, position: "fixed", opacity: 1, left: 0 });
     }
   }, [pathname]);
 
@@ -67,6 +70,15 @@ const Header = ({ openCart }) => {
     };
   }, [pathname]);
 
+  useGSAP(() => {
+    if (pathname !== "/") return;
+    gsap.to(".header", {
+      opacity: 1,
+      delay: 1.5,
+      stagger: 0.2
+    })
+  })
+
   return (
     <>
       <div className="dummy_paren"></div>
@@ -78,36 +90,51 @@ const Header = ({ openCart }) => {
           </Link>
         </div>
         <div className="nav_links">
-          <Link prefetch scroll={false} href="/products" >
-            <p className={`text-sm hover_text ${pathname === "/products" ? "active" : ""}`}>
+          <Link
+            prefetch
+            scroll={false}
+            href="/products"
+            style={{
+              pointerEvents: pathname === "/products" ? "none" : "auto",
+            }}
+          >
+            <p
+              className={`text-sm hover_text ${pathname === "/products" ? "active" : ""
+                }`}
+            >
               All
             </p>
           </Link>
 
-          {MenuData.map((item, index) => {
-            if (item.link === "/anklets") return null;
+          {MenuData.map((item, index) => (
+            <Link
+              key={index}
+              prefetch
+              scroll={false}
+              href={item.link}
+              style={{
+                pointerEvents: pathname === item.link ? "none" : "auto",
+              }}
+            >
+              <p
+                className={`text-sm hover_text ${pathname === item.link ? "active" : ""
+                  }`}
+              >
+                {item.title}
+              </p>
+            </Link>
+          ))}
 
-            return (
-              <Link prefetch scroll={false} href={item.link} key={index}>
-                <p
-                  className={`text-sm hover_text ${pathname === item.link ? "active" : ""
-                    }`}
-                >
-                  {item.title}
-                </p>
-              </Link>
-            );
-          })}
         </div>
         <div className="short_links">
           <Link scroll={false} href={isLoggedIn ? "/account/wishlist" : "/login"} >
-            <img className='short_links_icon' src="/icons/heart.svg"  alt="img" />
+            <img className='short_links_icon' src="/icons/heart.svg" alt="img" />
           </Link>
           <Link scroll={false} href={isLoggedIn ? "/account/settings" : "/login"} >
-            <img className='short_links_icon' src="/icons/profile.svg"  alt="img" />
+            <img className='short_links_icon' src="/icons/profile.svg" alt="img" />
           </Link>
           <button onClick={openCart}>
-            <img className='short_links_icon' src="/icons/cart.svg"  alt="img" />
+            <img className='short_links_icon' src="/icons/cart.svg" alt="img" />
           </button>
         </div>
       </div>

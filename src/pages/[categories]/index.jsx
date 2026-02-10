@@ -84,7 +84,6 @@ const Categories = ({ meta, data, products: initialProducts, totalCount: initial
     if (!imageReady || !containerRef.current) return;
 
     const ctx = gsap.context(() => {
-      const height = window.innerWidth > 750 ? "76vh" : "40vh";
       const heroSection = containerRef.current.querySelector(".products_hero-section");
       const heroImg = containerRef.current.querySelector(".products_hero-img");
 
@@ -102,13 +101,13 @@ const Categories = ({ meta, data, products: initialProducts, totalCount: initial
         { opacity: 0 }
       );
 
-      gsap.fromTo(
+      gsap.to(
         heroSection,
-        { height: 0 },
         {
-          height,
-          duration: 1,
-          ease: "ease-secondary",
+          opacity: 1,
+          clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+          duration: 0.8,
+          ease: 'ease-secondary',
         }
       );
 

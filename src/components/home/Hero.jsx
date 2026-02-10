@@ -9,6 +9,8 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import Link from 'next/link';
 import WhiteBorderBtn from '../buttons/WhiteBorderBtn';
+import { useGSAP } from '@gsap/react';
+import Image from 'next/image';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -18,7 +20,7 @@ const Hero = () => {
   const innerRef = useRef(null);
   const infoRef = useRef(null);
 
-  useEffect(() => {
+  useGSAP(() => {
     const video = videoRef.current;
     if (!video) return;
 
@@ -42,33 +44,27 @@ const Hero = () => {
     return () => observer.disconnect();
   }, []);
 
-  useLayoutEffect(() => {
+  useGSAP(() => {
     if (window.matchMedia('(prefers-reduced-motion)').matches) {
       return;
     }
     if (!heroRef.current) return;
 
-    const height =
-      window.innerWidth > 750 ? '72vh' : '45rem';
-
-    // Initial states
-    gsap.set(innerRef.current, { opacity: 0 });
-    gsap.set(infoRef.current, { opacity: 0 });
-
     const tl = gsap.timeline();
 
     tl.to(heroRef.current, {
-      height,
-      duration: 1,
-      ease: 'power2.out',
+      opacity: 1,
+      clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+      duration: 0.8,
+      delay:1.5,
+      ease: 'ease-secondary',
     })
       .to(
         infoRef.current,
         {
           opacity: 1,
-          duration: 0.6,
-        },
-        '-=0.4'
+          duration: 0.4,
+        },"<"
       )
       .to(
         innerRef.current,
@@ -76,15 +72,26 @@ const Hero = () => {
           opacity: 1,
           duration: 0.8,
         },
-        '-=0.2'
-      );
+      )
+      .to(".introloader_paren",{
+        display:"none",
+        duration:0.01
+      },"<")
 
     return () => tl.kill();
-  }, []);
+  });
 
   return (
     <>
       {/* Info Bar */}
+
+      <div className="introloader_paren center">
+        <div className="loader_img">
+          <Image src="/green_logo.svg" alt="Logo" width={400} height={400} priority />
+        </div>
+
+      </div>
+
       <div
         ref={infoRef}
         className="info_header center"
@@ -105,7 +112,7 @@ const Hero = () => {
           ref={videoRef}
           className="home_hero_video cover"
           src="/videos/hero_video.mp4"
-          poster="/images/homepage/hero_poster.png"
+          poster="/images/homepage/hero_poster.webp"
           muted
           playsInline
           loop

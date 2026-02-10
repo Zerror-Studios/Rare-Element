@@ -29,7 +29,6 @@
 }
 
 .shopCard_img_wrapper_img {
-  scale: 1.5;
   width: 100%;
   aspect-ratio: 3 / 4;
   /* Prevent layout shift - images are 600x800 */
@@ -158,7 +157,6 @@
   }
 
   .shopCard_img_wrapper_img {
-    scale: 1.5;
     aspect-ratio: 3 / 4;
     /* Prevent layout shift - images are 600x800 */
     position: relative;
