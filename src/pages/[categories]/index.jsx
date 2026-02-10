@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import gsap from 'gsap'
 import SeoHeader from '@/components/seo/SeoHeader'

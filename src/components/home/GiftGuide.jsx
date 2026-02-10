@@ -1,13 +1,12 @@
 import React, { useEffect, useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Pagination, Controller } from "swiper/modules";
+import { Autoplay } from "swiper/modules";
 
 import "swiper/css";
 import "swiper/css/pagination";
 import { usePathname } from "next/navigation";
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
-import { useGSAP } from "@gsap/react";
 import GreenBoxBtn from "../buttons/GreenBoxBtn";
 import Image from "next/image";
 gsap.registerPlugin(ScrollTrigger)
@@ -185,7 +184,6 @@ const GiftGuide = ({ data }) => {
                                             className="cover"
                                             src={imageAsset?.path || "/green_logo.svg"}
                                             alt={item?.name || ""}
-
                                         />
                                     </div>
                                 </SwiperSlide>
@@ -223,8 +221,8 @@ const GiftGuide = ({ data }) => {
                                         <div className="lookbookSlider_card">
                                             <div className="lookbookSlider_card_image">
                                                 <Image
-                                                    width={600}
-                                                    height={800}
+                                                    width={300}
+                                                    height={400}
                                                     className="cover"
                                                     src={imageAsset?.path || "/green_logo.svg"}
                                                     alt={item?.name || ""}

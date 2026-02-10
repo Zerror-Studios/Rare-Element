@@ -1,4 +1,5 @@
 import gsap from "gsap";
+import Image from "next/image";
 import React, { useEffect } from "react";
 
 const Introloader = () => {
@@ -28,7 +29,7 @@ const Introloader = () => {
 
   return (
     <div className="introloader_paren center">
-      <img src="/green_logo.svg" alt="Logo"  />
+      <Image width={25} height={25} src="/green_logo.svg" alt="Logo" className="loader_img"  />
 
       <div className="intro_loaderparen">
         <span className="intro_loader"></span>

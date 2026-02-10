@@ -1,6 +1,5 @@
 import React from "react";
 import { useRouter } from "next/router";
-import Loader from "../checkout/Loader";
 
 const GreenBoxBtn = ({ title, href, onClick, loading = false, type = "submit", ...props }) => {
     const router = useRouter();

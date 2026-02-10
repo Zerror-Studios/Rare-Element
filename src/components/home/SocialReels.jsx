@@ -2,34 +2,32 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 
-
-
 export const SocialCardData = [
   {
     id: 1,
     img: "/images/homepage/footer_reels/rings.JPG",
-    vid: "/videos/footer_reels/Ring.mp4",
+    vid: "/videos/footer_reels/Ring.webm",
     title: "Ring",
     description: "Delicate Yet Dazzling",
   },
   {
     id: 2,
     img: "/images/homepage/footer_reels/earring.JPG",
-    vid: "/videos/footer_reels/Earring.mp4",
+    vid: "/videos/footer_reels/Earring.webm",
     title: "Earring",
     description: "Quiet Yet Brilliant",
   },
   {
     id: 3,
     img: "/images/homepage/category/Necklace.jpg",
-    vid: "/videos/footer_reels/Necklace.mp4",
+    vid: "/videos/footer_reels/Necklace.webm",
     title: "Necklace",
     description: "Refined Everyday Sparkle",
   },
   {
     id: 4,
     img: "/images/homepage/footer_reels/bracelet.JPG",
-    vid: "/videos/footer_reels/Bracelet.mp4",
+    vid: "/videos/footer_reels/Bracelet.webm",
     title: "Bracelet",
     description: "A Study In Sparkle",
   },
@@ -49,8 +47,10 @@ const SocialReels = () => {
             <video className='cover socialCard_box_vid ' loop autoPlay muted playsInline src={item.vid}></video>
             <div className="socialCard_image_wrapper">
               <Image
-                width={500}
-                height={800}
+                // width={500}
+                // height={800}
+                fill
+                quality={50}
                 className="socialCard_image"
                 src={item.img}
                 alt="image"

@@ -1,7 +1,5 @@
 import React, {
-  useLayoutEffect,
   useRef,
-  useEffect,
   memo
 } from 'react';
 
@@ -83,15 +81,15 @@ const Hero = () => {
 
   return (
     <>
-      {/* Info Bar */}
 
       <div className="introloader_paren center">
         <div className="loader_img">
-          <Image src="/green_logo.svg" alt="Logo" width={400} height={400} priority />
+          <Image src="/green_logo.svg" alt="Logo" width={400} height={400} priority fetchPriority='high' />
         </div>
 
       </div>
 
+      {/* Info Bar */}
       <div
         ref={infoRef}
         className="info_header center"
@@ -111,7 +109,7 @@ const Hero = () => {
         <video
           ref={videoRef}
           className="home_hero_video cover"
-          src="/videos/hero_video.mp4"
+          src="/videos/hero_video.webm"
           poster="/images/homepage/hero_poster.webp"
           muted
           playsInline

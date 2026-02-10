@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React, { useRef, useState } from 'react'
 
 const Faqs = [
@@ -79,7 +80,7 @@ const Faq = () => {
                                 onClick={() => toggleFAQ(faq.id)}
                             >
                                 <h2 className='text-xl'>{faq.title}</h2>
-                                <img className={`faq_drop_close ${openId === faq.id ? "open" : ""}`} src="/icons/close.svg" alt="img" />
+                                <Image width={20} height={20} className={`faq_drop_close ${openId === faq.id ? "open" : ""}`} src="/icons/close.svg" alt="img" />
                             </div>
                             <div
                                 className="faq_drop_desc"

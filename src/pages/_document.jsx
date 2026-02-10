@@ -12,7 +12,7 @@ export default function Document() {
         <link rel="preconnect" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         {/* Preload home page hero poster for faster LCP */}
-        <link rel="preload" as="image" href="/images/homepage/hero_poster.png" fetchpriority="high" />
+        <link rel="preload" as="image" href="/images/homepage/hero_poster.webp" fetchpriority="high" />
         {/* Google Tag Manager - Global base code */}
         <script
           dangerouslySetInnerHTML={{
