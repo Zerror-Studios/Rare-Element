@@ -11,7 +11,7 @@ import { createApolloClient } from "@/lib/apolloClient";
 import { AuthProvider } from "@/context/AuthContext";
 
 const LenisScroll = dynamic(() => import("@/components/common/LenisScroll"), { ssr: false });
-// const PageTransition = dynamic(() => import("@/components/common/PageTransition"), { ssr: false });
+const PageTransition = dynamic(() => import("@/components/common/PageTransition"), { ssr: false });
 // const RouteLoader = dynamic(() => import("@/components/common/RouteLoader"), { ssr: false });
 
 
@@ -78,12 +78,12 @@ export default function App({ Component, pageProps }) {
         <AuthProvider>
           <LenisScroll />
 
-          {/* <PageTransition routeKey={router.asPath}> */}
+          <PageTransition routeKey={router.asPath}>
           <Layout>
             {/* <RouteLoader isLoading={isLoading} /> */}
             <Component {...pageProps} />
           </Layout>
-          {/* </PageTransition> */}
+          </PageTransition>
         </AuthProvider>
 
         <ToastContainer
