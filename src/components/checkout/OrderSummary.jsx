@@ -126,11 +126,7 @@ const OrderSummary = ({ data, loading, refetch }) => {
         <div className="checkout_row ">
           <p className="checkout_textBase text-lg uppercase">Subtotal</p>
           <p className="checkout_textBase text-lg uppercase">
-            {formatePrice(
-              data?.pricesIncludeTax
-                ? totalprice - (data?.totalTax || 0)
-                : totalprice
-            )}
+            {formatePrice(totalprice)}
           </p>
         </div>
         {!!totalDiscount && (
@@ -166,7 +162,14 @@ const OrderSummary = ({ data, loading, refetch }) => {
         )}
 
         <div className="checkout_row semibold uppercase text-2xl">
-          <p className="checkout_subtotalText bold">Total</p>
+          <p className="checkout_subtotalText bold">Total
+            {data?.pricesIncludeTax && (
+              <>
+                <br />
+                <span className="inclusive_tax_msg">(Inclusive of all taxes)</span>
+              </>
+            )}
+          </p>
           <p className="checkout_subtotalValue ">{formatePrice(discountedPrice)}</p>
         </div>
 

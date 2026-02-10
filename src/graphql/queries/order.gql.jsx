@@ -17,6 +17,7 @@ export const ORDER_LIST = gql`
       totalDiscount
       awb_code
       shipmentStatus
+      invoiceUrl
       cart {
         name
         description
@@ -189,6 +190,7 @@ query GetClientSidePaymentByOrderId($getClientSidePaymentByOrderIdId: ID!) {
       createdAt
       updatedAt
       shipmentStatus
+      invoiceUrl
     }
   }
 }
