@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import SeoHeader from "@/components/seo/SeoHeader";
 import GreenBoxBtn from "@/components/buttons/GreenBoxBtn";
+import Image from "next/image";
 
 const PaymentFailed = ({ meta }) => {
   return (
@@ -10,7 +11,7 @@ const PaymentFailed = ({ meta }) => {
       <div className="status_section center">
         <div className="status_section_inner">
           <div className="status_img_pren center">
-            <img className="cover" src="/gifs/payment_failed.webp" alt="error gif" />
+            <Image  height={10} width={10} className="cover" src="/gifs/payment_failed.webp" alt="error gif" />
           </div>
             <h1 className="text-3xl">Payment Failed</h1>
             <p className="uppercase">Unfortunately, your payment could not be processed.</p>

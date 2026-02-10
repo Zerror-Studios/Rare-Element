@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import Checkbox from '../ui/Checkbox'
 import GreenBoxBtn from '../buttons/GreenBoxBtn'
+import Image from 'next/image';
 
 const ProductsAside = ({ setOpenFilter, categories = [], filterOptions = { minPrice: 0, maxPrice: 0, attributes: [] }, onApply, handleClearFilter }) => {
   const [openSection, setOpenSection] = useState("category"); // default open
@@ -101,7 +102,8 @@ const ProductsAside = ({ setOpenFilter, categories = [], filterOptions = { minPr
         </div>
 
         <div className="products_aside_close">
-          <img
+          <Image
+            height={20} width={20}
             onClick={() => setOpenFilter(false)}
             src="/icons/close.svg" alt="img" />
         </div>

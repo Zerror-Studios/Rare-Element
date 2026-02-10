@@ -40,14 +40,14 @@ const ScrollVelocity = () => {
             <div className="marq_img_paren">
               <div
                 className="marq_img_1">
-                <AboutImageEffect imageUrl="https://images.unsplash.com/photo-1617038220319-276d3cfab638?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+                <AboutImageEffect imageUrl="/images/aboutpage/img1.avif" />
               </div>
               <div className="marq_img_2">
-                <AboutImageEffect imageUrl="https://images.unsplash.com/photo-1631982690223-8aa4be0a2497?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+                <AboutImageEffect imageUrl="/images/aboutpage/img2.avif" />
               </div>
             </div>
             <div className="marq_img_3">
-              <AboutImageEffect imageUrl="https://images.unsplash.com/photo-1619119069152-a2b331eb392a?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+              <AboutImageEffect imageUrl="/images/aboutpage/img3.avif" />
             </div>
           </div>
 
@@ -55,7 +55,7 @@ const ScrollVelocity = () => {
             <div className="about_txt_upper">
               <div className="about_txt_img_paren center">
                 <div className="about_txt_img">
-                  <AboutImageEffect imageUrl="https://images.unsplash.com/photo-1620656798579-1984d9e87df7?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+                  <AboutImageEffect imageUrl="/images/aboutpage/img4.avif" />
                 </div>
               </div>
               <p className='  text-base uppercase '>Behind Rare Element</p>
@@ -67,7 +67,7 @@ const ScrollVelocity = () => {
 
           <div className="about_marque_img_paren_2">
             <div className="marq_img_6">
-              <AboutImageEffect imageUrl="https://plus.unsplash.com/premium_photo-1681276169939-5ad54d5de5fd?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+              <AboutImageEffect imageUrl="/images/aboutpage/img5.avif" />
             </div>
           </div>
 
@@ -75,7 +75,7 @@ const ScrollVelocity = () => {
             <div className="about_txt_upper">
               <div className="about_txt_img_paren start">
                 <div className="about_txt_img_2">
-                  <AboutImageEffect imageUrl="https://images.unsplash.com/photo-1581090465980-58ea88b43443?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+                  <AboutImageEffect imageUrl="/images/aboutpage/img6.avif" />
                 </div>
               </div>
               <p className='  text-base uppercase '>Quiet Craftsmanship</p>
@@ -87,14 +87,14 @@ const ScrollVelocity = () => {
 
           <div className="about_marque_img_paren_2">
             <div className="marq_img_4">
-              <AboutImageEffect imageUrl="https://images.unsplash.com/photo-1512163143273-bde0e3cc7407?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+              <AboutImageEffect imageUrl="/images/aboutpage/img7.avif" />
             </div>
             <div className="marq_img_paren_next">
               <div className="marq_img_1">
-                <AboutImageEffect imageUrl="https://images.unsplash.com/photo-1708222170510-bb7d358798f0?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+                <AboutImageEffect imageUrl="/images/aboutpage/img8.avif" />
               </div>
               <div className="marq_img_2">
-                <AboutImageEffect imageUrl="https://images.unsplash.com/photo-1634229537034-16d6a751d91b?q=80&w=764&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+                <AboutImageEffect imageUrl="/images/aboutpage/img9.avif" />
               </div>
             </div>
           </div>
@@ -103,7 +103,7 @@ const ScrollVelocity = () => {
             <div className="about_txt_upper">
               <div className="about_txt_img_paren">
                 <div className="about_txt_img_3">
-                  <AboutImageEffect imageUrl="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+                  <AboutImageEffect imageUrl="/images/aboutpage/img10.avif" />
                 </div>
               </div>
               <p className='  text-base uppercase '>Design With Intention</p>

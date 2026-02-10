@@ -21,6 +21,15 @@
   overflow-x: auto;
   scrollbar-width: none;
 }
+.socialCard_section:hover .socialCard_box {
+  filter: brightness(0.5);
+  transition: filter 0.3s ease;
+}
+
+.socialCard_section .socialCard_box:hover {
+  filter: brightness(1);
+}
+
 
 .socialCard_section::-webkit-scrollbar {
   display: none;

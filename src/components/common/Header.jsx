@@ -8,6 +8,7 @@ import { useAuthStore } from "@/store/auth-store";
 import { MenuData } from '@/helpers/MenuData';
 import CustomEase from 'gsap/dist/CustomEase';
 import { useGSAP } from '@gsap/react';
+import Image from 'next/image';
 gsap.registerPlugin(ScrollTrigger, CustomEase)
 
 CustomEase.create("ease-secondary", "0.16, 1, 0.35, 1");
@@ -86,7 +87,7 @@ const Header = ({ openCart }) => {
         <div className="header_bg"></div>
         <div className="logo_paren">
           <Link scroll={false} href="/" >
-            <img className='header_logo' src="/logo.svg" alt="img" />
+            <Image width={25} height={25} className='header_logo' src="/logo.svg" alt="img" />
           </Link>
         </div>
         <div className="nav_links">
@@ -128,13 +129,13 @@ const Header = ({ openCart }) => {
         </div>
         <div className="short_links">
           <Link scroll={false} href={isLoggedIn ? "/account/wishlist" : "/login"} >
-            <img className='short_links_icon' src="/icons/heart.svg" alt="img" />
+            <Image height={25} width={25} className='short_links_icon' src="/icons/heart.svg" alt="img" />
           </Link>
           <Link scroll={false} href={isLoggedIn ? "/account/settings" : "/login"} >
-            <img className='short_links_icon' src="/icons/profile.svg" alt="img" />
+            <Image height={25} width={25} className='short_links_icon' src="/icons/profile.svg" alt="img" />
           </Link>
           <button onClick={openCart}>
-            <img className='short_links_icon' src="/icons/cart.svg" alt="img" />
+            <Image height={25} width={25} className='short_links_icon' src="/icons/cart.svg" alt="img" />
           </button>
         </div>
       </div>

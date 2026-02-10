@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import SeoHeader from "@/components/seo/SeoHeader";
 import GreenBoxBtn from './../../../components/buttons/GreenBoxBtn';
+import Image from "next/image";
 
 const ThankYou = ({ meta }) => {
 
@@ -12,16 +13,16 @@ const ThankYou = ({ meta }) => {
       <div className="status_section center">
         <div className="status_section_inner">
           <div className="status_img_pren center">
-            <img className="cover" src="/gifs/success.gif" alt="success gif"  />
+            <Image height={10} width={10} className="cover" src="/gifs/success.gif" alt="success gif" />
           </div>
-            <h1 className="text-3xl">Payment Successfull</h1>
-            <p className="uppercase">Thank you for your purchase</p>
-            <p></p>
-            <p>Have Question? Contact Us at: </p>
-            <Link className="text_decoration_underline" target="_blank" href="https://mail.google.com/mail/u/0/#inbox?compose=GTvVlcSKjgCNjxJKkzZhJktdvrWdssGbJXkRJqFwsZljDKHnPDRLXcrkzLKSLVtRgNBJQQtgTCQjs">contact@nahara.co.in</Link>
-            <div className="w-full">
+          <h1 className="text-3xl">Payment Successfull</h1>
+          <p className="uppercase">Thank you for your purchase</p>
+          <p></p>
+          <p>Have Question? Contact Us at: </p>
+          <Link className="text_decoration_underline" target="_blank" href="https://mail.google.com/mail/u/0/#inbox?compose=GTvVlcSKjgCNjxJKkzZhJktdvrWdssGbJXkRJqFwsZljDKHnPDRLXcrkzLKSLVtRgNBJQQtgTCQjs">contact@nahara.co.in</Link>
+          <div className="w-full">
             <GreenBoxBtn title="Continue Shopping" href="/" />
-            </div>
+          </div>
         </div>
       </div>
     </>

@@ -10,6 +10,7 @@ import StretchArrow from "../../../public/icons/animationJson/StretchArrow.json"
 import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
+import Image from 'next/image';
 gsap.registerPlugin(ScrollTrigger)
 
 
@@ -181,7 +182,7 @@ const Footer = () => {
             {/* ABOUT TEXT — stays static */}
             <div className="footer_classname_about">
               <Link scroll={false} href="/">
-                <img className="footer_logo" src="/logo.svg" alt="Nahara Logo" />
+                <Image height={40} width={40} className="footer_logo" src="/logo.svg" alt="Nahara Logo" />
               </Link>
               <p className=" footer_about text-base thin">
                 Nahara brings a bold, playful edge to modern jewellery. Designed and crafted in-house, each piece blends inventive ideas with refined details, creating a fresh kind of elegance spirited, stylish, and made to stand out.
@@ -207,7 +208,7 @@ const Footer = () => {
           {/* Footer Bottom Section */}
           <div className="footer_classname_bottom">
             <Link scroll={false} href="/" >
-              <img className="footer_logo" src="/logo.svg" alt="Nahara Logo" />
+              <Image height={40} width={40} className="footer_logo" src="/logo.svg" alt="Nahara Logo" />
             </Link>
             <div className="uppercase text-xs copyright_txt">
               <p>© {currentYear} Nahara. All rights reserved.</p>

@@ -304,7 +304,7 @@ const handleMainButtonClick = () => {
                     >
                       <button className="text-base" onClick={() => toggleDropdown(item?.optionName)}>
                         <p className="productDetail_select_inner_elem capitalize">{selectOption?.replace(/(\d)([a-zA-Z]+)/, "$1 $2")}</p>
-                        <img
+                        <Image height={10} width={10}
                           className={`productDetail_quantity_icon productDetail_select_inner_elem_img ${openDropdown === item?.optionName ? "rotate_icon" : ""
                             }`}
                           src="/icons/LongArrowDown.svg"
@@ -445,7 +445,7 @@ const handleMainButtonClick = () => {
                         {item.title}
                       </p>
 
-                      <img
+                      <Image  height={10} width={10}
                         className={`productDetail_quantity_icon ${accordionIndex === index ? "rotated" : ""
                           }`}
                         src="/icons/LongArrowDown.svg"

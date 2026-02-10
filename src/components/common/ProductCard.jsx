@@ -154,7 +154,7 @@ const ProductCard = React.memo(({ productId, name, ribbon, price, assets }) => {
                         alt={hoverImage?.altText || name || "Rare Element Product"}
                         width={600}
                         height={800}
-                        sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+                        // sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
                     />
                 </div>
             </div>
@@ -168,7 +168,7 @@ const ProductCard = React.memo(({ productId, name, ribbon, price, assets }) => {
                         alt={mainImage?.altText || name || "Rare Element Product"}
                         width={600}
                         height={800}
-                        sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+                        // sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
                     />
                 </div>
             </div>

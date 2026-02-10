@@ -185,7 +185,6 @@ const GiftGuide = ({ data }) => {
                                             className="cover"
                                             src={imageAsset?.path || "/green_logo.svg"}
                                             alt={item?.name || ""}
-
                                         />
                                     </div>
                                 </SwiperSlide>
@@ -223,8 +222,8 @@ const GiftGuide = ({ data }) => {
                                         <div className="lookbookSlider_card">
                                             <div className="lookbookSlider_card_image">
                                                 <Image
-                                                    width={600}
-                                                    height={800}
+                                                    width={300}
+                                                    height={400}
                                                     className="cover"
                                                     src={imageAsset?.path || "/green_logo.svg"}
                                                     alt={item?.name || ""}
