@@ -1,7 +1,5 @@
 import React, {
-  useLayoutEffect,
   useRef,
-  useEffect,
   memo
 } from 'react';
 

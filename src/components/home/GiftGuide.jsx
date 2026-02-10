@@ -1,13 +1,12 @@
 import React, { useEffect, useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Pagination, Controller } from "swiper/modules";
+import { Autoplay } from "swiper/modules";
 
 import "swiper/css";
 import "swiper/css/pagination";
 import { usePathname } from "next/navigation";
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
-import { useGSAP } from "@gsap/react";
 import GreenBoxBtn from "../buttons/GreenBoxBtn";
 import Image from "next/image";
 gsap.registerPlugin(ScrollTrigger)

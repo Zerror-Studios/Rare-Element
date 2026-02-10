@@ -6,7 +6,6 @@ import MobileHeader from "@/components/common/MobileHeader";
 import Footer from "@/components/common/Footer";
 import CartDrawer from "@/components/cart/CartDrawer";
 import { usePathname } from "next/navigation";
-import Introloader from "../common/Introloader";
 import { RiCloseLine } from "@remixicon/react";
 import { useSizeGuideStore } from "@/store/sizeguide-store";
 import Image from "next/image";

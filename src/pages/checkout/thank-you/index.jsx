@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import SeoHeader from "@/components/seo/SeoHeader";
 import GreenBoxBtn from './../../../components/buttons/GreenBoxBtn';
 import Image from "next/image";
