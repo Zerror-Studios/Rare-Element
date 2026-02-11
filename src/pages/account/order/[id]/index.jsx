@@ -89,6 +89,15 @@ const OrderDetail = ({ meta }) => {
             </div>
           </div>
 
+          <div className="purchases_ordersList text-base ">
+            {data?.order?.invoiceUrl && (
+              <div className="">
+                <p className='uppercase bold text-base pb-1'>Invoice</p>
+                <Link prefetch={false} href={data?.order?.invoiceUrl} target='_blank' className='text-base underline'>Download Invoice</Link>
+              </div>
+            )}
+          </div>
+
           <div className="checkout_thin_line"></div>
 
           <div className="purchases_ordersList text-base">
@@ -105,7 +114,7 @@ const OrderDetail = ({ meta }) => {
                             height={200}
                             className="cartBag_bagImage"
                             src={item?.asset?.path || ""}
-                        
+
                             alt={item?.asset?.altText || ""}
                           />
                         </Link>
@@ -119,7 +128,7 @@ const OrderDetail = ({ meta }) => {
                           <p className='text-xl'>{formatePrice(item?.finalPrice || 0)}</p>
                         </div>
                         <div className="purchases_orderFooter_inner">
-                          <Link prefetch scroll={false} href={`/products/${item?.product?.slug}`}  className="text-sm">
+                          <Link prefetch scroll={false} href={`/products/${item?.product?.slug}`} className="text-sm">
                             <p className="text-sm">View Product</p>
                           </Link>
                         </div>
@@ -138,7 +147,7 @@ const OrderDetail = ({ meta }) => {
             <p className='uppercase bold text-base'>Return & Refund Information</p>
 
             <div className="purchases_orderFooter_inner order_open_prdct">
-              <Link scroll={false} href={`/shipping-returns`}  className="text-sm">
+              <Link scroll={false} href={`/shipping-returns`} className="text-sm">
                 <p className="text-sm">Shipping & Returns</p>
               </Link>
             </div>
