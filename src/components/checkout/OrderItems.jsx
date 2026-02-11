@@ -10,7 +10,7 @@ const OrderItems = ({ data }) => {
     <>
       <div className="">
         <p className="checkout_subHeading text-lg uppercase"> Order Summary ({data?.length})</p>
-        <div className="summary_products_paren">
+        <div data-lenis-prevent className="summary_products_paren">
           {data && data.length > 0 && data?.map((item, index) => {
             const price = formatePrice(item?.variantDetail?.variantPrice || null);
             return (
@@ -28,13 +28,13 @@ const OrderItems = ({ data }) => {
                 <div className="checkout_details">
                   <div className="checkout_topRow">
                     <div>
-                      <Link prefetch scroll={false} href={`/products/${item?.product?.slug}`} className="checkout_productName text-base">{item?.name}</Link>
+                      <Link prefetch scroll={false} href={`/products/${item?.product?.slug}`} className="checkout_productName text-lg">{item?.name}</Link>
                       <div className="cart_varients_div">
                         {renderVariants(item?.product?.productOptions || [], item?.variantDetail?.selectedOptions || [])}
                       </div>
-                      <p className="checkout_metaText text-xs ">Quantity: {item?.qty}</p>
+                      <p className="checkout_metaText text-sm ">Quantity: {item?.qty}</p>
                     </div>
-                    <p className="checkout_price  text-base">{price}</p>
+                    <p className="checkout_price  text-lg">{price}</p>
                   </div>
                   {/* <div className="cartBag_bagItemBottom">
                     <div className="cartBag_qtyControl text-lg">

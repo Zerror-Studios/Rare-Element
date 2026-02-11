@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import GreenBoxBtn from "@/components/buttons/GreenBoxBtn";
@@ -10,6 +10,7 @@ import { ADD_TO_WISHLIST, GET_WISHLIST_ITEMS, REMOVE_FROM_WISHLIST } from "@/gra
 import { useAuthStore } from "@/store/auth-store";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
+import { usePathname } from "next/navigation";
 
 const ProductContant = ({
   data = {},
@@ -26,6 +27,8 @@ const ProductContant = ({
   handleAddToCart,
   handleNotifyMe,
 }) => {
+
+  const pathname = usePathname();
   const router = useRouter();
   const { user } = useAuthStore();
   const userId = user?._id || user?.id;
@@ -174,26 +177,26 @@ const ProductContant = ({
     }
   };
 
-const handleVariants = (name, value) => {
-  const updated = { ...selectedVariants, [name]: value };
-  setSelectedVariants(updated);
-  updatePriceBasedOnVariant(updated);
+  const handleVariants = (name, value) => {
+    const updated = { ...selectedVariants, [name]: value };
+    setSelectedVariants(updated);
+    updatePriceBasedOnVariant(updated);
 
-  const nextIndex = Object.keys(updated).length;
-  const nextOption = options[nextIndex];
+    const nextIndex = Object.keys(updated).length;
+    const nextOption = options[nextIndex];
 
-  // ✅ IMPORTANT: update cart button readiness
-  setCartBtn(nextIndex === options.length);
+    // ✅ IMPORTANT: update cart button readiness
+    setCartBtn(nextIndex === options.length);
 
-  if (nextOption) {
-    setOpenDropdown(nextOption.optionName);
-    setSelectionMode(false);
-  } else {
-    // All selected
-    setOpenDropdown(null);
-    setSelectionMode(false);
-  }
-};
+    if (nextOption) {
+      setOpenDropdown(nextOption.optionName);
+      setSelectionMode(false);
+    } else {
+      // All selected
+      setOpenDropdown(null);
+      setSelectionMode(false);
+    }
+  };
 
 
 
@@ -203,6 +206,10 @@ const handleVariants = (name, value) => {
     setCartBtn(false);
     setOpenDropdown(null);
   };
+
+  useEffect(() => {
+    clearVariants();
+  }, [pathname]);
 
   // const accordionData = useMemo(() => {
   //   if (!data) return [];
@@ -232,23 +239,23 @@ const handleVariants = (name, value) => {
     openSizeGuide(sizeGuideAsset);
   };
 
-const handleMainButtonClick = () => {
-  if (loading || isOutOfStock) return;
+  const handleMainButtonClick = () => {
+    if (loading || isOutOfStock) return;
 
-  // ✅ ALWAYS allow add to cart when all selected
-  if (allSelected) {
-    handleAddToCart();
-    return;
-  }
+    // ✅ ALWAYS allow add to cart when all selected
+    if (allSelected) {
+      handleAddToCart();
+      return;
+    }
 
-  // Start selection flow
-  setSelectionMode(true);
+    // Start selection flow
+    setSelectionMode(true);
 
-  const nextOption = options[selectedCount];
-  if (nextOption) {
-    setOpenDropdown(nextOption.optionName);
-  }
-};
+    const nextOption = options[selectedCount];
+    if (nextOption) {
+      setOpenDropdown(nextOption.optionName);
+    }
+  };
 
 
 
@@ -445,7 +452,7 @@ const handleMainButtonClick = () => {
                         {item.title}
                       </p>
 
-                      <Image  height={10} width={10}
+                      <Image height={10} width={10}
                         className={`productDetail_quantity_icon ${accordionIndex === index ? "rotated" : ""
                           }`}
                         src="/icons/LongArrowDown.svg"

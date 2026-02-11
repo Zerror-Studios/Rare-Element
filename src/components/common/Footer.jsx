@@ -91,23 +91,6 @@ const footerLinksData = [
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
-  useGSAP(() => {
-    if (window.innerWidth < 1024) return
-    gsap.to(".footer_below", {
-      scrollTrigger: {
-        trigger: ".footer_classname_wrapper",
-        start: "15% bottom",
-        end: "bottom bottom",
-        scrub: true,
-        // markers: true
-      },
-      transform: "translateY(0%)",
-      opacity: 1,
-      ease: "linear"
-    })
-  })
-
-
   return (
     <div className="footer_classname_wrapper">
       <div className="footer_classname_container">

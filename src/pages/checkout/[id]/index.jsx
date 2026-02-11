@@ -192,7 +192,7 @@ const CheckoutPage = ({ meta }) => {
       <SeoHeader meta={meta} />
       <div className="checkout_section">
         <div className="checkout_section_inner">
-          <h1 className=" text-2xl uppercase checkout_heading">Checkout</h1>
+          <h1 className=" text-2xl  checkout_heading">Checkout</h1>
           <form onSubmit={handleSubmit(onSubmit)} className="checkout_Wrapper">
             <div className="checkout_leftContainer">
 
