@@ -141,7 +141,7 @@ const OrderSummary = ({ data, loading, refetch }) => {
         </div>
         <div className="checkout_row">
           <p className="checkout_textSm text-lg uppercase">Taxes & Charges</p>
-          <p className="checkout_textSm text-lg uppercase"></p>
+          {/* <p className="checkout_textSm text-lg uppercase"></p> */}
         </div>
 
         {/* Tax Breakdown */}
@@ -149,10 +149,10 @@ const OrderSummary = ({ data, loading, refetch }) => {
           <div className="tax_breakdown_section">
             {data.taxBreakdown.map((tax, index) => (
               <div key={index} className="tax_row">
-                <p className="tax_name">
+                <p className="tax_name text-sm ">
                   {tax.name} ({tax.rate}%)
                 </p>
-                <p className="tax_amount">
+                <p className="tax_amount text-lg">
                   {formatePrice(tax.amount)}
                 </p>
               </div>
