@@ -32,6 +32,10 @@ video::-webkit-media-controls-start-playback-button {
   display: none !important;
 }
 
+.line-through {
+  text-decoration: line-through;
+}
+
 .w-full {
   width: 100% !important;
 }
@@ -94,6 +98,14 @@ button {
 
 .flex {
   display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.items-end {
+  align-items: end;
 }
 
 .italic {

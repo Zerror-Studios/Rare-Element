@@ -7,6 +7,7 @@ const CartItem = ({
   item,
   handleAddItem,
   handleRemoveItem,
+  pricesIncludeTax,
   onClose,
 }) => {
   const [removing, setRemoving] = useState(false);
@@ -60,9 +61,12 @@ const CartItem = ({
                 {renderVariants(item?.product?.productOptions || [], item?.variantDetail?.selectedOptions || [])}
               </div>
             </div>
-            <p className='text-xl crt_itms_price'>{`${item.qty > 1 ? `${item?.qty} x` : ""} ${formatePrice(
-              item?.variantDetail?.variantPrice || 0
-            )}`}</p>
+            <div className="crt_itms_price_group">
+              <p className='crt_itms_price'>{`${item.qty > 1 ? `${item?.qty} x` : ""} ${formatePrice(
+                item?.variantDetail?.variantPrice || 0
+              )}`}</p>
+              <p className="inclusive_tax_msg">{pricesIncludeTax ? "Incl. of all taxes" : "Excl. of all taxes"}</p>
+            </div>
           </div>
           <div className="cartBag_bagItemBottom">
             <div className="cartBag_qtyControl text-lg">

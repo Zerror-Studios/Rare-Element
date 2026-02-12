@@ -72,6 +72,7 @@ const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
     _id,
     discountedPrice = 0,
     cart = [],
+    pricesIncludeTax = false,
   } = cartResponse?.getCart || {};
 
   const count = getCartItemCount(cart);
@@ -251,6 +252,7 @@ const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
               item={item}
               handleAddItem={handleAddItem}
               handleRemoveItem={handleRemoveItem}
+              pricesIncludeTax={pricesIncludeTax}
               onClose={closeCart}
             />
           ))

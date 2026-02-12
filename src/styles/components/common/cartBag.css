@@ -9,6 +9,7 @@
   pointer-events: none;
   z-index: 999;
 }
+
 .add_popup_paren {
   pointer-events: none;
   text-align: center;
@@ -21,6 +22,7 @@
   backdrop-filter: blur(0.1rem);
   z-index: 99999;
 }
+
 .add_popup {
   position: relative;
   padding: 1rem;
@@ -29,15 +31,18 @@
   width: 95%;
   background-color: white;
 }
+
 .add_popup_under_txt {
   margin-top: 0.5rem;
   opacity: 0.7;
   text-transform: uppercase;
 }
+
 @media (max-width: 750px) {
   .add_popup_under_txt {
     font-size: 0.8rem;
   }
+
   .wishlist_btn {
     display: flex;
     flex-direction: column-reverse;
@@ -48,12 +53,14 @@
     margin-top: 2rem;
   }
 }
+
 .wishlist_item_popup {
   margin-top: 4rem;
   width: 100%;
   display: flex;
   gap: 1rem;
 }
+
 .wishlist_btn {
   display: flex;
   gap: 1rem;
@@ -62,14 +69,17 @@
   width: 100%;
   margin-top: 2rem;
 }
+
 .cartBag_bagItemDetails.cartBag_bagItemDetails {
   text-align: start;
   width: 100%;
 }
+
 .wishlist_item_popup_img_wrapper {
   aspect-ratio: 3/4;
   width: 30%;
 }
+
 .wishlist_item_popup_detail_wrapper {
   display: flex;
   flex-direction: column;
@@ -96,6 +106,7 @@
   justify-content: center;
   border-radius: 9999px;
 }
+
 @media (min-width: 750px) {
   .add_popup {
     padding: 2rem;
@@ -109,6 +120,7 @@
     backdrop-filter: blur(0.3rem);
   }
 }
+
 /* Bag */
 .cartBag_openBagParent {
   padding-right: 0.2rem;
@@ -121,6 +133,7 @@
   z-index: 9999;
   right: -42rem;
 }
+
 .cartBag_bagHeader {
   width: 100%;
   height: 6rem;
@@ -136,6 +149,7 @@
   display: flex;
   gap: 0.5rem;
 }
+
 .cartBag_menuHeaderClose {
   cursor: pointer;
 }
@@ -153,12 +167,15 @@
   justify-content: center;
   border-radius: 9999px;
 }
+
 .close_icon {
   transform: translateY(0.05rem);
 }
+
 .empty_cart_box {
   padding: 1.5rem;
 }
+
 .cartBag_bagScroll {
   width: 100%;
   padding-top: 1rem;
@@ -166,11 +183,13 @@
   height: 72vh;
   padding-bottom: 4rem;
 }
+
 .cartBag_bagScroll::-webkit-scrollbar-thumb {
   background-color: #174d38;
   cursor: pointer;
   border-radius: 100px;
 }
+
 .cartBag_bagScroll::-webkit-scrollbar {
   width: 0.3rem;
   background-color: transparent;
@@ -201,12 +220,15 @@
   align-items: center;
   justify-content: center;
 }
+
 .cartBag_bagImage {
   transition: scale 0.3s ease;
 }
+
 .cartBag_bagImage:hover {
   scale: 1.05;
 }
+
 .cartBag_bagImageWrapper img {
   object-fit: cover;
 }
@@ -239,6 +261,7 @@
 .cartBag_itemHead {
   width: 70%;
 }
+
 .cart_varients_div {
   margin-top: 0.5rem;
 }
@@ -247,9 +270,18 @@
   margin-bottom: 0.5rem;
   text-transform: uppercase;
 }
-.crt_itms_price {
-  transform: translateY(-0.75rem);
+
+.crt_itms_price_group {
+  display: flex;
+  flex-direction: column;
+  align-items: end;
 }
+
+.crt_itms_price {
+  /* transform: translateY(-0.75rem); */
+  font-size: 1.25rem;
+}
+
 .cartBag_itemSize {
   opacity: 0.8;
 }
@@ -271,13 +303,16 @@
   width: 5.5rem;
   gap: 0.5rem;
 }
+
 .cartBag_bagItemDetails button {
   color: black !important;
 }
+
 .cartBag_qtyControl p {
   position: relative;
   z-index: 99;
 }
+
 .cartBag_qtyControl_dec,
 .cartBag_qtyControl_inc {
   position: relative;
@@ -289,6 +324,7 @@
   justify-content: center;
   height: 100%;
 }
+
 .cartBag_qtyControl_dec::after {
   content: "";
   scale: 1.1;
@@ -300,6 +336,7 @@
   height: 100%;
   transition: width 0.3s ease;
 }
+
 .cartBag_qtyControl_inc::after {
   content: "";
   position: absolute;
@@ -311,10 +348,12 @@
   height: 100%;
   transition: width 0.3s ease;
 }
+
 .cartBag_qtyControl_dec:hover,
 .cartBag_qtyControl_inc:hover {
   color: white !important;
 }
+
 .cartBag_qtyControl_dec:hover::after,
 .cartBag_qtyControl_inc:hover:after {
   width: 100%;
@@ -325,6 +364,7 @@
   transition: all 0.3s ease;
   opacity: 0.7;
 }
+
 .cartBag_removeButton:hover {
   opacity: 1;
   scale: 1.1;
@@ -361,13 +401,16 @@
 .cartBag_continueText {
   opacity: 0.7;
 }
+
 .cartBag_checkoutButton {
   /* text-align: center; */
 }
+
 .crt_btn_txt {
   margin-top: 1rem;
   line-height: 1rem;
 }
+
 /* mobile code */
 @media (max-width: 750px) {
   .cartBag_openBagParent {
@@ -377,18 +420,23 @@
     /* height: 45rem; */
     top: 0rem;
   }
+
   .cartBag_bagHeader {
     height: 5rem;
   }
+
   .cartBag_bagItem {
     padding: 1rem;
   }
+
   .cartBag_bagItemInner {
     gap: 1rem;
   }
+
   .cartBag_bagTitle {
     font-size: 1.125rem !important;
   }
+
   .cartBag_bagScroll {
     height: 40rem;
     padding-bottom: 6rem;

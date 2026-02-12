@@ -289,7 +289,10 @@ const ProductContant = ({
               <div className="prd_desc text-lg primary-font">
                 {htmlParser(data?.description)}
               </div>
-              <p className="productDetail_price text-2xl ">{formatePrice(finalPrice || 0)}</p>
+              <div className="product_price_group">
+                <p className="productDetail_price text-2xl ">{formatePrice(finalPrice || 0)}</p>
+                <p className="inclusive_tax_msg text-xs">(Incl. of all taxes)</p>
+              </div>
             </div>
           </div>
           <div className="">

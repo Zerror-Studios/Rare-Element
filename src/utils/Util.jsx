@@ -44,7 +44,7 @@ export const formatDateTime = (dateString) => {
 };
 
 export const formatePrice = (price) => {
-  if (!price) return "0";
+  if (!price) return "₹0";
   const hasDecimal = price % 1 !== 0;
   const formattedPrice = new Intl.NumberFormat("en-IN", {
     style: "currency",
