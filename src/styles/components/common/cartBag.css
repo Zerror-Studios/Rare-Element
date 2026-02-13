@@ -292,6 +292,10 @@
   align-items: center;
   justify-content: space-between;
 }
+.summary_button_increment{
+  color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.6) !important;
+}
 
 .cartBag_qtyControl {
   overflow: hidden;
@@ -314,7 +318,9 @@
 }
 
 .cartBag_qtyControl_dec,
-.cartBag_qtyControl_inc {
+.cartBag_qtyControl_inc,
+.gty_ctrl_btn_decr,
+.gty_ctrl_btn_incr {
   position: relative;
   cursor: pointer;
   overflow: hidden;
@@ -324,7 +330,28 @@
   justify-content: center;
   height: 100%;
 }
-
+.gty_ctrl_btn_incr::after{
+  content: "";
+  position: absolute;
+  background-color: #ffffff;
+  top: 0;
+  scale: 1.1;
+  width: 0%;
+  right: -1px;
+  height: 100%;
+  transition: width 0.3s ease;
+}
+.gty_ctrl_btn_decr::after{
+  content: "";
+  position: absolute;
+  background-color: #ffffff;
+  top: 0;
+  scale: 1.1;
+  width: 0%;
+  left: -1px;
+  height: 100%;
+  transition: width 0.3s ease;
+}
 .cartBag_qtyControl_dec::after {
   content: "";
   scale: 1.1;
@@ -354,10 +381,21 @@
   color: white !important;
 }
 
+.gty_ctrl_btn_decr:hover,
+.gty_ctrl_btn_incr:hover {
+  color: #174d38 !important;
+}
+
 .cartBag_qtyControl_dec:hover::after,
 .cartBag_qtyControl_inc:hover:after {
   width: 100%;
 }
+
+.gty_ctrl_btn_decr:hover::after,
+.gty_ctrl_btn_incr:hover:after {
+  width: 100%;
+}
+
 
 .cartBag_removeButton {
   cursor: pointer;
@@ -369,6 +407,10 @@
   opacity: 1;
   scale: 1.1;
   color: #174d38;
+}
+.summry_delete_btn:hover{
+  opacity: 1;
+  color: white !important;
 }
 
 .cartBag_bagFooter {

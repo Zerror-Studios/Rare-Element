@@ -211,20 +211,26 @@ const OrderSummary = ({ data, loading, refetch }) => {
       <div className="checkout_summaryWrapper">
         <OrderItems data={cart} pricesIncludeTax={pricesIncludeTax} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} />
         <div className="coupon_div">
-          <Input
-            {...register("couponCode")}
-            placeholder="Discount Code"
-            className="checkout_couponInput"
-            style={{ width: "100%" }}
-            disabled={applyCouponLoading || removeCouponLoading || isCouponApplied}
-            error={errors?.couponCode}
-            onChange={(e) => {
-              let value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
-              value = value.toUpperCase();
-              e.target.value = value;
-            }} />
-          <div className="checkout_couponBtn text-base uppercase">
-            <GreenBoxBtn type="button" title={!isCouponApplied ? "Apply" : "Remove"} loading={applyCouponLoading || removeCouponLoading} onClick={!isCouponApplied ? handleSubmit(onSubmit) : handleSubmit(onRemove)} />
+          <div className="coupon_div_inner">
+            <Input
+              {...register("couponCode")}
+              placeholder="Discount Code"
+              className="checkout_couponInput"
+              style={{ width: "100%" }}
+              disabled={applyCouponLoading || removeCouponLoading || isCouponApplied}
+              error={errors?.couponCode}
+              onChange={(e) => {
+                let value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
+                value = value.toUpperCase();
+                e.target.value = value;
+              }} />
+            <div className="checkout_couponBtn text-base uppercase">
+              <GreenBoxBtn type="button" title={!isCouponApplied ? "Apply" : "Remove"} loading={applyCouponLoading || removeCouponLoading} onClick={!isCouponApplied ? handleSubmit(onSubmit) : handleSubmit(onRemove)} />
+            </div>
+          </div>
+          <div className=" coupon_info text-xs">
+            <p> • Offer applicable to first-time customers only.</p>
+            <p> • Limited to one coupon per transaction. </p>
           </div>
         </div>
 
@@ -243,7 +249,7 @@ const OrderSummary = ({ data, loading, refetch }) => {
         <div className="checkout_row">
           <p className="checkout_textBase text-sm uppercase">Shipping Charges</p>
           <div className="shipping_price_group">
-            <p className="checkout_textSm text-sm uppercase">{true ? "Free" : formatePrice(100)}</p>
+            <p className="checkout_textSm text-sm ">{true ? "Free" : formatePrice(100)}</p>
             {true && <span className="line-through tax_name text-sm">{formatePrice(100)}</span>}
           </div>
         </div>
@@ -258,15 +264,21 @@ const OrderSummary = ({ data, loading, refetch }) => {
                 <div className="tax_popover_wrapper">
                   <RiQuestionLine size={14} className="tax_info_icon" />
                   <div className="tax_popover">
-                    <div className="tax_popover_header">Tax Breakdown</div>
+                    <div className="tax_popover_header text-sm">
+                      <p>
+                        Tax Breakdown
+                      </p>
+                    </div>
                     {data.taxBreakdown.map((tax, index) => (
-                      <div key={index} className="tax_popover_row">
+                      <div key={index} className="tax_popover_row text-sm">
                         <span>{tax.name} ({tax.rate}%)</span>
                         <span>{formatePrice(tax.amount)}</span>
                       </div>
                     ))}
-                    <div className="tax_popover_note">
-                      *Taxes are already included in the Total Payable Amount.
+                    <div className="tax_popover_note text-xs">
+                      <ul>
+                        <li>All taxes have been calculated and included in the final payable amount.</li>
+                      </ul>
                     </div>
                   </div>
                 </div>
@@ -278,7 +290,7 @@ const OrderSummary = ({ data, loading, refetch }) => {
           </>
         )}
         <div className="checkout_borderRow"></div>
-        <div className="checkout_row semibold uppercase text-2xl border-t pt-4 mt-4">
+        <div className="checkout_row semibold uppercase text-2xl ">
           <p className="checkout_textBase text-lg uppercase">Total Payable Amount</p>
           <p className="checkout_subtotalValue">{formatePrice(discountedPrice)}</p>
         </div>
