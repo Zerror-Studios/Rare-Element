@@ -12,7 +12,7 @@ const OrderItems = ({ data, pricesIncludeTax, handleAddItem, handleRemoveItem })
         <div className="order_summary_thin_line"></div>
         <div data-lenis-prevent className={` summary_products_paren `}>
           <div
-            className={`summary_products_inner ${data?.length > 2 ? "scroll-enabled" : ""
+            className={`summary_products_inner ${data?.length > 2 ? "scroll-enabled" : "normal_scroll"
               }`}
           >
             {data && data.length > 0 && data?.map((item, index) => {
@@ -39,7 +39,7 @@ const OrderItems = ({ data, pricesIncludeTax, handleAddItem, handleRemoveItem })
                           </div>
                           <p className="checkout_metaText text-sm ">Quantity: {item?.qty}</p>
                         </div>
-                        <div className="flex flex-col items-end">
+                        <div className="flex flex-col items-end text-end">
                           <p className="checkout_price text-lg">{price}</p>
                           {pricesIncludeTax && <p className="checkout_metaText text-xs">Inc. of all taxes</p>}
                         </div>

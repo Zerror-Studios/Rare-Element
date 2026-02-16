@@ -103,7 +103,9 @@ button {
 .flex-col {
   flex-direction: column;
 }
-
+.text-end{
+  text-align: end;
+}
 .items-end {
   align-items: end;
 }
