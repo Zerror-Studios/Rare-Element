@@ -1,12 +1,15 @@
+"use client";
+
 import React from 'react'
 import Link from 'next/link'
-import { useRouter } from "next/router";
+import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore } from "@/store/auth-store";
 import { AuthCookies } from "@/utils/AuthCookies"
 import GreenBoxBtn from '../buttons/GreenBoxBtn';
 
 const AccountAside = () => {
   const router = useRouter();
+  const pathname = usePathname();
   const { user, clearAuth } = useAuthStore();
   const handleSignout = () => {
     AuthCookies.remove();
@@ -45,7 +48,7 @@ const AccountAside = () => {
           <div className="accountLeftSlide_navItem_hidden">
             <Link scroll={false} href={"/account"}>
               <p
-                className={`accountLeftSlide_navLink uppercase text-2xl ${router.pathname === "/account" ? "active" : ""
+                className={`accountLeftSlide_navLink uppercase text-2xl ${pathname === "/account" ? "active" : ""
                   }`}
               >
                 orders
@@ -56,7 +59,7 @@ const AccountAside = () => {
           <div>
             <Link scroll={false} href={"/account/wishlist"}>
               <p
-                className={`accountLeftSlide_navLink uppercase text-2xl ${router.pathname === "/account/wishlist" ? "active" : ""
+                className={`accountLeftSlide_navLink uppercase text-2xl ${pathname === "/account/wishlist" ? "active" : ""
                   }`}
               >
                 Wishlist
@@ -68,7 +71,7 @@ const AccountAside = () => {
           {/* <div >
             <Link scroll={false} href={"/account/offers"}>
               <p
-                className={`accountLeftSlide_navLink uppercase text-2xl ${router.pathname === "/account/offers" ? "active" : ""
+                className={`accountLeftSlide_navLink uppercase text-2xl ${pathname === "/account/offers" ? "active" : ""
                   }`}
               >
                 Discounts & Offers
@@ -79,7 +82,7 @@ const AccountAside = () => {
           <div>
             <Link scroll={false} href={"/account/settings"}>
               <p
-                className={`accountLeftSlide_navLink uppercase text-2xl ${router.pathname === "/account/settings" ? "active" : ""
+                className={`accountLeftSlide_navLink uppercase text-2xl ${pathname === "/account/settings" ? "active" : ""
                   }`}
               >
                 Account settings

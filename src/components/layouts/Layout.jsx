@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useRef } from "react";
 import { useCartStore } from "@/store/cart-store";
 import gsap from "gsap";
@@ -98,11 +100,10 @@ const Layout = ({ children }) => {
 
   return (
     <>
-
       <Link target="_blank" href="https://wa.me/+919137159898">
         <div className="whatsapp_chat">
           <div className="whatsapp_chat_img center">
-            <Image height={5} width={5} className="cover" src="/gifs/whatsapp.gif" alt="loading"/>
+            <Image height={5} width={5} className="cover" src="/gifs/whatsapp.gif" alt="loading" />
           </div>
           <p className="bold">CHAT</p>
         </div>

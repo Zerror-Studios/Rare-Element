@@ -1,3 +1,4 @@
+"use client";
 import React, { useLayoutEffect, useState } from "react";
 import gsap from "gsap";
 import GreenBoxBtn from '@/components/buttons/GreenBoxBtn';

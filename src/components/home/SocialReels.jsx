@@ -1,3 +1,5 @@
+"use client";
+
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
@@ -39,7 +41,7 @@ const SocialReels = () => {
       <div className="social_header">
         <p className="social_subtitle text-base thin uppercase">Follow us on</p>
         <h2 className="social_title text-3xl">Instagram</h2>
-        <Link alt="Instagram"  href={"https://www.instagram.com/nahara.jewellery/?igsh=MXgwcmQ2ODhnaTR3ag%3D%3D#"} target="_blank" className='text-base  underline '>@nahara.jewellery</Link>
+        <Link alt="Instagram" href={"https://www.instagram.com/nahara.jewellery/?igsh=MXgwcmQ2ODhnaTR3ag%3D%3D#"} target="_blank" className='text-base  underline '>@nahara.jewellery</Link>
       </div>
       <div className="socialCard_section scroller_none padding">
         {SocialCardData?.map((item, i) => (
@@ -47,14 +49,12 @@ const SocialReels = () => {
             <video className='cover socialCard_box_vid ' loop autoPlay muted playsInline src={item.vid}></video>
             <div className="socialCard_image_wrapper">
               <Image
-                // width={500}
-                // height={800}
                 fill
                 quality={50}
                 className="socialCard_image"
                 src={item.img}
-                alt="image"
-            
+                alt={`${item.title} - Social Media Post`}
+                sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 400px"
               />
             </div>
 

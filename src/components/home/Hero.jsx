@@ -1,3 +1,5 @@
+"use client";
+
 import React, {
   useRef,
   memo
@@ -48,13 +50,15 @@ const Hero = () => {
     }
     if (!heroRef.current) return;
 
+    // Immediately make it visible so browser can paint it for LCP
+    gsap.set(heroRef.current, { opacity: 1 });
+
     const tl = gsap.timeline();
 
     tl.to(heroRef.current, {
-      opacity: 1,
       clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
       duration: 0.8,
-      delay:1.5,
+      delay: 0.1, // Reduced from 1.5s to fix LCP/FCP
       ease: 'ease-secondary',
     })
       .to(
@@ -62,19 +66,20 @@ const Hero = () => {
         {
           opacity: 1,
           duration: 0.4,
-        },"<"
+        }, "<"
       )
       .to(
         innerRef.current,
         {
           opacity: 1,
-          duration: 0.8,
+          duration: 0.5,
         },
       )
-      .to(".introloader_paren",{
-        display:"none",
-        duration:0.01
-      },"<")
+      .to(".introloader_paren", {
+        opacity: 0,
+        display: "none",
+        duration: 0.3
+      }, "<")
 
     return () => tl.kill();
   });
@@ -84,9 +89,8 @@ const Hero = () => {
 
       <div className="introloader_paren center">
         <div className="loader_img">
-          <Image src="/green_logo.svg" alt="Logo" width={400} height={400} priority fetchPriority='high' />
+          <Image src="/green_logo.svg" alt="Nahara Loading Logo" width={400} height={400} sizes="(max-width: 768px) 80vw, 400px" />
         </div>
-
       </div>
 
       {/* Info Bar */}

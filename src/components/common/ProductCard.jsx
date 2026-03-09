@@ -1,9 +1,11 @@
+"use client";
+
 import React from "react";
 import Image from "next/image";
 import { useMutation, useQuery } from "@apollo/client/react";
 import { ADD_TO_WISHLIST, REMOVE_FROM_WISHLIST, GET_WISHLIST_ITEMS } from "@/graphql";
 import { useAuthStore } from "@/store/auth-store";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
 const ProductCard = React.memo(({ productId, name, ribbon, price, assets }) => {
@@ -122,12 +124,12 @@ const ProductCard = React.memo(({ productId, name, ribbon, price, assets }) => {
                 </div>
             )}
             {/* Heart Icons */}
-            <div className="heart_icon" onClick={handleWishlistToggle}>
+            <div className="heart_icon" onClick={handleWishlistToggle} aria-label={isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"} role="button">
                 <div className="icon_pr">
                     <Image
                         className={`short_links_icon_heart invert ${isWishlisted ? 'hidden' : ''}`}
                         src="/icons/heart.svg"
-                        alt="heart"
+                        alt="Heart Icon"
                         width={24}
                         height={24}
                         priority={false}
@@ -136,7 +138,7 @@ const ProductCard = React.memo(({ productId, name, ribbon, price, assets }) => {
                     <Image
                         className={`short_links_icon_heart_hover ${isWishlisted ? 'show_filled' : ''}`}
                         src="/icons/heartFill.svg"
-                        alt="heart filled"
+                        alt="Filled Heart Icon"
                         width={24}
                         height={24}
                         priority={false}
@@ -151,10 +153,10 @@ const ProductCard = React.memo(({ productId, name, ribbon, price, assets }) => {
                     <Image
                         className="cover"
                         src={hoverImage?.path || "/green_logo.svg"}
-                        alt={hoverImage?.altText || name || "Rare Element Product"}
+                        alt={hoverImage?.altText || `${name} - Hover Image`}
                         width={600}
                         height={800}
-                        // sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+                        sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 300px"
                     />
                 </div>
             </div>
@@ -165,10 +167,10 @@ const ProductCard = React.memo(({ productId, name, ribbon, price, assets }) => {
                     <Image
                         className="cover"
                         src={mainImage?.path || "/green_logo.svg"}
-                        alt={mainImage?.altText || name || "Rare Element Product"}
+                        alt={mainImage?.altText || name || "Jewellery Product"}
                         width={600}
                         height={800}
-                        // sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+                        sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 300px"
                     />
                 </div>
             </div>

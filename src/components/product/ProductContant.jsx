@@ -1,3 +1,6 @@
+"use client";
+"use client";
+
 import React, { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,9 +11,8 @@ import { useSizeGuideStore } from "@/store/sizeguide-store";
 import { useMutation, useQuery } from "@apollo/client/react";
 import { ADD_TO_WISHLIST, GET_WISHLIST_ITEMS, REMOVE_FROM_WISHLIST } from "@/graphql";
 import { useAuthStore } from "@/store/auth-store";
-import { useRouter } from "next/router";
+import { useRouter, usePathname } from "next/navigation";
 import { toast } from "react-toastify";
-import { usePathname } from "next/navigation";
 
 const ProductContant = ({
   data = {},

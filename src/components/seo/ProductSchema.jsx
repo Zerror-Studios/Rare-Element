@@ -1,4 +1,3 @@
-import Head from "next/head";
 import { Const } from "@/utils/Constant";
 
 const ProductSchema = ({ product }) => {
@@ -32,12 +31,10 @@ const ProductSchema = ({ product }) => {
   };
 
   return (
-    <Head>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-      ></script>
-    </Head>
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    ></script>
   );
 };
 

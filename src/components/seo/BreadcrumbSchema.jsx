@@ -1,5 +1,4 @@
 import { Const } from "@/utils/Constant";
-import Head from "next/head";
 
 const BreadcrumbSchema = ({ itemList }) => {
   const breadcrumb = {
@@ -31,12 +30,10 @@ const BreadcrumbSchema = ({ itemList }) => {
   }
 
   return (
-    <Head>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
-      ></script>
-    </Head>
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
+    ></script>
   );
 };
 

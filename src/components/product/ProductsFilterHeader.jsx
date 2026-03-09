@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useRef, useState } from 'react'
 
 const filterOptions = ["Sort By", "Price: Low to High", "Price: High to Low", "Most Popular", "Top Rated", "Customer Reviews"]

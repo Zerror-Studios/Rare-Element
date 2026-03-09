@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useMemo } from 'react'
 import Checkbox from '../ui/Checkbox'
 import GreenBoxBtn from '../buttons/GreenBoxBtn'

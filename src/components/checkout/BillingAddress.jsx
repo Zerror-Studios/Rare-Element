@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect } from "react";
 import { useWatch } from "react-hook-form";
 import { PhoneInput } from "react-international-phone";

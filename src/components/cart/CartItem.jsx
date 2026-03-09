@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import Link from "next/link";
 import { formatePrice, renderVariants } from "@/utils/Util";
@@ -45,7 +47,8 @@ const CartItem = ({
               height={200}
               className="cartBag_bagImage"
               src={item?.asset?.path || "/green_logo.svg"}
-              alt={item?.name}
+              alt={item?.name || "Cart Item Image"}
+              sizes="150px"
             />
           </Link>
         </div>

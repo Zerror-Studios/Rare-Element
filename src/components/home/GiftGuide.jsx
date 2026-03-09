@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
@@ -183,7 +185,8 @@ const GiftGuide = ({ data }) => {
                                             quality={50}
                                             className="cover"
                                             src={imageAsset?.path || "/green_logo.svg"}
-                                            alt={item?.name || ""}
+                                            alt={item?.name || "Gift Idea"}
+                                            sizes="100vw"
                                         />
                                     </div>
                                 </SwiperSlide>
@@ -225,8 +228,8 @@ const GiftGuide = ({ data }) => {
                                                     height={400}
                                                     className="cover"
                                                     src={imageAsset?.path || "/green_logo.svg"}
-                                                    alt={item?.name || ""}
-
+                                                    alt={item?.name || "Gift Guide Image"}
+                                                    sizes="(max-width: 768px) 80vw, 300px"
                                                 />
                                             </div>
 

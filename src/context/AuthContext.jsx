@@ -1,3 +1,5 @@
+"use client";
+
 import React, { createContext, useContext } from "react";
 import { useApolloClient, useMutation } from "@apollo/client/react";
 import { useAuthStore } from "@/store/auth-store";

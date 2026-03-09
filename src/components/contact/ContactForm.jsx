@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect } from "react";
 import gsap from "gsap";
 import { toast } from "react-toastify";
@@ -110,9 +112,9 @@ const ContactForm = () => {
   return (
     <div id="form">
       <div id="right" className="text-base">
-          <div className="form_header">
-            <p className='  uppercase '> get in touch </p>
-          </div>
+        <div className="form_header">
+          <p className='  uppercase '> get in touch </p>
+        </div>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="input lineanime">
             <input type="text" className="text-base" error={errors.name} {...register("name")} />

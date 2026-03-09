@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useMemo, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, A11y, Autoplay, Pagination } from "swiper/modules";
@@ -65,8 +66,9 @@ const ProductImageGrid = ({ filter, data, title }) => {
                       width={150}
                       height={200}
                       src={src}
-                      alt={title}
-                   
+                      alt={`${title} - Thumbnail`}
+                      sizes="(max-width: 768px) 25vw, 150px"
+
                     />
                   </div>
                 )}
@@ -112,8 +114,8 @@ const ProductImageGrid = ({ filter, data, title }) => {
                     <Image
                       fill
                       src={src}
-                      alt={title}
-                   
+                      alt={`${title} - Product Image ${index + 1}`}
+                      sizes="(max-width: 768px) 100vw, 50vw"
                       className="MobileImageSlider_slideImage"
                     />
                   )}
@@ -128,18 +130,18 @@ const ProductImageGrid = ({ filter, data, title }) => {
             className="MobileImageSlider_arrow left"
             onClick={() => swiperInstance?.slidePrev()}
           >
-            <Image  height={20} width={20} src="/icons/arrowLeft.svg"
+            <Image height={20} width={20} src="/icons/arrowLeft.svg"
               alt="img"
-             
+
             />
           </button>
           <button
             className="MobileImageSlider_arrow right"
             onClick={() => swiperInstance?.slideNext()}
           >
-            <Image  height={20} width={20} src="/icons/arrowRight.svg"
+            <Image height={20} width={20} src="/icons/arrowRight.svg"
               alt="img"
-            
+
             />
 
           </button>

@@ -1,3 +1,4 @@
+"use client";
 
 import React, { useEffect } from 'react'
 import gsap from 'gsap'
@@ -86,13 +87,14 @@ const Header = ({ openCart }) => {
       <div className="header padding">
         <div className="header_bg"></div>
         <div className="logo_paren">
-          <Link scroll={false} href="/" >
-            <Image width={25} height={25} className='header_logo' src="/logo.svg" alt="img" />
+          <Link aria-label="Nahara Home" scroll={false} href="/" >
+            <Image width={25} height={25} className='header_logo' src="/logo.svg" alt="Nahara Logo" />
           </Link>
         </div>
         <div className="nav_links">
           <Link
-            prefetch
+            aria-label="Shop All Products"
+            prefetch={true}
             scroll={false}
             href="/products"
             style={{
@@ -110,7 +112,8 @@ const Header = ({ openCart }) => {
           {MenuData.map((item, index) => (
             <Link
               key={index}
-              prefetch
+              aria-label={`Shop ${item.title}`}
+              prefetch={true}
               scroll={false}
               href={item.link}
               style={{
@@ -125,17 +128,16 @@ const Header = ({ openCart }) => {
               </p>
             </Link>
           ))}
-
         </div>
         <div className="short_links">
-          <Link scroll={false} href={isLoggedIn ? "/account/wishlist" : "/login"} >
-            <Image height={25} width={25} className='short_links_icon' src="/icons/heart.svg" alt="img" />
+          <Link aria-label="View Wishlist" scroll={false} href={isLoggedIn ? "/account/wishlist" : "/login"} >
+            <Image height={25} width={25} className='short_links_icon' src="/icons/heart.svg" alt="Wishlist Icon" />
           </Link>
-          <Link scroll={false} href={isLoggedIn ? "/account/settings" : "/login"} >
-            <Image height={25} width={25} className='short_links_icon' src="/icons/profile.svg" alt="img" />
+          <Link aria-label="My Account" scroll={false} href={isLoggedIn ? "/account/settings" : "/login"} >
+            <Image height={25} width={25} className='short_links_icon' src="/icons/profile.svg" alt="Profile Icon" />
           </Link>
-          <button onClick={openCart}>
-            <Image height={25} width={25} className='short_links_icon' src="/icons/cart.svg" alt="img" />
+          <button aria-label="Open Cart" onClick={openCart}>
+            <Image height={25} width={25} className='short_links_icon' src="/icons/cart.svg" alt="Cart Icon" />
           </button>
         </div>
       </div>

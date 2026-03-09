@@ -1,3 +1,4 @@
+"use client";
 import { useMutation } from '@apollo/client/react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';

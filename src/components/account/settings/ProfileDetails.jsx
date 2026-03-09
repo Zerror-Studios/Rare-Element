@@ -1,3 +1,4 @@
+"use client";
 import React, { useLayoutEffect, useState } from 'react'
 import gsap from 'gsap'
 import { useForm } from "react-hook-form";

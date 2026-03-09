@@ -1,3 +1,5 @@
+"use client";
+
 import { useGSAP } from '@gsap/react';
 import React, { useRef } from 'react';
 import Lottie from 'lottie-react';
@@ -88,6 +90,63 @@ const footerLinksData = [
 ];
 
 
+const FeatureCard = ({ item }) => {
+  const mainRef = useRef(null);
+  const arrowRef = useRef(null);
+
+  return (
+    <Link
+      scroll={false}
+      href={item.href}
+      onMouseEnter={() => {
+        mainRef.current?.goToAndPlay(0, true);
+        arrowRef.current?.goToAndPlay(0, true);
+      }}
+      className="footer_classname_featureCard"
+    >
+      {item?.id === 1 ? (
+        <div className="featured_icon_custom">
+          <Lottie
+            lottieRef={mainRef}
+            animationData={item?.animationData}
+            autoplay={false}
+            loop={false}
+            onDOMLoaded={() => {
+              mainRef.current?.goToAndPlay(0, true);
+            }}
+          />
+        </div>
+      ) : (
+        <div className="featured_icon">
+          <Lottie
+            lottieRef={mainRef}
+            animationData={item?.animationData}
+            autoplay={false}
+            loop={false}
+          />
+        </div>
+      )}
+
+      <p className="footer_classname_featureTitle bold text-sm uppercase">
+        {item.title}
+      </p>
+
+      <p className="footer_classname_featureDesc text-sm">
+        {item.desc}
+      </p>
+
+      <div className="featured_icon">
+        <Lottie
+          lottieRef={arrowRef}
+          animationData={StretchArrow}
+          autoplay={false}
+          loop={false}
+        />
+      </div>
+    </Link>
+  );
+};
+
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
@@ -95,66 +154,9 @@ const Footer = () => {
     <div className="footer_classname_wrapper">
       <div className="footer_classname_container">
         <div className="footer_classname_features">
-          {featureData.map((item, i) => {
-            const mainRef = useRef(null);
-            const arrowRef = useRef(null);
-
-            return (
-              <Link
-                scroll={false}
-                href={item.href}
-                key={i}
-                onMouseEnter={() => {
-                  mainRef.current?.goToAndPlay(0, true);
-                  arrowRef.current?.goToAndPlay(0, true);
-                }}
-                className="footer_classname_featureCard"
-              >
-                {
-                  item?.id === 1 ? (
-                    <div className="featured_icon_custom">
-                      <Lottie
-                        lottieRef={mainRef}
-                        animationData={item?.animationData}
-                        autoplay={false}
-                        loop={false}
-                        onDOMLoaded={() => {
-                          mainRef.current?.goToAndPlay(0, true);
-                        }}
-                      />
-                    </div>
-                  ) : (
-                    <div className="featured_icon">
-                      <Lottie
-                        lottieRef={mainRef}
-                        animationData={item?.animationData}
-                        autoplay={false}
-                        loop={false}
-                      />
-                    </div>
-                  )
-                }
-
-                <p className="footer_classname_featureTitle bold text-sm uppercase">
-                  {item.title}
-                </p>
-
-                <p className="footer_classname_featureDesc text-sm">
-                  {item.desc}
-                </p>
-
-                <div className="featured_icon">
-                  <Lottie
-                    lottieRef={arrowRef}
-                    animationData={StretchArrow}
-                    autoplay={false}
-                    loop={false} // play only once
-                  />
-                </div>
-              </Link>
-            );
-          })}
-
+          {featureData.map((item, i) => (
+            <FeatureCard key={i} item={item} />
+          ))}
         </div>
         <div className="footer_below">
 

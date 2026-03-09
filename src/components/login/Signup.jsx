@@ -1,5 +1,7 @@
+"use client";
+
 import React, { useState } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -73,7 +75,7 @@ const Signup = ({ setToggle }) => {
       // console.error(err);
       if (err.message === 'Error in Save user for client: Nahara for Error "User Already Exists!!"') {
         toast.error("User already exists with this email")
-      }else{
+      } else {
         toast.error("Signup failed");
       }
     }

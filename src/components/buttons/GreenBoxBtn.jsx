@@ -1,5 +1,7 @@
+"use client";
+
 import React from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 const GreenBoxBtn = ({ title, href, onClick, loading = false, type = "submit", ...props }) => {
     const router = useRouter();

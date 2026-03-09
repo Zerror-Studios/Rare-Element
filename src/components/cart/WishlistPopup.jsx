@@ -1,7 +1,9 @@
+"use client";
+
 import { formatePrice, renderVariants } from '@/utils/Util';
 import Link from 'next/link';
 import Image from 'next/image'
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useRef } from 'react'
 import GreenBoxBtn from '../buttons/GreenBoxBtn';
 import gsap from 'gsap';
@@ -128,7 +130,8 @@ const WishlistPopup = ({ item, popupActive, setPopupActive, handleAddItem, handl
                                     height={250}
                                     className="cover"
                                     src={firstAsset}
-                                    alt={item?.name || ""}
+                                    alt={item?.name || "Wishlist Item"}
+                                    sizes="150px"
                                 />
                             </div>
                         </div>
