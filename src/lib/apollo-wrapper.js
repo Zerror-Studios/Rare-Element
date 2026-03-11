@@ -1,14 +1,14 @@
 "use client";
 
 import {
-  ApolloProvider,
-} from "@apollo/client/react";
-import {
-  InMemoryCache,
-  ApolloClient,
-  HttpLink,
   ApolloLink,
+  HttpLink,
 } from "@apollo/client";
+import {
+  ApolloNextAppProvider,
+  ApolloClient,
+  InMemoryCache,
+} from "@apollo/client-integration-nextjs";
 import { TokenManager } from "@/utils/tokenManager";
 import React from "react";
 
@@ -37,12 +37,10 @@ function makeClient() {
   });
 }
 
-const client = makeClient();
-
 export function ApolloWrapper({ children }) {
   return (
-    <ApolloProvider client={client}>
+    <ApolloNextAppProvider makeClient={makeClient}>
       {children}
-    </ApolloProvider>
+    </ApolloNextAppProvider>
   );
 }
