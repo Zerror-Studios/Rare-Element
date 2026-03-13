@@ -77,13 +77,13 @@ export default function CategoryClient({ meta, data, initialProducts, initialTot
   };
 
   useEffect(() => {
-    // if (!imageReady || !containerRef.current) return;
+    if (!imageReady || !containerRef.current) return;
 
     const ctx = gsap.context(() => {
       const heroSection = containerRef.current.querySelector(".products_hero-section");
       const heroImg = containerRef.current.querySelector(".products_hero-img");
 
-      // if (!heroSection || !heroImg) return;
+      if (!heroSection || !heroImg) return;
 
       // gsap.set(
       //   [
