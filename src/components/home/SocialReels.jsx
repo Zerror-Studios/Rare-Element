@@ -54,7 +54,7 @@ const SocialReels = () => {
                 className="socialCard_image"
                 src={item.img}
                 alt={`${item.title} - Social Media Post`}
-                sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 400px"
+                // sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 400px"
               />
             </div>
 

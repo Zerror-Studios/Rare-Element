@@ -131,7 +131,7 @@ const WishlistPopup = ({ item, popupActive, setPopupActive, handleAddItem, handl
                                     className="cover"
                                     src={firstAsset}
                                     alt={item?.name || "Wishlist Item"}
-                                    sizes="150px"
+                                    // sizes="150px"
                                 />
                             </div>
                         </div>

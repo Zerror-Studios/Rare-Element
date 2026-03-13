@@ -103,18 +103,15 @@ const ProductsClient = ({ initialProducts, initialTotalCount, categories, initia
     }
   }
 
-  useEffect(() => {
-    gsap.set(".products_header ,.allproducts_paren", {
-      opacity: 0
-    })
-    gsap.to(".products_header ,.allproducts_paren", {
-      opacity: 1,
-      delay: 0.5,
-      stagger: 0.1,
-      duration: 1,
-      ease: "power2.out"
-    })
-  }, [])
+  // useEffect(() => {
+  //   gsap.to(".products_header ,.allproducts_paren", {
+  //     opacity: 1,
+  //     delay: 0.5,
+  //     stagger: 0.1,
+  //     duration: 1,
+  //     ease: "power2.out"
+  //   })
+  // }, [])
 
   useEffect(() => {
     if (openFilter) {
@@ -138,7 +135,7 @@ const ProductsClient = ({ initialProducts, initialTotalCount, categories, initia
 
   return (
     <>
-      <div className="products_header">
+      <div className="products_header ">
         <p className="products_subtitle thin text-base uppercase">Crafted for Every Moment</p>
         <h1 className="products_title text-3xl">Explore Products</h1>
       </div>
@@ -162,7 +159,7 @@ const ProductsClient = ({ initialProducts, initialTotalCount, categories, initia
           handleClearFilter={handleClearFilter}
         />
         <div className="allproducts_paren_warp">
-          <div className={`allproducts_paren ${loading ? "opacity-50" : ""}`}>
+          <div className={`allproducts_paren  ${loading ? "opacity-50" : ""}`}>
             {products?.length == 0 && !loading && (
               <div className="empty_products_box">
                 <h2 className='text-xl'>No products found</h2>

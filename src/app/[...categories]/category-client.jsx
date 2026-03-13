@@ -77,24 +77,24 @@ export default function CategoryClient({ meta, data, initialProducts, initialTot
   };
 
   useEffect(() => {
-    if (!imageReady || !containerRef.current) return;
+    // if (!imageReady || !containerRef.current) return;
 
     const ctx = gsap.context(() => {
       const heroSection = containerRef.current.querySelector(".products_hero-section");
       const heroImg = containerRef.current.querySelector(".products_hero-img");
 
-      if (!heroSection || !heroImg) return;
+      // if (!heroSection || !heroImg) return;
 
-      gsap.set(
-        [
-          ".products_content",
-          ".products_hero-img",
-          ".products_header",
-          ".allproducts_paren",
-          ".category_products_header",
-        ],
-        { opacity: 0 }
-      );
+      // gsap.set(
+      //   [
+      //     ".products_content",
+      //     ".products_hero-img",
+      //     ".products_header",
+      //     ".allproducts_paren",
+      //     ".category_products_header",
+      //   ],
+      //   { opacity: 0 }
+      // );
 
       gsap.to(
         heroSection,
@@ -147,28 +147,28 @@ export default function CategoryClient({ meta, data, initialProducts, initialTot
     <>
       <SeoHeader meta={meta} breadcrumbList={breadcrumbList} />
       <div ref={containerRef}>
-        <div className="products_hero-section">
+        <div className="products_hero-section hidden">
           <Image
             key={data?.imgsrc}
             fill
             priority
             fetchPriority="high"
-            sizes="100vw"
+            // sizes="100vw"
             quality={75}
-            className="products_hero-img"
+            className="products_hero-img hidden "
             src={data?.imgsrc}
             alt={data?.name || ""}
             onLoad={() => setImageReady(true)}
           />
         </div>
 
-        <div className="category_products_header">
+        <div className="category_products_header hidden">
           <p className="products_subtitle thin text-base uppercase">Crafted for Every Moment</p>
           <h1 className="products_title text-3xl">{data?.name || ""}</h1>
         </div>
 
         <div className="padding">
-          <div className="allproducts_paren categories_paren ">
+          <div className="allproducts_paren hidden categories_paren ">
             {products?.length > 0 ? (
               products?.map((item) => (
                 <Link

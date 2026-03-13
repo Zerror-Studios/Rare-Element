@@ -1,7 +1,6 @@
 .products_hero-section {
   width: 100%;
   height: 40vh;
-  opacity: 0;
   clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%);
   display: flex;
   align-items: flex-end;
@@ -11,7 +10,6 @@
 }
 
 .products_hero-img {
-  opacity: 0;
   filter: brightness(1);
   width: 100%;
   height: 100%;
@@ -35,7 +33,6 @@
 }
 
 .category_products_header {
-  opacity: 0;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -141,7 +138,6 @@
 }
 
 .allproducts_paren {
-  opacity: 0;
   flex-shrink: 0;
   width: 100%;
   display: grid;

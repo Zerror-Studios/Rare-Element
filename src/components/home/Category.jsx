@@ -27,7 +27,9 @@ const Category = ({ data }) => {
                         <Link prefetch scroll={false} key={index} href={`${item?.link}`}>
                             <div className="category_box">
                                 <div className="category_box_img_paren">
-                                    <Image width={150} height={150} src={item?.image} className='category_box_img' alt={item?.title || "Jewellery Category"} sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 150px" />
+                                    <Image width={150} height={150} src={item?.image} className='category_box_img' alt={item?.title || "Jewellery Category"} 
+                                    // sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 150px"
+                                     />
                                 </div>
                                 <p className='text-sm bold uppercase'>{item?.title || ""}</p>
                             </div>

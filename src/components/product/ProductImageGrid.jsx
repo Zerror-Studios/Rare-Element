@@ -67,7 +67,7 @@ const ProductImageGrid = ({ filter, data, title }) => {
                       height={200}
                       src={src}
                       alt={`${title} - Thumbnail`}
-                      sizes="(max-width: 768px) 25vw, 150px"
+                      // sizes="(max-width: 768px) 25vw, 150px"
 
                     />
                   </div>
@@ -115,7 +115,7 @@ const ProductImageGrid = ({ filter, data, title }) => {
                       fill
                       src={src}
                       alt={`${title} - Product Image ${index + 1}`}
-                      sizes="(max-width: 768px) 100vw, 50vw"
+                      // sizes="(max-width: 768px) 100vw, 50vw"
                       className="MobileImageSlider_slideImage"
                     />
                   )}

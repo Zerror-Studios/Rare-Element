@@ -186,7 +186,7 @@ const GiftGuide = ({ data }) => {
                                             className="cover"
                                             src={imageAsset?.path || "/green_logo.svg"}
                                             alt={item?.name || "Gift Idea"}
-                                            sizes="100vw"
+                                            // sizes="100vw"
                                         />
                                     </div>
                                 </SwiperSlide>
@@ -229,7 +229,7 @@ const GiftGuide = ({ data }) => {
                                                     className="cover"
                                                     src={imageAsset?.path || "/green_logo.svg"}
                                                     alt={item?.name || "Gift Guide Image"}
-                                                    sizes="(max-width: 768px) 80vw, 300px"
+                                                    // sizes="(max-width: 768px) 80vw, 300px"
                                                 />
                                             </div>
 

@@ -1,26 +1,28 @@
 "use client";
-
 import React, { useEffect, useRef } from "react";
 import Lenis from "lenis";
+import { usePathname } from "next/navigation";
 
-export default function SmoothScroller() {
+export default function LenisScroll({ children }) {
   const lenis = useRef(null);
+  const pathname = usePathname();
 
   useEffect(() => {
-    if (window.innerWidth < 1024) return
+    if (lenis.current) lenis.current.scrollTo(0, { immediate: true });
+  }, [pathname]);
 
+  useEffect(() => {
     if (typeof window === "undefined") return;
 
+    if (window.innerWidth < 1024) return
+
     const instance = new Lenis({
-      duration: 1.5,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-      smoothTouch: true,
-      direction: "vertical",
-      gestureDirection: "vertical",
-      wheelMultiplier: 0.8,
-      touchMultiplier: 1.2,
-      infinite: false,
+      smooth: !0,
+      lerp: .1,
+      wheelMultiplier: .7,
+      gestureOrientation: "vertical",
+      normalizeWheel: !1,
+      smoothTouch: !1
     });
 
     lenis.current = instance;
@@ -33,7 +35,9 @@ export default function SmoothScroller() {
     };
     frame = requestAnimationFrame(raf);
 
-    const handleResize = () => instance.resize();
+    const handleResize = () => {
+      instance.resize();
+    };
     window.addEventListener("resize", handleResize);
 
     return () => {
@@ -41,8 +45,9 @@ export default function SmoothScroller() {
       window.removeEventListener("resize", handleResize);
       instance.destroy();
       lenis.current = null;
+      window.lenis = null;
     };
   }, []);
 
-  return null;
+  return <>{children}</>;
 }
