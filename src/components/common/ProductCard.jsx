@@ -1,14 +1,16 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { useMutation, useQuery } from "@apollo/client/react";
 import { ADD_TO_WISHLIST, REMOVE_FROM_WISHLIST, GET_WISHLIST_ITEMS } from "@/graphql";
 import { useAuthStore } from "@/store/auth-store";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import ProductCardSkeleton from "../skeletons/ProductCardSkeleton";
 
 const ProductCard = React.memo(({ productId, name, ribbon, price, assets }) => {
+    const [imgLoaded, setImgLoaded] = useState(false);
     const router = useRouter();
     const { user } = useAuthStore();
     const userId = user?._id || user?.id;
@@ -117,73 +119,81 @@ const ProductCard = React.memo(({ productId, name, ribbon, price, assets }) => {
             : assets?.[1];
 
     return (
-        <div className="shopCard_card">
-            {ribbon?.name && (
-                <div className="ribbon_btn">
-                    <p className="text-xs">{ribbon.name}</p>
-                </div>
-            )}
-            {/* Heart Icons */}
-            <div className="heart_icon" onClick={handleWishlistToggle} aria-label={isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"} role="button">
-                <div className="icon_pr">
-                    <Image
-                        className={`short_links_icon_heart invert ${isWishlisted ? 'hidden' : ''}`}
-                        src="/icons/heart.svg"
-                        alt="Heart Icon"
-                        width={24}
-                        height={24}
-                        priority={false}
+        <>
+            <div className="shopCard_card">
+                {ribbon?.name && (
+                    <div className="ribbon_btn">
+                        <p className="text-xs">{ribbon.name}</p>
+                    </div>
+                )}
+                {/* Heart Icons */}
+                <div className="heart_icon" onClick={handleWishlistToggle} aria-label={isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"} role="button">
+                    <div className="icon_pr">
+                        <Image
+                            className={`short_links_icon_heart invert ${isWishlisted ? 'hidden' : ''}`}
+                            src="/icons/heart.svg"
+                            alt="Heart Icon"
+                            width={24}
+                            height={24}
+                            priority={false}
                         // sizes="24px"
-                    />
-                    <Image
-                        className={`short_links_icon_heart_hover ${isWishlisted ? 'show_filled' : ''}`}
-                        src="/icons/heartFill.svg"
-                        alt="Filled Heart Icon"
-                        width={24}
-                        height={24}
-                        priority={false}
+                        />
+                        <Image
+                            className={`short_links_icon_heart_hover ${isWishlisted ? 'show_filled' : ''}`}
+                            src="/icons/heartFill.svg"
+                            alt="Filled Heart Icon"
+                            width={24}
+                            height={24}
+                            priority={false}
                         // sizes="24px"
-                    />
+                        />
+                    </div>
                 </div>
-            </div>
 
-            {/* Hover Image */}
-            <div className="shopCard_hoverImg center">
-                <div className="shopCard_img_wrapper_img">
-                    <Image
-                        className="cover"
-                        src={hoverImage?.path || "/green_logo.svg"}
-                        alt={hoverImage?.altText || `${name} - Hover Image`}
-                        width={600}
-                        height={800}
+                {/* Hover Image */}
+                <div className="shopCard_hoverImg center">
+                    <div className="shopCard_img_wrapper_img">
+                        <Image
+                            className="cover"
+                            src={hoverImage?.path || "/green_logo.svg"}
+                            alt={hoverImage?.altText || `${name} - Hover Image`}
+                            width={600}
+                            height={800}
                         // sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 300px"
-                    />
+                        />
+                    </div>
                 </div>
-            </div>
 
-            {/* Main Image */}
-            <div className="shopCard_img_wrapper center">
-                <div className="shopCard_img_wrapper_img">
-                    <Image
-                        className="cover"
-                        src={mainImage?.path || "/green_logo.svg"}
-                        alt={mainImage?.altText || name || "Jewellery Product"}
-                        width={600}
-                        height={800}
+                {/* Main Image */}
+                {!imgLoaded && (
+                    <div className="shopCard_img_wrapper  center">
+                        <div className="skeleton_box main_img_skeleton skeleton_animate"></div>
+                    </div>
+                )}
+                <div className="shopCard_img_wrapper center">
+                    <div className="shopCard_img_wrapper_img">
+                        <Image
+                            className="cover"
+                            src={mainImage?.path || "/green_logo.svg"}
+                            alt={mainImage?.altText || name || "Jewellery Product"}
+                            width={600}
+                            height={800}
+                            onLoad={() => setImgLoaded(true)}
                         // sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 300px"
-                    />
+                        />
+                    </div>
+                </div>
+
+
+                {/* Name + Price */}
+                <div className="shopCard_card_info">
+                    <p className="shopCard_item_name text-base uppercase">
+                        {name || ""}
+                    </p>
+                    <p className="shopCard_item_price text-lg">{price}</p>
                 </div>
             </div>
-
-
-            {/* Name + Price */}
-            <div className="shopCard_card_info">
-                <p className="shopCard_item_name text-base uppercase">
-                    {name || ""}
-                </p>
-                <p className="shopCard_item_price text-lg">{price}</p>
-            </div>
-        </div>
+        </>
     );
 });
 
