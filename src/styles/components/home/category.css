@@ -41,11 +41,13 @@
 ----------------------------------- */
 
 .category_box {
+  position: relative;
   width: 35vw;
   text-align: center;
 }
 
 .category_box_img_paren {
+  position: relative;
   width: 100%;
   aspect-ratio: 1 / 1;
   margin-bottom: 0.5rem;

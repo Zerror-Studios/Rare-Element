@@ -13,7 +13,7 @@ const CategoryPageSkeleton = () => {
                 </div>
                 <div className="padding">
                     <div className="allproducts_paren categories_paren ">
-                        {[1, 2, 3, 4, 5, 6,7,8].map((item, index) => (<ProductCardSkeleton key={index} />))}
+                        {[1, 2, 3, 4, 5, 6, 7, 8].map((item, index) => (<ProductCardSkeleton key={index} />))}
                     </div>
                 </div>
             </div>

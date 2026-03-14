@@ -10,6 +10,8 @@ import Image from "next/image";
 const ProductImageGrid = ({ filter, data, title }) => {
   const [swiperInstance, setSwiperInstance] = useState(null);
   const [selectedAssetIndex, setSelectedAssetIndex] = useState(0);
+  const [thumbLoaded, setThumbLoaded] = useState({});
+  const [slideLoaded, setSlideLoaded] = useState({});
 
   useEffect(() => {
     if (swiperInstance && data?.length) {
@@ -43,35 +45,83 @@ const ProductImageGrid = ({ filter, data, title }) => {
           {filteredAssets.map((item, index) => {
             const src = item?.path || "/green_logo.svg";
             const video = isVideo(src);
+            const loaded = thumbLoaded[index];
 
             return (
               <div
                 key={index}
                 onMouseEnter={() => handleThumbnailClick(index)}
                 className={`MobileImageSlider_thumbnail ${selectedAssetIndex === index
-                  ? "MobileImageSlider_thumbnail--active"
-                  : "MobileImageSlider_thumbnail--inactive"
+                    ? "MobileImageSlider_thumbnail--active"
+                    : "MobileImageSlider_thumbnail--inactive"
                   }`}
               >
-                {video ? (
-                  <div className="thumbnail_video center">
-                    <Image width={50} height={50} className="play_btn_img" src="/icons/play_btn.png" alt="img" />
-                    <video muted
-                      playsInline src={src} className="cover" type="video/mp4" />
-                  </div>
-                ) : (
-                  <div className="thumbnail_video center">
+                <div
+                  className="thumbnail_video center"
+                  style={{
+                    position: "relative",
+                    overflow: "hidden"
+                  }}
+                >
+
+                  {/* Skeleton */}
+                  {!loaded && (
+                    <div
+                      className="skeleton_box skeleton_animate"
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        zIndex: 10
+                      }}
+                    />
+                  )}
+
+                  {video ? (
+                    <>
+                      <Image
+                        width={50}
+                        height={50}
+                        src="/icons/play_btn.png"
+                        alt="play"
+                        className="play_btn_img"
+                        style={{
+                          position: "relative",
+                          zIndex: 20
+                        }}
+                      />
+
+                      <video
+                        muted
+                        playsInline
+                        preload="metadata"
+                        src={src}
+                        className="cover"
+                        style={{
+                          opacity: loaded ? 1 : 0,
+                          transition: "opacity .3s ease"
+                        }}
+                        onLoadedData={() =>
+                          setThumbLoaded(prev => ({ ...prev, [index]: true }))
+                        }
+                      />
+                    </>
+                  ) : (
                     <Image
-                      priority
                       width={150}
                       height={200}
                       src={src}
                       alt={`${title} - Thumbnail`}
-                      // sizes="(max-width: 768px) 25vw, 150px"
-
+                      className="cover"
+                      style={{
+                        opacity: loaded ? 1 : 0,
+                        transition: "opacity .3s ease"
+                      }}
+                      onLoad={() =>
+                        setThumbLoaded(prev => ({ ...prev, [index]: true }))
+                      }
                     />
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
             );
           })}
@@ -94,35 +144,70 @@ const ProductImageGrid = ({ filter, data, title }) => {
             {filteredAssets.map((item, index) => {
               const src = item?.path || "/green_logo.svg";
               const video = isVideo(src);
+              const loaded = slideLoaded[index];
 
               return (
                 <SwiperSlide key={index} className="MobileImageSlider_slide">
-                  {video ? (
-                    <div className="MobileImageSlider_slideVideo">
+
+                  <div
+                    style={{
+                      position: "relative",
+                      width: "100%",
+                      height: "100%",
+                      overflow: "hidden"
+                    }}
+                  >
+
+                    {/* Skeleton */}
+                    {!loaded && (
+                      <div
+                        className="skeleton_box skeleton_animate"
+                        style={{
+                          position: "absolute",
+                          inset: 0,
+                          zIndex: 10
+                        }}
+                      />
+                    )}
+
+                    {video ? (
                       <video
                         className="w-full"
                         controls
                         controlsList="nodownload noplaybackrate"
                         disablePictureInPicture
                         onContextMenu={(e) => e.preventDefault()}
+                        style={{
+                          opacity: loaded ? 1 : 0,
+                          transition: "opacity .4s ease"
+                        }}
+                        onLoadedData={() =>
+                          setSlideLoaded(prev => ({ ...prev, [index]: true }))
+                        }
                       >
                         <source src={src} type="video/mp4" />
                       </video>
-                    </div>
+                    ) : (
+                      <Image
+                        fill
+                        src={src}
+                        alt={`${title} - Product Image ${index + 1}`}
+                        className="MobileImageSlider_slideImage"
+                        style={{
+                          opacity: loaded ? 1 : 0,
+                          transition: "opacity .4s ease"
+                        }}
+                        onLoad={() =>
+                          setSlideLoaded(prev => ({ ...prev, [index]: true }))
+                        }
+                      />
+                    )}
 
-                  ) : (
-                    <Image
-                      fill
-                      src={src}
-                      alt={`${title} - Product Image ${index + 1}`}
-                      // sizes="(max-width: 768px) 100vw, 50vw"
-                      className="MobileImageSlider_slideImage"
-                    />
-                  )}
+                  </div>
+
                 </SwiperSlide>
               );
             })}
-
           </Swiper>
         )}
         <div className="MobileImageSlider_nav">

@@ -77,13 +77,13 @@ export default function CategoryClient({ meta, data, initialProducts, initialTot
   };
 
   useEffect(() => {
-    if (!imageReady || !containerRef.current) return;
+    // if (!imageReady || !containerRef.current) return;
 
     const ctx = gsap.context(() => {
       const heroSection = containerRef.current.querySelector(".products_hero-section");
       const heroImg = containerRef.current.querySelector(".products_hero-img");
 
-      if (!heroSection || !heroImg) return;
+      // if (!heroSection || !heroImg) return;
 
       // gsap.set(
       //   [
@@ -147,7 +147,11 @@ export default function CategoryClient({ meta, data, initialProducts, initialTot
     <>
       <SeoHeader meta={meta} breadcrumbList={breadcrumbList} />
       <div ref={containerRef}>
+
         <div className="products_hero-section hidden">
+          {!imageReady && (
+            <div className="products_hero-section category_skeleton skeleton_animate"></div>
+          )}
           <Image
             key={data?.imgsrc}
             fill

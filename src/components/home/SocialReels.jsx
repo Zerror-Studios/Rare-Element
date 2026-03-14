@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import React from 'react'
+import React, { useState } from 'react'
 
 export const SocialCardData = [
   {
@@ -36,6 +36,7 @@ export const SocialCardData = [
 ]
 
 const SocialReels = () => {
+  const [videoReady, setVideoReady] = useState({});
   return (
     <>
       <div className="social_header">
@@ -44,29 +45,45 @@ const SocialReels = () => {
         <Link alt="Instagram" href={"https://www.instagram.com/nahara.jewellery/?igsh=MXgwcmQ2ODhnaTR3ag%3D%3D#"} target="_blank" className='text-base  underline '>@nahara.jewellery</Link>
       </div>
       <div className="socialCard_section scroller_none padding">
-        {SocialCardData?.map((item, i) => (
-          <div key={i} className="socialCard_box">
-            <video className='cover socialCard_box_vid ' loop autoPlay muted playsInline src={item.vid}></video>
-            <div className="socialCard_image_wrapper">
-              <Image
-                fill
-                quality={50}
-                className="socialCard_image"
-                src={item.img}
-                alt={`${item.title} - Social Media Post`}
+        {SocialCardData?.map((item, i) => {
+          const vidLoaded = videoReady[i];
+          return (
+            <div key={i} className="socialCard_box">
+              {!vidLoaded && (
+                <div
+                  className="skeleton_box skeleton_animate"
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    zIndex: 5
+                  }}
+                />
+              )}
+              <video onLoadedData={() =>
+                setVideoReady(prev => ({ ...prev, [i]: true }))
+              } className='cover socialCard_box_vid ' loop autoPlay muted playsInline src={item.vid}></video>
+              <div className="socialCard_image_wrapper">
+                <Image
+                  fill
+                  quality={50}
+                  className="socialCard_image"
+                  src={item.img}
+                  alt={`${item.title} - Social Media Post`}
                 // sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 400px"
-              />
-            </div>
+                />
+              </div>
 
-            <h2 className="socialCard_title text-xl  uppercase">
-              {/* <span className=" text-4xl thin">{item.titleSpan}</span>{" "} */}
-              {item.description}
-            </h2>
-            {/* <p className="socialCard_description thin text-xl">
+              <h2 className="socialCard_title text-xl  uppercase">
+                {/* <span className=" text-4xl thin">{item.titleSpan}</span>{" "} */}
+                {item.description}
+              </h2>
+              {/* <p className="socialCard_description thin text-xl">
               {item.description}
             </p> */}
-          </div>
-        ))}
+            </div>
+          )
+        }
+        )}
       </div>
 
     </>
