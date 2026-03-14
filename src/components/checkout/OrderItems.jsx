@@ -18,7 +18,6 @@ const OrderItems = ({ data, pricesIncludeTax, handleAddItem, handleRemoveItem })
             {data && data.length > 0 && data?.map((item, index) => {
               const price = formatePrice(item?.variantDetail?.variantPrice || null);
               return (
-                <>
                   <div key={index} className="checkout_item">
                     <Link prefetch scroll={false} href={`/products/${item?.product?.slug}`} className="checkout_imgWrapper">
                       <Image
@@ -60,7 +59,6 @@ const OrderItems = ({ data, pricesIncludeTax, handleAddItem, handleRemoveItem })
                       </div>
                     </div>
                   </div>
-                </>
               );
             })}
           </div>

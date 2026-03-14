@@ -8,6 +8,7 @@ import ScrollVelocityThree from '@/components/about/ScrollVelocity';
 import Image from 'next/image';
 
 export default function AboutClient() {
+
   useGSAP(() => {
     gsap.to(".abt_img_galry img, .abt_mob_txt img ", {
       opacity: 1, duration: 1.2, stagger: 0.1, delay: .5, ease: "expo.out"
@@ -88,10 +89,10 @@ export default function AboutClient() {
       <div className="about_sticker_section">
         <Image className=' sticker_bg_img cover' src="/images/aboutpage/about_sticker_bg.webp" alt="img" fill />
 
-        <Image className='mobile_sticker_1' src="/images/aboutpage/mobile_stickr_1.png" alt="img" width={200} height={200} />
-        <Image className='about_sticker_1' src="/images/aboutpage/desktop_sticker_1.png" alt="img" width={400} height={400} />
+        <img className='mobile_sticker_1' src="/images/aboutpage/mobile_stickr_1.png" alt="img" />
+        <img className='about_sticker_1' src="/images/aboutpage/desktop_sticker_1.png" alt="img"  />
 
-        <Image className='about_sticker_2' src="/images/aboutpage/sticker_2.png" alt="img" width={300} height={300} />
+        <img className='about_sticker_2' src="/images/aboutpage/sticker_2.png" alt="img"  />
       </div>
     </>
   );

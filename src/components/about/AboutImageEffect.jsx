@@ -5,13 +5,13 @@ import { Canvas, useFrame, useLoader, useThree } from "@react-three/fiber";
 import { MeshDistortMaterial, useCursor } from "@react-three/drei";
 
 function DistortImage({ imageUrl }) {
+  const { size, camera, invalidate } = useThree();
   const ref = useRef();
   const meshRef = useRef();
   const [hovered, hover] = useState(false);
   const [intensity, setIntensity] = useState(0.5);
 
   const texture = useLoader(THREE.TextureLoader, imageUrl);
-  const { size, camera } = useThree();
   const [planeArgs, setPlaneArgs] = useState([1, 1, 100, 100]);
 
   useEffect(() => {
@@ -34,8 +34,6 @@ function DistortImage({ imageUrl }) {
 
     setPlaneArgs([planeWidth, planeHeight, 100, 100]);
   }, [size, camera]);
-
-  const { invalidate } = useThree();
 
   useFrame(() => {
     if (!ref.current) return;
@@ -84,7 +82,7 @@ export default function AboutImageEffect({ imageUrl }) {
           height: "100%",
         }}
       >
-        <ambientLight intensity={1} />
+        <ambientLight intensity={3} />
         <DistortImage imageUrl={imageUrl} />
       </Canvas>
     </div>

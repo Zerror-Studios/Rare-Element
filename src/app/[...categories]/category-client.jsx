@@ -77,81 +77,30 @@ export default function CategoryClient({ meta, data, initialProducts, initialTot
   };
 
   useEffect(() => {
-    // if (!imageReady || !containerRef.current) return;
+    if (!containerRef.current) return;
 
     const ctx = gsap.context(() => {
-      const heroSection = containerRef.current.querySelector(".products_hero-section");
       const heroImg = containerRef.current.querySelector(".products_hero-img");
+      if (!heroImg) return;
 
-      // if (!heroSection || !heroImg) return;
+      gsap.set(heroImg, { opacity: 0 });
 
-      // gsap.set(
-      //   [
-      //     ".products_content",
-      //     ".products_hero-img",
-      //     ".products_header",
-      //     ".allproducts_paren",
-      //     ".category_products_header",
-      //   ],
-      //   { opacity: 0 }
-      // );
-
-      gsap.to(
-        heroSection,
-        {
-          opacity: 1,
-          clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
-          duration: 0.8,
-          ease: 'ease-secondary',
-        }
-      );
-
-      gsap.to(
-        [
-          ".products_content",
-          ".products_hero-img",
-          ".products_header",
-          ".allproducts_paren",
-          ".category_products_header",
-        ],
-        {
-          opacity: 1,
-          delay: 0.4,
-          stagger: 0.1,
-          duration: 1,
-          ease: "ease-secondary",
-        }
-      );
-
-      if (window.innerWidth >= 750) {
-        gsap.to(heroImg, {
-          y: 200,
-          filter: "brightness(0.5)",
-          ease: "linear",
-          scrollTrigger: {
-            trigger: heroSection,
-            start: "top top",
-            end: "bottom top",
-            scrub: true,
-          },
-        });
-      }
-
-      ScrollTrigger.refresh(true);
+      gsap.to(heroImg, {
+        opacity: 1,
+        duration: 0.8,
+        ease: "power2.out",
+      });
     }, containerRef);
 
     return () => ctx.revert();
-  }, [imageReady, pathname]);
+  }, [pathname]);
 
   return (
     <>
       <SeoHeader meta={meta} breadcrumbList={breadcrumbList} />
       <div ref={containerRef}>
 
-        <div className="products_hero-section hidden">
-          {!imageReady && (
-            <div className="products_hero-section category_skeleton skeleton_animate"></div>
-          )}
+        <div className="products_hero-section skeleton_animate">
           <Image
             key={data?.imgsrc}
             fill
