@@ -83,16 +83,18 @@ export default function AboutClient() {
           <p className='italic thin'>“ Blending inventive design with next-gen craftsmanship, our jewellery celebrates a new wave of elegance: fun, fearless silhouettes paired with the kind of delicate finishing that makes each piece feel truly special. “</p>
         </div>
       </div>
-
-      <ScrollVelocityThree />
+      
+      <div style={{ minHeight: "100vh" }} className="">
+        <ScrollVelocityThree />
+      </div>
 
       <div className="about_sticker_section">
         <Image className=' sticker_bg_img cover' src="/images/aboutpage/about_sticker_bg.webp" alt="img" fill />
 
         <img className='mobile_sticker_1' src="/images/aboutpage/mobile_stickr_1.png" alt="img" />
-        <img className='about_sticker_1' src="/images/aboutpage/desktop_sticker_1.png" alt="img"  />
+        <img className='about_sticker_1' src="/images/aboutpage/desktop_sticker_1.png" alt="img" />
 
-        <img className='about_sticker_2' src="/images/aboutpage/sticker_2.png" alt="img"  />
+        <img className='about_sticker_2' src="/images/aboutpage/sticker_2.png" alt="img" />
       </div>
     </>
   );
