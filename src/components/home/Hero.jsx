@@ -116,7 +116,7 @@ const Hero = () => {
           ref={videoRef}
           className="home_hero_video cover"
           src="/videos/hero_video.webm"
-          poster="/images/homepage/hero_poster.webp"
+          poster="/images/homepage/heroPoster.webp"
           muted
           playsInline
           loop

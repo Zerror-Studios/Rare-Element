@@ -7,9 +7,9 @@ const CategoryPageSkeleton = () => {
             <div >
                 <div className="products_hero-section category_skeleton skeleton_animate">
                 </div>
-                <div className="category_products_header skeleton_animate">
-                    <p className="products_subtitle thin text-base hidden uppercase">Crafted for Every Moment</p>
-                    <h1 className="products_title text-3xl hidden"></h1>
+                <div className="category_products_header hidden">
+                    <p className="products_subtitle thin text-base  uppercase">Crafted for Every Moment</p>
+                    <h1 className="products_title text-3xl ">Rings</h1>
                 </div>
                 <div className="padding">
                     <div className="allproducts_paren categories_paren ">

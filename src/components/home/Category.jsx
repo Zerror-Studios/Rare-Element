@@ -50,7 +50,6 @@ const Category = ({ data }) => {
                                             alt={item?.title || "Jewellery Category"}
                                             style={{
                                                 opacity: imgLoaded ? 1 : 0,
-                                                transition: "opacity .4s ease"
                                             }}
                                             onLoad={() =>
                                                 setImgReady(prev => ({ ...prev, [index]: true }))

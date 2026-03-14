@@ -166,13 +166,13 @@ export default function CategoryClient({ meta, data, initialProducts, initialTot
           />
         </div>
 
-        <div className="category_products_header hidden">
+        <div className="category_products_header ">
           <p className="products_subtitle thin text-base uppercase">Crafted for Every Moment</p>
           <h1 className="products_title text-3xl">{data?.name || ""}</h1>
         </div>
 
         <div className="padding">
-          <div className="allproducts_paren hidden categories_paren ">
+          <div className="allproducts_paren  categories_paren ">
             {products?.length > 0 ? (
               products?.map((item) => (
                 <Link

@@ -14,7 +14,7 @@ export default function LenisScroll({ children }) {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    if (window.innerWidth < 1024) return
+    // if (window.innerWidth < 1024) return
 
     const instance = new Lenis({
       smooth: !0,
