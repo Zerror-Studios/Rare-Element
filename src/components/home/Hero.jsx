@@ -117,6 +117,7 @@ const Hero = () => {
           className="home_hero_video cover"
           src="/videos/hero_video.webm"
           poster="/images/homepage/heroPoster.webp"
+          autoPlay
           muted
           playsInline
           loop
