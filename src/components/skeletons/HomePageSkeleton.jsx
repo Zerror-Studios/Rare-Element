@@ -5,8 +5,8 @@ import CategoryPageSkeleton from './CategoryPageSkeleton'
 const HomePageSkeleton = () => {
     return (
         <div>
-            <div className="products_hero-section category_skeleton skeleton_animate">
-            </div>
+            <div className="dummy_hero_div skeleton_animate" />
+
             <div className="padding category_paren">
                 <div className="category_header">
                     <p className='text-base uppercase thin'>Shop by Category</p>

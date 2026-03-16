@@ -34,6 +34,8 @@
 .ct_box {
   width: 35%;
   display: flex;
+  position: relative;
+  z-index: 10;
   flex-direction: column;
   gap: 0.5rem;
 }

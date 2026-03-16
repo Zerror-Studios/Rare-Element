@@ -7,7 +7,7 @@ import Image from 'next/image';
 
 const offers = [
   {
-    img: "/images/homepage/footer_reels/rings.JPG",
+    img: "/images/homepage/footer_reels/rings.webp",
     title: "Flat 90% off on any purchase",
     code: "NAHARA90",
   },

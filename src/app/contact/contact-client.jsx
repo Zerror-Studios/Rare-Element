@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react'
+import React, { useState } from 'react'
 import SeoHeader from '@/components/seo/SeoHeader'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
@@ -33,7 +33,16 @@ const slideBoxData = [
 ]
 
 export default function ContactClient({ meta }) {
+
+  const [imgReady, setImgReady] = useState(false)
+
   useGSAP(() => {
+
+    gsap.to([".contact_bg_img", ".anim_ttt", ".slider_box"], {
+      opacity: 1,
+      stagger: 0.2,
+    })
+
     var tl = gsap.timeline({
       scrollTrigger: {
         trigger: ".contact_form_paren",
@@ -74,15 +83,16 @@ export default function ContactClient({ meta }) {
       <div className="contact_form_paren">
         <section id="contact_form" >
           <div className="contact_img_paren ">
-            <Image width={1920} height={1080} className='contact_bg_img' src="/images/contact_bg.avif" alt="img" />
+            {!imgReady && <div style={{ position: "absolute", inset: "0", zIndex: "-2" }} className="skeleton_animate skeleton_box"></div>}
+            <Image width={1920} height={1080} onLoad={() => setImgReady(true)} className='contact_bg_img hidden' src="/images/contact_bg.avif" alt="img" />
             <div className="ct_box">
-              <h1 className=' text-3xl font-semibold'>Contact Us</h1>
-              <p className='text-base uppercase'>Need help? Contact Nahara for support, product inquiries, custom jewellery requests, and order assistance.</p>
+              <h1 className='anim_ttt hidden text-3xl font-semibold'>Contact Us</h1>
+              <p className=' anim_ttt hidden text-base uppercase'>Need help? Contact Nahara for support, product inquiries, custom jewellery requests, and order assistance.</p>
             </div>
           </div>
           <div className="slider_box_paren">
             {slideBoxData?.map((item, i) => (
-              <div key={i} className="slider_box">
+              <div key={i} className="slider_box hidden">
                 <p className='text-lg'>( 0{item.id} )</p>
                 <h2 className='text-xl font-semibold'>{item.title}</h2>
                 <div className="desc_prn">

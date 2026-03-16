@@ -3,7 +3,7 @@ import AccountBreadcrumb from '@/components/account/AccountBreadcrumb';
 
 const offers = [
   {
-    img: "/images/homepage/footer_reels/rings.JPG",
+    img: "/images/homepage/footer_reels/rings.webp",
     title: "Flat 90% off on any purchase",
     code: "NAHARA90",
   },

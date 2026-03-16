@@ -17,7 +17,7 @@ const LoginClient = () => {
           <Image
             width={600}
             height={600}
-            src="/images/homepage/footer_reels/bracelet.JPG"
+            src="/images/homepage/footer_reels/bracelet.webp"
             alt="image"
             priority
           />
@@ -26,7 +26,7 @@ const LoginClient = () => {
           <Image
             width={600}
             height={600}
-            src="/images/homepage/footer_reels/rings.JPG"
+            src="/images/homepage/footer_reels/rings.webp"
             alt="image"
           />
         </div>
