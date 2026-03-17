@@ -8,6 +8,8 @@ import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import ContactForm from '@/components/contact/ContactForm';
 import Faq from '@/components/contact/Faq';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
+gsap.registerPlugin(ScrollTrigger)
 
 const slideBoxData = [
   {
@@ -18,23 +20,28 @@ const slideBoxData = [
   {
     id: 2,
     title: "Contact Email",
-    desc: "contact@nahara.co.in",
+    desc: "hello@nahara.co.in",
+    class:"text_decoration_underline",
+    href:"https://mail.google.com/mail/u/0/#inbox?compose=https://mail.google.com/mail/u/0/#inbox?compose=DmwnWsCZFQTSPKdBWzqptmWzRGSXbXPcgGKFLkKhbNnbbmlgJgCbMhkZCbbJRRqmCSbHhCHFkrGB"
   },
   {
     id: 3,
     title: "Contact Number",
-    desc: "+91 - 9999999999",
+    desc: "+91 91371 59898",
+    class:"text_decoration_underline",
+    href:"https://wa.me/+919137159898"
   },
   {
     id: 4,
     title: "Location",
-    desc: "Ge 1080 G Tower East Wing 1st Floor Bharat Diamond Bourse Bandra Kurla Complex 27 Maharashtra 400051",
+    desc: "Ge 1080 G Tower East Wing 1st Floor Bharat Diamond Bourse Bandra Kurla Complex 27, Maharashtra, 400051",
   }
 ]
 
 export default function ContactClient({ meta }) {
 
   const [imgReady, setImgReady] = useState(false)
+  const pathname = usePathname()
 
   useGSAP(() => {
 
@@ -43,33 +50,37 @@ export default function ContactClient({ meta }) {
       stagger: 0.2,
     })
 
-    var tl = gsap.timeline({
+    const isMobile = window.innerWidth < 750;
+
+    const tl = gsap.timeline({
       scrollTrigger: {
         trigger: ".contact_form_paren",
-        end: "bottom bottom",
         start: "top top",
+        end: "bottom bottom",
         scrub: true,
-      },
+        invalidateOnRefresh: true,
+      }
     })
 
     tl.to(".slider_box_paren", {
       xPercent: -100,
       ease: "linear",
     })
-    if (window.innerWidth < 750) return
-    tl.to(".contact_img_paren", {
-      width: "60%",
-      ease: "linear",
-    }, "<+=0.05")
-    tl.to(".contact_bg_img", {
-      x: -250,
-      ease: "linear",
-    }, "<")
-    tl.from("#form", {
-      opacity: 0,
-      ease: "linear",
-    }, "<0.25")
-  })
+    if (!isMobile) {
+      tl.to(".contact_img_paren", {
+        width: "60%",
+        ease: "linear",
+      }, "<+=0.05")
+      tl.to(".contact_bg_img", {
+        x: -250,
+        ease: "linear",
+      }, "<")
+      tl.from("#form", {
+        opacity: 0,
+        ease: "linear",
+      }, "<0.25")
+    }
+  }, [pathname])
 
   return (
     <>
@@ -90,7 +101,7 @@ export default function ContactClient({ meta }) {
                 <p className='text-lg'>( 0{item.id} )</p>
                 <h2 className='text-xl font-semibold'>{item.title}</h2>
                 <div className="desc_prn">
-                  <p className='text-lg'>{item.desc}</p>
+                  <a href={item.href} target='_blank' className={`text-lg ${item.class} `}>{item.desc}</a>
                 </div>
               </div>
             ))}

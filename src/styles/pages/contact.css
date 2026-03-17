@@ -59,7 +59,8 @@
   gap: 2rem;
   background-color: white;
 }
-.slider_box p {
+.slider_box p ,
+.slider_box a {
   line-height: 1.25rem;
 }
 .desc_prn {
