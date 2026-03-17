@@ -89,7 +89,7 @@ export default function AboutClient() {
       </div>
 
       <div className="about_sticker_section">
-        <Image className=' sticker_bg_img cover' src="/images/aboutpage/about_sticker_bg.webp" alt="img" fill />
+        <img className=' sticker_bg_img cover' src="/images/aboutpage/about_sticker_bg.webp" alt="img" />
 
         <img className='mobile_sticker_1' src="/images/aboutpage/mobile_stickr_1.png" alt="img" />
         <img className='about_sticker_1' src="/images/aboutpage/desktop_sticker_1.png" alt="img" />

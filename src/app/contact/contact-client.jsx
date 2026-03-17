@@ -52,29 +52,23 @@ export default function ContactClient({ meta }) {
       },
     })
 
-    if (window.innerWidth > 750) {
-      tl.to(".slider_box_paren", {
-        xPercent: -100,
-        ease: "linear",
-      })
-      tl.to(".contact_img_paren", {
-        width: "60%",
-        ease: "linear",
-      }, "<+=0.05")
-      tl.to(".contact_bg_img", {
-        x: -250,
-        ease: "linear",
-      }, "<")
-      tl.from("#form", {
-        opacity: 0,
-        ease: "linear",
-      }, "<0.25")
-    } else {
-      tl.to(".slider_box_paren", {
-        xPercent: -100,
-        ease: "linear",
-      })
-    }
+    tl.to(".slider_box_paren", {
+      xPercent: -100,
+      ease: "linear",
+    })
+    if (window.innerWidth < 750) return
+    tl.to(".contact_img_paren", {
+      width: "60%",
+      ease: "linear",
+    }, "<+=0.05")
+    tl.to(".contact_bg_img", {
+      x: -250,
+      ease: "linear",
+    }, "<")
+    tl.from("#form", {
+      opacity: 0,
+      ease: "linear",
+    }, "<0.25")
   })
 
   return (
