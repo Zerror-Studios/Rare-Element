@@ -9,7 +9,7 @@ export default function Loading() {
           <h1 className="featured_title text-3xl font-semibold">The Essence of Nahara</h1>
         </div>
       </div>
-      <div style={{ width: "100vw", height: "100vh" }} className=""></div>
+      <div style={{ width: "100vw", height: "500vh" }} className=""></div>
     </>
   );
 }

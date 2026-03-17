@@ -2,10 +2,11 @@
 
 import React from 'react'
 import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import ScrollVelocityThree from '@/components/about/ScrollVelocity';
 import Image from 'next/image';
+import ScrollTrigger from 'gsap/dist/ScrollTrigger';
+gsap.registerPlugin(ScrollTrigger)
 
 export default function AboutClient() {
 
@@ -83,7 +84,7 @@ export default function AboutClient() {
           <p className='italic thin'>“ Blending inventive design with next-gen craftsmanship, our jewellery celebrates a new wave of elegance: fun, fearless silhouettes paired with the kind of delicate finishing that makes each piece feel truly special. “</p>
         </div>
       </div>
-      
+
       <div style={{ minHeight: "100vh" }} className="">
         <ScrollVelocityThree />
       </div>
