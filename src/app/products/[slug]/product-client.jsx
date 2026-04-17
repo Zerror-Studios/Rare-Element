@@ -16,6 +16,7 @@ import ProductContant from '@/components/product/ProductContant';
 import ProductListGrid from "@/components/product/ProductListGrid";
 import { TokenManager } from "@/utils/tokenManager";
 import { useRouter } from "next/navigation";
+import * as fpixel from "@/lib/fpixel";
 
 export default function ProductClient({ meta, data, productList, slug }) {
   const breadcrumbList = [
@@ -50,7 +51,18 @@ export default function ProductClient({ meta, data, productList, slug }) {
       duration: 1,
       ease: "ease-secondary"
     })
-  }, [slug])
+
+    if (data) {
+      fpixel.event("ViewContent", {
+        content_name: data.name,
+        content_category: data.categories?.[0]?.name,
+        content_ids: [data._id],
+        content_type: 'product',
+        value: finalPrice,
+        currency: 'INR'
+      });
+    }
+  }, [slug, data, finalPrice])
 
   const handleAddToCart = async () => {
     if (!cartBtn || variantMatched.stockStatus === Const.OUT_OF_STOCK) return;
@@ -76,6 +88,16 @@ export default function ProductClient({ meta, data, productList, slug }) {
       };
 
       await addItemToCart({ variables: payload });
+      
+      fpixel.event("AddToCart", {
+        content_name: data.name,
+        content_category: data.categories?.[0]?.name,
+        content_ids: [data?._id],
+        content_type: 'product',
+        value: finalPrice,
+        currency: 'INR'
+      });
+
       openCart();
     } catch (err) {
       console.error(err);
