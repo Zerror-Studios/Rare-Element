@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 
@@ -17,6 +17,8 @@ const GiftGuide = ({ data }) => {
 
     const leftSwiperRef = useRef(null);
     const rightSwiperRef = useRef(null);
+    const [lookbookLoaded, setLookbookLoaded] = useState({});
+    const [smallLookbookLoaded, setSmallLookbookLoaded] = useState({});
 
     useEffect(() => {
         let tries = 0;
@@ -173,27 +175,58 @@ const GiftGuide = ({ data }) => {
                         allowTouchMove={false}
                         className="lookbook_swiper_left"
                     >
-                        {data.map((item) => {
+                        {data.map((item, index) => {
                             const hoverAsset = item?.assets?.find(a => a.isHover === true);
                             const imageAsset = hoverAsset || item?.assets?.[0];
 
+                            const src = imageAsset?.path || "/green_logo.svg";
+                            const loaded = lookbookLoaded[item?._id || index];
+
                             return (
                                 <SwiperSlide key={item?._id}>
-                                    <div className="lookbookSlider_card_image_left">
+                                    <div
+                                        className="lookbookSlider_card_image_left"
+                                        style={{
+                                            position: "relative",
+                                            overflow: "hidden"
+                                        }}
+                                    >
+
+                                        {/* Skeleton */}
+                                        {!loaded && (
+                                            <div
+                                                className="skeleton_box skeleton_animate"
+                                                style={{
+                                                    position: "absolute",
+                                                    inset: 0,
+                                                    zIndex: 5
+                                                }}
+                                            />
+                                        )}
+
                                         <Image
                                             fill
                                             quality={50}
-                                            className="cover"
-                                            src={imageAsset?.path || "/green_logo.svg"}
+                                            src={src}
                                             alt={item?.name || "Gift Idea"}
-                                            sizes="100vw"
+                                            className="cover"
+                                            style={{
+                                                opacity: loaded ? 1 : 0,
+                                                transition: "opacity .6s ease"
+                                            }}
+                                            onLoad={() =>
+                                                setLookbookLoaded(prev => ({
+                                                    ...prev,
+                                                    [item?._id || index]: true
+                                                }))
+                                            }
                                         />
+
                                     </div>
                                 </SwiperSlide>
                             );
                         })}
                     </Swiper>
-
                 </div>
 
                 {/* RIGHT SWIPER */}
@@ -215,24 +248,61 @@ const GiftGuide = ({ data }) => {
                             allowTouchMove={false}
                             className="lookbook_swiper"
                         >
-                            {data?.map((item) => {
+                            {data?.map((item, index) => {
                                 const hoverAsset = item?.assets?.find(a => a.isHover === true);
                                 const imageAsset = hoverAsset || item?.assets?.[0];
+
+                                const src = imageAsset?.path || "/green_logo.svg";
+                                const loaded = smallLookbookLoaded[item?._id || index];
 
                                 return (
                                     <SwiperSlide key={item?._id} className="lookbookSlider_card">
                                         <div className="lookbookSlider_card">
-                                            <div className="lookbookSlider_card_image">
+
+                                            {/* IMAGE WRAPPER */}
+                                            <div
+                                                className="lookbookSlider_card_image"
+                                                style={{
+                                                    position: "relative",
+                                                    overflow: "hidden",
+                                                    width: 300,
+                                                    height: 400
+                                                }}
+                                            >
+
+                                                {/* Skeleton */}
+                                                {!loaded && (
+                                                    <div
+                                                        className="skeleton_box skeleton_animate"
+                                                        style={{
+                                                            position: "absolute",
+                                                            inset: 0,
+                                                            zIndex: 5
+                                                        }}
+                                                    />
+                                                )}
+
                                                 <Image
                                                     width={300}
                                                     height={400}
-                                                    className="cover"
-                                                    src={imageAsset?.path || "/green_logo.svg"}
+                                                    src={src}
                                                     alt={item?.name || "Gift Guide Image"}
-                                                    sizes="(max-width: 768px) 80vw, 300px"
+                                                    className="cover"
+                                                    style={{
+                                                        opacity: loaded ? 1 : 0,
+                                                        transition: "opacity .6s ease"
+                                                    }}
+                                                    onLoad={() =>
+                                                        setSmallLookbookLoaded(prev => ({
+                                                            ...prev,
+                                                            [item?._id || index]: true
+                                                        }))
+                                                    }
                                                 />
+
                                             </div>
 
+                                            {/* TEXT + CTA */}
                                             <p className="lookbookSlider_card_description uppercase text-xl">
                                                 {item?.name || ""}
                                             </p>
@@ -245,6 +315,7 @@ const GiftGuide = ({ data }) => {
                                                     />
                                                 </div>
                                             </div>
+
                                         </div>
                                     </SwiperSlide>
                                 );

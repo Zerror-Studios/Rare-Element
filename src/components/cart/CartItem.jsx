@@ -48,7 +48,7 @@ const CartItem = ({
               className="cartBag_bagImage"
               src={item?.asset?.path || "/green_logo.svg"}
               alt={item?.name || "Cart Item Image"}
-              sizes="150px"
+              // sizes="150px"
             />
           </Link>
         </div>

@@ -8,7 +8,7 @@ const OrganizationSchema = () => {
     name: Const.Brand,
     logo: {
       "@type": "ImageObject",
-      url: `${Const.ClientLink}/favicon.jpg`,
+      url: `${Const.ClientLink}/favicon.ico`,
       width: "1800px",
       height: "900px",
     },

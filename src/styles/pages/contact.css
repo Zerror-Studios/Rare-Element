@@ -34,6 +34,8 @@
 .ct_box {
   width: 35%;
   display: flex;
+  position: relative;
+  z-index: 10;
   flex-direction: column;
   gap: 0.5rem;
 }
@@ -57,7 +59,8 @@
   gap: 2rem;
   background-color: white;
 }
-.slider_box p {
+.slider_box p ,
+.slider_box a {
   line-height: 1.25rem;
 }
 .desc_prn {

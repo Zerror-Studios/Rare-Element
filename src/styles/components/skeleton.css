@@ -24,7 +24,7 @@
 .skeleton_box {
   width: 100%;
   height: 100%;
-  margin-bottom: 3rem;
+  margin-bottom: 5rem;
 }
 .skeleton_circle {
   height: 2.5rem;
@@ -41,6 +41,7 @@
 }
 .name_skeleton {
   height: 2rem;
+  transform: translateY(-1.5rem);
   width: 100%;
 }
 
@@ -66,5 +67,5 @@
 
 
 .category_skeleton{
-  height: 80vh !important;
+  clip-path: none !important;
 }

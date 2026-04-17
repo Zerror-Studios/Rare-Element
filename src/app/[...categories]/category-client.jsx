@@ -77,98 +77,51 @@ export default function CategoryClient({ meta, data, initialProducts, initialTot
   };
 
   useEffect(() => {
-    if (!imageReady || !containerRef.current) return;
+    if (!containerRef.current) return;
 
     const ctx = gsap.context(() => {
-      const heroSection = containerRef.current.querySelector(".products_hero-section");
       const heroImg = containerRef.current.querySelector(".products_hero-img");
+      if (!heroImg) return;
 
-      if (!heroSection || !heroImg) return;
+      gsap.set(heroImg, { opacity: 0 });
 
-      gsap.set(
-        [
-          ".products_content",
-          ".products_hero-img",
-          ".products_header",
-          ".allproducts_paren",
-          ".category_products_header",
-        ],
-        { opacity: 0 }
-      );
-
-      gsap.to(
-        heroSection,
-        {
-          opacity: 1,
-          clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
-          duration: 0.8,
-          ease: 'ease-secondary',
-        }
-      );
-
-      gsap.to(
-        [
-          ".products_content",
-          ".products_hero-img",
-          ".products_header",
-          ".allproducts_paren",
-          ".category_products_header",
-        ],
-        {
-          opacity: 1,
-          delay: 0.4,
-          stagger: 0.1,
-          duration: 1,
-          ease: "ease-secondary",
-        }
-      );
-
-      if (window.innerWidth >= 750) {
-        gsap.to(heroImg, {
-          y: 200,
-          filter: "brightness(0.5)",
-          ease: "linear",
-          scrollTrigger: {
-            trigger: heroSection,
-            start: "top top",
-            end: "bottom top",
-            scrub: true,
-          },
-        });
-      }
-
-      ScrollTrigger.refresh(true);
+      gsap.to(heroImg, {
+        opacity: 1,
+        duration: 0.8,
+        ease: "power2.out",
+      });
     }, containerRef);
 
     return () => ctx.revert();
-  }, [imageReady, pathname]);
+  }, [pathname]);
 
   return (
     <>
       <SeoHeader meta={meta} breadcrumbList={breadcrumbList} />
       <div ref={containerRef}>
-        <div className="products_hero-section">
+
+        <div className="products_hero-section skeleton_animate">
           <Image
             key={data?.imgsrc}
             fill
             priority
             fetchPriority="high"
-            sizes="100vw"
+            // sizes="100vw"
             quality={75}
-            className="products_hero-img"
+            className="products_hero-img hidden "
             src={data?.imgsrc}
             alt={data?.name || ""}
             onLoad={() => setImageReady(true)}
           />
         </div>
 
-        <div className="category_products_header">
+        <div className="category_products_header ">
           <p className="products_subtitle thin text-base uppercase">Crafted for Every Moment</p>
           <h1 className="products_title text-3xl">{data?.name || ""}</h1>
         </div>
 
         <div className="padding">
-          <div className="allproducts_paren categories_paren ">
+          <div className="allproducts_paren  categories_paren ">
             {products?.length > 0 ? (
               products?.map((item) => (
                 <Link

@@ -89,7 +89,9 @@ const Hero = () => {
 
       <div className="introloader_paren center">
         <div className="loader_img">
-          <Image src="/green_logo.svg" alt="Nahara Loading Logo" width={400} height={400} sizes="(max-width: 768px) 80vw, 400px" />
+          <Image src="/green_logo.svg" alt="Nahara Loading Logo" width={400} height={400}
+          //  sizes="(max-width: 768px) 80vw, 400px"
+            />
         </div>
       </div>
 
@@ -114,7 +116,8 @@ const Hero = () => {
           ref={videoRef}
           className="home_hero_video cover"
           src="/videos/hero_video.webm"
-          poster="/images/homepage/hero_poster.webp"
+          poster="/images/homepage/heroPoster.webp"
+          autoPlay
           muted
           playsInline
           loop

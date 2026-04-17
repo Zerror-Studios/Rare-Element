@@ -3,13 +3,13 @@
 import React, { useEffect } from 'react'
 import gsap from 'gsap'
 import Link from 'next/link'
-import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import { usePathname } from 'next/navigation';
 import { useAuthStore } from "@/store/auth-store";
 import { MenuData } from '@/helpers/MenuData';
 import CustomEase from 'gsap/dist/CustomEase';
 import { useGSAP } from '@gsap/react';
 import Image from 'next/image';
+import ScrollTrigger from 'gsap/dist/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger, CustomEase)
 
 CustomEase.create("ease-secondary", "0.16, 1, 0.35, 1");
@@ -17,6 +17,7 @@ CustomEase.create("ease-secondary", "0.16, 1, 0.35, 1");
 const Header = ({ openCart }) => {
   const pathname = usePathname()
   const { isLoggedIn } = useAuthStore((state) => state);
+  const homePagePath = "/";
 
   useEffect(() => {
     if (window.innerWidth < 750) return
@@ -47,29 +48,28 @@ const Header = ({ openCart }) => {
   }, [pathname]);
 
   useEffect(() => {
-    if (window.innerWidth < 750) return
+    if (window.innerWidth < 750) return;
     if (pathname !== "/") return;
 
-    ScrollTrigger.getAll().forEach((t) => t.kill());
+    const ctx = gsap.context(() => {
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: ".header",
-        start: "bottom top",
-        toggleActions: "play none none reverse",
-      },
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: ".header",
+          start: "bottom top",
+          toggleActions: "play none none reverse",
+        },
+      });
+
+      tl.to(".header_bg", {
+        top: 0,
+        duration: 0.25,
+      });
+
     });
 
-    tl.to(".header_bg", {
-      top: 0,
-      duration: 0.25,
-    });
+    return () => ctx.revert();
 
-    // Cleanup
-    return () => {
-      tl.kill();
-      ScrollTrigger.killAll();
-    };
   }, [pathname]);
 
   useGSAP(() => {
@@ -83,8 +83,8 @@ const Header = ({ openCart }) => {
 
   return (
     <>
-      <div className="dummy_paren"></div>
-      <div className="header padding">
+      <div style={{ display: pathname === homePagePath ? "block" : "none" }} className="dummy_paren"></div>
+      <div style={{ position: pathname === homePagePath ? "sticky" : "fixed" }} className="header padding">
         <div className="header_bg"></div>
         <div className="logo_paren">
           <Link aria-label="Nahara Home" scroll={false} href="/" >
