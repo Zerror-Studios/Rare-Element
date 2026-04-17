@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Inter } from "next/font/google";
 import Script from "next/script";
 import { Providers } from "./providers";
@@ -112,8 +113,10 @@ export default function RootLayout({ children }) {
             gtag('config', 'G-0FTD3SQ58J');
           `}
         </Script>
-
-        <FacebookPixel />
+        
+        <Suspense fallback={null}>
+          <FacebookPixel />
+        </Suspense>
         <Providers>{children}</Providers>
       </body>
     </html>
