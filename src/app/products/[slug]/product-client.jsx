@@ -16,6 +16,7 @@ import ProductContant from '@/components/product/ProductContant';
 import ProductListGrid from "@/components/product/ProductListGrid";
 import { TokenManager } from "@/utils/tokenManager";
 import { useRouter } from "next/navigation";
+import { trackEcomEvent } from "@/utils/analytics";
 import * as fpixel from "@/lib/fpixel";
 
 export default function ProductClient({ meta, data, productList, slug }) {
@@ -61,8 +62,9 @@ export default function ProductClient({ meta, data, productList, slug }) {
         value: finalPrice,
         currency: 'INR'
       });
+      trackEcomEvent.viewItem(data, variantMatched);
     }
-  }, [slug, data, finalPrice])
+  }, [slug, data, variantMatched])
 
   const handleAddToCart = async () => {
     if (!cartBtn || variantMatched.stockStatus === Const.OUT_OF_STOCK) return;
@@ -97,6 +99,8 @@ export default function ProductClient({ meta, data, productList, slug }) {
         value: finalPrice,
         currency: 'INR'
       });
+
+      trackEcomEvent.addToCart(data, variantMatched);
 
       openCart();
     } catch (err) {

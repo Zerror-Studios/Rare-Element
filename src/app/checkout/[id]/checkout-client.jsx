@@ -17,6 +17,7 @@ import BillingAddress from "@/components/checkout/BillingAddress";
 import OrderSummary from "@/components/checkout/OrderSummary";
 import Loader from "@/components/checkout/Loader";
 import Link from "next/link";
+import { trackEcomEvent } from "@/utils/analytics";
 
 const CheckoutClient = () => {
   const router = useRouter();
@@ -43,6 +44,12 @@ const CheckoutClient = () => {
   });
 
   const cartData = response?.getCart || {};
+
+  useEffect(() => {
+    if (cartData && Object.keys(cartData).length > 0) {
+      trackEcomEvent.beginCheckout(cartData.items, cartData.totalValue);
+    }
+  }, [cartData]);
 
   const {
     register,
