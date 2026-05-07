@@ -57,7 +57,7 @@ const footerLinksData = [
     title: "Navigation",
     links: [
       { label: "Home", href: "/" },
-      { label: "About ", href: "/about" },
+      // { label: "About ", href: "/about" },
       { label: "Contact", href: "/contact" },
     ],
   },

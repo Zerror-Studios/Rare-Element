@@ -169,10 +169,10 @@ const MobileHeader = ({ openCart }) => {
             </div>
           </div>
 
-          <Link scroll={false} href={"/about"} title='about us' className='menu_links_iner' onClick={() => closeMenu()}>
+          {/* <Link scroll={false} href={"/about"} title='about us' className='menu_links_iner' onClick={() => closeMenu()}>
             <h2 className='text-3xl capitalize '>about</h2>
             <RiArrowRightSLine size={16} />
-          </Link>
+          </Link> */}
 
           <Link scroll={false} href={"/contact"} title='contact' className='menu_links_iner' onClick={() => closeMenu()}>
             <h2 className='text-3xl capitalize '>contact</h2>
