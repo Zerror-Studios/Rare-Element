@@ -403,3 +403,49 @@ button {
     width: fit-content;
   }
 }
+
+
+
+/* not found css */
+/* not-found.css */
+
+.notfound-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.notfound-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+
+.notfound-description {
+  font-size: 1.25rem;
+  margin-bottom: 32px;
+  max-width: 600px;
+  line-height: 1.6;
+}
+
+.notfound-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* padding: 14px 28px; */
+  /* background-color: #000; */
+  color: #fff;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.notfound-button:hover {
+  /* background-color: #1f1f1f; */
+  text-decoration: underline;
+}
