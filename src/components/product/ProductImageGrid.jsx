@@ -50,10 +50,16 @@ const ProductImageGrid = ({ filter, data, title }) => {
             return (
               <div
                 key={index}
-                onMouseEnter={() => handleThumbnailClick(index)}
+                onMouseEnter={() => {
+                  handleThumbnailClick(index);
+                  swiperInstance?.autoplay?.stop();
+                }}
+                onMouseLeave={() => {
+                  swiperInstance?.autoplay?.start();
+                }}
                 className={`MobileImageSlider_thumbnail ${selectedAssetIndex === index
-                    ? "MobileImageSlider_thumbnail--active"
-                    : "MobileImageSlider_thumbnail--inactive"
+                  ? "MobileImageSlider_thumbnail--active"
+                  : "MobileImageSlider_thumbnail--inactive"
                   }`}
               >
                 <div
@@ -84,10 +90,6 @@ const ProductImageGrid = ({ filter, data, title }) => {
                         src="/icons/play_btn.png"
                         alt="play"
                         className="play_btn_img"
-                        style={{
-                          position: "relative",
-                          zIndex: 20
-                        }}
                       />
 
                       <video
@@ -172,11 +174,8 @@ const ProductImageGrid = ({ filter, data, title }) => {
 
                     {video ? (
                       <video
-                        className="w-full"
-                        controls
-                        controlsList="nodownload noplaybackrate"
-                        disablePictureInPicture
-                        onContextMenu={(e) => e.preventDefault()}
+                        className=" cover"
+                        loop autoPlay muted playsInline
                         style={{
                           opacity: loaded ? 1 : 0,
                           transition: "opacity .4s ease"
