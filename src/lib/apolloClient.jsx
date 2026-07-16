@@ -52,7 +52,6 @@ const refreshAccessToken = async () => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      dbtoken: `Bearer ${process.env.NEXT_PUBLIC_DB_TOKEN}`,
     },
     body: JSON.stringify({
       query,
@@ -89,7 +88,7 @@ const errorLink = onError(({ graphQLErrors, networkError, operation, forward }) 
                 operation.setContext(({ headers = {} }) => ({
                   headers: {
                     ...headers,
-                    authtoken: `Bearer ${newToken}`,
+                    authorization: `Bearer ${newToken}`,
                   },
                 }));
                 return forward(operation);
@@ -110,7 +109,7 @@ const errorLink = onError(({ graphQLErrors, networkError, operation, forward }) 
               operation.setContext(({ headers = {} }) => ({
                 headers: {
                   ...headers,
-                  authtoken: `Bearer ${token}`,
+                  authorization: `Bearer ${token}`,
                 },
               }));
               resolve(forward(operation));
@@ -134,8 +133,7 @@ const authLink = new ApolloLink((operation, forward) => {
   operation.setContext(({ headers = {} }) => ({
     headers: {
       ...headers,
-      dbtoken: `Bearer ${process.env.NEXT_PUBLIC_DB_TOKEN}`,
-      ...(token ? { authtoken: `Bearer ${token}` } : {}),
+      ...(token ? { authorization: `Bearer ${token}` } : {}),
     },
   }));
 
@@ -148,6 +146,9 @@ const authLink = new ApolloLink((operation, forward) => {
 const httpLink = new HttpLink({
   uri: process.env.NEXT_PUBLIC_GRAPHQL_API_URL,
   credentials: "same-origin",
+  headers: {
+    'x-forwarded-host': process.env.NEXT_PUBLIC_TENANT_DOMAIN || (typeof window !== 'undefined' ? window.location.host : 'localhost:3000'),
+  }
 });
 
 // -------------------------------------------

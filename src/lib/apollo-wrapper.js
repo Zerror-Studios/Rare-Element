@@ -16,6 +16,9 @@ function makeClient() {
   const httpLink = new HttpLink({
     uri: process.env.NEXT_PUBLIC_GRAPHQL_API_URL,
     fetchOptions: { cache: "no-store" },
+    headers: {
+      'x-forwarded-host': process.env.NEXT_PUBLIC_TENANT_DOMAIN || (typeof window !== 'undefined' ? window.location.host : 'localhost:3000'),
+    }
   });
 
   const authLink = new ApolloLink((operation, forward) => {
@@ -23,8 +26,7 @@ function makeClient() {
     operation.setContext(({ headers = {} }) => ({
       headers: {
         ...headers,
-        dbtoken: `Bearer ${process.env.NEXT_PUBLIC_DB_TOKEN}`,
-        ...(token ? { authtoken: `Bearer ${token}` } : {}),
+        authorization: token ? `Bearer ${token}` : "",
       },
     }));
 

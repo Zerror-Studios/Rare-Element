@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckoutSchema } from "@/validations/CheckoutValidation";
 import { useMutation, useQuery } from "@apollo/client/react";
-import { CART_LIST, CHECKOUT_ORDER } from "@/graphql";
+import { CART_LIST, CHECKOUT_ORDER, VERIFY_NIMBBL_PAYMENT } from "@/graphql";
 import { EmailSubscribedStatus } from "@/utils/Constant";
 import Checkout from "nimbbl_sonic";
 import ContactDetail from "@/components/checkout/ContactDetail";
@@ -18,6 +18,7 @@ import OrderSummary from "@/components/checkout/OrderSummary";
 import Loader from "@/components/checkout/Loader";
 import Link from "next/link";
 import { trackEcomEvent } from "@/utils/analytics";
+import { TokenManager } from "@/utils/tokenManager";
 
 const CheckoutClient = () => {
   const router = useRouter();
@@ -26,6 +27,7 @@ const CheckoutClient = () => {
   const [isPageLoading, setIsPageLoading] = useState(false);
   const { isLoggedIn, user } = useAuthStore((state) => state);
   const [checkoutOrder] = useMutation(CHECKOUT_ORDER);
+  const [verifyNimbblPayment] = useMutation(VERIFY_NIMBBL_PAYMENT);
   const callbackProcessedRef = useRef(false);
 
   const cartListPayload = {
@@ -91,37 +93,24 @@ const CheckoutClient = () => {
   const handleOrderPayment = async (payload) => {
     try {
       setIsPageLoading(true);
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_ENDPOINT}/api/payment/handle-order-payment`,
-        {
-          method: "POST",
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Content-Type": "application/json",
-            dbtoken: `Bearer ${process.env.NEXT_PUBLIC_DB_TOKEN || ""}`,
-          },
-          body: JSON.stringify(payload),
-        }
-      );
+      const { data } = await verifyNimbblPayment({
+        variables: { payload },
+      });
 
-      if (!response.ok) {
-        throw new Error(`Failed with status ${response.status}`);
-      }
-      const result = await response.json();
-      const { redirectUrl, awb_code } = result.data || {};
+      const { redirectUrl, awbCode } = data?.verifyNimbblPayment || {};
       if (redirectUrl) {
         // Next.js 15 router.push for dynamic routes
         let targetUrl = redirectUrl;
-        if (awb_code) {
+        if (awbCode) {
           const urlObj = new URL(targetUrl, window.location.origin);
-          urlObj.searchParams.set('awb_code', awb_code);
+          urlObj.searchParams.set('awb_code', awbCode);
           targetUrl = urlObj.pathname + urlObj.search;
         }
         router.push(targetUrl);
         setIsPageLoading(false);
       }
     } catch (error) {
-      console.error(`Error in Payment Order: ${error.message}`);
+      console.error(`Error in Payment Order Verification: ${error.message}`);
       setIsPageLoading(false);
       return null;
     }

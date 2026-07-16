@@ -9,7 +9,7 @@ import { RiEyeLine, RiEyeOffLine } from "@remixicon/react";
 import GreenBoxBtn from "../buttons/GreenBoxBtn";
 import { PhoneInput } from "react-international-phone";
 import { useMutation } from "@apollo/client/react";
-import { SIGN_UP_USER } from "@/graphql";
+import { SIGN_UP_USER, CUSTOMER_LOGIN } from "@/graphql";
 import { useAuthStore } from "@/store/auth-store";
 import { UserStatus } from "@/utils/Constant"
 import { toast } from "react-toastify";
@@ -40,6 +40,7 @@ const Signup = ({ setToggle }) => {
   const [visible, setVisible] = useState(false);
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [signupUser, { loading }] = useMutation(SIGN_UP_USER);
+  const [customerLogin] = useMutation(CUSTOMER_LOGIN);
   const { setUser, setIsLoggedIn } = useAuthStore((state) => state);
 
   const {
@@ -59,24 +60,42 @@ const Signup = ({ setToggle }) => {
         ...rest,
         status: UserStatus.ACTIVE,
       };
-      const { data: response } = await signupUser({ variables: { input } });
-      const { user, accessToken, refreshToken } = response?.clientUserSave || {};
-      if (accessToken && refreshToken && Object.keys(user).length > 0) {
-        localStorage.removeItem("visitorId");
-        localStorage.removeItem("visitorExpire");
-        TokenManager.clearTokens(); // clear previous
-        TokenManager.setTokens(accessToken, refreshToken);
-        setUser(user);
-        setIsLoggedIn(true);
-        toast.success("Account created successfully!");
-        router.back();
+      
+      const { data: signupResponse } = await signupUser({ variables: { input } });
+      const createdUser = signupResponse?.customerSignup;
+      
+      if (createdUser && createdUser._id) {
+        // Automatically login the user after successful signup
+        const { data: loginResponse } = await customerLogin({
+          variables: {
+            input: {
+              email: input.email,
+              password: input.password
+            }
+          }
+        });
+        
+        const { accessToken, refreshToken, customerId } = loginResponse?.customerLogin || {};
+        
+        if (accessToken && refreshToken) {
+          localStorage.removeItem("visitorId");
+          localStorage.removeItem("visitorExpire");
+          TokenManager.clearTokens(); // clear previous
+          TokenManager.setTokens(accessToken, refreshToken);
+          setUser(createdUser);
+          setIsLoggedIn(true);
+          toast.success("Account created successfully!");
+          router.back();
+        } else {
+           toast.error("Account created, but login failed. Please login manually.");
+           setToggle(false); // Switch to login tab
+        }
       }
     } catch (err) {
-      // console.error(err);
-      if (err.message === 'Error in Save user for client: Nahara for Error "User Already Exists!!"') {
+      if (err.message?.includes('Already Exists')) {
         toast.error("User already exists with this email")
       } else {
-        toast.error("Signup failed");
+        toast.error("Signup failed: " + err.message);
       }
     }
   };

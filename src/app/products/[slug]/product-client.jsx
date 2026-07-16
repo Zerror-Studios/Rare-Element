@@ -102,6 +102,7 @@ export default function ProductClient({ meta, data, productList, slug }) {
 
       trackEcomEvent.addToCart(data, variantMatched);
 
+      toast.success("Product added to the cart successfully");
       openCart();
     } catch (err) {
       console.error(err);

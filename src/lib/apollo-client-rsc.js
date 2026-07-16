@@ -11,8 +11,8 @@ export const { getClient } = registerApolloClient(() => {
     link: new HttpLink({
       uri: process.env.NEXT_PUBLIC_GRAPHQL_API_URL,
       headers: {
-        dbtoken: `Bearer ${process.env.NEXT_PUBLIC_DB_TOKEN}`,
-      },
+        'x-forwarded-host': process.env.NEXT_PUBLIC_TENANT_DOMAIN || (typeof window !== 'undefined' ? window.location.host : 'localhost:3000'),
+      }
     }),
   });
 });

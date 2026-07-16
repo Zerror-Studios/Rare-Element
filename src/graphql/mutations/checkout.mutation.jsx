@@ -45,3 +45,13 @@ export const CHECKOUT_ORDER = gql`
     }
   }
 `;
+
+export const VERIFY_NIMBBL_PAYMENT = gql`
+  mutation VerifyNimbblPayment($payload: JSON!) {
+    verifyNimbblPayment(payload: $payload) {
+      success
+      redirectUrl
+      awbCode
+    }
+  }
+`;

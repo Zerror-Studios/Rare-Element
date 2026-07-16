@@ -17,47 +17,33 @@ export const LOGOUT = gql`
 
 // Sign Up
 export const SIGN_UP_USER = gql`
-  mutation ClientUserSave($input: CreateUserInput!) {
-    clientUserSave(input: $input) {
-      user {
-        _id
-        countryCode
-        addresses {
-          _id
-          firstname
-          lastname
-          addressType
-          addressline1
-          addressline2
-          userId
-          flat
-          landmark
-          countryCode
-          phone
-          city
-          country
-          states
-          pincode
-          primary
-          createdAt
-          updatedAt
-        }
-        profileImg
-        dateOfBirth
-        email
-        firstName
-        lastName
-        gender
-        phoneNumber
-        emailSubscribedStatus
-        status
-      }
-      accessToken
-      refreshToken
+  mutation CustomerSignup($input: CreateUserInput!) {
+    customerSignup(input: $input) {
+      _id
+      firstName
+      lastName
+      email
+      phoneNumber
+      countryCode
+      gender
+      profileImg
+      dateOfBirth
+      status
     }
   }
 `;
 
+// Login
+export const CUSTOMER_LOGIN = gql`
+  mutation CustomerLogin($input: CustomerLoginInput!) {
+    customerLogin(input: $input) {
+      accessToken
+      refreshToken
+      expiresIn
+      customerId
+    }
+  }
+`;
 // Update Profile
 export const UPDATE_USER_PROFILE = gql`
   mutation ClientUserUpdate(

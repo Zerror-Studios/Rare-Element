@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 
 // ADD ITEM TO CART
 export const ADD_ITEM_TO_CART = gql`
-  mutation AddItemToCart($input: CreateCartInput, $guestId: String) {
+  mutation AddItemToCart($input: CreateCartInput!, $guestId: String) {
     addItemToCart(input: $input, guestId: $guestId)
   }
 `;

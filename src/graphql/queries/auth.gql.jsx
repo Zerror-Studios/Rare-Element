@@ -1,43 +1,32 @@
 import { gql } from "@apollo/client";
 
-// User Login
-export const LOGIN_USER = gql`
-  query UserLogin($email: String!, $password: String!, $guestId: ID) {
-    userLogin(email: $email, password: $password, guestId: $guestId) {
-      accessToken
-      refreshToken
-      user {
+export const GET_MY_PROFILE = gql`
+  query GetMyProfile {
+    getMyProfile {
+      _id
+      firstName
+      lastName
+      email
+      phoneNumber
+      countryCode
+      gender
+      profileImg
+      dateOfBirth
+      status
+      addresses {
         _id
+        addressType
+        addressline1
+        addressline2
+        flat
+        landmark
         countryCode
-        addresses {
-          _id
-          firstname
-          lastname
-          addressType
-          addressline1
-          addressline2
-          userId
-          flat
-          landmark
-          countryCode
-          phone
-          city
-          country
-          states
-          pincode
-          primary
-          createdAt
-          updatedAt
-        }
-        profileImg
-        dateOfBirth
-        email
-        firstName
-        lastName
-        gender
-        phoneNumber
-        emailSubscribedStatus
-        status
+        phone
+        city
+        country
+        states
+        pincode
+        primary
       }
     }
   }

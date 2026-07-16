@@ -7,8 +7,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RiEyeLine, RiEyeOffLine } from "@remixicon/react";
 import GreenBoxBtn from "../buttons/GreenBoxBtn";
-import { useLazyQuery } from "@apollo/client/react";
-import { LOGIN_USER } from "@/graphql";
+import { useMutation, useLazyQuery } from "@apollo/client/react";
+import { CUSTOMER_LOGIN, GET_MY_PROFILE } from "@/graphql";
 import { toast } from "react-toastify";
 import { useAuthStore } from "@/store/auth-store";
 import { TokenManager } from "@/utils/tokenManager";
@@ -24,7 +24,8 @@ const Login = ({ setToggle }) => {
   const router = useRouter();
   const [visible, setVisible] = useState(false);
   const { setUser, setIsLoggedIn } = useAuthStore((state) => state);
-  const [loginUser, { loading }] = useLazyQuery(LOGIN_USER, { fetchPolicy: "network-only" });
+  const [customerLogin, { loading }] = useMutation(CUSTOMER_LOGIN);
+  const [getMyProfile] = useLazyQuery(GET_MY_PROFILE, { fetchPolicy: "network-only" });
 
   const {
     register,
@@ -34,29 +35,37 @@ const Login = ({ setToggle }) => {
     resolver: zodResolver(LoginSchema),
   });
 
-
   const onSubmit = async (formData) => {
     try {
-      const { data } = await loginUser({ variables: formData });
-      const { user, accessToken, refreshToken } = data?.userLogin || {};
-      if (accessToken && refreshToken && user) {
+      const { data } = await customerLogin({ variables: { input: formData } });
+      const { accessToken, refreshToken, customerId } = data?.customerLogin || {};
+      
+      if (accessToken && refreshToken) {
         localStorage.removeItem("visitorId");
         localStorage.removeItem("visitorExpire");
         TokenManager.clearTokens(); // clear previous
         TokenManager.setTokens(accessToken, refreshToken);
-        setUser(user);
-        setIsLoggedIn(true);
-        toast.success("Login successful!");
-        router.back();
+        
+        // Fetch User Profile
+        const { data: profileData } = await getMyProfile();
+        const user = profileData?.getMyProfile;
+        
+        if (user) {
+          setUser(user);
+          setIsLoggedIn(true);
+          toast.success("Login successful!");
+          router.back();
+        } else {
+          toast.error("Profile not found after login.");
+        }
       } else {
         toast.error("Invalid login credentials.");
       }
     } catch (err) {
-      // console.error(err);
-      if (err.message === 'Error in Save user for client: Nahara for Error "User not found!!"') {
-        toast.error("User not found with this email.");
+      if (err.message?.includes('User not found') || err.message?.includes('Invalid')) {
+        toast.error("Invalid email or password.");
       } else {
-        toast.error("Incorrect password.");
+        toast.error("Login failed: " + err.message);
       }
     }
   };

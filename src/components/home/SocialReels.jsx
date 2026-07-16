@@ -67,7 +67,7 @@ const SocialReels = () => {
                   className="socialCard_image"
                   src={item.img}
                   alt={`${item.title} - Social Media Post`}
-                  onLoadingComplete={() => setImgReady((prev) => ({ ...prev, [i]: true }))}
+                  onLoad={() => setImgReady((prev) => ({ ...prev, [i]: true }))}
                 // sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 400px"
                 />
               </div>
