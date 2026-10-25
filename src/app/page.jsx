@@ -4,6 +4,7 @@ import Hero from '@/components/home/Hero'
 import { GET_CLIENT_SIDE_CATEGORY_BY_SLUG } from '@/graphql'
 import { getClient } from '@/lib/apollo-client-rsc'
 import { MenuData } from '@/helpers/MenuData'
+import { indexableRobots } from '@/utils/env'
 
 // Dynamic imports for better performance
 const Category = dynamic(() => import('@/components/home/Category'), { ssr: true })
@@ -32,7 +33,7 @@ export default async function Page() {
     ],
     primaryKeywords: ["Nahara jewellery", "fine jewellery India"],
     author: "Nahara",
-    robots: "index, follow",
+    robots: indexableRobots(),
     og: {
       title: "Nahara – Luxury Fine Jewellery Crafted for Modern Elegance",
       description: "Handcrafted fine jewellery in gold, diamonds, and silver made for modern elegance.",

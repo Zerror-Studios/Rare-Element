@@ -1,16 +1,18 @@
-import Link from 'next/link'
+import GreenBoxBtn from "@/components/buttons/GreenBoxBtn";
 
+// PRD-014 UX-36: the site's own status layout (plain CSS, no Tailwind).
 export default function NotFound() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] text-center padding">
-      <h2 className="text-4xl font-bold mb-4">404 - Page Not Found</h2>
-      <p className="text-xl mb-8">Oops! The page you are looking for does not exist.</p>
-      <Link
-        href="/"
-        className="px-6 py-3 bg-black text-white rounded-full hover:bg-gray-800 transition-colors"
-      >
-        Return Home
-      </Link>
+    <div className="status_section center">
+      <div className="status_section_inner">
+        <h1 className="text-3xl">Page not found</h1>
+        <p className="text-base">
+          The page you are looking for does not exist or has moved.
+        </p>
+        <div className="w-full">
+          <GreenBoxBtn type="button" title="Return home" href="/" />
+        </div>
+      </div>
     </div>
-  )
+  );
 }

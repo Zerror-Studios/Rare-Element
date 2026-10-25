@@ -133,3 +133,20 @@
 .short_links_icon:hover {
   scale: 1.15;
 }
+
+/* PRD-014 FR-2.8 (UX-28): the search icon matches the white icon links */
+.short_links_search {
+  display: flex;
+  align-items: center;
+}
+
+.short_links_search_icon {
+  height: 1.8rem;
+  color: #fff;
+}
+
+@media (min-width: 750px) {
+  .short_links_search_icon {
+    height: 1.4rem;
+  }
+}

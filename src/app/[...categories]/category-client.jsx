@@ -5,14 +5,18 @@ import Link from 'next/link'
 import gsap from 'gsap'
 import SeoHeader from '@/components/seo/SeoHeader'
 import ProductCard from '@/components/common/ProductCard'
-import { GET_CLIENT_SIDE_CATEGORY_BY_SLUG } from '@/graphql'
+import { GET_CLIENT_SIDE_CATEGORY_BY_SLUG, GET_PRODUCTS } from '@/graphql'
 import { getProductPriceLabel } from '@/utils/Util'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import ScrollTrigger from 'gsap/dist/ScrollTrigger'
-import { useQuery } from '@apollo/client/react'
+import { useApolloClient, useQuery } from '@apollo/client/react'
 import useCategoryStore from '@/store/category-store'
 import GreenBoxBtn from '@/components/buttons/GreenBoxBtn'
+import ListingSortSelect from '@/components/product/ListingSortSelect'
+import { useListingSort } from '@/hooks/useListingSort'
+import { ProductStatus } from '@/utils/Constant'
+import { DEFAULT_LISTING_SORT, toSortQueryValue } from '@/utils/listing-sort'
 
 export default function CategoryClient({ meta, data, initialProducts, initialTotalCount }) {
   const {
@@ -34,7 +38,13 @@ export default function CategoryClient({ meta, data, initialProducts, initialTot
   const containerRef = useRef(null)
   const [imageReady, setImageReady] = useState(false);
 
+  // W2V2-05: each first-page load (sort change, new category) takes a new
+  // number; a response that comes back after a newer request is dropped, so
+  // a slow older list never renders under the newer sort label.
+  const listRequestRef = useRef(0);
+
   useEffect(() => {
+    listRequestRef.current += 1;
     setImageReady(false);
     resetStore();
     setInitialProducts(initialProducts, initialTotalCount);
@@ -53,11 +63,62 @@ export default function CategoryClient({ meta, data, initialProducts, initialTot
     }
   );
 
+  // W2-STORE: the category's own product list has no sort, so another
+  // order reads the same products (`categoryIds`) from getClientSideProducts.
+  const client = useApolloClient();
+  const fetchSortedPage = async (nextSort, pageOffset) => {
+    const { data: result } = await client.query({
+      query: GET_PRODUCTS,
+      variables: {
+        offset: pageOffset,
+        limit,
+        filters: { status: ProductStatus.PUBLISHED, categoryIds: [data?._id] },
+        sort: toSortQueryValue(nextSort),
+      },
+      fetchPolicy: 'network-only',
+    });
+    return result?.getClientSideProducts;
+  };
+
+  const loadFirstPage = async (nextSort) => {
+    listRequestRef.current += 1;
+    const requestId = listRequestRef.current;
+    const isCurrent = () => requestId === listRequestRef.current;
+    setLoading(true);
+    try {
+      if (nextSort === DEFAULT_LISTING_SORT) {
+        setInitialProducts(initialProducts, initialTotalCount);
+        return;
+      }
+      const page = await fetchSortedPage(nextSort, 0);
+      if (page && isCurrent()) {
+        setInitialProducts(page.products || [], page.totalCount || 0);
+      }
+    } catch (error) {
+      console.error("Error sorting products:", error);
+    } finally {
+      if (isCurrent()) setLoading(false);
+    }
+  };
+
+  const { sort, changeSort } = useListingSort(loadFirstPage);
+  const handleSortChange = (value) => loadFirstPage(changeSort(value));
+
   const handleLoadMore = async () => {
     if (loading || !hasMore) return;
+    // A page for a list that has since been replaced is dropped (W2V2-05).
+    const requestId = listRequestRef.current;
+    const isCurrent = () => requestId === listRequestRef.current;
     setLoading(true);
 
     try {
+      if (sort !== DEFAULT_LISTING_SORT) {
+        const page = await fetchSortedPage(sort, offset);
+        if (page && isCurrent()) {
+          appendProducts(page.products || [], page.totalCount || 0);
+        }
+        return;
+      }
       const { data: result } = await fetchMore({
         variables: {
           slug: data?.slug || data?.categoriesSlug,
@@ -66,13 +127,13 @@ export default function CategoryClient({ meta, data, initialProducts, initialTot
         }
       });
 
-      if (result?.getClientSideCategory?.products) {
+      if (result?.getClientSideCategory?.products && isCurrent()) {
         appendProducts(result.getClientSideCategory.products, result.getClientSideCategory.productsCount);
       }
     } catch (error) {
       console.error("Error loading more products:", error);
     } finally {
-      setLoading(false);
+      if (isCurrent()) setLoading(false);
     }
   };
 
@@ -121,8 +182,17 @@ export default function CategoryClient({ meta, data, initialProducts, initialTot
           <h1 className="products_title text-3xl">{data?.name || ""}</h1>
         </div>
 
+        <div className="listing_sort_bar">
+          <ListingSortSelect
+            id="category_sort"
+            value={sort}
+            onChange={handleSortChange}
+            disabled={loading}
+          />
+        </div>
+
         <div className="padding">
-          <div className="allproducts_paren  categories_paren ">
+          <div className={`allproducts_paren  categories_paren ${loading ? "opacity-50" : ""}`}>
             {products?.length > 0 ? (
               products?.map((item) => (
                 <Link

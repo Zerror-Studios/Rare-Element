@@ -1,88 +1,81 @@
 "use client";
-import React, { useLayoutEffect, useState } from "react";
-import gsap from "gsap";
-import GreenBoxBtn from '@/components/buttons/GreenBoxBtn';
+
+/**
+ * Email preference (PRD-014 FR-2.8, UX-29)
+ *
+ * Shows the customer's real marketing-email consent
+ * (`emailSubscribedStatus`, 1 = opted in) and changes it with
+ * `updateMyProfile`. Replaces a static "Not Subscribed" block.
+ */
+
+import React from "react";
+import { useMutation } from "@apollo/client/react";
+import { toast } from "react-toastify";
+
+import { UPDATE_USER_PROFILE } from "@/graphql";
+import { useAuthStore } from "@/store/auth-store";
+import { getErrorMessage } from "@/utils/errors";
+
+// ─── Constants ────────────────────────────────────────────────────────────
+
+const EMAIL_STATUS_SUBSCRIBED_CODE = 1;
+const EMAIL_STATUS_UNSUBSCRIBED_CODE = 0;
+
+// ─── Component ────────────────────────────────────────────────────────────
 
 const EmailPreference = () => {
-  const [isEdit, setIsEdit] = useState(false);
+  const { user, setUser } = useAuthStore((state) => state);
+  const [updateUser, { loading }] = useMutation(UPDATE_USER_PROFILE);
+  const isKnown = user?.emailSubscribedStatus !== undefined;
+  const isSubscribed =
+    user?.emailSubscribedStatus === EMAIL_STATUS_SUBSCRIBED_CODE;
 
-  useLayoutEffect(() => {
-    if (isEdit) {
-      gsap.to(".subscription_form_paren", { height: "auto", duration: 0.5, ease: "power2.out" })
-    } else {
-      gsap.to(".subscription_form_paren", { height: "0vh",  duration: 0.5, ease: "power2.out" })
+  const handleToggle = async () => {
+    if (loading || !isKnown) return;
+    try {
+      const { data } = await updateUser({
+        variables: {
+          input: {
+            emailSubscribedStatus: isSubscribed
+              ? EMAIL_STATUS_UNSUBSCRIBED_CODE
+              : EMAIL_STATUS_SUBSCRIBED_CODE,
+          },
+        },
+      });
+      if (data?.updateMyProfile) {
+        setUser({ ...user, ...data.updateMyProfile });
+        toast.success(
+          isSubscribed
+            ? "You won't receive marketing emails."
+            : "You're subscribed to our emails.",
+        );
+      }
+    } catch (error) {
+      toast.error(getErrorMessage(error, "Couldn't update your preference."));
     }
-  }, [isEdit])
+  };
 
   return (
     <>
       <div className="checkout_thin_line"></div>
       <div className="settings__block">
         <div>
-          <p>Newsletter Subscription - {"Not Subscribed"}</p>
-          <p>Direct Mail Marketing - {"Not Subscribed"}</p>
+          <p>
+            News and offers by email -{" "}
+            {isKnown ? (isSubscribed ? "Subscribed" : "Not subscribed") : "…"}
+          </p>
         </div>
-        {!isEdit && (
-          <div onClick={() => setIsEdit(true)} className="settings__link">
-            <p>Edit Subscription</p>
-          </div>
-        )}
-        <div className="subscription_form_paren">
-          <div className="subscription_div">
-            <p> Newsletter</p>
-            <div className="subscription_btn_paren">
-              {/* 
-              {
-                user.subscriptions.newsletter === "Subscribed" ?
-                  <button className='subscribe_btn'>
-                    <p className='text-xs'>
-                      Remove
-                    </p>
-                  </button>
-                  : */}
-              <button className='unSubscribe_btn'>
-                <p className='text-xs'>
-                  Add
-                </p>
-              </button>
-              {/* } */}
-            </div>
-          </div>
-          <div className="subscription_div">
-            <p> Direct Mail Marketing</p>
-            <div className="subscription_btn_paren">
-
-              {/* {
-                user.subscriptions.directMail === "Subscribed" ?
-                  <button className='subscribe_btn'>
-                    <p className='text-xs'>
-                      remove
-                    </p>
-                  </button>
-                  : */}
-              <button className='unSubscribe_btn'>
-                <p className='text-xs'>
-                  add
-                </p>
-              </button>
-              {/* } */}
-            </div>
-          </div>
-
-          <div className="settings_btn">
-
-            <GreenBoxBtn title='Save' />
-
-            <button onClick={() => setIsEdit(false)} className='cancel_form_btn'>
-              <p>
-                Cancel
-              </p>
-            </button>
-          </div>
-        </div>
+        <button
+          type="button"
+          onClick={handleToggle}
+          disabled={loading || !isKnown}
+          className="settings__link email_preference_btn"
+        >
+          <p>{loading ? "Saving…" : isSubscribed ? "Unsubscribe" : "Subscribe"}</p>
+        </button>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default EmailPreference
+export default EmailPreference;

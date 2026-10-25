@@ -78,3 +78,14 @@
   left: 50%;
   transform: translateX(-50%);
 }
+
+/* PRD-014 UX-30: visible before (and without) the GSAP reveal */
+@media (prefers-reduced-motion: reduce) {
+  .info_header,
+  .home_hero {
+    opacity: 1;
+  }
+  .home_hero {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+  }
+}

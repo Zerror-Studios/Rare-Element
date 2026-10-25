@@ -7,6 +7,8 @@ import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import Image from 'next/image';
+import { openConsentPreferences } from '@/utils/consent';
+import NewsletterForm from './NewsletterForm';
 gsap.registerPlugin(ScrollTrigger)
 
 // SF-17: animations are fetched from /public on demand, not bundled.
@@ -79,6 +81,8 @@ const footerLinksData = [
       { label: "Privacy Policy", href: "/privacy-policy" },
       { label: "Shipping & Returns", href: "/shipping-returns" },
       { label: "Terms & Conditions", href: "/terms-of-service" },
+      // PRD-014 FR-1.9: reopens the consent banner (utils/consent.js).
+      { label: "Cookie preferences", action: "consent" },
     ],
   },
   {
@@ -173,6 +177,8 @@ const Footer = () => {
               <p className=" footer_about text-base thin">
                 Nahara brings a bold, playful edge to modern jewellery. Designed and crafted in-house, each piece blends inventive ideas with refined details, creating a fresh kind of elegance spirited, stylish, and made to stand out.
               </p>
+              {/* PRD-014 FR-2.8 (UX-29) */}
+              <NewsletterForm />
             </div>
 
             {/* DYNAMIC COLUMNS */}
@@ -182,9 +188,20 @@ const Footer = () => {
 
                 <div className="footer_links_column">
                   {col.links.map((item, idx) => (
-                    <Link prefetch key={idx} href={item.href} scroll={false} target={item.target}>
-                      <p className="text-base thin">{item.label}</p>
-                    </Link>
+                    item.action === "consent" ? (
+                      <button
+                        key={idx}
+                        type="button"
+                        className="footer_consent_btn"
+                        onClick={openConsentPreferences}
+                      >
+                        <span className="text-base thin">{item.label}</span>
+                      </button>
+                    ) : (
+                      <Link prefetch key={idx} href={item.href} scroll={false} target={item.target}>
+                        <p className="text-base thin">{item.label}</p>
+                      </Link>
+                    )
                   ))}
                 </div>
               </div>

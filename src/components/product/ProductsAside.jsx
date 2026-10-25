@@ -103,10 +103,13 @@ const ProductsAside = ({ setOpenFilter, categories = [], filterOptions = { minPr
         </div>
 
         <div className="products_aside_close">
-          <Image
-            height={20} width={20}
+          <button
+            type="button"
+            className="mobile_icon_btn"
             onClick={() => setOpenFilter(false)}
-            src="/icons/close.svg" alt="img" />
+            aria-label="Close filters">
+            <Image height={20} width={20} src="/icons/close.svg" alt="" />
+          </button>
         </div>
         <div data-lenis-prevent className=" scroller_none filter_boxes_paren">
 

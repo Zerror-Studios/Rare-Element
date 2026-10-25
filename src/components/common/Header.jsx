@@ -10,6 +10,7 @@ import CustomEase from 'gsap/dist/CustomEase';
 import { useGSAP } from '@gsap/react';
 import Image from 'next/image';
 import ScrollTrigger from 'gsap/dist/ScrollTrigger';
+import { RiSearchLine } from '@remixicon/react';
 gsap.registerPlugin(ScrollTrigger, CustomEase)
 
 CustomEase.create("ease-secondary", "0.16, 1, 0.35, 1");
@@ -130,6 +131,10 @@ const Header = ({ openCart }) => {
           ))}
         </div>
         <div className="short_links">
+          {/* PRD-014 FR-2.8 (UX-28): site search */}
+          <Link aria-label="Search products" scroll={false} href="/search" className="short_links_search">
+            <RiSearchLine className="short_links_icon short_links_search_icon" aria-hidden="true" />
+          </Link>
           <Link aria-label="View Wishlist" scroll={false} href={isLoggedIn ? "/account/wishlist" : "/login"} >
             <Image height={25} width={25} className='short_links_icon' src="/icons/heart.svg" alt="Wishlist Icon" />
           </Link>

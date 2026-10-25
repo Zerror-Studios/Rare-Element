@@ -155,6 +155,31 @@ button {
   flex-shrink: 0;
 }
 
+/* PRD-014 UX-36: the few spacing/state utilities the status pages and the
+   listing use (this site has no Tailwind; these were silently missing). */
+.block {
+  display: block;
+}
+.font-bold {
+  font-weight: 700;
+}
+.mt-1 {
+  margin-top: 0.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.mt-4 {
+  margin-top: 1rem;
+}
+.mt-8 {
+  margin-top: 2rem;
+}
+.opacity-50 {
+  opacity: 0.5;
+  transition: opacity 0.2s ease;
+}
+
 .hidden {
   opacity: 0;
 }

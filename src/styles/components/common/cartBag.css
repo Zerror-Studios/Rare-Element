@@ -484,3 +484,15 @@
     padding-bottom: 6rem;
   }
 }
+/* PRD-014 UX-31/UX-37: the close control is a real button; bag retry */
+button.cartBag_menuHeaderClose {
+  padding: 0;
+  border: 0;
+}
+.cart_retry_btn {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid #174d38;
+  color: #174d38;
+  cursor: pointer;
+}

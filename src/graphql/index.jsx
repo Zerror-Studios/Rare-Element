@@ -7,6 +7,7 @@ export * from "@/graphql/queries/cart.gql";
 export * from "@/graphql/queries/checkout.gql";
 export * from "@/graphql/queries/order.gql";
 export * from "@/graphql/queries/wishlist.gql";
+export * from "@/graphql/queries/review.gql";
 
 // MUTATION
 export * from "@/graphql/mutations/auth.mutation";

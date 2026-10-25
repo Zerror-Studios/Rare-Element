@@ -13,6 +13,7 @@ import { useSizeGuideStore } from "@/store/sizeguide-store";
 import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import Link from "next/link";
+import { useDialogA11y } from "@/hooks/useDialogA11y";
 
 const Layout = ({ children }) => {
   const pathname = usePathname();
@@ -20,6 +21,9 @@ const Layout = ({ children }) => {
   const { isSizeGuideOpen, sizeGuideImage, closeSizeGuide } = useSizeGuideStore((state) => state);
 
   const overlayRef = useRef()
+  const sizeGuideRef = useRef(null)
+  // PRD-014 UX-31: focus trap, Escape and inert-while-closed.
+  useDialogA11y(sizeGuideRef, isSizeGuideOpen, closeSizeGuide)
 
   useEffect(() => {
     const isOverlayActive = isCartOpen || isSizeGuideOpen;
@@ -108,7 +112,14 @@ const Layout = ({ children }) => {
           <p className="bold">CHAT</p>
         </div>
       </Link>
-      <div className="ring_size_guide">
+      <div
+        ref={sizeGuideRef}
+        className="ring_size_guide"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Size guide"
+        tabIndex={-1}
+      >
         <div className="ring_size_guide_img_paren center">
           <Image
             sizes="(max-width: 960px) 100vw, 960px"
@@ -119,11 +130,13 @@ const Layout = ({ children }) => {
             className="w-full h-auto"
           />
         </div>
-        <div
+        <button
+          type="button"
           onClick={() => { closeSizeGuide() }}
+          aria-label="Close size guide"
           className="cartBag_menuHeaderClose">
-          <RiCloseLine size={14} className='close_icon' />
-        </div>
+          <RiCloseLine size={14} className='close_icon' aria-hidden="true" />
+        </button>
       </div>
       <div
         onClick={() => {

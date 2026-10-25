@@ -9,7 +9,14 @@
  * UTM parameters, referrer and landing page captured on the first page of
  * the visit (kept in `sessionStorage` for the session). Nothing here is
  * trusted for money; the server only stores it.
+ *
+ * Consent (W1V-C-03, PRD-014 FR-1.9): nothing is captured, stored or sent
+ * unless the shopper granted "analytics". Without it (or after it is
+ * withdrawn) the stored visit is dropped and checkout sends no attribution,
+ * so old `_ga` cookies from before the banner never reach GA4 server-side.
  */
+
+import { CONSENT_CHANGE_EVENT, readConsent } from "./consent";
 
 const STORAGE_KEY = "zc_visit_attribution";
 const UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"];
@@ -40,9 +47,25 @@ function readCookies() {
   return cookies;
 }
 
-/** Call once per page load: remembers the UTM/referrer/landing of the visit. */
+const hasAnalyticsConsent = () => readConsent()?.analytics === true;
+
+/** Drops the stored visit (consent withdrawn or never given). */
+export function clearVisitAttribution() {
+  if (typeof window === "undefined") return;
+  try {
+    sessionStorage.removeItem(STORAGE_KEY);
+  } catch {
+    // Storage unavailable: nothing was stored.
+  }
+}
+
+/** Remembers the UTM/referrer/landing of the visit (analytics consent only). */
 export function captureLandingAttribution() {
   if (typeof window === "undefined") return;
+  if (!hasAnalyticsConsent()) {
+    clearVisitAttribution();
+    return;
+  }
   try {
     if (sessionStorage.getItem(STORAGE_KEY)) return;
     const params = new URLSearchParams(window.location.search);
@@ -70,9 +93,29 @@ export function captureLandingAttribution() {
   }
 }
 
-/** The attribution to send with checkout, or null when nothing is known. */
+/**
+ * Call once on app mount: captures now and again when the shopper answers
+ * the banner (granting on the landing page keeps its UTMs). Returns the
+ * cleanup for the listener.
+ */
+export function startVisitAttribution() {
+  if (typeof window === "undefined") return () => {};
+  captureLandingAttribution();
+  window.addEventListener(CONSENT_CHANGE_EVENT, captureLandingAttribution);
+  return () =>
+    window.removeEventListener(CONSENT_CHANGE_EVENT, captureLandingAttribution);
+}
+
+/**
+ * The attribution to send with checkout, or null when nothing is known or
+ * the shopper hasn't granted analytics consent.
+ */
 export function getOrderAttribution() {
   if (typeof window === "undefined") return null;
+  if (!hasAnalyticsConsent()) {
+    clearVisitAttribution();
+    return null;
+  }
   let stored = {};
   try {
     stored = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || "{}");

@@ -4,8 +4,18 @@ import { gql } from "@apollo/client";
 // Nested variants are PUBLISHED only; storefronts get no stock or badge
 // names (both are admin-only), so neither is selected.
 export const GET_PRODUCTS = gql`
-  query GetClientSideProducts($limit: Int, $offset: Int, $filters: GetProductsFilterInput) {
-    getClientSideProducts(limit: $limit, offset: $offset, filters: $filters) {
+  query GetClientSideProducts(
+    $limit: Int
+    $offset: Int
+    $filters: GetProductsFilterInput
+    $sort: ClientProductSort
+  ) {
+    getClientSideProducts(
+      limit: $limit
+      offset: $offset
+      filters: $filters
+      sort: $sort
+    ) {
       products {
         _id
         name
@@ -111,6 +121,47 @@ export const GET_FILTER_OPTIONS = gql`
         key
         values
       }
+    }
+  }
+`;
+
+// PRD-014 FR-2.8 (UX-33): one page of product URLs for the sitemap.
+export const GET_SITEMAP_PRODUCTS = gql`
+  query GetSitemapProducts($limit: Int, $offset: Int, $filters: GetProductsFilterInput) {
+    getClientSideProducts(limit: $limit, offset: $offset, filters: $filters) {
+      products {
+        _id
+        slug
+        updatedAt
+      }
+      totalCount
+    }
+  }
+`;
+
+// PRD-014 FE-22: the wishlist's products in one call (ids in the order
+// asked; unpublished or missing products are left out; at most
+// `MAX_PRODUCTS_BY_IDS` per call, so longer lists are chunked).
+export const GET_PRODUCTS_BY_IDS = gql`
+  query GetClientSideProductsByIds($ids: [ID!]) {
+    getClientSideProductsByIds(ids: $ids) {
+      _id
+      name
+      slug
+      assets {
+        path
+        type
+        altText
+        isFeatured
+        isHover
+      }
+      variants {
+        _id
+        price
+        compareAtPrice
+        status
+      }
+      categoryIds
     }
   }
 `;

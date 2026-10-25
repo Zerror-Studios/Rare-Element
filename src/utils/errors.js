@@ -60,9 +60,19 @@ export const REASON_MESSAGES = {
     "We couldn't confirm your payment. Please check your order or try again.",
   PROVIDER_ORDER_MISMATCH:
     "We couldn't confirm your payment. Please check your order or try again.",
+  // PRD-014 Wave 1 (W1-MONEY): no shipping zone covers the address.
+  SHIPPING_UNAVAILABLE:
+    "We can't ship to this address yet. Please use a different address.",
   // PRD-003 FR-0.5: customer password reset.
   INVALID_RESET_TOKEN: "This reset link is invalid or has expired.",
   WEAK_PASSWORD: "Use at least 8 characters for your password.",
+};
+
+// PRD-014 COM-32: `removeItemFromCart` without the line's variant is
+// ambiguous when the product has several lines (the bag is out of date).
+export const REMOVE_ITEM_OVERRIDES = {
+  VARIANT_REQUIRED:
+    "We couldn't tell which item to remove. Please refresh your bag and try again.",
 };
 
 const CODE_MESSAGES = {

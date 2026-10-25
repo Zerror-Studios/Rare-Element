@@ -20,7 +20,7 @@ flowchart LR
     NX -- "RSC / SSR: API_GATEWAY_URL/v1/graphql<br/>x-tenant-domain / x-forwarded-host = NEXT_PUBLIC_TENANT_DOMAIN<br/>+ x-zcom-edge-secret (server-only)" --> GW
     NX -- "nimbbl_sonic checkout" --> NB["Nimbbl"]
     NX -- "next/image" --> CDN[("assets.nahara.co.in")]
-    NX -- "GTM · GA · Meta Pixel" --> AN["Analytics"]
+    NX -- "GTM · GA · Meta Pixel (after consent)" --> AN["Analytics"]
 ```
 
 ## 2. Rendering architecture
@@ -29,7 +29,7 @@ flowchart LR
 flowchart TB
     subgraph Server["Server (RSC)"]
         MW["middleware.js<br/>/v1/graphql → gateway proxy with edge headers<br/>/account/*, /checkout/* → /login?next= without a session cookie"]
-        L["app/layout.jsx<br/>next/font Inter · GTM/GA/Pixel · providers · metadataBase"]
+        L["app/layout.jsx<br/>next/font Inter · Consent Mode defaults + ConsentBanner · providers · metadataBase"]
         P["route page.jsx<br/>getClient() from lib/apollo-client-rsc.js<br/>metadata / generateMetadata (canonical per route)<br/>notFound() only on null / NOT_FOUND; else app/error.jsx"]
         LD["loading.jsx (per route)"]
     end
@@ -51,7 +51,9 @@ flowchart TB
 |---|---|---|
 | `/` | Home collections | `revalidate = 300` (ISR) |
 | `/products` | Product list | ISR 300 |
-| `/products/[slug]` | Product detail, `generateMetadata` (seo, Open Graph, Twitter); an id permanently redirects to the slug | ISR 300 |
+| `/products/[slug]` | Product detail, `generateMetadata` (seo, Open Graph, Twitter), Product JSON-LD (offers, no availability), latest 10 approved reviews (`getReviews`, PRD-014 FR-2.8); an id permanently redirects to the slug | ISR 300 |
+| `/search?q=` | Product search, `filters.search` on `getClientSideProducts` (client, PRD-014 FR-2.8) | Dynamic, `noindex, follow` |
+| `/sitemap.xml`, `/robots.txt` | `app/sitemap.js` (static pages, categories, ≤ 1000 published products) and `app/robots.js` (sitemap URL from `NEXT_PUBLIC_SITE_URL`), PRD-014 FR-2.8 | Sitemap revalidated hourly; robots static |
 | `/[...categories]` | Category listing, `generateMetadata` | ISR 300 |
 | `/account`, `/account/settings`, `/account/wishlist`, `/account/order/[id]` (`/account/offers` removed, PRD-014 UX-06) | Per user (client side) | Dynamic, never cached |
 | `/checkout/[id]` | The customer's own cart (the id in the URL is cosmetic) | Dynamic, login required |
@@ -84,7 +86,7 @@ flowchart LR
 - **Auth link:** if the shopper is logged in (persisted hint) but has no valid token, it waits for the refresh first (page reloads). `context.skipAuth` sends a request anonymously.
 - **Errors** are mapped by `utils/errors.js` from `extensions.reason` / `code`.
 
-**Operations in use (all ✅, 33):** customer auth (`customerLogin`, `customerSignup`, `customerRefreshToken`, `customerLogout`, `getMyProfile`, `updateMyProfile`); catalog (`getClientSideProducts`, `getClientSideProductById`, `getClientSideCategories`, `getClientSideCategory`, `getFilterOptions`); cart (`issueGuestCartId`, `mergeGuestCart`, line mutations) and promotions; checkout (`createCheckoutSessionFromCart`, `getCheckoutSession`, `completeCheckout`, `createPaymentSession`, `verifyPayment`); `myOrders` / `myOrder`; addresses (full CRUD); `getWishlist` / `toggleWishlist`; `submitContactForm`; `requestBackInStock`; PRD-003 FR-0.5 (2026-10-15) adds `customerRequestPasswordReset` and `customerResetPassword` (36 in total with `unsubscribeNewsletter`, not yet re-validated against a composed schema).
+**Operations in use (all ✅, 33):** customer auth (`customerLogin`, `customerSignup`, `customerRefreshToken`, `customerLogout`, `getMyProfile`, `updateMyProfile`); catalog (`getClientSideProducts`, `getClientSideProductById`, `getClientSideCategories`, `getClientSideCategory`, `getFilterOptions`); cart (`issueGuestCartId`, `mergeGuestCart`, line mutations) and promotions; checkout (`createCheckoutSessionFromCart`, `getCheckoutSession`, `completeCheckout`, `createPaymentSession`, `verifyPayment`); `myOrders` / `myOrder`; addresses (full CRUD); `getWishlist` / `toggleWishlist`; `submitContactForm`; `requestBackInStock`; PRD-003 FR-0.5 (2026-10-15) adds `customerRequestPasswordReset` and `customerResetPassword` (36 in total with `unsubscribeNewsletter`). PRD-014 FR-2.8 (2026-10-25) adds `subscribeNewsletter` (footer), `getReviews` (PDP) and a sitemap read of `getClientSideProducts`; FE-22 adds `getClientSideProductsByIds` (wishlist). 40 documents, validated with `npm run validate:ops` against the composed supergraph.
 
 ## 4. Session and guest identity
 
@@ -117,7 +119,8 @@ sequenceDiagram
         C->>GW: getCheckoutSession
     end
     Note over C: RESERVED → continue · FAILED / EXPIRED → stop with a reason
-    C->>GW: completeCheckout → orderId (bag locked from here)
+    C->>GW: completeCheckout → orderId + pricing.total (bag locked from here)
+    Note over C: pricing.total = 0 → the order is already PAID (PRD-014 COM-08):<br/>no payment session, straight to thank-you
     Note over C: orderId + cart fingerprint + details fingerprint (email, shipping, billing) saved in sessionStorage (utils/pending-order.js); a retry or reload pays this order while both match
     C->>GW: createPaymentSession({orderId}) → token
     C->>NB: Checkout({token}).open() ("Pay Now" disabled until the callback)
@@ -130,7 +133,7 @@ sequenceDiagram
     Note over TY: PAID → GA4 + Pixel purchase (once per order id); polling → "Processing"; ends unpaid → "Payment not confirmed yet" (RBUG-20)
 ```
 
-The client **never sends prices**: `addItemToCart` takes `{productId, variantId, qty}` plus `guestId`, and the payable total comes from the session pricing. Closing the Nimbbl window re-enables "Pay Now" for the same order. The pending order is forgotten when payment succeeds or the cart lines or coupon change; a changed email or address creates a new order (VBUG-4), and a legacy entry without the details fingerprint is never reused; the backend separately reuses an unchanged cart's active checkout session and cancels it when the cart changed (R2-C8). Reservation reasons `CHECKOUT_EXPIRED` and `RESERVATION_RELEASED` map to "reservation expired" (R2-C7); `CHECKOUT_REPLACED`, `PAYMENT_NOT_CONFIGURED`, `MISSING_PROVIDER_ORDER` and `INVALID_EMAIL` have their own messages (VCON-2).
+The client **never sends prices**: `addItemToCart` takes `{productId, variantId, qty}` plus `guestId`, and the payable total comes from the session pricing. Closing the Nimbbl window re-enables "Pay Now" for the same order. The pending order is forgotten when payment succeeds or the cart lines or coupon change; a changed email or address creates a new order (VBUG-4), and a legacy entry without the details fingerprint is never reused; the backend separately reuses an unchanged cart's active checkout session and cancels it when the cart changed (R2-C8). Reservation reasons `CHECKOUT_EXPIRED` and `RESERVATION_RELEASED` map to "reservation expired" (R2-C7); `CHECKOUT_REPLACED`, `PAYMENT_NOT_CONFIGURED`, `MISSING_PROVIDER_ORDER` and `INVALID_EMAIL` have their own messages (VCON-2). PRD-014 Wave 1: a ₹0 order skips the payment steps; `SHIPPING_UNAVAILABLE` (no shipping zone for the address) shows "We can't ship to this address yet" and focuses the address; a `VARIANT_REQUIRED` cart remove refetches the bag.
 
 ## 6. Presentation layer
 
@@ -144,7 +147,7 @@ The client **never sends prices**: `addItemToCart` takes `{productId, variantId,
 | SEO | `metadataBase` from `NEXT_PUBLIC_SITE_URL`; per-route canonicals; `generateMetadata` on categories and products; JSON-LD schema components serialised with `utils/json-ld.js` |
 | CMS HTML | `utils/sanitize-html.js` (allowlist over `html-react-parser`'s `htmlToDOM`) |
 | Security headers | CSP (GTM/GA, Meta, `*.nimbbl.tech` + Nimbbl helper hosts, assets, `frame-ancestors 'none'`; report-only with `CSP_REPORT_ONLY=true`), X-Frame-Options DENY, nosniff, strict-origin referrer, Permissions-Policy, HSTS in production. `script-src 'unsafe-inline'` is kept: a nonce would force dynamic rendering (no ISR) and GTM custom-HTML tags need it (SF-9 partial) |
-| Analytics | GTM `layout.jsx` (first PageView), GA, Meta Pixel (`lib/fpixel.js`; `FacebookPixel.jsx` tracks client navigations only), `utils/analytics.js` (GA4 e-commerce events), `utils/analytics-events.js` (PRD-013 event layer: `select_item`, `select_variant`, `cta_click`, `gallery_interaction`, `size_guide_open`, `notify_me`, `coupon_apply`/`coupon_failed`, `add_shipping_info`, `add_payment_info`, `checkout_error`; `item_id` = variant id), `utils/ga-attribution.js` (PRD-012 order attribution); IDs from env |
+| Analytics | Consent first (PRD-014 FR-1.9, D10): `layout.jsx` runs only the Google Consent Mode v2 defaults ("denied"); `components/common/ConsentBanner.jsx` + `utils/consent.js` load GTM and GA after "analytics" consent and the Meta Pixel (first PageView) after "marketing" consent, choice in localStorage `zc_consent`, reopened from the footer "Cookie preferences"; no hard-coded tag ids. Meta Pixel helpers `lib/fpixel.js` (`FacebookPixel.jsx` tracks client navigations only), `utils/analytics.js` (GA4 e-commerce events), `utils/analytics-events.js` (PRD-013 event layer: `select_item`, `select_variant`, `cta_click`, `gallery_interaction`, `size_guide_open`, `notify_me`, `coupon_apply`/`coupon_failed`, `add_shipping_info`, `add_payment_info`, `checkout_error`; `item_id` = variant id), `utils/ga-attribution.js` (PRD-012 order attribution); IDs from env |
 
 ## 7. Deployment
 

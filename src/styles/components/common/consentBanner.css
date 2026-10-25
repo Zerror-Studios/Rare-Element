@@ -1,0 +1,80 @@
+/* Cookie consent banner (PRD-014 FR-1.9, UX-05) */
+.consent_banner {
+  position: fixed;
+  z-index: 999999;
+  left: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: calc(100svh - 2rem);
+  overflow-y: auto;
+  padding: 1.25rem;
+  background-color: white;
+  color: #174d38;
+  border: 1px solid #174d38;
+  border-radius: 0.25rem;
+  box-shadow: 0 0 0.5rem 0.25rem #00804f21;
+}
+
+.consent_banner a {
+  color: inherit;
+}
+
+.consent_banner_choices {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.consent_banner_choices label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.consent_banner_choices input {
+  accent-color: #174d38;
+  width: 1rem;
+  height: 1rem;
+}
+
+.consent_banner_actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.consent_banner_btn {
+  flex: 1 1 auto;
+  min-height: 2.75rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid #174d38;
+  background-color: white;
+  color: #174d38;
+  cursor: pointer;
+}
+
+.consent_banner_btn_primary {
+  background-color: #174d38;
+  color: white;
+}
+
+.consent_banner_btn:focus-visible,
+.consent_banner_choices input:focus-visible,
+.consent_banner a:focus-visible {
+  outline: 2px solid #174d38;
+  outline-offset: 2px;
+}
+
+@media (min-width: 750px) {
+  .consent_banner {
+    left: auto;
+    max-width: 32rem;
+  }
+}

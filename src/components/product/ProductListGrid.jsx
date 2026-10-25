@@ -34,6 +34,7 @@ const ProductListGrid = ({ title, data }) => {
             key={item?._id}
             scroll={false}
             href={`/products/${item?.slug || item?._id}`}
+            data-testid="product-card-link"
           >
             <div className="suggestion_shopcard">
               <ProductCard

@@ -4,7 +4,7 @@ This is a custom-designed shopper storefront on the **ZCommerce** platform by Ze
 
 > Working here with Claude Code or as a new engineer? Read [`CLAUDE.md`](CLAUDE.md), then [`docs/README.md`](docs/README.md). The API contract every storefront follows is in `../../zcom-backend/docs/architecture/storefront-api-contract.md`.
 
-**Integration status: current.** Since PRD-002 (2026-10-14, rounds 1 to 3) every operation validates against the backend schema (34/34): catalog, cart (server-issued guest ids, `mergeGuestCart` at login), promotions, checkout, orders, wishlist, addresses, contact, back-in-stock and the newsletter `/unsubscribe` page. The browser calls the API same-origin at `/v1/graphql`, which `src/middleware.js` proxies to the gateway with the edge headers (client IP, tenant domain, optional edge secret); the access token is held in memory, and the HttpOnly customer cookie handles refresh. Checkout requires login. Not yet tested in a browser or against the Nimbbl sandbox.
+**Integration status: current.** Since PRD-002 (2026-10-14, rounds 1 to 3) every operation validates against the backend schema (34/34 then; 40/40 operations with variable shapes after the PRD-014 close-out, 2026-10-26): catalog, cart (server-issued guest ids, `mergeGuestCart` at login), promotions, checkout, orders, wishlist, addresses, contact, back-in-stock and the newsletter `/unsubscribe` page. The browser calls the API same-origin at `/v1/graphql`, which `src/middleware.js` proxies to the gateway with the edge headers (client IP, tenant domain, optional edge secret); the access token is held in memory, and the HttpOnly customer cookie handles refresh. Checkout requires login. Not yet tested in a browser or against the Nimbbl sandbox.
 
 ## Getting started
 
@@ -19,7 +19,7 @@ npm run dev        # http://localhost:3000
 - `EDGE_SHARED_SECRET` (server-only, optional): the gateway's edge secret, sent as `x-zcom-edge-secret` on proxied and server-side calls so strict tenant mode trusts this site's tenant and client-IP headers. Never prefix it with `NEXT_PUBLIC_`.
 - `NEXT_PUBLIC_TENANT_DOMAIN` (**required in production**, `nahara.co.in`): selects the tenant.
 - `NEXT_PUBLIC_GRAPHQL_API_URL`: **leave unset** so the browser uses the same-origin `/v1/graphql` (needed for the session cookie).
-- `NEXT_PUBLIC_SITE_URL` (default `https://nahara.co.in`), `NEXT_PUBLIC_SUPPORT_EMAIL`, `NEXT_PUBLIC_GA_MEASUREMENT_ID`, `NEXT_PUBLIC_GTM_ID`, `NEXT_PUBLIC_FB_PIXEL_ID`, `CSP_REPORT_ONLY` (optional).
+- `NEXT_PUBLIC_SITE_URL` (default `https://<NEXT_PUBLIC_TENANT_DOMAIN>`; with neither set every page is `noindex`, W2V-C-04), `NEXT_PUBLIC_SUPPORT_EMAIL`, `NEXT_PUBLIC_GA_MEASUREMENT_ID`, `NEXT_PUBLIC_GTM_ID`, `NEXT_PUBLIC_FB_PIXEL_ID` (no defaults since PRD-014 FR-1.9: **set the production IDs in hosting**, an unset id loads no tag; tags load only after cookie consent), `CSP_REPORT_ONLY` (optional).
 
 Every `NEXT_PUBLIC_*` value is public in the browser bundle.
 
@@ -34,9 +34,10 @@ Dev runs with Turbopack.
 | Dev | `npm run dev` |
 | Build | `npm run build` |
 | Start (after build) | `npm run start` |
+| Contract check | `npm run validate:ops` (operations and `variables` shapes against the composed supergraph; needs `../../zcom-backend` installed and built; PRD-014 FR-1.6) |
 | Lint | `npm run lint` (currently not functional; see `CLAUDE.md` §4) |
 
-There are no tests.
+Tests: `npm test` runs `test/*.test.mjs` with `node:test` (Node ≥ 22.15, no extra dependency) and **runs before every `npm run build`** (`prebuild`, PRD-014 K-01), so a failing test stops the deploy; keep the host's Build Command at `npm run build` (the Vercel default; a `next build` override skips the tests) and its Node at 22.15+. 25 tests: 11 over the `/v1/graphql` proxy in `src/middleware.js` (`test/middleware.test.mjs`, PRD-014 QA-12), 4 over the consent gate on order attribution (`test/attribution-consent.test.mjs`, W1V-C-03), 6 over the SEO helpers (`test/seo-helpers.test.mjs`, PRD-014 Wave 2 and W2V-C-04) and 4 over the listing sort values (`test/listing-sort.test.mjs`). There are no page or component tests.
 
 ## Structure
 

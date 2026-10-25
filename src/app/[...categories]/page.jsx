@@ -4,7 +4,7 @@ import { getClient } from '@/lib/apollo-client-rsc'
 import CategoryClient from './category-client'
 import { notFound } from 'next/navigation'
 import { isNotFoundError } from '@/utils/errors'
-import { toCanonicalUrl } from '@/utils/env'
+import { indexableRobots, toCanonicalUrl } from '@/utils/env'
 
 export const revalidate = 300;
 
@@ -54,7 +54,7 @@ export async function generateMetadata({ params }) {
     title: seo.title ? { absolute: seo.title } : category.name || defaultMeta.title,
     description: seo.description || category.description || defaultMeta.description,
     keywords: seo.keywords?.length ? seo.keywords : defaultMeta.keywords,
-    robots: seo.robots || defaultMeta.robots,
+    robots: indexableRobots(seo.robots || defaultMeta.robots),
     alternates: { canonical: seo.canonical || toCanonicalUrl(path) },
   };
 }
@@ -72,6 +72,8 @@ export default async function Page({ params }) {
 
   return (
     <CategoryClient
+      // A new category starts with its own sort and list (W2-STORE).
+      key={slug}
       meta={seo || defaultMeta}
       data={{ _id, name, description, imgsrc, categoriesSlug }}
       initialProducts={products || []}

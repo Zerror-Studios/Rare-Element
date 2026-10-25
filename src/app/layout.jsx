@@ -3,7 +3,9 @@ import { Inter } from "next/font/google";
 import Script from "next/script";
 import { Providers } from "./providers";
 import FacebookPixel from "@/components/common/FacebookPixel";
-import { FB_PIXEL_ID, GA_MEASUREMENT_ID, GTM_ID, SITE_URL } from "@/utils/env";
+import ConsentBanner from "@/components/common/ConsentBanner";
+import { getConsentDefaultScript } from "@/utils/consent";
+import { SITE_URL, SITE_URL_CONFIGURED } from "@/utils/env";
 import "../styles/globals.css";
 import "../styles/allCssImport.css";
 
@@ -19,9 +21,10 @@ export const metadata = {
   authors: [{ name: "Nahara" }],
   // SF-4: one domain constant; each route sets its own canonical.
   metadataBase: new URL(SITE_URL),
+  // W2V-C-04: a build without a site origin is never indexed.
   robots: {
-    index: true,
-    follow: true,
+    index: SITE_URL_CONFIGURED,
+    follow: SITE_URL_CONFIGURED,
   }
 };
 
@@ -37,85 +40,23 @@ export default function RootLayout({ children }) {
       <head>
         <link rel="preconnect" href="https://assets.nahara.co.in" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://assets.nahara.co.in" />
-        <link rel="preconnect" href="https://www.googletagmanager.com" />
-        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="preload" as="image" href="/images/homepage/hero_poster.webp" fetchPriority="high" />
 
-        {/* Google Tag Manager - Global base code */}
+        {/* PRD-014 FR-1.9 (UX-05): Consent Mode v2 defaults ("denied")
+            before any tag. GTM, GA and the Meta Pixel load only after
+            consent (`components/common/ConsentBanner.jsx`). */}
         <Script
-          id="gtm-base"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-            })(window,document,'script','dataLayer',${JSON.stringify(GTM_ID)});
-          `,
-          }}
-        />
-
-        {/* Facebook Pixel - Global base code */}
-        <Script
-          id="fb-pixel"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-            !function(f,b,e,v,n,t,s)
-            {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-            n.queue=[];t=b.createElement(e);t.async=!0;
-            t.src=v;s=b.getElementsByTagName(e)[0];
-            s.parentNode.insertBefore(t,s)}(window,document,'script',
-            'https://connect.facebook.net/en_US/fbevents.js');
-            fbq('init', ${JSON.stringify(FB_PIXEL_ID)});
-            fbq('track', 'PageView');
-          `,
-          }}
+          id="consent-default"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: getConsentDefaultScript() }}
         />
       </head>
       <body className={inter.className} suppressHydrationWarning >
-        {/* Google Tag Manager (noscript) */}
-        <noscript>
-          <iframe
-            src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
-            height="0"
-            width="0"
-            style={{ display: "none", visibility: "hidden" }}
-          ></iframe>
-        </noscript>
-
-        {/* Facebook Pixel (noscript) */}
-        <noscript>
-          <img
-            height="1"
-            width="1"
-            style={{ display: "none" }}
-            src={`https://www.facebook.com/tr?id=${FB_PIXEL_ID}&ev=PageView&noscript=1`}
-            alt="facebook pixel"
-          />
-        </noscript>
-
-        {/* Google Analytics - Deferred Loading */}
-        <Script
-          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', ${JSON.stringify(GA_MEASUREMENT_ID)});
-          `}
-        </Script>
-        
         <Suspense fallback={null}>
           <FacebookPixel />
         </Suspense>
         <Providers>{children}</Providers>
+        <ConsentBanner />
       </body>
     </html>
   );

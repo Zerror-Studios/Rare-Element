@@ -254,7 +254,7 @@ const ProductContant = ({
                           className={`productDetail_quantity_icon productDetail_select_inner_elem_img ${openDropdown === item?.optionName ? "rotate_icon" : ""
                             }`}
                           src="/icons/LongArrowDown.svg"
-                          alt="img"
+                          alt=""
 
                         />
                       </button>
@@ -296,6 +296,7 @@ const ProductContant = ({
                                 );
                                 setAssetsFilter(choice?.assetsId)
                               }}
+                              data-testid="pdp-option-choice"
                               className="select_color_paren">
                               {productOption?.optionName === "color" ? (
                                 <>
@@ -354,6 +355,7 @@ const ProductContant = ({
                 loading={loading}
                 title={buttonTitle}
                 onClick={handleMainButtonClick}
+                data-testid="pdp-add-to-cart"
               />
 
               <div className="productDetail_btn_icon center" onClick={handleWishlistToggle}>
@@ -395,7 +397,7 @@ const ProductContant = ({
                         className={`productDetail_quantity_icon ${accordionIndex === index ? "rotated" : ""
                           }`}
                         src="/icons/LongArrowDown.svg"
-                        alt="img"
+                        alt=""
 
                       />
                     </button>

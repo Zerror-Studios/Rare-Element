@@ -1,11 +1,13 @@
 import { cache } from "react";
-import { GET_PRODUCT_BY_ID, GET_PRODUCTS } from "@/graphql";
+import { GET_PRODUCT_BY_ID, GET_PRODUCT_REVIEWS, GET_PRODUCTS } from "@/graphql";
 import { getClient } from "@/lib/apollo-client-rsc";
 import { ProductStatus } from "@/utils/Constant";
 import { isNotFoundError } from "@/utils/errors";
 import ProductClient from "./product-client";
 
 const OBJECT_ID_PATTERN = /^[a-f\d]{24}$/i;
+// PRD-014 FR-2.8: the latest approved reviews shown on the page.
+const PRODUCT_REVIEW_LIMIT = 10;
 
 /**
  * The product for a URL segment: by slug, or by id for links that only
@@ -56,12 +58,31 @@ export default async function ProductData({ slug }) {
     console.error("Error fetching related products:", error.message);
   }
 
+  // Reviews are optional as well: a failure hides the section.
+  let reviews = { data: [], totalCount: 0 };
+  try {
+    const client = getClient();
+    const reviewRes = await client.query({
+      query: GET_PRODUCT_REVIEWS,
+      variables: {
+        offset: 0,
+        limit: PRODUCT_REVIEW_LIMIT,
+        filter: { productId: data?._id },
+      },
+    });
+    reviews = reviewRes?.data?.getReviews || reviews;
+  } catch (error) {
+    console.error("Error fetching product reviews:", error.message);
+  }
+
   return (
     <ProductClient
       meta={data?.seo}
       data={data}
       productList={productList}
       slug={slug}
+      reviews={reviews.data || []}
+      reviewCount={reviews.totalCount || 0}
     />
   );
 }

@@ -132,3 +132,13 @@
   white-space: nowrap !important;
   margin-bottom: .25rem;
 }
+/* PRD-014 UX-31: icon controls are real buttons */
+.mobile_icon_btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}

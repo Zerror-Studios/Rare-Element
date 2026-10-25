@@ -1,0 +1,68 @@
+/* PRD-014 FR-2.8 (UX-28): site search page */
+
+.search_form {
+  width: 100%;
+  max-width: 40rem;
+  margin: 1.5rem auto 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.search_label {
+  text-transform: uppercase;
+}
+
+.search_field {
+  position: relative;
+  width: 100%;
+}
+
+.search_input {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.search_submit {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 3.5rem;
+  width: 3.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  color: #174d38;
+}
+
+.search_submit:focus-visible {
+  outline: 2px solid #174d38;
+  outline-offset: -4px;
+}
+
+.search_results {
+  width: 100%;
+  padding-bottom: 4rem;
+}
+
+.search_message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+  padding: 3rem 0;
+}
+
+.search_count {
+  margin-bottom: 1rem;
+}
+
+.search_results .load_more_container {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}

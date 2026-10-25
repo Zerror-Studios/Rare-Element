@@ -106,3 +106,18 @@
 .settings__privacy_link:hover {
   opacity: 0.6;
 }
+
+/* PRD-014 FR-2.8 (UX-29): the email preference toggle looks like a link */
+.email_preference_btn {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.email_preference_btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

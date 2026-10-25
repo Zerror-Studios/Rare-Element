@@ -12,7 +12,11 @@ import { formatePrice } from '@/utils/Util';
 import { RiQuestionLine } from '@remixicon/react';
 import { ADD_ITEM_TO_CART, APPLY_CART_PROMOTION, REMOVE_CART_PROMOTION, REMOVE_ITEM_FROM_CART } from "@/graphql";
 import WishlistPopup from '../cart/WishlistPopup';
-import { getErrorInfo, getErrorMessage } from "@/utils/errors";
+import {
+  REMOVE_ITEM_OVERRIDES,
+  getErrorInfo,
+  getErrorMessage,
+} from "@/utils/errors";
 import {
   CtaEnum,
   trackCouponApply,
@@ -160,7 +164,11 @@ const OrderSummary = ({ data, session, loading, locked = false, refetch }) => {
       toast.success("Item removed successfully!");
       await refetch();
     } catch (err) {
-      toast.error(getErrorMessage(err, "Failed to remove item from cart"));
+      toast.error(
+        getErrorMessage(err, "Failed to remove item from cart", REMOVE_ITEM_OVERRIDES),
+      );
+      // COM-32: the bag is out of date (several lines of this product).
+      if (getErrorInfo(err).reason === "VARIANT_REQUIRED") await refetch();
     }
   };
 
@@ -290,6 +298,7 @@ const OrderSummary = ({ data, session, loading, locked = false, refetch }) => {
             title={"Pay Now"}
             loading={loading}
             onClick={() => trackCtaClick(CtaEnum.PAY_NOW)}
+            data-testid="checkout-pay-now"
           />
         </div>
       </div>

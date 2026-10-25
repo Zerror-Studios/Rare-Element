@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import Link from 'next/link'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
@@ -8,8 +8,9 @@ import { usePathname } from 'next/navigation';
 import { MenuData } from '@/helpers/MenuData';
 import CustomEase from 'gsap/dist/CustomEase';
 import { useAuthStore } from '@/store/auth-store';
-import { RiArrowRightSLine } from '@remixicon/react';
+import { RiArrowRightSLine, RiSearchLine } from '@remixicon/react';
 import Image from 'next/image';
+import { useDialogA11y } from '@/hooks/useDialogA11y';
 gsap.registerPlugin(ScrollTrigger, CustomEase)
 
 
@@ -35,7 +36,9 @@ const footer_links = [
 const MobileHeader = ({ openCart }) => {
 
   CustomEase.create("in-out-quint", "0.83,0,0.17,1");
-  const { isLoggedIn } = useAuthStore((state) => state);
+  const { isLoggedIn, user } = useAuthStore((state) => state);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef(null);
 
   const pathname = usePathname()
 
@@ -93,6 +96,7 @@ const MobileHeader = ({ openCart }) => {
   }, [pathname]);
 
   const openMenu = () => {
+    setIsMenuOpen(true);
     if (window.lenis) lenis.stop();
     gsap.to(".mobile_menu_classname_open_menu", {
       left: 0,
@@ -104,6 +108,7 @@ const MobileHeader = ({ openCart }) => {
     });
   }
   const closeMenu = () => {
+    setIsMenuOpen(false);
     if (window.lenis) lenis.start();
     gsap.to(".mobile_menu_classname_open_menu", {
       left: "-100%",
@@ -116,23 +121,35 @@ const MobileHeader = ({ openCart }) => {
     });
   }
 
+  // PRD-014 UX-31: focus trap, Escape and inert-while-closed.
+  useDialogA11y(menuRef, isMenuOpen, closeMenu);
+
   return (
     <>
 
 
-      <div className="mobile_menu_classname_open_menu">
+      <div
+        ref={menuRef}
+        id="mobile_menu"
+        className="mobile_menu_classname_open_menu"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Menu"
+        tabIndex={-1}
+      >
 
         <div className="mobile_menu_classname_close_icon_container">
-          <Image height={25} width={25} onClick={() => closeMenu()}
-            src="/icons/close.svg" alt="img" title='close icon' />
+          <button type="button" className="mobile_icon_btn" onClick={() => closeMenu()} aria-label="Close menu">
+            <Image height={25} width={25} src="/icons/close.svg" alt="" />
+          </button>
         </div>
         <div className="mobile_menu_header">
           {isLoggedIn ? (
             <div className="login_header">
-              <Link scroll={false} onClick={() => closeMenu()} href={isLoggedIn ? "/account/settings" : "/login"} title="profile">
-                <Image height={25} width={25} className='short_links_icon' src="/icons/profile.svg" alt="img" title='profile' />
+              <Link scroll={false} onClick={() => closeMenu()} href={isLoggedIn ? "/account/settings" : "/login"} aria-label="My account">
+                <Image height={25} width={25} className='short_links_icon' src="/icons/profile.svg" alt="" />
               </Link>
-              <h2 className='text-xl'>Welcome Sunny</h2>
+              <h2 className='text-xl'>{user?.firstName ? `Welcome, ${user.firstName}` : "Welcome"}</h2>
             </div>
           ) : (
             <Link scroll={false} href={"/login"} onClick={() => closeMenu()} title='login'>
@@ -200,18 +217,25 @@ const MobileHeader = ({ openCart }) => {
       <div className="mobile_header padding">
         <div className="mobile_header_bg"></div>
         <div className="mobile_menu_icon_paren">
-          <Image height={25} width={25} onClick={openMenu} className='short_links_icon' src="/icons/menu.svg" alt="img" title='menu' />
+          <button type="button" className="mobile_icon_btn" onClick={openMenu} aria-label="Open menu" aria-expanded={isMenuOpen} aria-controls="mobile_menu">
+            <Image height={25} width={25} className='short_links_icon' src="/icons/menu.svg" alt="" />
+          </button>
         </div>
         <div className="mobile_logo_paren">
-          <Link scroll={false} href="/" title='home'>
-            <Image height={25} width={25} className='mobile_logo' src="/logo.svg" alt="img" title='logo' />
+          <Link scroll={false} href="/" aria-label="Nahara home">
+            <Image height={25} width={25} className='mobile_logo' src="/logo.svg" alt="Nahara" />
           </Link>
         </div>
         <div className=" mobile_header_right ">
-          <Link scroll={false} title='wishlist' href={isLoggedIn ? "/account/wishlist" : "/login"}>
-            <Image height={25} width={25} className='short_links_icon' src="/icons/heart.svg" alt="img" title='Wishlist' />
+          <Link scroll={false} aria-label="Search products" href="/search" className="short_links_search">
+            <RiSearchLine className="short_links_icon short_links_search_icon" aria-hidden="true" />
           </Link>
-          <Image height={25} width={25} onClick={openCart} className='short_links_icon' src="/icons/cart.svg" alt="img" title='cart' />
+          <Link scroll={false} aria-label="Wishlist" href={isLoggedIn ? "/account/wishlist" : "/login"}>
+            <Image height={25} width={25} className='short_links_icon' src="/icons/heart.svg" alt="" />
+          </Link>
+          <button type="button" className="mobile_icon_btn" onClick={openCart} aria-label="Open cart">
+            <Image height={25} width={25} className='short_links_icon' src="/icons/cart.svg" alt="" />
+          </button>
         </div>
       </div>
     </>

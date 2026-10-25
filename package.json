@@ -2,11 +2,17 @@
   "name": "rare-element",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=22.15"
+  },
   "scripts": {
     "dev": "next dev --turbopack",
+    "prebuild": "npm test",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "validate:ops": "node ../../zcom-backend/scripts/validate-clients/validate-clients.mjs src --client rare-element",
+    "test": "node --import ./test/register-hooks.mjs --test \"test/*.test.mjs\""
   },
   "dependencies": {
     "@apollo/client": "^4.1.6",

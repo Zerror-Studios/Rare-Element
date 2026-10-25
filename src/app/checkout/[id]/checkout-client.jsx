@@ -14,6 +14,11 @@
  *    `/api/payments/return` → `/checkout/payment-return`.
  * 5. thank-you?orderId=… (PAID or pending), payment-failed otherwise.
  *
+ * A ₹0 total (PRD-014 COM-08) is placed PAID by `completeCheckout`, so
+ * steps 3–4 are skipped and the shopper goes straight to thank-you.
+ * `SHIPPING_UNAVAILABLE` keeps the form open and focuses the address so
+ * the shopper can change it.
+ *
  * "Pay Now" stays disabled from submit until the provider answers (or a
  * failure); the response is processed once. A dismissed payment window
  * keeps the order, so "Pay Now" retries the payment for the same order.
@@ -37,6 +42,7 @@ import {
   CREATE_CHECKOUT_SESSION,
   CREATE_PAYMENT_SESSION,
   GET_CHECKOUT_SESSION,
+  UPDATE_USER_PROFILE,
   VERIFY_PAYMENT,
 } from "@/graphql";
 import { EmailSubscribedStatus } from "@/utils/Constant";
@@ -69,6 +75,9 @@ const ORDER_RESET_REASONS = [
   "RESERVATION_RELEASED",
   "ORDER_CANCELLED",
 ];
+// CustomerProfile.emailSubscribedStatus: 1 = opted in (0 out, 2 never).
+const EMAIL_STATUS_SUBSCRIBED_CODE = 1;
+const EMAIL_STATUS_UNSUBSCRIBED_CODE = 0;
 const ORDER_ADDRESS_FIELDS = [
   "firstname",
   "lastname",
@@ -121,7 +130,7 @@ const CheckoutClient = () => {
   const [isPaying, setIsPaying] = useState(false);
   const [isPageLoading, setIsPageLoading] = useState(false);
   const [session, setSession] = useState(null);
-  const { isLoggedIn, user } = useAuthStore((state) => state);
+  const { isLoggedIn, user, setUser } = useAuthStore((state) => state);
   const [createCheckoutSession] = useMutation(CREATE_CHECKOUT_SESSION);
   const [completeCheckout] = useMutation(COMPLETE_CHECKOUT);
   const [createPaymentSession] = useMutation(CREATE_PAYMENT_SESSION);
@@ -174,6 +183,7 @@ const CheckoutClient = () => {
     register,
     handleSubmit,
     setValue,
+    setFocus,
     watch,
     control,
     formState: { errors },
@@ -192,7 +202,9 @@ const CheckoutClient = () => {
         country: "",
         primary: false,
       },
-      emailSubscribedStatus: EmailSubscribedStatus.SUBSCRIBED,
+      // PRD-014 FR-2.8 (UX-29): marketing email is opt-in, never pre-ticked;
+      // the box shows the profile's own choice once it loads.
+      emailSubscribedStatus: EmailSubscribedStatus.UNSUBSCRIBED,
       useShippingAsBilling: true,
     },
   });
@@ -202,6 +214,41 @@ const CheckoutClient = () => {
       setValue("email", user?.email);
     }
   }, [isLoggedIn, user, setValue]);
+
+  useEffect(() => {
+    if (!isLoggedIn || user?.emailSubscribedStatus === undefined) return;
+    setValue(
+      "emailSubscribedStatus",
+      user.emailSubscribedStatus === EMAIL_STATUS_SUBSCRIBED_CODE
+        ? EmailSubscribedStatus.SUBSCRIBED
+        : EmailSubscribedStatus.UNSUBSCRIBED,
+    );
+  }, [isLoggedIn, user?.emailSubscribedStatus, setValue]);
+
+  // PRD-014 FR-2.8 (UX-29), as deveshe: the "Email me" box updates the
+  // customer's own consent once the order exists. Best effort: a failure
+  // never blocks payment, and nothing is written when the box matches.
+  const saveEmailPreference = (status) => {
+    const wantsEmail = status === EmailSubscribedStatus.SUBSCRIBED;
+    const isSubscribed =
+      user?.emailSubscribedStatus === EMAIL_STATUS_SUBSCRIBED_CODE;
+    if (wantsEmail === isSubscribed) return;
+    client
+      .mutate({
+        mutation: UPDATE_USER_PROFILE,
+        variables: {
+          input: {
+            emailSubscribedStatus: wantsEmail
+              ? EMAIL_STATUS_SUBSCRIBED_CODE
+              : EMAIL_STATUS_UNSUBSCRIBED_CODE,
+          },
+        },
+      })
+      .then(({ data }) => {
+        if (data?.updateMyProfile) setUser({ ...user, ...data.updateMyProfile });
+      })
+      .catch(() => {});
+  };
 
   // ─── Failure routing ────────────────────────────────────────────────────
 
@@ -344,9 +391,10 @@ const CheckoutClient = () => {
     const { data: completed } = await completeCheckout({
       variables: { checkoutId: reserved.id },
     });
-    const orderId = completed?.completeCheckout?.orderId;
-    if (!orderId) throw new Error("No order created");
-    return orderId;
+    const result = completed?.completeCheckout;
+    if (!result?.orderId) throw new Error("No order created");
+    // COM-08: the server placed a ₹0 order PAID; there is nothing to pay.
+    return { orderId: result.orderId, isFree: result.pricing?.total === 0 };
   };
 
   // ─── Submit ─────────────────────────────────────────────────────────────
@@ -379,8 +427,15 @@ const CheckoutClient = () => {
     }
     try {
       if (!orderId) {
-        orderId = await placeOrder(details);
-        if (!orderId) return;
+        const placed = await placeOrder(details);
+        if (!placed) return;
+        orderId = placed.orderId;
+        saveEmailPreference(formData.emailSubscribedStatus);
+        if (placed.isFree) {
+          forgetPendingOrder();
+          router.replace(`/checkout/thank-you?orderId=${orderId}`);
+          return;
+        }
         setPendingOrder(PendingOrder.save(cartData, orderId, details));
       }
 
@@ -419,6 +474,8 @@ const CheckoutClient = () => {
         refetch();
       }
       stopWithMessage(getErrorMessage(err, "Checkout failed. Please try again."));
+      // The address is outside every shipping zone: let the shopper fix it.
+      if (reason === "SHIPPING_UNAVAILABLE") setFocus("shippingAddress.states");
     }
   };
 

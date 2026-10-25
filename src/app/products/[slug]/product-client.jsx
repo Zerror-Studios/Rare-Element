@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import { toast } from 'react-toastify';
@@ -13,6 +13,7 @@ import SeoHeader from "@/components/seo/SeoHeader";
 import ProductImageGrid from '@/components/product/ProductImageGrid';
 import ProductContant from '@/components/product/ProductContant';
 import ProductListGrid from "@/components/product/ProductListGrid";
+import ProductReviews from "@/components/product/ProductReviews";
 import { useRouter } from "next/navigation";
 import { trackEcomEvent } from "@/utils/analytics";
 import { getAnalyticsItemId, trackNotifyMe } from "@/utils/analytics-events";
@@ -20,7 +21,7 @@ import * as fpixel from "@/lib/fpixel";
 import { getMinVariantPrice } from "@/utils/Util";
 import { getErrorInfo, getErrorMessage } from "@/utils/errors";
 
-export default function ProductClient({ meta, data, productList, slug }) {
+export default function ProductClient({ meta, data, productList, slug, reviews = [], reviewCount = 0 }) {
   const breadcrumbList = [
     { name: data?.categories?.[0]?.name || "Products", slug: data?.categories?.[0]?.slug ? `/${data.categories[0].slug}` : "/products" },
     { name: data?.name, slug: `/products/${data?.slug}` }
@@ -67,19 +68,24 @@ export default function ProductClient({ meta, data, productList, slug }) {
       duration: 1,
       ease: "ease-secondary"
     })
-
-    if (data) {
-      fpixel.event("ViewContent", {
-        content_name: data.name,
-        content_category: data.categories?.[0]?.name,
-        content_ids: [data._id],
-        content_type: 'product',
-        value: finalPrice,
-        currency: 'INR'
-      });
-      trackEcomEvent.viewItem(data, variantMatched);
-    }
   }, [slug, data, variantMatched])
+
+  // PRD-014 FE-24: one view_item / ViewContent per product view, not one
+  // per option change (the variant at first render is the default one).
+  const viewTrackedRef = useRef(null);
+  useEffect(() => {
+    if (!data?._id || viewTrackedRef.current === data._id) return;
+    viewTrackedRef.current = data._id;
+    fpixel.event("ViewContent", {
+      content_name: data.name,
+      content_category: data.categories?.[0]?.name,
+      content_ids: [data._id],
+      content_type: 'product',
+      value: defaultVariant?.price || basePrice,
+      currency: 'INR'
+    });
+    trackEcomEvent.viewItem(data, defaultVariant);
+  }, [data, defaultVariant, basePrice])
 
   const handleAddToCart = async () => {
     if (!cartBtn || unavailable || !variantMatched?._id) return;
@@ -172,6 +178,7 @@ export default function ProductClient({ meta, data, productList, slug }) {
           analyticsItemId={analyticsItemId}
         />
       </div>
+      <ProductReviews reviews={reviews} totalCount={reviewCount} />
       <ProductListGrid title="You may also like" data={productList} />
     </>
   );

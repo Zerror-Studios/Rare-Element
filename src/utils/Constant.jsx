@@ -8,6 +8,12 @@ export const Const = {
   OUT_OF_STOCK: "OUT_OF_STOCK",
 };
 
+// PRD-014 UX-34: one password policy for signup, checkout and reset; the
+// backend's reset requires 8 characters (WEAK_PASSWORD below that).
+export const PASSWORD_MIN_LENGTH = 8;
+export const PASSWORD_MIN_MESSAGE =
+  `Password must be at least ${PASSWORD_MIN_LENGTH} characters`;
+
 export const StatusCode = {
   Success: 200,
   NotFound: 404,

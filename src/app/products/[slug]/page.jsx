@@ -3,7 +3,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import ProductData, { getProduct } from "./product-data";
 import ProductDetailPageSkeleton from "@/components/skeletons/ProductDetailPageSkeleton";
 import { htmlToPlainText } from "@/utils/sanitize-html";
-import { toCanonicalUrl } from "@/utils/env";
+import { indexableRobots, toCanonicalUrl } from "@/utils/env";
 
 export const revalidate = 300;
 
@@ -27,7 +27,7 @@ export async function generateMetadata({ params }) {
     title: seo.title ? { absolute: seo.title } : product.name,
     description,
     keywords: seo.keywords?.length ? seo.keywords : undefined,
-    robots: seo.robots || undefined,
+    robots: indexableRobots(seo.robots || undefined),
     alternates: { canonical: seo.canonical || toCanonicalUrl(path) },
     openGraph: {
       title: seo.og?.title || seo.title || product.name,

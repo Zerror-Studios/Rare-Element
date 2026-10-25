@@ -16,7 +16,7 @@ export default function Page() {
       <h1 className=" text-2xl">Privacy Policy</h1>
       <div className="legal-container">
         <p>
-          [NAHARA] ("we" or "us") values your privacy and is committed to protecting your personal information. Here's a summary of how we collect, use, and share your data:
+          Nahara ("we" or "us") values your privacy and is committed to protecting your personal information. Here's a summary of how we collect, use, and share your data:
         </p>
         <p>
           <strong>Information We Collect:</strong> We may collect personal information such as contact details and payment information when you interact with us.
@@ -34,6 +34,9 @@ export default function Page() {
         <p>
           <strong>Cookies and Tracking:</strong> We use cookies to enhance
           your browsing experience and deliver personalized content and ads.
+          Analytics and marketing cookies are used only if you accept them,
+          and you can change your choice at any time from
+          &ldquo;Cookie preferences&rdquo; in the footer.
         </p>
         <p>
           <strong>Data Security:</strong> We take reasonable measures to

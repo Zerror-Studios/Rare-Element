@@ -16,18 +16,35 @@
 
 // ─── Constants ────────────────────────────────────────────────────────────
 
-const DEFAULT_SITE_URL = "https://nahara.co.in";
+const DEV_SITE_URL = "http://localhost:3000";
 const DEV_TENANT_FALLBACK = "localhost:3000";
 
 export const GRAPHQL_PATH = "/v1/graphql";
 export const API_VERSION = "v1";
 
-/** Canonical origin for metadata, canonical URLs and JSON-LD. */
-export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL || DEFAULT_SITE_URL
+export const TENANT_DOMAIN = process.env.NEXT_PUBLIC_TENANT_DOMAIN || "";
+
+// W2V-C-04: the origin comes from `NEXT_PUBLIC_SITE_URL`, else the tenant
+// domain; never from a hard-coded brand domain, so a UAT build without env
+// can't point canonical, sitemap and robots URLs at production.
+const CONFIGURED_SITE_URL = (
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (TENANT_DOMAIN ? `https://${TENANT_DOMAIN}` : "")
 ).replace(/\/+$/, "");
 
-export const TENANT_DOMAIN = process.env.NEXT_PUBLIC_TENANT_DOMAIN || "";
+/** False when neither env value is set: pages are then `noindex`. */
+export const SITE_URL_CONFIGURED = Boolean(CONFIGURED_SITE_URL);
+
+/** Canonical origin for metadata, canonical URLs and JSON-LD. */
+export const SITE_URL = CONFIGURED_SITE_URL || DEV_SITE_URL;
+
+if (!SITE_URL_CONFIGURED && typeof window === "undefined") {
+  process.emitWarning(
+    "NEXT_PUBLIC_SITE_URL and NEXT_PUBLIC_TENANT_DOMAIN are unset: SEO " +
+      `URLs use ${DEV_SITE_URL} and every page is noindex.`,
+    { code: "ZCOM_SITE_URL_UNSET" },
+  );
+}
 
 /** Browser endpoint: same-origin by default (see the module header). */
 export const BROWSER_GRAPHQL_URL =
@@ -36,11 +53,19 @@ export const BROWSER_GRAPHQL_URL =
 export const SUPPORT_EMAIL =
   process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "contact@nahara.co.in";
 
+// PRD-014 FR-1.9 (FE-24): no hard-coded fallback ids. An unset id loads
+// no tag, so a build without env never reports into another property.
 export const GA_MEASUREMENT_ID =
-  process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-0FTD3SQ58J";
-export const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || "GTM-M6WXDQ3P";
-export const FB_PIXEL_ID =
-  process.env.NEXT_PUBLIC_FB_PIXEL_ID || "26639049565785927";
+  process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "";
+export const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || "";
+export const FB_PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID || "";
+
+/** Tag ids for `utils/consent.js` (loaded only after consent). */
+export const TAG_IDS = Object.freeze({
+  gaId: GA_MEASUREMENT_ID,
+  gtmId: GTM_ID,
+  pixelId: FB_PIXEL_ID,
+});
 
 // ─── Server-side helpers ──────────────────────────────────────────────────
 
@@ -73,6 +98,11 @@ export function getServerTenantDomain() {
 export function getBrowserTenantDomain() {
   if (TENANT_DOMAIN) return TENANT_DOMAIN;
   return typeof window !== "undefined" ? window.location.host : "";
+}
+
+/** A page's robots value, or `noindex` on a build with no site origin. */
+export function indexableRobots(robots = "index, follow") {
+  return SITE_URL_CONFIGURED ? robots : "noindex, nofollow";
 }
 
 /** Absolute canonical URL for a path such as `/products/ring`. */

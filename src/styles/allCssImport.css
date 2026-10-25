@@ -13,6 +13,7 @@
 @import "./components/common/footer.css";
 @import "./components/common/shopCard.css";
 @import "./components/common/cartBag.css";
+@import "./components/common/consentBanner.css";
 
 
 @import "./components/buttons.css";
@@ -34,3 +35,4 @@
 @import "./components/products/products.css";
 @import "./components/products/productDetail.css";
 @import "./pages/password-reset.css";
+@import "./pages/search.css";

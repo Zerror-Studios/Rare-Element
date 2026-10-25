@@ -224,6 +224,8 @@ const ProductImageGrid = ({ filter, data, title, itemId }) => {
         )}
         <div className="MobileImageSlider_nav">
           <button
+            type="button"
+            aria-label="Previous image"
             className="MobileImageSlider_arrow left"
             onClick={() => {
               trackGalleryInteraction(itemId, GalleryActionEnum.PREV);
@@ -231,11 +233,13 @@ const ProductImageGrid = ({ filter, data, title, itemId }) => {
             }}
           >
             <Image height={20} width={20} src="/icons/arrowLeft.svg"
-              alt="img"
+              alt=""
 
             />
           </button>
           <button
+            type="button"
+            aria-label="Next image"
             className="MobileImageSlider_arrow right"
             onClick={() => {
               trackGalleryInteraction(itemId, GalleryActionEnum.NEXT);
@@ -243,7 +247,7 @@ const ProductImageGrid = ({ filter, data, title, itemId }) => {
             }}
           >
             <Image height={20} width={20} src="/icons/arrowRight.svg"
-              alt="img"
+              alt=""
 
             />
 

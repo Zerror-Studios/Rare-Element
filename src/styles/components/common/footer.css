@@ -196,3 +196,74 @@
     margin-bottom: 1rem;
   }
 }
+
+/* PRD-014 FR-1.9: "Cookie preferences" looks like the other footer links */
+.footer_consent_btn {
+  padding: 0;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.footer_consent_btn span {
+  display: block;
+  margin: 0.5rem 0;
+  transition: opacity 0.3s ease;
+}
+.footer_consent_btn:hover span {
+  opacity: 0.6;
+}
+
+/* PRD-014 FR-2.8 (UX-29): newsletter sign-up */
+.newsletter_form {
+  width: 100%;
+  max-width: 26rem;
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.newsletter_field {
+  display: flex;
+  width: 100%;
+  border: 1px solid currentColor;
+}
+
+.newsletter_input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.75rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  outline: none;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.newsletter_input:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: -2px;
+}
+
+.newsletter_submit {
+  padding: 0 1rem;
+  border: 0;
+  border-left: 1px solid currentColor;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.newsletter_submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.newsletter_message {
+  min-height: 1rem;
+}
+
+.newsletter_message.is_error {
+  color: #c0392b;
+}

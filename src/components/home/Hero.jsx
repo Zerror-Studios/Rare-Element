@@ -45,10 +45,18 @@ const Hero = () => {
   }, []);
 
   useGSAP(() => {
-    if (window.matchMedia('(prefers-reduced-motion)').matches) {
+    if (!heroRef.current) return;
+    // PRD-014 UX-30: reduced motion gets the final state at once (the CSS
+    // starts the hero hidden for the reveal), never a blank first screen.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      gsap.set(heroRef.current, {
+        opacity: 1,
+        clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+      });
+      gsap.set([infoRef.current, innerRef.current], { opacity: 1 });
+      gsap.set(".introloader_paren", { opacity: 0, display: "none" });
       return;
     }
-    if (!heroRef.current) return;
 
     // Immediately make it visible so browser can paint it for LCP
     gsap.set(heroRef.current, { opacity: 1 });

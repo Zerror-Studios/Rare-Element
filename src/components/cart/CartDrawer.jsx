@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
@@ -8,18 +8,27 @@ import { useMutation, useQuery } from "@apollo/client/react";
 import { ADD_ITEM_TO_CART, CART_LIST, REMOVE_ITEM_FROM_CART } from "@/graphql";
 import { useAuthStore } from "@/store/auth-store";
 import { useVisitor } from "@/hooks/useVisitor";
+import { useDialogA11y } from "@/hooks/useDialogA11y";
 import { formatePrice, getCartItemCount } from "@/utils/Util";
 import GreenBoxBtn from '@/components/buttons/GreenBoxBtn';
 import CartItem from '@/components/cart/CartItem';
 import { RiCloseLine } from "@remixicon/react";
-import { getErrorMessage, isInvalidGuestIdError } from "@/utils/errors";
+import {
+  REMOVE_ITEM_OVERRIDES,
+  getErrorInfo,
+  getErrorMessage,
+  isInvalidGuestIdError,
+} from "@/utils/errors";
 import { CtaEnum, trackCtaClick } from "@/utils/analytics-events";
 
 import WishlistPopup from "./WishlistPopup";
 
 const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
   const router = useRouter();
-  const { visitorId, resetVisitorId } = useVisitor();
+  const { visitorId, resetVisitorId, runWithGuestId } = useVisitor();
+  const drawerRef = useRef(null);
+  // PRD-014 UX-31: focus trap, Escape and inert-while-closed.
+  useDialogA11y(drawerRef, isOpen, closeCart);
   const { isLoggedIn } = useAuthStore((state) => state);
   // The owner is the logged-in customer (token) or the guest id (SF-3).
   const guestVariables = !isLoggedIn && visitorId ? { guestId: visitorId } : {};
@@ -90,12 +99,14 @@ const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
 
   const handleAddItem = async (productId, variantId) => {
     try {
-      const payload = {
-        input: { productId, variantId: variantId || null, qty: 1 },
-        ...guestVariables,
-      };
+      const input = { productId, variantId: variantId || null, qty: 1 };
 
-      const { data: response } = await addCartItem({ variables: payload });
+      // PRD-014 UX-37: guests re-issue a rejected id once, as on the PDP.
+      const { data: response } = isLoggedIn
+        ? await addCartItem({ variables: { input } })
+        : await runWithGuestId((guestId) =>
+          addCartItem({ variables: { input, guestId } }),
+        );
       if (!response?.addItemToCart) return;
       toast.success("Item added successfully!");
       await refetch();
@@ -124,7 +135,11 @@ const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
       await refetch();
     } catch (err) {
       handleGuestError(err);
-      toast.error(getErrorMessage(err, "Failed to remove item from cart"));
+      toast.error(
+        getErrorMessage(err, "Failed to remove item from cart", REMOVE_ITEM_OVERRIDES),
+      );
+      // COM-32: the bag is out of date (several lines of this product).
+      if (getErrorInfo(err).reason === "VARIANT_REQUIRED") await refetch();
     }
   };
 
@@ -227,7 +242,14 @@ const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
 
 
   return (
-    <div className="cartBag_openBagParent">
+    <div
+      ref={drawerRef}
+      className="cartBag_openBagParent"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="cart_drawer_title"
+      tabIndex={-1}
+    >
 
       {popupActive && (
         <WishlistPopup
@@ -244,18 +266,32 @@ const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
 
       <div className="cartBag_bagHeader">
         <div className="cartBag_bagHeaderLeft">
-          <h2 className="cartBag_bagTitle text-2xl">Cart</h2>
+          <h2 id="cart_drawer_title" className="cartBag_bagTitle text-2xl">Cart</h2>
           <p className="cartBag_bagCount text-base"> ({count}) </p>
         </div>
-        <div
+        <button
+          type="button"
           onClick={closeCart}
+          aria-label="Close cart"
           className="cartBag_menuHeaderClose">
-          <RiCloseLine size={14} className='close_icon' />
-        </div>
+          <RiCloseLine size={14} className='close_icon' aria-hidden="true" />
+        </button>
       </div>
       {/* bag scroll */}
       <div data-lenis-prevent className="cartBag_bagScroll">
-        {cart?.length > 0 ? (
+        {/* PRD-014 UX-37: loading and error are not "no items" */}
+        {cartError && !isInvalidGuestIdError(cartError) ? (
+          <div className="empty_cart_box" role="alert">
+            <p className='text-lg'>{getErrorMessage(cartError, "We couldn't load your bag.")}</p>
+            <button type="button" className="cart_retry_btn text-base uppercase" onClick={() => refetch()}>
+              Try again
+            </button>
+          </div>
+        ) : loading && !cartResponse ? (
+          <div className="empty_cart_box" role="status">
+            <p className='text-lg'>Loading your bag…</p>
+          </div>
+        ) : cart?.length > 0 ? (
           cart.map((item, i) => (
             <CartItem
               key={`cart-product-item-${i}`}
@@ -286,6 +322,7 @@ const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
             title={"Proceed to Checkout"}
             onClick={navigateCheckout}
             loading={isBtnLoading}
+            data-testid="cart-checkout"
             style={{
               cursor: count === 0 ? "not-allowed" : "pointer",
             }}

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import gsap from 'gsap'
 import ProductCard from '@/components/common/ProductCard'
@@ -12,6 +12,9 @@ import { RiEqualizerLine } from '@remixicon/react'
 import { useQuery } from '@apollo/client/react'
 import useProductStore from '@/store/product-store'
 import GreenBoxBtn from '@/components/buttons/GreenBoxBtn'
+import ListingSortSelect from '@/components/product/ListingSortSelect'
+import { useListingSort } from '@/hooks/useListingSort'
+import { toSortQueryValue } from '@/utils/listing-sort'
 
 const ProductsClient = ({ initialProducts, initialTotalCount, categories, initialFilterOptions }) => {
   const [openFilter, setOpenFilter] = useState(false)
@@ -46,7 +49,16 @@ const ProductsClient = ({ initialProducts, initialTotalCount, categories, initia
     fetchPolicy: "cache-first"
   });
 
-  const handleApplyFilter = async (newFilters) => {
+  // W2V2-05: each first-page load takes a new number; a response that comes
+  // back after a newer request is dropped, so a slow older list never
+  // renders under the newer sort or filters.
+  const listRequestRef = useRef(0)
+
+  // W2-STORE: the first page again for new filters or a new sort (`?sort=`).
+  const loadFirstPage = async (newFilters, nextSort) => {
+    listRequestRef.current += 1
+    const requestId = listRequestRef.current
+    const isCurrent = () => requestId === listRequestRef.current
     setLoading(true)
     setFilters(newFilters)
     setOpenFilter(false)
@@ -58,10 +70,11 @@ const ProductsClient = ({ initialProducts, initialTotalCount, categories, initia
         filters: {
           status: ProductStatus.PUBLISHED,
           ...newFilters
-        }
+        },
+        sort: toSortQueryValue(nextSort)
       })
 
-      if (data?.getClientSideProducts) {
+      if (data?.getClientSideProducts && isCurrent()) {
         setInitialProducts(
           data.getClientSideProducts.products,
           data.getClientSideProducts.totalCount
@@ -70,12 +83,23 @@ const ProductsClient = ({ initialProducts, initialTotalCount, categories, initia
     } catch (error) {
       console.error("Error applying filters:", error)
     } finally {
-      setLoading(false)
+      if (isCurrent()) setLoading(false)
     }
   };
 
+  const { sort, changeSort } = useListingSort((fromUrl) =>
+    loadFirstPage(useProductStore.getState().filters, fromUrl)
+  )
+
+  const handleApplyFilter = (newFilters) => loadFirstPage(newFilters, sort)
+
+  const handleSortChange = (value) => loadFirstPage(filters, changeSort(value))
+
   const handleLoadMore = async () => {
     if (loading || !hasMore) return
+    // A page for a list that has since been replaced is dropped (W2V2-05).
+    const requestId = listRequestRef.current
+    const isCurrent = () => requestId === listRequestRef.current
     setLoading(true)
 
     try {
@@ -86,11 +110,12 @@ const ProductsClient = ({ initialProducts, initialTotalCount, categories, initia
           filters: {
             status: ProductStatus.PUBLISHED,
             ...filters
-          }
+          },
+          sort: toSortQueryValue(sort)
         }
       })
 
-      if (data?.getClientSideProducts) {
+      if (data?.getClientSideProducts && isCurrent()) {
         appendProducts(
           data.getClientSideProducts.products,
           data.getClientSideProducts.totalCount
@@ -99,7 +124,7 @@ const ProductsClient = ({ initialProducts, initialTotalCount, categories, initia
     } catch (error) {
       console.error("Error loading more products:", error)
     } finally {
-      setLoading(false)
+      if (isCurrent()) setLoading(false)
     }
   }
 
@@ -149,6 +174,15 @@ const ProductsClient = ({ initialProducts, initialTotalCount, categories, initia
         </button>
       </div>
 
+      <div className="listing_sort_bar">
+        <ListingSortSelect
+          id="products_sort"
+          value={sort}
+          onChange={handleSortChange}
+          disabled={loading}
+        />
+      </div>
+
       <div className="products_layout_paren padding">
         <ProductsAside
           openFilter={openFilter}
@@ -169,7 +203,7 @@ const ProductsClient = ({ initialProducts, initialTotalCount, categories, initia
             }
 
             {products?.map((item) => (
-              <Link prefetch key={item?._id} scroll={false} title={item?.name || ""} href={`/products/${item?.slug || item?._id}`}>
+              <Link prefetch key={item?._id} scroll={false} title={item?.name || ""} href={`/products/${item?.slug || item?._id}`} data-testid="product-card-link">
                 <ProductCard
                   key={item?._id}
                   productId={item?._id}
