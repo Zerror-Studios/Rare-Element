@@ -5,6 +5,7 @@ import AllProductsPageSkeleton from '@/components/skeletons/AllProductsPageSkele
 export const revalidate = 300;
 
 export const metadata = {
+  alternates: { canonical: "/products" },
   title: "Shop by Category – Fine Jewellery by Nahara",
   description: "Browse jewellery categories including rings, earrings, necklaces, bracelets, and anklets crafted with gold, diamonds, and silver.",
   keywords: [

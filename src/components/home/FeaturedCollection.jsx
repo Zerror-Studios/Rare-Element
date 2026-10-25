@@ -42,9 +42,10 @@ const FeaturedCollection = ({ data }) => {
                     key={item?._id}
                     productId={item?._id}
                     name={item?.name || ""}
-                    ribbon={item?.ribbon || ""}
-                    price={getProductPriceLabel(item?.variants, item?.discountedPrice)}
+                    price={getProductPriceLabel(item?.variants)}
                     assets={item?.assets || []}
+                    product={item}
+                    listName="Featured collection"
                   />
                 </div>
               </Link>

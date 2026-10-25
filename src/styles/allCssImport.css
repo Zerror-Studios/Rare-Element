@@ -33,5 +33,4 @@
 
 @import "./components/products/products.css";
 @import "./components/products/productDetail.css";
-
-
+@import "./pages/password-reset.css";

@@ -3,28 +3,22 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useQuery } from "@apollo/client/react";
-import { useAuthStore } from "@/store/auth-store";
-import { ORDER_LIST } from "@/graphql";
-import { formatDateTime, formatePrice } from "@/utils/Util";
+import { MY_ORDERS } from "@/graphql";
+import { formatDateTime, formatePrice, formatPaymentStatus } from "@/utils/Util";
 
 const OrderList = () => {
   const LIMIT = 100;
   const [offset, setOffset] = useState(0);
-  const { user } = useAuthStore((state) => state);
 
-  const payload = {
-    filter: { userId: user?._id },
-    limit: LIMIT,
-    offset,
-  };
-  const { data: response, loading } = useQuery(ORDER_LIST, {
-    variables: payload,
+  // Customer-scoped: the owner comes from the access token.
+  const { data: response, loading } = useQuery(MY_ORDERS, {
+    variables: { limit: LIMIT, offset },
+    fetchPolicy: "network-only",
   });
-  const { data = [], totalCount = 0 } = response?.getOrdersByFilters || {};
-  if (!data || data.length === 0) null;
+  const { orders: data = [], totalCount = 0 } = response?.myOrders || {};
   return (
     <div className="purchases_ordersList">
-      {data.length === 0 && (
+      {!loading && data.length === 0 && (
         <div className="wishlist_empty_box_inner">
           <p className="text-xl ">No orders found</p>
           <Link href="/products" className="text_decoration_underline">
@@ -37,27 +31,26 @@ const OrderList = () => {
         return (
           <div key={item?._id} className="purchases_orderCard">
             <p className='text-base'>Order: {item?.orderNo}</p>
-            <p className="purchases_status text-base">{`${item?.paymentStatus} ${item?.shipmentStatus ? ` - ${item?.shipmentStatus}` : ""}`}</p>
+            <p className="purchases_status text-base">{`${formatPaymentStatus(item?.paymentStatus)} ${item?.shipmentStatus ? ` - ${item?.shipmentStatus}` : ""}`}</p>
 
             <div>
               <p>{formatDateTime(item?.createdAt || "")}</p>
-              <p className="purchases_amount text-base">{formatePrice(item?.discountedPrice || 0)}</p>
+              <p className="purchases_amount text-base">{formatePrice(item?.orderPrice || 0)}</p>
             </div>
 
             <div className="purchases_itemsGrid">
               {cart?.map((cartItem, cartIndex) => {
                 return (
-                  <>
-                    <div key={`order-product-${cartIndex}`} className="purchases_itemBox">
-                      <Image
-                        width={150}
-                        height={200}
-                        className="purchases_itemImg"
-                        src={cartItem?.asset?.path || ""}
-                        alt={cartItem?.asset?.altText || ""}
-                      />
-                    </div>
-                  </>
+                  <div key={`order-product-${cartIndex}`} className="purchases_itemBox">
+                    <Image
+                      width={150}
+                      height={200}
+                      sizes="150px"
+                      className="purchases_itemImg"
+                      src={cartItem?.asset?.path || "/green_logo.svg"}
+                      alt={cartItem?.asset?.altText || cartItem?.name || ""}
+                    />
+                  </div>
                 )
               })}
             </div>

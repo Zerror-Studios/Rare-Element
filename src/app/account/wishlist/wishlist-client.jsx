@@ -5,28 +5,42 @@ import Link from 'next/link';
 import ProductCard from '@/components/common/ProductCard';
 import AccountBreadcrumb from '@/components/account/AccountBreadcrumb';
 import { useQuery } from '@apollo/client/react';
-import { GET_WISHLIST_ITEMS } from '@/graphql';
+import { GET_PRODUCT_BY_ID } from '@/graphql';
 import { useAuthStore } from '@/store/auth-store';
+import { useWishlist } from '@/hooks/useWishlist';
 import { getProductPriceLabel } from '@/utils/Util';
 
+// The wishlist stores product ids; each card loads its product (published
+// products only, so a retired product simply disappears).
+const WishlistItem = ({ productId }) => {
+  const { data } = useQuery(GET_PRODUCT_BY_ID, { variables: { id: productId } });
+  const product = data?.getClientSideProductById;
+  if (!product) return null;
+  return (
+    <Link scroll={false} href={`/products/${product?.slug || product?._id}`} className='wishlist_card'>
+      <ProductCard
+        productId={product?._id}
+        name={product?.name}
+        price={getProductPriceLabel(product?.variants)}
+        assets={product?.assets}
+        product={product}
+        listName="Wishlist"
+      />
+    </Link>
+  );
+};
+
 const WishlistClient = () => {
-  const { user } = useAuthStore();
-  const userId = user?._id || user?.id;
+  const { isLoggedIn } = useAuthStore();
+  const { items: wishlistItems, loading } = useWishlist();
 
-  const { data, loading, error } = useQuery(GET_WISHLIST_ITEMS, {
-    variables: { userId },
-    skip: !userId,
-  });
-
-  if (!userId) {
+  if (!isLoggedIn) {
     return (
       <div className="settings__content">
         <p>Please login to view your wishlist.</p>
       </div>
     );
   }
-
-  const wishlistItems = data?.getWishlistItems?.items || [];
 
   return (
     <>
@@ -47,14 +61,7 @@ const WishlistClient = () => {
         {wishlistItems.length > 0 && (
           <div className="wishlist_box">
             {wishlistItems.map((item) => (
-              <Link scroll={false} key={item?._id} href={`/products/${item?.product?.slug || item?.product?._id}`} className='wishlist_card'>
-                <ProductCard
-                  productId={item?.product?._id}
-                  name={item?.product?.name}
-                  price={getProductPriceLabel(item?.product?.variants, item?.product?.discountedPrice)}
-                  assets={item?.product?.assets}
-                />
-              </Link>
+              <WishlistItem key={item?._id} productId={item?.productId} />
             ))}
           </div>
         )}

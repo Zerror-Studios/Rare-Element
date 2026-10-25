@@ -43,6 +43,7 @@ const Category = ({ data }) => {
                                             />
                                         )}
                                         <Image
+                                            sizes="(max-width: 750px) 33vw, 15vw"
                                             width={150}
                                             height={150}
                                             src={item?.image}

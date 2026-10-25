@@ -7,7 +7,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@apollo/client/react";
-import { CREATE_CONTACT_FORM } from "@/graphql";
+import { SUBMIT_CONTACT_FORM } from "@/graphql";
+import { getErrorMessage } from "@/utils/errors";
 import GreenBoxBtn from "../buttons/GreenBoxBtn";
 
 // Contact Form Validation
@@ -27,57 +28,59 @@ const contactSchema = z.object({
 });
 
 const ContactForm = () => {
-  const [createContact, { loading }] = useMutation(CREATE_CONTACT_FORM);
+  const [submitContactForm, { loading }] = useMutation(SUBMIT_CONTACT_FORM);
 
   useEffect(() => {
-    // Handle input focus and blur
-    document.querySelectorAll("#right form .input").forEach((i) => {
-      const input = i.querySelector("input");
-      input.addEventListener("focus", () => {
-        i.classList.add("label_active");
-      });
-      input.addEventListener("blur", function () {
-        if (this.value === "") {
-          i.classList.remove("label_active");
-        }
-      });
-    });
+    // SF-20: every listener is removed (and tweens killed) on unmount.
+    const cleanups = [];
+    const listen = (element, type, handler) => {
+      element.addEventListener(type, handler);
+      cleanups.push(() => element.removeEventListener(type, handler));
+    };
 
-    // Handle textarea focus and blur
-    document.querySelectorAll("#right form .textarea").forEach((i) => {
-      const textarea = i.querySelector("textarea");
-      textarea.addEventListener("focus", () => {
-        i.classList.add("label_active");
+    // Handle input and textarea focus and blur
+    document
+      .querySelectorAll("#right form .input, #right form .textarea")
+      .forEach((i) => {
+        const field = i.querySelector("input, textarea");
+        if (!field) return;
+        listen(field, "focus", () => {
+          i.classList.add("label_active");
+        });
+        listen(field, "blur", () => {
+          if (field.value === "") {
+            i.classList.remove("label_active");
+          }
+        });
       });
-      textarea.addEventListener("blur", function () {
-        if (this.value === "") {
-          i.classList.remove("label_active");
-        }
-      });
-    });
 
     // Handle line animation
     document.querySelectorAll(".lineanime").forEach((i) => {
-      i.addEventListener("mouseenter", () => {
-        gsap.to(i.querySelector(".linei"), {
+      const line = i.querySelector(".linei");
+      if (!line) return;
+      listen(i, "mouseenter", () => {
+        gsap.to(line, {
           scaleX: 1,
           duration: 0.3,
           ease: "power1.out",
         });
       });
 
-      i.addEventListener("mouseleave", () => {
-        gsap.set(i.querySelector(".linei"), { transformOrigin: "right" });
-        gsap.to(i.querySelector(".linei"), {
+      listen(i, "mouseleave", () => {
+        gsap.set(line, { transformOrigin: "right" });
+        gsap.to(line, {
           scaleX: 0,
           duration: 0.3,
           ease: "power1.in",
           onComplete: () => {
-            gsap.set(i.querySelector(".linei"), { transformOrigin: "left" });
+            gsap.set(line, { transformOrigin: "left" });
           },
         });
       });
+      cleanups.push(() => gsap.killTweensOf(line));
     });
+
+    return () => cleanups.forEach((cleanup) => cleanup());
   }, []);
 
   const {
@@ -94,17 +97,15 @@ const ContactForm = () => {
       const input = {
         ...data,
       };
-      const { data: response } = await createContact({ variables: { input } });
-      const message = response?.createContact || {};
-      if (message) {
-        toast.success(message);
+      const { data: response } = await submitContactForm({ variables: { input } });
+      if (response?.submitContactForm?._id) {
+        toast.success("Thank you! We'll get back to you soon.");
         reset();
       } else {
         toast.error("Failed to submit the form.");
       }
     } catch (err) {
-      // console.error(err);
-      toast.error("Failed to submitted contact form");
+      toast.error(getErrorMessage(err, "Failed to submit the contact form"));
     }
   };
 
@@ -181,7 +182,7 @@ const ContactForm = () => {
             )}
           </div>
           <div className="submit_form_btn_paren">
-            <GreenBoxBtn title="submit" />
+            <GreenBoxBtn title="submit" loading={loading} />
           </div>
 
         </form>

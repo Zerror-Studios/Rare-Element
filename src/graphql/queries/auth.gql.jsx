@@ -13,21 +13,7 @@ export const GET_MY_PROFILE = gql`
       profileImg
       dateOfBirth
       status
-      addresses {
-        _id
-        addressType
-        addressline1
-        addressline2
-        flat
-        landmark
-        countryCode
-        phone
-        city
-        country
-        states
-        pincode
-        primary
-      }
+      emailSubscribedStatus
     }
   }
 `;

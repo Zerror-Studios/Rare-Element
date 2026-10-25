@@ -62,6 +62,7 @@ const SocialReels = () => {
               <video className='cover socialCard_box_vid ' loop autoPlay muted playsInline src={item.vid}></video>
               <div className="socialCard_image_wrapper">
                 <Image
+                  sizes="(max-width: 750px) 50vw, 20vw"
                   width={250}
                   height={400}
                   className="socialCard_image"

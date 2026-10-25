@@ -10,26 +10,34 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formatePrice } from '@/utils/Util';
 import { RiQuestionLine } from '@remixicon/react';
-import { ADD_ITEM_TO_CART, APPLY_CART_COUPON, REMOVE_CART_COUPON, REMOVE_ITEM_FROM_CART } from "@/graphql";
+import { ADD_ITEM_TO_CART, APPLY_CART_PROMOTION, REMOVE_CART_PROMOTION, REMOVE_ITEM_FROM_CART } from "@/graphql";
 import WishlistPopup from '../cart/WishlistPopup';
-import { useAuthStore } from "@/store/auth-store";
-import { AuthCookies } from "@/utils/AuthCookies";
-import { useVisitor } from "@/hooks/useVisitor";
+import { getErrorInfo, getErrorMessage } from "@/utils/errors";
+import {
+  CtaEnum,
+  trackCouponApply,
+  trackCouponFailed,
+  trackCtaClick,
+} from "@/utils/analytics-events";
 
 const couponSchema = z.object({ couponCode: z.string().min(1, "Enter Valid Coupon").optional() });
-const OrderSummary = ({ data, loading, refetch }) => {
+
+// Checkout is customer-only, so the cart owner is always the access token.
+// `session` (after "Pay Now") carries the authoritative server total;
+// `locked` freezes the bag once an order exists for it.
+const OrderSummary = ({ data, session, loading, locked = false, refetch }) => {
   const {
     totalprice = 0,
-    itemcount = 0,
     pricesIncludeTax = false,
     discountedPrice = 0,
     totalDiscount = 0,
     totalTax = 0,
+    isFreeShippingEnabled = false,
     cart = [],
-    coupon: { couponId: isCouponApplied } = {}
+    promotion,
   } = data || {};
-
-  const { user, isLoggedIn } = useAuthStore((state) => state);
+  const isCouponApplied = !!promotion?.promotionCode;
+  const pricing = session?.pricing;
 
   const initialState = {
     popupActive: false,
@@ -57,10 +65,8 @@ const OrderSummary = ({ data, loading, refetch }) => {
   const [addCartItem] = useMutation(ADD_ITEM_TO_CART);
   const [removeCartItem] = useMutation(REMOVE_ITEM_FROM_CART);
 
-  const token = AuthCookies.get();
-  const { visitorId } = useVisitor();
-  const [applyCoupon, { loading: applyCouponLoading }] = useMutation(APPLY_CART_COUPON);
-  const [removeCoupon, { loading: removeCouponLoading }] = useMutation(REMOVE_CART_COUPON);
+  const [applyCoupon, { loading: applyCouponLoading }] = useMutation(APPLY_CART_PROMOTION);
+  const [removeCoupon, { loading: removeCouponLoading }] = useMutation(REMOVE_CART_PROMOTION);
   const {
     register,
     handleSubmit,
@@ -72,128 +78,107 @@ const OrderSummary = ({ data, loading, refetch }) => {
   });
 
   React.useEffect(() => {
-    if (isCouponApplied && data?.coupon?.couponCode) {
-      setValue("couponCode", data.coupon.couponCode);
-    } else if (!isCouponApplied) {
+    if (isCouponApplied) {
+      setValue("couponCode", promotion.promotionCode);
+    } else {
       setValue("couponCode", "");
     }
-  }, [isCouponApplied, data, setValue]);
+  }, [isCouponApplied, promotion, setValue]);
+
+  const isLocked = () => {
+    if (!locked) return false;
+    toast.info("Your order is being placed; the bag can't change now.");
+    return true;
+  };
 
   const onSubmit = async (formData) => {
-    if (loading) return;
-    if (!isLoggedIn && !visitorId) {
-      toast.warn("Initializing session, please try again...");
-      return;
-    }
+    if (loading || isLocked()) return;
+    const couponCode = formData?.couponCode || "";
+    trackCtaClick(CtaEnum.APPLY_COUPON);
     try {
-      const input = {
-        ...(isLoggedIn && token ? { token } : {}),
-        ...(!isLoggedIn && visitorId ? { guestId: visitorId } : {}),
-        couponCode: formData?.couponCode || null,
-      };
       const { data: res } = await applyCoupon({
-        variables: { ...input },
+        variables: { promotionCode: couponCode },
       });
-      const { _id } = res?.applyCartCoupon || {};
-      if (_id) {
+      if (res?.applyCartPromotion?._id) {
+        trackCouponApply(couponCode);
         toast.success("Coupon Applied successfully!");
       }
     } catch (err) {
-      // console.error(err);
-      toast.error("Failed to apply coupon");
+      // PRD-013: the reason is the server code, never the message text.
+      const { reason, code } = getErrorInfo(err);
+      trackCouponFailed(couponCode, reason || code || "UNKNOWN");
+      toast.error(getErrorMessage(err, "Failed to apply coupon"));
     } finally {
       refetch();
     }
   };
 
   const onRemove = async () => {
-    if (loading) return;
-    if (!isLoggedIn && !visitorId) {
-      toast.warn("Initializing session, please try again...");
-      return;
-    }
+    if (loading || isLocked()) return;
     try {
-      const input = {
-        ...(isLoggedIn && token ? { token } : {}),
-        ...(!isLoggedIn && visitorId ? { guestId: visitorId } : {}),
-      };
-      const { data: res } = await removeCoupon({
-        variables: { ...input },
-      });
-      const r_data = res?.removeCartCoupon || null;
-      if (r_data) {
+      const { data: res } = await removeCoupon();
+      if (res?.removeCartPromotion) {
         toast.success("Coupon Removed successfully!");
       }
     } catch (err) {
-      // console.error(err);
-      toast.error("Failed to remove coupon");
+      toast.error(getErrorMessage(err, "Failed to remove coupon"));
     } finally {
       reset();
       refetch();
     }
   };
 
-  const handleAddItem = async (productId, variantDetail) => {
+  const handleAddItem = async (productId, variantId) => {
+    if (isLocked()) return;
     try {
-      const { __typename, ...variantWithoutTypename } = variantDetail;
-      const payload = {
-        input: {
-          productId,
-          variantDetail: variantWithoutTypename,
-          ...(isLoggedIn && token ? { token } : {}),
-        },
-        ...(!isLoggedIn && visitorId ? { guestId: visitorId } : {}),
-      };
-
-      const { data: res } = await addCartItem({ variables: payload });
-      const message = res?.addItemToCart;
-      if (!message) return;
-      toast.success(message || "Item added successfully!");
+      const { data: res } = await addCartItem({
+        variables: { input: { productId, variantId: variantId || null, qty: 1 } },
+      });
+      if (!res?.addItemToCart) return;
+      toast.success("Item added successfully!");
       await refetch();
     } catch (err) {
       console.error(err);
-      toast.error("Failed to add item in cart");
+      toast.error(getErrorMessage(err, "Failed to add item in cart"));
     }
   };
 
   const performRemoveItem = async (
     productId,
-    variantDetailId,
+    variantId,
     isCompleteRemove = true
   ) => {
+    if (isLocked()) return;
     try {
       const input = {
-        ...(isLoggedIn && token ? { userId: user?._id } : {}),
-        ...(!isLoggedIn && visitorId ? { guestId: visitorId } : {}),
         productId,
-        variantDetailId,
+        variantId: variantId || null,
         isCompleteRemove,
       };
       const { data: res } = await removeCartItem({ variables: { input } });
-      const message = res?.removeItemFromCart;
-      if (!message) return;
-      toast.success(message || "Item removed successfully!");
+      if (!res?.removeItemFromCart) return;
+      toast.success("Item removed successfully!");
       await refetch();
     } catch (err) {
-      toast.error("Failed to remove item from cart");
+      toast.error(getErrorMessage(err, "Failed to remove item from cart"));
     }
   };
 
   const handleRemoveItem = async (
     productId,
-    variantDetailId,
+    variantId,
     isCompleteRemove = true
   ) => {
     if (isCompleteRemove) {
       const item = cart.find(
         (i) =>
           i.productId === productId &&
-          i.variantDetail?.variantDetailId === variantDetailId
+          (i.variantId || null) === (variantId || null)
       );
       dispatch({ type: "OPEN_WISHLIST_POPUP", payload: item });
       return;
     }
-    await performRemoveItem(productId, variantDetailId, isCompleteRemove);
+    await performRemoveItem(productId, variantId, isCompleteRemove);
   };
 
   return (
@@ -218,7 +203,7 @@ const OrderSummary = ({ data, loading, refetch }) => {
               placeholder="Discount Code"
               className="checkout_couponInput"
               style={{ width: "100%" }}
-              disabled={applyCouponLoading || removeCouponLoading || isCouponApplied}
+              disabled={applyCouponLoading || removeCouponLoading || isCouponApplied || locked}
               error={errors?.couponCode}
               onChange={(e) => {
                 let value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
@@ -238,20 +223,23 @@ const OrderSummary = ({ data, loading, refetch }) => {
         <div className="checkout_row ">
           <p className="checkout_textBase text-sm uppercase">Cart Total</p>
           <p className="checkout_textBase text-sm uppercase">
-            {formatePrice(totalprice)}
+            {formatePrice(pricing ? pricing.subtotal : totalprice)}
           </p>
         </div>
         <div className="checkout_borderRow"></div>
         <div className="checkout_row ">
           <p className="checkout_textBase text-sm uppercase">Discount</p>
-          <p className="checkout_textBase text-sm uppercase">{`${totalDiscount > 0 ? "- " : ""}${formatePrice(totalDiscount)}`}</p>
+          <p className="checkout_textBase text-sm uppercase">{`${(pricing ? pricing.discount : totalDiscount) > 0 ? "- " : ""}${formatePrice(pricing ? pricing.discount : totalDiscount)}`}</p>
         </div>
         <div className="checkout_borderRow"></div>
         <div className="checkout_row">
           <p className="checkout_textBase text-sm uppercase">Shipping Charges</p>
           <div className="shipping_price_group">
-            <p className="checkout_textSm text-sm ">{true ? "Free" : formatePrice(100)}</p>
-            {true && <span className="line-through tax_name text-sm">{formatePrice(100)}</span>}
+            <p className="checkout_textSm text-sm ">
+              {pricing
+                ? (pricing.isFreeShipping || pricing.shipping === 0 ? "Free" : formatePrice(pricing.shipping))
+                : (isFreeShippingEnabled ? "Free" : "Calculated at payment")}
+            </p>
           </div>
         </div>
 
@@ -285,19 +273,24 @@ const OrderSummary = ({ data, loading, refetch }) => {
                 </div>
               </div>
               <p className="checkout_textBase text-sm uppercase">
-                {formatePrice(totalTax)}
+                {formatePrice(pricing ? pricing.tax : totalTax)}
               </p>
             </div>
           </>
         )}
         <div className="checkout_borderRow"></div>
+        {/* The payable total is the server's checkout-session total. */}
         <div className="checkout_row semibold uppercase text-2xl ">
-          <p className="checkout_textBase text-lg uppercase">Total Payable Amount</p>
-          <p className="checkout_subtotalValue">{formatePrice(discountedPrice)}</p>
+          <p className="checkout_textBase text-lg uppercase">{pricing ? "Total Payable Amount" : "Subtotal"}</p>
+          <p className="checkout_subtotalValue">{formatePrice(pricing ? pricing.total : discountedPrice)}</p>
         </div>
 
         <div className="checkout_btn text-base uppercase">
-          <GreenBoxBtn title={"Pay Now"} loading={loading} />
+          <GreenBoxBtn
+            title={"Pay Now"}
+            loading={loading}
+            onClick={() => trackCtaClick(CtaEnum.PAY_NOW)}
+          />
         </div>
       </div>
     </div>

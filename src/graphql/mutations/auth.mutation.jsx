@@ -1,21 +1,23 @@
 import { gql } from "@apollo/client";
 
-export const REFRESH_TOKEN = gql`
-  query RefreshToken($refreshToken: String!) {
-    refreshToken(refreshToken: $refreshToken) {
+// Refresh (PRD-001 phase 2): the refresh token is read from the HttpOnly
+// customer cookie; only the new access token is selected.
+export const CUSTOMER_REFRESH_TOKEN = gql`
+  mutation CustomerRefreshToken {
+    customerRefreshToken {
       accessToken
-      refreshToken
     }
   }
 `;
 
-export const LOGOUT = gql`
-  mutation UserLogout($userId: ID!) {
-    userLogout(userId: $userId)
+// Logout: the server revokes the cookie session and expires the cookie.
+export const CUSTOMER_LOGOUT = gql`
+  mutation CustomerLogout {
+    customerLogout
   }
 `;
 
-// Sign Up
+// Sign Up (duplicate email → extensions.code CONFLICT)
 export const SIGN_UP_USER = gql`
   mutation CustomerSignup($input: CreateUserInput!) {
     customerSignup(input: $input) {
@@ -29,85 +31,54 @@ export const SIGN_UP_USER = gql`
       profileImg
       dateOfBirth
       status
+      emailSubscribedStatus
     }
   }
 `;
 
-// Login
+// Login: the refresh token is set as an HttpOnly cookie, never selected.
 export const CUSTOMER_LOGIN = gql`
   mutation CustomerLogin($input: CustomerLoginInput!) {
     customerLogin(input: $input) {
       accessToken
-      refreshToken
       expiresIn
       customerId
     }
   }
 `;
+
 // Update Profile
 export const UPDATE_USER_PROFILE = gql`
-  mutation ClientUserUpdate(
-    $input: CreateUserInput!
-    $clientUserUpdateId: ID!
-  ) {
-    clientUserUpdate(input: $input, id: $clientUserUpdateId) {
-      user {
-        _id
-        countryCode
-        addresses {
-          _id
-          addressType
-          addressline1
-          addressline2
-          userId
-          flat
-          landmark
-          countryCode
-          phone
-          city
-          country
-          states
-          pincode
-          primary
-          createdAt
-          updatedAt
-        }
-        profileImg
-        dateOfBirth
-        email
-        firstName
-        gender
-        lastName
-        phoneNumber
-      }
+  mutation UpdateMyProfile($input: CreateUserInput!) {
+    updateMyProfile(input: $input) {
+      _id
+      firstName
+      lastName
+      email
+      phoneNumber
+      countryCode
+      gender
+      profileImg
+      dateOfBirth
+      status
+      emailSubscribedStatus
     }
   }
 `;
 
-// Update Password
-export const UPDATE_USER_PASSWORD = gql`
-  mutation ChangeUserPassword(
-    $email: String!
-    $currentPassword: String!
-    $newPassword: String!
-  ) {
-    changeUserPassword(
-      email: $email
-      currentPassword: $currentPassword
-      newPassword: $newPassword
-    ) {
-      accessToken
-      refreshToken
-      user {
-        _id
-      }
+// Password reset (PRD-003 FR-0.5): the request answers the same way for any
+// email; the reset consumes the emailed token once.
+export const CUSTOMER_REQUEST_PASSWORD_RESET = gql`
+  mutation CustomerRequestPasswordReset($email: String!) {
+    customerRequestPasswordReset(email: $email) {
+      success
+      message
     }
   }
 `;
 
-// Update Status
-export const UPDATE_USER_STATUS = gql`
-  mutation ChangeUserStatus($email: String!, $status: UserStatusEnum!) {
-    changeUserStatus(email: $email, status: $status)
+export const CUSTOMER_RESET_PASSWORD = gql`
+  mutation CustomerResetPassword($token: String!, $newPassword: String!) {
+    customerResetPassword(token: $token, newPassword: $newPassword)
   }
 `;

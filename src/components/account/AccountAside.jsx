@@ -4,17 +4,16 @@ import React from 'react'
 import Link from 'next/link'
 import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore } from "@/store/auth-store";
-import { AuthCookies } from "@/utils/AuthCookies"
+import { useAuth } from "@/context/AuthContext"
 import GreenBoxBtn from '../buttons/GreenBoxBtn';
 
 const AccountAside = () => {
   const router = useRouter();
   const pathname = usePathname();
-  const { user, clearAuth } = useAuthStore();
-  const handleSignout = () => {
-    AuthCookies.remove();
-    clearAuth();
-    localStorage.clear();
+  const { user } = useAuthStore();
+  const { logout } = useAuth();
+  const handleSignout = async () => {
+    await logout();
     router.replace("/");
   }
 
@@ -66,18 +65,6 @@ const AccountAside = () => {
               </p>
             </Link>
           </div>
-
-
-          {/* <div >
-            <Link scroll={false} href={"/account/offers"}>
-              <p
-                className={`accountLeftSlide_navLink uppercase text-2xl ${pathname === "/account/offers" ? "active" : ""
-                  }`}
-              >
-                Discounts & Offers
-              </p>
-            </Link>
-          </div> */}
 
           <div>
             <Link scroll={false} href={"/account/settings"}>

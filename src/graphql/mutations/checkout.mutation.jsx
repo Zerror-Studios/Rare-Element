@@ -1,57 +1,86 @@
 import { gql } from "@apollo/client";
 
-export const CHECKOUT_ORDER = gql`
-  mutation ClientCheckout($input: CheckoutOrderInput!) {
-    clientCheckout(input: $input) {
-      data {
-        _id
-        nimbblInvoiceId
-        nimbblOrderId
-        fulfillmentStatus
-        paymentStatus
-        orderNo
-        nimbblTransactionId
-        nimbblUserId
-      }
-      nimbblData {
-        invoice_id
-        token
-        token_expiration
+// 1. Price the cart and request the stock hold (customer only).
+export const CREATE_CHECKOUT_SESSION = gql`
+  mutation CreateCheckoutSessionFromCart(
+    $cartId: ID!
+    $shippingAddress: OrderAddressInput
+    $billingAddress: OrderAddressInput
+    $promotionCode: String
+    $attribution: OrderAttributionInput
+  ) {
+    createCheckoutSessionFromCart(
+      cartId: $cartId
+      shippingAddress: $shippingAddress
+      billingAddress: $billingAddress
+      promotionCode: $promotionCode
+      attribution: $attribution
+    ) {
+      id
+      status
+      failureReason
+      orderId
+      expiresAt
+      currency
+      pricing {
+        subtotal
+        discount
         tax
-        status
-        refresh_token_expiration
-        refresh_token
-        order_id
-        order_date
-        next {
-          url
-          action
-        }
-        currency
-        attempts
-        amount_before_tax
-        total_amount
-        user {
-          user_id
-          mobile_number
-          country_code
-          email
-          first_name
-          last_name
-          token
-          token_expiration
-        }
+        shipping
+        total
+        pricesIncludeTax
+        isFreeShipping
       }
     }
   }
 `;
 
-export const VERIFY_NIMBBL_PAYMENT = gql`
-  mutation VerifyNimbblPayment($payload: JSON!) {
-    verifyNimbblPayment(payload: $payload) {
+// 2. RESERVED → create the UN_PAID order (idempotent per session).
+export const COMPLETE_CHECKOUT = gql`
+  mutation CompleteCheckout($checkoutId: ID!) {
+    completeCheckout(checkoutId: $checkoutId) {
+      id
+      status
+      failureReason
+      orderId
+    }
+  }
+`;
+
+// 3. Payment session for the order on the store's active payment app
+//    (amount is the server total). `checkout` says how to open it (PRD-011).
+export const CREATE_PAYMENT_SESSION = gql`
+  mutation CreatePaymentSession($input: CreatePaymentSessionInput!) {
+    createPaymentSession(input: $input) {
+      paymentId
+      orderId
+      providerOrderId
+      amount
+      currency
+      provider
+      checkout {
+        provider
+        mode
+        environment
+        scriptUrl
+        sdk
+        redirectUrl
+        formAction
+        formFields
+      }
+    }
+  }
+`;
+
+// 4. Server-to-server verification of the provider's response.
+export const VERIFY_PAYMENT = gql`
+  mutation VerifyPayment($payload: JSON!) {
+    verifyPayment(payload: $payload) {
       success
+      status
+      orderId
+      paymentId
       redirectUrl
-      awbCode
     }
   }
 `;

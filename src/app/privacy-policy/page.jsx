@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 export const metadata = {
+  alternates: { canonical: "/privacy-policy" },
   title: "Privacy Policy – Nahara Jewellery",
   description: "Review Nahara's privacy policy to understand how we collect, use, and protect your personal information.",
   openGraph: {

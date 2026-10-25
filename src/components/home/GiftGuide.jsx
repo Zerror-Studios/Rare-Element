@@ -205,6 +205,7 @@ const GiftGuide = ({ data }) => {
                                         )}
 
                                         <Image
+                                            sizes="(max-width: 750px) 100vw, 50vw"
                                             fill
                                             quality={50}
                                             src={src}
@@ -283,6 +284,7 @@ const GiftGuide = ({ data }) => {
                                                 )}
 
                                                 <Image
+                                                    sizes="(max-width: 750px) 50vw, 25vw"
                                                     width={300}
                                                     height={400}
                                                     src={src}

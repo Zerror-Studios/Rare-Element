@@ -12,15 +12,17 @@ import { formatePrice, getCartItemCount } from "@/utils/Util";
 import GreenBoxBtn from '@/components/buttons/GreenBoxBtn';
 import CartItem from '@/components/cart/CartItem';
 import { RiCloseLine } from "@remixicon/react";
-import { AuthCookies } from "@/utils/AuthCookies";
+import { getErrorMessage, isInvalidGuestIdError } from "@/utils/errors";
+import { CtaEnum, trackCtaClick } from "@/utils/analytics-events";
 
 import WishlistPopup from "./WishlistPopup";
 
 const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
   const router = useRouter();
-  const token = AuthCookies.get();
-  const { visitorId } = useVisitor();
-  const { user, isLoggedIn } = useAuthStore((state) => state);
+  const { visitorId, resetVisitorId } = useVisitor();
+  const { isLoggedIn } = useAuthStore((state) => state);
+  // The owner is the logged-in customer (token) or the guest id (SF-3).
+  const guestVariables = !isLoggedIn && visitorId ? { guestId: visitorId } : {};
   const initialState = {
     popupActive: false,
     isBtnLoading: false,
@@ -53,15 +55,12 @@ const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
     REMOVE_ITEM_FROM_CART
   );
 
-  const cartListPayload = isLoggedIn
-    ? { token: token || null }
-    : visitorId
-      ? { guestId: visitorId }
-      : {};
+  const cartListPayload = guestVariables;
 
   const {
     data: cartResponse,
     loading,
+    error: cartError,
     refetch,
   } = useQuery(CART_LIST, {
     skip: !isOpen || (!isLoggedIn && !visitorId),
@@ -69,6 +68,16 @@ const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
     fetchPolicy: "network-only",
     nextFetchPolicy: "cache-first",
   });
+
+  // A rejected guest id (R2-C2) has no cart: drop it; the next add issues
+  // a new one.
+  useEffect(() => {
+    if (!isLoggedIn && isInvalidGuestIdError(cartError)) resetVisitorId();
+  }, [cartError, isLoggedIn, resetVisitorId]);
+
+  const handleGuestError = (err) => {
+    if (!isLoggedIn && isInvalidGuestIdError(err)) resetVisitorId();
+  };
 
   const {
     _id,
@@ -79,75 +88,75 @@ const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
 
   const count = getCartItemCount(cart);
 
-  const handleAddItem = async (productId, variantDetail) => {
+  const handleAddItem = async (productId, variantId) => {
     try {
-      const { __typename, ...variantWithoutTypename } = variantDetail;
       const payload = {
-        input: {
-          productId,
-          variantDetail: variantWithoutTypename,
-          ...(isLoggedIn && token ? { token } : {}),
-        },
-        ...(!isLoggedIn && visitorId ? { guestId: visitorId } : {}),
+        input: { productId, variantId: variantId || null, qty: 1 },
+        ...guestVariables,
       };
 
       const { data: response } = await addCartItem({ variables: payload });
-      const message = response?.addItemToCart;
-      if (!message) return;
-      toast.success(message || "Item added successfully!");
+      if (!response?.addItemToCart) return;
+      toast.success("Item added successfully!");
       await refetch();
     } catch (err) {
       console.error(err);
-      toast.error("Failed to add item in cart");
+      handleGuestError(err);
+      toast.error(getErrorMessage(err, "Failed to add item in cart"));
     }
   };
 
   const performRemoveItem = async (
     productId,
-    variantDetailId,
+    variantId,
     isCompleteRemove = true
   ) => {
     try {
       const input = {
-        ...(isLoggedIn && token ? { userId: user?._id } : {}),
-        ...(!isLoggedIn && visitorId ? { guestId: visitorId } : {}),
+        ...guestVariables,
         productId,
-        variantDetailId,
+        variantId: variantId || null,
         isCompleteRemove,
       };
       const { data: response } = await removeCartItem({ variables: { input } });
-      const message = response?.removeItemFromCart;
-      if (!message) return;
-      toast.success(message || "Item removed successfully!");
+      if (!response?.removeItemFromCart) return;
+      toast.success("Item removed successfully!");
       await refetch();
     } catch (err) {
-      // console.error(err);
-      toast.error("Failed to remove item from cart");
+      handleGuestError(err);
+      toast.error(getErrorMessage(err, "Failed to remove item from cart"));
     }
   };
 
   const handleRemoveItem = async (
     productId,
-    variantDetailId,
+    variantId,
     isCompleteRemove = true
   ) => {
     if (isCompleteRemove) {
       const item = cart.find(
         (i) =>
           i.productId === productId &&
-          i.variantDetail?.variantDetailId === variantDetailId
+          (i.variantId || null) === (variantId || null)
       );
       dispatch({ type: "OPEN_WISHLIST_POPUP", payload: item });
       return;
     }
-    await performRemoveItem(productId, variantDetailId, isCompleteRemove);
+    await performRemoveItem(productId, variantId, isCompleteRemove);
   };
 
   const navigateCheckout = async () => {
     if (count <= 0) return;
+    trackCtaClick(CtaEnum.CHECKOUT);
     try {
       dispatch({ type: "SET_BTN_LOADING", payload: true });
-      await router.push(`/checkout/${_id}`);
+      // Checkout is customer-only; the guest bag is merged at login.
+      if (!isLoggedIn) {
+        toast.info("Please log in to check out.");
+        await router.push(`/login?next=${encodeURIComponent(`/checkout/${_id}`)}`);
+      } else {
+        await router.push(`/checkout/${_id}`);
+      }
       closeCart();
     } catch (err) {
       console.error("Navigation failed:", err);

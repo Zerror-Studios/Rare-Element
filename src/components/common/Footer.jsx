@@ -2,17 +2,19 @@
 
 import { useGSAP } from '@gsap/react';
 import React, { useRef } from 'react';
-import Lottie from 'lottie-react';
-import SecureLock from "../../../public/icons/animationJson/SecureLock.json";
-import Crafting from "../../../public/icons/animationJson/crafting.json";
-import FreeShipping from "../../../public/icons/animationJson/FreeShipping.json";
-import ChatSupport from "../../../public/icons/animationJson/ChatSupport.json";
-import StretchArrow from "../../../public/icons/animationJson/StretchArrow.json";
+import Lottie from './LazyLottie';
 import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import Image from 'next/image';
 gsap.registerPlugin(ScrollTrigger)
+
+// SF-17: animations are fetched from /public on demand, not bundled.
+const SecureLock = "/icons/animationJson/SecureLock.json";
+const Crafting = "/icons/animationJson/crafting.json";
+const FreeShipping = "/icons/animationJson/FreeShipping.json";
+const ChatSupport = "/icons/animationJson/ChatSupport.json";
+const StretchArrow = "/icons/animationJson/StretchArrow.json";
 
 
 
@@ -84,7 +86,7 @@ const footerLinksData = [
     links: [
       { label: "Instagram", href: "https://www.instagram.com/nahara.jewellery/?igsh=MXgwcmQ2ODhnaTR3ag%3D%3D#", target: "_blank" },
       { label: "WhatsApp", href: "https://wa.me/+919137159898", target: "_blank" },
-      { label: "hello@nahara.co.in", href: "https://mail.google.com/mail/u/0/#inbox?compose=https://mail.google.com/mail/u/0/#inbox?compose=DmwnWsCZFQTSPKdBWzqptmWzRGSXbXPcgGKFLkKhbNnbbmlgJgCbMhkZCbbJRRqmCSbHhCHFkrGB", target: "_blank" },
+      { label: "hello@nahara.co.in", href: "mailto:hello@nahara.co.in", target: "_blank" },
     ],
   },
 ];
@@ -108,7 +110,7 @@ const FeatureCard = ({ item }) => {
         <div className="featured_icon_custom">
           <Lottie
             lottieRef={mainRef}
-            animationData={item?.animationData}
+            src={item?.animationData}
             autoplay={false}
             loop={false}
             onDOMLoaded={() => {
@@ -120,7 +122,7 @@ const FeatureCard = ({ item }) => {
         <div className="featured_icon">
           <Lottie
             lottieRef={mainRef}
-            animationData={item?.animationData}
+            src={item?.animationData}
             autoplay={false}
             loop={false}
           />
@@ -138,7 +140,7 @@ const FeatureCard = ({ item }) => {
       <div className="featured_icon">
         <Lottie
           lottieRef={arrowRef}
-          animationData={StretchArrow}
+          src={StretchArrow}
           autoplay={false}
           loop={false}
         />

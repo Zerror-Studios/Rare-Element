@@ -1,3 +1,5 @@
+import { toJsonLd } from "@/utils/json-ld";
+
 const WebPageSchema = ({ name, description, url }) => {
   const schemaData = {
     "@context": "https://schema.org",
@@ -14,7 +16,7 @@ const WebPageSchema = ({ name, description, url }) => {
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
+      dangerouslySetInnerHTML={{ __html: toJsonLd(schemaData) }}
     ></script>
   );
 };

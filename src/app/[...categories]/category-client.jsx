@@ -102,6 +102,7 @@ export default function CategoryClient({ meta, data, initialProducts, initialTot
 
         <div className="products_hero-section skeleton_animate">
           <Image
+            sizes="100vw"
             key={data?.imgsrc}
             fill
             priority
@@ -132,12 +133,10 @@ export default function CategoryClient({ meta, data, initialProducts, initialTot
                   <ProductCard
                     productId={item._id}
                     name={item.name || ""}
-                    ribbon={item.ribbon || ""}
-                    price={getProductPriceLabel(
-                      item.variants,
-                      item.discountedPrice
-                    )}
+                    price={getProductPriceLabel(item.variants)}
                     assets={item.assets || []}
+                    product={item}
+                    listName={data?.name || "Category"}
                   />
                 </Link>
               ))

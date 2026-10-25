@@ -111,6 +111,7 @@ const Layout = ({ children }) => {
       <div className="ring_size_guide">
         <div className="ring_size_guide_img_paren center">
           <Image
+            sizes="(max-width: 960px) 100vw, 960px"
             height={1080}
             width={960}
             src={sizeGuideImage?.path || "/green_logo.svg"}

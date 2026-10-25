@@ -1,4 +1,5 @@
 export const metadata = {
+  alternates: { canonical: "/terms-of-service" },
   title: "Terms of Service – Nahara Jewellery",
   description: "Review the terms and conditions for using the Nahara website and purchasing fine jewellery online.",
   openGraph: {

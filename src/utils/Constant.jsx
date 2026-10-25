@@ -1,5 +1,8 @@
+import { SITE_URL } from "@/utils/env";
+
 export const Const = {
-  ClientLink: "https://www.nahara.com",
+  // SF-4: the one site origin (NEXT_PUBLIC_SITE_URL), shared with metadata.
+  ClientLink: SITE_URL,
   Brand: "Nahara",
   IN_STOCK: "IN_STOCK",
   OUT_OF_STOCK: "OUT_OF_STOCK",

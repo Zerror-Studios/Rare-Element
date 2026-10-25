@@ -1,4 +1,5 @@
 import { Const } from "@/utils/Constant";
+import { toJsonLd } from "@/utils/json-ld";
 
 const BreadcrumbSchema = ({ itemList }) => {
   const breadcrumb = {
@@ -32,7 +33,7 @@ const BreadcrumbSchema = ({ itemList }) => {
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
+      dangerouslySetInnerHTML={{ __html: toJsonLd(breadcrumb) }}
     ></script>
   );
 };

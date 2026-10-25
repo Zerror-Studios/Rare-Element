@@ -55,20 +55,20 @@ export default function AboutClient() {
         <div className="about_marque_img_paren_1">
           <div className="marq_img_paren">
             <div className="marq_img_1">
-              <Image className='cover' src="/images/aboutpage/img1.avif" alt="img" width={400} height={600} />
+              <Image sizes="(max-width: 750px) 50vw, 25vw" className='cover' src="/images/aboutpage/img1.avif" alt="img" width={400} height={600} />
             </div>
             <div className="marq_img_2">
-              <Image className='cover' src="/images/aboutpage/img2.avif" alt="img" width={400} height={600} />
+              <Image sizes="(max-width: 750px) 50vw, 25vw" className='cover' src="/images/aboutpage/img2.avif" alt="img" width={400} height={600} />
             </div>
           </div>
           <div className="marq_img_3">
-            <Image className='cover' src="/images/aboutpage/img3.avif" alt="img" width={800} height={600} />
+            <Image sizes="(max-width: 750px) 100vw, 50vw" className='cover' src="/images/aboutpage/img3.avif" alt="img" width={800} height={600} />
           </div>
         </div>
       </div>
       <div className="abt_mob_txt">
         <div className="about_txt_img">
-          <Image className='cover' src="/images/aboutpage/img4.avif" alt="img" width={400} height={600} />
+          <Image sizes="(max-width: 750px) 50vw, 25vw" className='cover' src="/images/aboutpage/img4.avif" alt="img" width={400} height={600} />
         </div>
         <p className='  text-base bold uppercase '>Behind Rare Element</p>
         <div className=" text-base">
@@ -77,7 +77,7 @@ export default function AboutClient() {
       </div>
       <div className=" abt_mob_txt_2">
         <div className="marq_img_6">
-          <Image className='cover' src="/images/aboutpage/img5.avif" alt="img" width={400} height={600} />
+          <Image sizes="(max-width: 750px) 50vw, 25vw" className='cover' src="/images/aboutpage/img5.avif" alt="img" width={400} height={600} />
         </div>
         <p className='  text-base bold uppercase '>Quiet Craftsmanship</p>
         <div className=" text-base">

@@ -15,6 +15,7 @@ const LoginClient = () => {
       >
         <div className="left-one">
           <Image
+            sizes="(max-width: 750px) 100vw, 50vw"
             width={600}
             height={600}
             src="/images/homepage/footer_reels/bracelet.webp"
@@ -24,6 +25,7 @@ const LoginClient = () => {
         </div>
         <div className="left-one">
           <Image
+            sizes="(max-width: 750px) 100vw, 50vw"
             width={600}
             height={600}
             src="/images/homepage/footer_reels/rings.webp"

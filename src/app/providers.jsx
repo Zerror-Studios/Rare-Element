@@ -7,6 +7,7 @@ import { ApolloWrapper } from "@/lib/apollo-wrapper";
 import { AuthProvider } from "@/context/AuthContext";
 import LenisScroll from "@/components/common/LenisScroll";
 import { useEffect } from "react";
+import { captureLandingAttribution } from "@/utils/ga-attribution";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import { usePathname } from "next/navigation";
@@ -16,6 +17,11 @@ gsap.registerPlugin(ScrollTrigger);
 export function Providers({ children }) {
 
   const pathname = usePathname();
+
+  // PRD-012: remember the visit's UTMs, referrer and landing page once
+  useEffect(() => {
+    captureLandingAttribution();
+  }, []);
 
   useEffect(() => {
     const timeout = setTimeout(() => {

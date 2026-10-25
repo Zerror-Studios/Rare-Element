@@ -1,4 +1,6 @@
-export const FB_PIXEL_ID = "26639049565785927";
+import { FB_PIXEL_ID as PIXEL_ID } from "@/utils/env";
+
+export const FB_PIXEL_ID = PIXEL_ID;
 
 export const pageview = () => {
   if (typeof window !== "undefined" && window.fbq) {

@@ -1,4 +1,5 @@
 export const metadata = {
+  alternates: { canonical: "/shipping-returns" },
   title: "Shipping & Return Policy – Nahara Jewellery",
   description: "View Nahara’s shipping guidelines, delivery information, and return/exchange policies for all jewellery purchases.",
   openGraph: {

@@ -89,7 +89,7 @@ const Hero = () => {
 
       <div className="introloader_paren center">
         <div className="loader_img">
-          <Image src="/green_logo.svg" alt="Nahara Loading Logo" width={400} height={400}
+          <Image sizes="(max-width: 750px) 50vw, 25vw" src="/green_logo.svg" alt="Nahara Loading Logo" width={400} height={400}
           //  sizes="(max-width: 768px) 80vw, 400px"
             />
         </div>

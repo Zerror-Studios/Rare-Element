@@ -1,5 +1,5 @@
 "use client";
-import React, { useLayoutEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import gsap from 'gsap'
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -8,6 +8,7 @@ import { useMutation } from "@apollo/client/react";
 import { UPDATE_USER_PROFILE } from "@/graphql";
 import { useAuthStore } from "@/store/auth-store";
 import { toast } from 'react-toastify';
+import { getErrorMessage } from '@/utils/errors';
 import { RiCheckLine } from '@remixicon/react'
 import { PhoneInput } from "react-international-phone";
 import Input from '@/components/ui/Input';
@@ -38,6 +39,7 @@ const ProfileDetails = () => {
     register,
     handleSubmit,
     setValue,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(ProfileSchema),
@@ -50,24 +52,34 @@ const ProfileDetails = () => {
     },
   });
 
+  // The profile loads after mount on a reload (it isn't persisted, RSEC-11).
+  useEffect(() => {
+    if (!user || isEditable) return;
+    reset({
+      firstName: user.firstName || "",
+      lastName: user.lastName || "",
+      email: user.email || "",
+      countryCode: user.countryCode || "+91",
+      phoneNumber: user.phoneNumber || "",
+    });
+  }, [user, isEditable, reset]);
+
   const onSubmit = async (data) => {
     if (!isEditable) return;
     try {
-      const input = {
-        ...data,
-      };
+      // The login email is the account identity and is not edited here.
+      const { email, ...input } = data;
       const { data: response } = await updateUser({
-        variables: { input, clientUserUpdateId: user?._id },
+        variables: { input },
       });
-      const updatedUser = response?.clientUserUpdate?.user;
+      const updatedUser = response?.updateMyProfile;
 
       if (updatedUser) {
         setUser(updatedUser);
         toast.success("Profile updated successfully!");
       }
     } catch (err) {
-      // console.error(err);
-      toast.error("Update failed");
+      toast.error(getErrorMessage(err, "Update failed"));
     }
   };
 
@@ -100,7 +112,7 @@ const ProfileDetails = () => {
             <div className=" settings_inp_flex">
 
               <div className="inp_paren">
-                <Input label="Email" isRequired={true} error={errors.email} {...register("email")} />
+                <Input label="Email" isRequired={true} readOnly error={errors.email} {...register("email")} />
                 {/* <RiCheckLine className='check_icon' /> */}
               </div>
               <div className="inp_paren text-base">

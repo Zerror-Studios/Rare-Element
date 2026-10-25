@@ -2,106 +2,35 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { useMutation, useQuery } from "@apollo/client/react";
-import { ADD_TO_WISHLIST, REMOVE_FROM_WISHLIST, GET_WISHLIST_ITEMS } from "@/graphql";
-import { useAuthStore } from "@/store/auth-store";
-import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
+import { useWishlist } from "@/hooks/useWishlist";
+import {
+    CtaEnum,
+    getAnalyticsItemId,
+    trackCtaClick,
+    trackSelectItem,
+} from "@/utils/analytics-events";
 import ProductCardSkeleton from "../skeletons/ProductCardSkeleton";
 
-const ProductCard = React.memo(({ productId, name, ribbon, price, assets }) => {
+// Badge names are admin-only in the API today (Product exposes badgeIds), so
+// `badge` is an optional label supplied by the caller.
+// `product` + `listName` (optional) let the card send GA4 `select_item`
+// (PRD-013); the click still bubbles to the caller's <Link>.
+const ProductCard = React.memo(({ productId, name, badge, price, assets, product, listName }) => {
     const [imgLoaded, setImgLoaded] = useState(false);
-    const router = useRouter();
-    const { user } = useAuthStore();
-    const userId = user?._id || user?.id;
-
-    // Use centralized query for all wishlist items - Apollo deduplicates simultaneous requests
-    const { data: wishlistData } = useQuery(GET_WISHLIST_ITEMS, {
-        variables: { userId },
-        skip: !userId,
-    });
-
-    const wishlistItems = wishlistData?.getWishlistItems?.items || [];
-    const wishlistItem = wishlistItems.find(item => item.productId === productId);
-    const isWishlisted = !!wishlistItem;
-    const wishlistId = wishlistItem?._id;
-
-    // Mutation to add to wishlist with cache update
-    const [addToWishlist] = useMutation(ADD_TO_WISHLIST, {
-        update(cache, { data: { addToWishlist: newItem } }) {
-            const existing = cache.readQuery({
-                query: GET_WISHLIST_ITEMS,
-                variables: { userId }
-            });
-
-            if (existing && newItem) {
-                cache.writeQuery({
-                    query: GET_WISHLIST_ITEMS,
-                    variables: { userId },
-                    data: {
-                        getWishlistItems: {
-                            ...existing.getWishlistItems,
-                            items: [...existing.getWishlistItems.items, newItem],
-                            totalCount: existing.getWishlistItems.totalCount + 1
-                        }
-                    }
-                });
-            }
-        },
-        onCompleted: () => toast.success("Added to wishlist"),
-        onError: (err) => toast.error(err.message),
-    });
-
-    // Mutation to remove from wishlist with cache update
-    const [removeFromWishlist] = useMutation(REMOVE_FROM_WISHLIST, {
-        update(cache) {
-            const existing = cache.readQuery({
-                query: GET_WISHLIST_ITEMS,
-                variables: { userId }
-            });
-
-            if (existing) {
-                cache.writeQuery({
-                    query: GET_WISHLIST_ITEMS,
-                    variables: { userId },
-                    data: {
-                        getWishlistItems: {
-                            ...existing.getWishlistItems,
-                            items: existing.getWishlistItems.items.filter(item => item._id !== wishlistId),
-                            totalCount: Math.max(0, existing.getWishlistItems.totalCount - 1)
-                        }
-                    }
-                });
-            }
-        },
-        onCompleted: () => toast.success("Removed from wishlist"),
-        onError: (err) => toast.error(err.message),
-    });
+    const { isWishlisted: checkWishlisted, toggle } = useWishlist();
+    const isWishlisted = checkWishlisted(productId);
 
     const handleWishlistToggle = async (e) => {
         e.preventDefault();
         e.stopPropagation();
+        trackCtaClick(CtaEnum.WISHLIST, {
+            itemId: getAnalyticsItemId(product) || productId,
+        });
+        await toggle(productId);
+    };
 
-        if (!userId) {
-            toast.info("Please login to add to wishlist");
-            router.push("/login");
-            return;
-        }
-
-        if (isWishlisted) {
-            if (wishlistId) {
-                await removeFromWishlist({ variables: { wishlistId, userId } });
-            } else {
-                toast.error("Could not find wishlist item ID");
-            }
-        } else {
-            await addToWishlist({
-                variables: {
-                    input: { productId },
-                    userId,
-                },
-            });
-        }
+    const handleSelect = () => {
+        if (product) trackSelectItem(product, listName);
     };
 
 
@@ -120,10 +49,10 @@ const ProductCard = React.memo(({ productId, name, ribbon, price, assets }) => {
 
     return (
         <>
-            <div className="shopCard_card">
-                {ribbon?.name && (
+            <div className="shopCard_card" onClick={handleSelect}>
+                {badge && (
                     <div className="ribbon_btn">
-                        <p className="text-xs">{ribbon.name}</p>
+                        <p className="text-xs">{badge}</p>
                     </div>
                 )}
                 {/* Heart Icons */}
@@ -136,7 +65,7 @@ const ProductCard = React.memo(({ productId, name, ribbon, price, assets }) => {
                             width={24}
                             height={24}
                             priority={false}
-                        // sizes="24px"
+                            sizes="24px"
                         />
                         <Image
                             className={`short_links_icon_heart_hover ${isWishlisted ? 'show_filled' : ''}`}
@@ -145,7 +74,7 @@ const ProductCard = React.memo(({ productId, name, ribbon, price, assets }) => {
                             width={24}
                             height={24}
                             priority={false}
-                        // sizes="24px"
+                            sizes="24px"
                         />
                     </div>
                 </div>
@@ -159,7 +88,7 @@ const ProductCard = React.memo(({ productId, name, ribbon, price, assets }) => {
                             alt={hoverImage?.altText || `${name} - Hover Image`}
                             width={600}
                             height={800}
-                        // sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 300px"
+                            sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 300px"
                         />
                     </div>
                 </div>
@@ -179,7 +108,7 @@ const ProductCard = React.memo(({ productId, name, ribbon, price, assets }) => {
                             width={600}
                             height={800}
                             onLoad={() => setImgLoaded(true)}
-                        // sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 300px"
+                            sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 300px"
                         />
                     </div>
                 </div>

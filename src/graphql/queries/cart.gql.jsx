@@ -1,8 +1,10 @@
 import { gql } from "@apollo/client";
 
+// The owner comes from the access token (customer) or `guestId` (guest);
+// every amount is computed by the server.
 export const CART_LIST = gql`
-  query GetCart($guestId: String, $cartId: String, $token: String) {
-    getCart(guestId: $guestId, cartId: $cartId, token: $token) {
+  query GetCart($guestId: String, $cartId: String) {
+    getCart(guestId: $guestId, cartId: $cartId) {
       _id
       userId
       guestId
@@ -10,64 +12,39 @@ export const CART_LIST = gql`
       totalprice
       discountedPrice
       totalDiscount
-      isFreeShippingEnabled
-      cart {
-        name
-        description
-        asset {
-          _id
-          path
-          type
-          isFeatured
-          isHover
-          altText
-        }
-        qty
-        freeQty
-        price
-        variantDetail {
-          variantDetailId
-          selectedOptions
-          priceDifference
-          variantPrice
-          variantCostOfGoods
-          shippingWeight
-          sku
-          trackInventory
-          stockQuantity
-          stockStatus
-          status
-        }
-        finalPrice
-        customTexts
-        productId
-        product {
-          _id
-          name
-          slug
-          productOptions {
-            optionName
-            choices {
-              name
-            }
-            showInProductPageAs
-          }
-        }
-      }
-      coupon {
-        couponId
-        couponCode
-      }
       totalTax
+      isFreeShippingEnabled
+      pricesIncludeTax
       taxBreakdown {
         name
         rate
         amount
       }
-      pricesIncludeTax
-      nimbblOrderId
-      nimbblInvoiceId
-      nimbblTransanctionId
+      promotion {
+        promotionId
+        promotionName
+        promotionCode
+        discount
+      }
+      cart {
+        productId
+        variantId
+        name
+        sku
+        asset {
+          _id
+          path
+          type
+          altText
+          isFeatured
+          isHover
+        }
+        price
+        finalPrice
+        qty
+        freeQty
+        customizations
+      }
       createdAt
       updatedAt
     }

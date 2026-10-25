@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import Script from "next/script";
 import { Providers } from "./providers";
 import FacebookPixel from "@/components/common/FacebookPixel";
+import { FB_PIXEL_ID, GA_MEASUREMENT_ID, GTM_ID, SITE_URL } from "@/utils/env";
 import "../styles/globals.css";
 import "../styles/allCssImport.css";
 
@@ -16,10 +17,8 @@ export const metadata = {
   description: "Discover handcrafted fine jewellery at Nahara featuring diamonds, gold, sterling silver, and contemporary designs. Shop rings, earrings, bracelets, and necklaces.",
   keywords: ["Nahara jewellery", "fine jewellery India", "diamond jewellery", "gold jewellery", "925 silver jewellery"],
   authors: [{ name: "Nahara" }],
-  metadataBase: new URL("https://nahara.co.in"),
-  alternates: {
-    canonical: "/",
-  },
+  // SF-4: one domain constant; each route sets its own canonical.
+  metadataBase: new URL(SITE_URL),
   robots: {
     index: true,
     follow: true,
@@ -38,7 +37,6 @@ export default function RootLayout({ children }) {
       <head>
         <link rel="preconnect" href="https://assets.nahara.co.in" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://assets.nahara.co.in" />
-        <link rel="preconnect" href={process.env.NEXT_PUBLIC_GRAPHQL_API_URL} />
         <link rel="preconnect" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="preload" as="image" href="/images/homepage/hero_poster.webp" fetchPriority="high" />
@@ -53,7 +51,7 @@ export default function RootLayout({ children }) {
             new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
             j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-            })(window,document,'script','dataLayer','GTM-M6WXDQ3P');
+            })(window,document,'script','dataLayer',${JSON.stringify(GTM_ID)});
           `,
           }}
         />
@@ -72,7 +70,7 @@ export default function RootLayout({ children }) {
             t.src=v;s=b.getElementsByTagName(e)[0];
             s.parentNode.insertBefore(t,s)}(window,document,'script',
             'https://connect.facebook.net/en_US/fbevents.js');
-            fbq('init', '26639049565785927');
+            fbq('init', ${JSON.stringify(FB_PIXEL_ID)});
             fbq('track', 'PageView');
           `,
           }}
@@ -82,7 +80,7 @@ export default function RootLayout({ children }) {
         {/* Google Tag Manager (noscript) */}
         <noscript>
           <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-M6WXDQ3P"
+            src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
             height="0"
             width="0"
             style={{ display: "none", visibility: "hidden" }}
@@ -95,14 +93,14 @@ export default function RootLayout({ children }) {
             height="1"
             width="1"
             style={{ display: "none" }}
-            src="https://www.facebook.com/tr?id=26639049565785927&ev=PageView&noscript=1"
+            src={`https://www.facebook.com/tr?id=${FB_PIXEL_ID}&ev=PageView&noscript=1`}
             alt="facebook pixel"
           />
         </noscript>
 
         {/* Google Analytics - Deferred Loading */}
         <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-0FTD3SQ58J"
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
           strategy="afterInteractive"
         />
         <Script id="google-analytics" strategy="afterInteractive">
@@ -110,7 +108,7 @@ export default function RootLayout({ children }) {
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', 'G-0FTD3SQ58J');
+            gtag('config', ${JSON.stringify(GA_MEASUREMENT_ID)});
           `}
         </Script>
         

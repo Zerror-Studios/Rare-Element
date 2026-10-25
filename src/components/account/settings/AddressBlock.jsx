@@ -6,10 +6,15 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
 import { useQuery, useMutation } from "@apollo/client/react";
-import { USER_ADDRESS_LIST, USER_ADDRESS_SAVE_OR_UPDATE } from "@/graphql";
+import {
+  CREATE_ADDRESS,
+  DELETE_ADDRESS,
+  GET_ADDRESSES,
+  UPDATE_ADDRESS,
+} from "@/graphql";
 import { useAuthStore } from "@/store/auth-store";
 import { addressType, countriesData } from "@/helpers/Data";
-import { Sort } from "@/utils/Constant";
+import { getErrorMessage } from "@/utils/errors";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 import Input from "@/components/ui/Input";
@@ -30,29 +35,22 @@ const addressSchema = z.object({
 });
 
 const AddressBlock = () => {
-  const LIMIT = 10;
   const [isOpen, setIsOpen] = useState(null);
   const [addressId, setAddressId] = useState(null);
   const { user } = useAuthStore();
   const formRef = useRef(null);
 
-  const listPayload = {
-    filters: { userId: user?._id },
-    limit: LIMIT,
-    offset: 0,
-    sort: { createdAt: Sort.DESC, primary: Sort.ASC },
-  };
+  const { data: addressResponse, loading, refetch } = useQuery(GET_ADDRESSES);
 
-  const { data: addressResponse, loading, refetch } = useQuery(
-    USER_ADDRESS_LIST,
-    { variables: listPayload }
+  // Primary address first; the API returns the customer's own addresses.
+  const addressList = [...(addressResponse?.getAddresses || [])].sort(
+    (a, b) => Number(!!b?.primary) - Number(!!a?.primary)
   );
 
-  const addressList = addressResponse?.getAddressByFilters?.data || [];
-
-  const [saveUpdateAddress, { loading: addressLoading }] = useMutation(
-    USER_ADDRESS_SAVE_OR_UPDATE
-  );
+  const [createAddress, { loading: createLoading }] = useMutation(CREATE_ADDRESS);
+  const [updateAddress, { loading: updateLoading }] = useMutation(UPDATE_ADDRESS);
+  const [deleteAddress] = useMutation(DELETE_ADDRESS);
+  const addressLoading = createLoading || updateLoading;
 
   useLayoutEffect(() => {
     if (!formRef.current) return;
@@ -94,41 +92,49 @@ const AddressBlock = () => {
       reset({
         firstname: editData.firstname || user?.firstName,
         lastname: editData.lastname || user?.lastName,
-        addressType: editData.addressType,
+        addressType: editData.addressType || "HOME",
         addressline1: editData.addressline1,
         addressline2: editData.addressline2,
         city: editData.city,
         pincode: editData.pincode,
-        country: editData.country,
+        country: editData.country || "India",
         states: editData.states,
         phone: editData.phone,
-        countryCode: editData.countryCode,
+        countryCode: editData.countryCode || "+91",
       });
     }
   }, [isOpen]);
 
   const onSubmit = async (formData) => {
     try {
-      const input = {
-        userId: user?._id,
-        ...formData,
-      };
+      const input = { ...formData };
 
-      await saveUpdateAddress({
-        variables: {
-          input,
-          ...(addressId ? { addressSaveOrUpdateId: addressId } : {}),
-        },
-      });
+      if (addressId) {
+        await updateAddress({ variables: { addressId, input } });
+      } else {
+        await createAddress({
+          variables: { input: { ...input, primary: addressList.length === 0 } },
+        });
+      }
 
       toast.success("Address saved successfully!");
-      await refetch(listPayload);
+      await refetch();
     } catch (err) {
-      toast.error("Failed to save");
+      toast.error(getErrorMessage(err, "Failed to save"));
     } finally {
       reset();
       setIsOpen(null);
       setAddressId(null);
+    }
+  };
+
+  const onDelete = async (id) => {
+    try {
+      await deleteAddress({ variables: { addressId: id } });
+      toast.success("Address removed");
+      await refetch();
+    } catch (err) {
+      toast.error(getErrorMessage(err, "Failed to remove address"));
     }
   };
 
@@ -154,12 +160,20 @@ const AddressBlock = () => {
                   <p>Edit Address</p>
                 </div>
               )}
+              {isOpen !== index && (
+                <div
+                  onClick={() => onDelete(item._id)}
+                  className="settings__link"
+                >
+                  <p>Remove</p>
+                </div>
+              )}
             </div>
           </div>
         ))}
 
-        {addressList.length === 0 && (
-          <div onClick={() => setIsOpen(0)} className="settings__link">
+        {isOpen === null && (
+          <div onClick={() => setIsOpen(addressList.length)} className="settings__link">
             <p>Add Address</p>
           </div>
         )}

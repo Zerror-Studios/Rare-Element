@@ -5,16 +5,18 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import AccountBreadcrumb from '@/components/account/AccountBreadcrumb';
 import { useQuery } from '@apollo/client/react';
-import { GET_ORDER_BY_ID } from '@/graphql';
-import { formatDateTime, formatePrice, renderVariants } from '@/utils/Util';
+import { MY_ORDER } from '@/graphql';
+import { formatDateTime, formatePrice, formatPaymentStatus } from '@/utils/Util';
 import Image from 'next/image';
 
 const OrderDetailClient = () => {
   const { id } = useParams();
-  const { data: response, loading } = useQuery(GET_ORDER_BY_ID, { variables: { getClientSidePaymentByOrderIdId: id } });
-  const data = response?.getClientSidePaymentByOrderId || {};
+  const { data: response, loading, error } = useQuery(MY_ORDER, { variables: { id }, skip: !id, fetchPolicy: 'network-only' });
+  // Customer-scoped: another shopper's order id resolves to nothing.
+  const data = { order: response?.myOrder };
 
   if (loading) return <div className="account_rightSection">Loading order details...</div>;
+  if (error && !data?.order) return <div className="account_rightSection">We couldn't load this order. Please try again.</div>;
   if (!data?.order) return <div className="account_rightSection">Order not found.</div>;
 
   return (
@@ -40,16 +42,12 @@ const OrderDetailClient = () => {
 
         <div className="purchases_ordersList text-base">
           <div className="">
-            <p className='uppercase bold text-base'>Amount Paid</p>
-            <p className='text-base'>{formatePrice(data?.totalAmount)}</p>
-          </div>
-          <div className="">
-            <p className='uppercase bold text-base'>Payment Method</p>
-            <p className='text-base'>{data?.nimbblPaymentMode}</p>
+            <p className='uppercase bold text-base'>Order Total</p>
+            <p className='text-base'>{formatePrice(data?.order?.orderPrice)}</p>
           </div>
           <div className="">
             <p className='uppercase bold text-base'>Payment Status</p>
-            <p className='text-base'>{data?.order?.paymentStatus}</p>
+            <p className='text-base'>{formatPaymentStatus(data?.order?.paymentStatus)}</p>
           </div>
           <div className="">
             <p className='uppercase bold text-base'>Shipment Status</p>
@@ -104,13 +102,14 @@ const OrderDetailClient = () => {
                 <div key={index} className="order_detailsBagItem">
                   <div className="cartBag_bagItemInner">
                     <div className="cartBag_bagImageWrapper">
-                      <Link prefetch scroll={false} key={item?.product?._id} href={`/products/${item?.product?.slug}`} className='cartBag_bagImage'>
+                      <Link prefetch={false} scroll={false} href={`/products/${item?.productId}`} className='cartBag_bagImage'>
                         <Image
                           width={150}
                           height={200}
+                          sizes="150px"
                           className="cartBag_bagImage"
-                          src={item?.asset?.path || ""}
-                          alt={item?.asset?.altText || ""}
+                          src={item?.asset?.path || "/green_logo.svg"}
+                          alt={item?.asset?.altText || item?.name || ""}
                         />
                       </Link>
                     </div>
@@ -118,12 +117,12 @@ const OrderDetailClient = () => {
                       <div className="cartBag_bagItemTop">
                         <div>
                           <p className="cartBag_itemName text-base">{item?.name || ""}</p>
-                          {renderVariants(item?.product?.productOptions || [], item?.variantDetail?.selectedOptions || [])}
+                          <p className="cartBag_itemSize text-sm">{`Qty - ${item?.qty || 1}`}</p>
                         </div>
                         <p className='text-xl'>{formatePrice(item?.finalPrice || 0)}</p>
                       </div>
                       <div className="purchases_orderFooter_inner">
-                        <Link prefetch scroll={false} href={`/products/${item?.product?.slug}`} className="text-sm">
+                        <Link prefetch={false} scroll={false} href={`/products/${item?.productId}`} className="text-sm">
                           <p className="text-sm">View Product</p>
                         </Link>
                       </div>

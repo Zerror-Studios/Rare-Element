@@ -1,8 +1,9 @@
-import parse from "html-react-parser";
+import { sanitizeHtmlToReact } from "@/utils/sanitize-html";
 
+// Tenant-authored HTML is sanitised before it becomes React (SF-10).
 export const htmlParser = (data = "") => {
   if (!data) return "";
-  return parse(data || "");
+  return sanitizeHtmlToReact(data);
 };
 
 // utils/formatTime.ts
@@ -55,14 +56,19 @@ export const formatePrice = (price) => {
   return formattedPrice;
 };
 
-export const getProductPriceLabel = (variants = [], discountedPrice = 0) => {
-  if (!variants || variants.length === 0) {
-    return formatePrice(discountedPrice || 0);
-  }
-  const prices = variants.map((v) => v.variantPrice).filter(Boolean);
-  if (prices.length === 0) {
-    return formatePrice(discountedPrice || 0);
-  }
+/** Lowest selling price across the product's (published) variants. */
+export const getMinVariantPrice = (variants = []) => {
+  const prices = (variants || [])
+    .map((v) => Number(v?.price))
+    .filter((price) => Number.isFinite(price) && price > 0);
+  return prices.length ? Math.min(...prices) : 0;
+};
+
+export const getProductPriceLabel = (variants = []) => {
+  const prices = (variants || [])
+    .map((v) => Number(v?.price))
+    .filter((price) => Number.isFinite(price) && price > 0);
+  if (prices.length === 0) return "";
   const minPrice = Math.min(...prices);
   const maxPrice = Math.max(...prices);
   if (minPrice === maxPrice) {
@@ -70,6 +76,28 @@ export const getProductPriceLabel = (variants = [], discountedPrice = 0) => {
   }
   return `Starts from ${formatePrice(minPrice)}`;
 };
+
+/** The variant whose `optionValues` equal the selected option values. */
+export const findVariantByOptions = (variants = [], selectedValues = []) => {
+  const wanted = [...selectedValues].map(String).sort();
+  return (variants || []).find((variant) => {
+    const values = [...(variant?.optionValues || [])].map(String).sort();
+    return (
+      values.length === wanted.length &&
+      values.every((value, i) => value === wanted[i])
+    );
+  });
+};
+
+export const PaymentStatusLabel = {
+  PAID: "Paid",
+  UN_PAID: "Payment pending",
+  REFUNDED: "Refunded",
+  PARTIALLY_REFUNDED: "Partially refunded",
+};
+
+export const formatPaymentStatus = (status) =>
+  PaymentStatusLabel[status] || status || "";
 
 export const renderVariants = (
   productOptions = [],

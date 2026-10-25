@@ -10,10 +10,10 @@ import GreenBoxBtn from "../buttons/GreenBoxBtn";
 import { PhoneInput } from "react-international-phone";
 import { useMutation } from "@apollo/client/react";
 import { SIGN_UP_USER, CUSTOMER_LOGIN } from "@/graphql";
-import { useAuthStore } from "@/store/auth-store";
-import { UserStatus } from "@/utils/Constant"
+import { useAuth } from "@/context/AuthContext";
 import { toast } from "react-toastify";
-import { TokenManager } from "@/utils/tokenManager";
+import { getErrorMessage } from "@/utils/errors";
+import { getNextPath } from "@/utils/redirect";
 import "react-international-phone/style.css";
 
 const SignupSchema = z
@@ -41,7 +41,7 @@ const Signup = ({ setToggle }) => {
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [signupUser, { loading }] = useMutation(SIGN_UP_USER);
   const [customerLogin] = useMutation(CUSTOMER_LOGIN);
-  const { setUser, setIsLoggedIn } = useAuthStore((state) => state);
+  const { completeLogin } = useAuth();
 
   const {
     register,
@@ -54,49 +54,42 @@ const Signup = ({ setToggle }) => {
   });
 
   const onSubmit = async (data) => {
+    let createdUser = null;
     try {
-      const { confirmPassword, ...rest } = data;
-      const input = {
-        ...rest,
-        status: UserStatus.ACTIVE,
-      };
-      
+      // The account status is decided server-side, never sent.
+      const { confirmPassword, ...input } = data;
+
       const { data: signupResponse } = await signupUser({ variables: { input } });
-      const createdUser = signupResponse?.customerSignup;
-      
-      if (createdUser && createdUser._id) {
-        // Automatically login the user after successful signup
-        const { data: loginResponse } = await customerLogin({
-          variables: {
-            input: {
-              email: input.email,
-              password: input.password
-            }
+      createdUser = signupResponse?.customerSignup;
+      if (!createdUser?._id) return;
+
+      // Automatically login the user after successful signup
+      const { data: loginResponse } = await customerLogin({
+        variables: {
+          input: {
+            email: input.email,
+            password: input.password
           }
-        });
-        
-        const { accessToken, refreshToken, customerId } = loginResponse?.customerLogin || {};
-        
-        if (accessToken && refreshToken) {
-          localStorage.removeItem("visitorId");
-          localStorage.removeItem("visitorExpire");
-          TokenManager.clearTokens(); // clear previous
-          TokenManager.setTokens(accessToken, refreshToken);
-          setUser(createdUser);
-          setIsLoggedIn(true);
-          toast.success("Account created successfully!");
-          router.back();
-        } else {
-           toast.error("Account created, but login failed. Please login manually.");
-           setToggle(false); // Switch to login tab
         }
-      }
+      });
+
+      const { accessToken, expiresIn } = loginResponse?.customerLogin || {};
+      if (!accessToken) throw new Error("Login after signup failed");
+
+      await completeLogin(accessToken, expiresIn);
+      toast.success("Account created successfully!");
+      router.replace(getNextPath());
     } catch (err) {
-      if (err.message?.includes('Already Exists')) {
-        toast.error("User already exists with this email")
-      } else {
-        toast.error("Signup failed: " + err.message);
+      if (createdUser?._id) {
+        toast.error("Account created, but login failed. Please login manually.");
+        setToggle(false); // Switch to login tab
+        return;
       }
+      toast.error(
+        getErrorMessage(err, "Signup failed. Please try again.", {
+          CONFLICT: "This email is already registered. Please log in.",
+        }),
+      );
     }
   };
 

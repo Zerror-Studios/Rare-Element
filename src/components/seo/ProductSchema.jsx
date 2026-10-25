@@ -1,20 +1,24 @@
 import { Const } from "@/utils/Constant";
+import { getMinVariantPrice } from "@/utils/Util";
+import { htmlToPlainText } from "@/utils/sanitize-html";
+import { toJsonLd } from "@/utils/json-ld";
 
 const ProductSchema = ({ product }) => {
   if (!product) return null;
 
-  const { name, description, assets, price, discountedPrice, slug, variants } = product;
+  const { name, description, assets, slug, variants } = product;
   const productUrl = `${Const.ClientLink}/products/${slug}`;
   const imageUrl = assets?.[0]?.path || "";
-  const currentPrice = discountedPrice > 0 ? discountedPrice : price;
-  const availability = variants?.[0]?.stockStatus === "IN_STOCK" ? "https://schema.org/InStock" : "https://schema.org/OutOfStock";
+  const currentPrice = getMinVariantPrice(variants);
 
+  // Stock levels aren't exposed to storefronts, so `availability` is
+  // omitted rather than guessed.
   const schema = {
     "@context": "https://schema.org/",
     "@type": "Product",
     name: name,
     image: [imageUrl],
-    description: description,
+    description: htmlToPlainText(description),
     sku: variants?.[0]?.sku || slug,
     brand: {
       "@type": "Brand",
@@ -25,7 +29,6 @@ const ProductSchema = ({ product }) => {
       url: productUrl,
       priceCurrency: "INR",
       price: currentPrice,
-      availability: availability,
       itemCondition: "https://schema.org/NewCondition",
     },
   };
@@ -33,7 +36,7 @@ const ProductSchema = ({ product }) => {
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      dangerouslySetInnerHTML={{ __html: toJsonLd(schema) }}
     ></script>
   );
 };

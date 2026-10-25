@@ -39,11 +39,10 @@ const ProductListGrid = ({ title, data }) => {
               <ProductCard
                 productId={item?._id}
                 name={item?.name || ""}
-                price={getProductPriceLabel(
-                  item?.variants,
-                  item?.discountedPrice
-                )}
+                price={getProductPriceLabel(item?.variants)}
                 assets={item?.assets || []}
+                product={item}
+                listName={title}
               />
             </div>
           </Link>

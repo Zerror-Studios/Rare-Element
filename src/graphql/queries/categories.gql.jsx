@@ -27,12 +27,13 @@ export const GET_CLIENT_SIDE_CATEGORY_BY_SLUG = gql`
       description
       imgsrc
       slug
-      meta {
+      seo {
         title
         description
         keywords
         primaryKeywords
         author
+        canonical
         robots
         og {
           title
@@ -47,9 +48,10 @@ export const GET_CLIENT_SIDE_CATEGORY_BY_SLUG = gql`
         }
       }
       products(limit: $limit, offset: $offset) {
-       _id
+        _id
         name
-        description
+        slug
+        status
         assets {
           path
           type
@@ -57,18 +59,10 @@ export const GET_CLIENT_SIDE_CATEGORY_BY_SLUG = gql`
           isFeatured
           isHover
         }
-        price
-        discountedPrice
-        slug
-        status
-        ribbon {
-          name
-          ribbonId
-        }
         variants {
-          variantPrice
-          stockQuantity
-          stockStatus
+          _id
+          price
+          compareAtPrice
           status
         }
       }

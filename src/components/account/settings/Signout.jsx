@@ -2,16 +2,13 @@
 
 import React from "react"
 import { useRouter } from "next/navigation";
-import { useAuthStore } from "@/store/auth-store";
-import { AuthCookies } from "@/utils/AuthCookies"
+import { useAuth } from "@/context/AuthContext"
 
 const Signout = () => {
   const router = useRouter();
-  const { clearAuth } = useAuthStore();
-  const handleSignout = () => {
-    AuthCookies.remove();
-    clearAuth();
-    localStorage.clear();
+  const { logout } = useAuth();
+  const handleSignout = async () => {
+    await logout();
     router.replace("/");
   }
   return (

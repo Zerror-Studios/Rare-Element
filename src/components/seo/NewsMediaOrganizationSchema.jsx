@@ -1,4 +1,5 @@
 import React from "react";
+import { toJsonLd } from "@/utils/json-ld";
 
 const NewsMediaOrganizationSchema = ({
   name,
@@ -40,7 +41,7 @@ const NewsMediaOrganizationSchema = ({
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
+      dangerouslySetInnerHTML={{ __html: toJsonLd(schemaData) }}
     ></script>
   );
 };

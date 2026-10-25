@@ -13,6 +13,11 @@ const SocialReels = dynamic(() => import('@/components/home/SocialReels'), { ssr
 
 export const revalidate = 300; // Revalidate every 5 minutes
 
+// SF-4: the home page's own canonical (the layout sets none).
+export const metadata = {
+  alternates: { canonical: "/" },
+};
+
 export default async function Page() {
   const meta = {
     title: "Nahara – Luxury Fine Jewellery Crafted for Modern Elegance",

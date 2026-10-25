@@ -6,8 +6,12 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import Image from "next/image";
+import {
+  GalleryActionEnum,
+  trackGalleryInteraction,
+} from "@/utils/analytics-events";
 
-const ProductImageGrid = ({ filter, data, title }) => {
+const ProductImageGrid = ({ filter, data, title, itemId }) => {
   const [swiperInstance, setSwiperInstance] = useState(null);
   const [selectedAssetIndex, setSelectedAssetIndex] = useState(0);
   const [thumbLoaded, setThumbLoaded] = useState({});
@@ -22,6 +26,9 @@ const ProductImageGrid = ({ filter, data, title }) => {
   }, [swiperInstance, data]);
 
   const handleThumbnailClick = (index) => {
+    if (index !== selectedAssetIndex) {
+      trackGalleryInteraction(itemId, GalleryActionEnum.THUMBNAIL);
+    }
     if (swiperInstance) {
       swiperInstance.slideToLoop(index);
     }
@@ -107,6 +114,7 @@ const ProductImageGrid = ({ filter, data, title }) => {
                     </>
                   ) : (
                     <Image
+                      sizes="(max-width: 750px) 20vw, 10vw"
                       width={150}
                       height={200}
                       src={src}
@@ -177,6 +185,9 @@ const ProductImageGrid = ({ filter, data, title }) => {
                         controlsList="nodownload noplaybackrate"
                         disablePictureInPicture
                         onContextMenu={(e) => e.preventDefault()}
+                        onPlay={() =>
+                          trackGalleryInteraction(itemId, GalleryActionEnum.VIDEO_PLAY)
+                        }
                         style={{
                           opacity: loaded ? 1 : 0,
                           transition: "opacity .4s ease"
@@ -189,6 +200,7 @@ const ProductImageGrid = ({ filter, data, title }) => {
                       </video>
                     ) : (
                       <Image
+                        sizes="100vw"
                         fill
                         src={src}
                         alt={`${title} - Product Image ${index + 1}`}
@@ -213,7 +225,10 @@ const ProductImageGrid = ({ filter, data, title }) => {
         <div className="MobileImageSlider_nav">
           <button
             className="MobileImageSlider_arrow left"
-            onClick={() => swiperInstance?.slidePrev()}
+            onClick={() => {
+              trackGalleryInteraction(itemId, GalleryActionEnum.PREV);
+              swiperInstance?.slidePrev();
+            }}
           >
             <Image height={20} width={20} src="/icons/arrowLeft.svg"
               alt="img"
@@ -222,7 +237,10 @@ const ProductImageGrid = ({ filter, data, title }) => {
           </button>
           <button
             className="MobileImageSlider_arrow right"
-            onClick={() => swiperInstance?.slideNext()}
+            onClick={() => {
+              trackGalleryInteraction(itemId, GalleryActionEnum.NEXT);
+              swiperInstance?.slideNext();
+            }}
           >
             <Image height={20} width={20} src="/icons/arrowRight.svg"
               alt="img"

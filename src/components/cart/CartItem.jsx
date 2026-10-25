@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { formatePrice, renderVariants } from "@/utils/Util";
+import { formatePrice } from "@/utils/Util";
 import { RiDeleteBinLine } from "@remixicon/react";
 import Image from "next/image";
 const CartItem = ({
@@ -20,7 +20,7 @@ const CartItem = ({
       setRemoving(true);
       await handleRemoveItem(
         item?.productId || null,
-        item?.variantDetail?.variantDetailId || null,
+        item?.variantId || null,
         isCompleteRemove
       );
     } finally {
@@ -31,7 +31,7 @@ const CartItem = ({
   const onAdd = async () => {
     try {
       setAdding(true);
-      await handleAddItem(item?.productId || null, item?.variantDetail || {});
+      await handleAddItem(item?.productId || null, item?.variantId || null);
     } finally {
       setAdding(false);
     }
@@ -41,32 +41,29 @@ const CartItem = ({
     <div className="cartBag_bagItem">
       <div className="cartBag_bagItemInner">
         <div className="cartBag_bagImageWrapper">
-          <Link prefetch scroll={false} onClick={onClose} href={`/products/${item?.product?.slug}`} className='cartBag_bagImage'>
+          <Link prefetch={false} scroll={false} onClick={onClose} href={`/products/${item?.productId}`} className='cartBag_bagImage'>
             <Image
               width={150}
               height={200}
               className="cartBag_bagImage"
               src={item?.asset?.path || "/green_logo.svg"}
-              alt={item?.name || "Cart Item Image"}
-              // sizes="150px"
+              alt={item?.asset?.altText || item?.name || "Cart Item Image"}
+              sizes="150px"
             />
           </Link>
         </div>
         <div className="cartBag_bagItemDetails">
           <div className="cartBag_bagItemTop">
             <div className="cartBag_itemHead">
-              <Link prefetch scroll={false} onClick={onClose} href={`/products/${item?.product?.slug}`} className="cartBag_itemName text-base">
+              <Link prefetch={false} scroll={false} onClick={onClose} href={`/products/${item?.productId}`} className="cartBag_itemName text-base">
                 <p>
                   {item?.name}
                 </p>
               </Link>
-              <div className="cart_varients_div">
-                {renderVariants(item?.product?.productOptions || [], item?.variantDetail?.selectedOptions || [])}
-              </div>
             </div>
             <div className="crt_itms_price_group">
               <p className='crt_itms_price'>{`${item.qty > 1 ? `${item?.qty} x` : ""} ${formatePrice(
-                item?.variantDetail?.variantPrice || 0
+                item?.finalPrice || 0
               )}`}</p>
               <p className="inclusive_tax_msg">{pricesIncludeTax ? "Incl. of all taxes" : "Excl. of all taxes"}</p>
             </div>

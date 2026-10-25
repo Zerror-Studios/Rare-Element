@@ -7,11 +7,13 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RiEyeLine, RiEyeOffLine } from "@remixicon/react";
 import GreenBoxBtn from "../buttons/GreenBoxBtn";
-import { useMutation, useLazyQuery } from "@apollo/client/react";
-import { CUSTOMER_LOGIN, GET_MY_PROFILE } from "@/graphql";
+import { useMutation } from "@apollo/client/react";
+import { CUSTOMER_LOGIN } from "@/graphql";
 import { toast } from "react-toastify";
-import { useAuthStore } from "@/store/auth-store";
-import { TokenManager } from "@/utils/tokenManager";
+import { useAuth } from "@/context/AuthContext";
+import { getErrorMessage } from "@/utils/errors";
+import { getNextPath } from "@/utils/redirect";
+import Link from "next/link";
 
 // Schema validation
 const LoginSchema = z.object({
@@ -23,9 +25,8 @@ const LoginSchema = z.object({
 const Login = ({ setToggle }) => {
   const router = useRouter();
   const [visible, setVisible] = useState(false);
-  const { setUser, setIsLoggedIn } = useAuthStore((state) => state);
+  const { completeLogin } = useAuth();
   const [customerLogin, { loading }] = useMutation(CUSTOMER_LOGIN);
-  const [getMyProfile] = useLazyQuery(GET_MY_PROFILE, { fetchPolicy: "network-only" });
 
   const {
     register,
@@ -38,35 +39,28 @@ const Login = ({ setToggle }) => {
   const onSubmit = async (formData) => {
     try {
       const { data } = await customerLogin({ variables: { input: formData } });
-      const { accessToken, refreshToken, customerId } = data?.customerLogin || {};
-      
-      if (accessToken && refreshToken) {
-        localStorage.removeItem("visitorId");
-        localStorage.removeItem("visitorExpire");
-        TokenManager.clearTokens(); // clear previous
-        TokenManager.setTokens(accessToken, refreshToken);
-        
-        // Fetch User Profile
-        const { data: profileData } = await getMyProfile();
-        const user = profileData?.getMyProfile;
-        
-        if (user) {
-          setUser(user);
-          setIsLoggedIn(true);
-          toast.success("Login successful!");
-          router.back();
-        } else {
-          toast.error("Profile not found after login.");
-        }
-      } else {
-        toast.error("Invalid login credentials.");
-      }
-    } catch (err) {
-      if (err.message?.includes('User not found') || err.message?.includes('Invalid')) {
+      const { accessToken, expiresIn } = data?.customerLogin || {};
+
+      if (!accessToken) {
         toast.error("Invalid email or password.");
-      } else {
-        toast.error("Login failed: " + err.message);
+        return;
       }
+
+      const user = await completeLogin(accessToken, expiresIn);
+      if (!user) {
+        toast.error("Profile not found after login.");
+        return;
+      }
+      toast.success("Login successful!");
+      router.replace(getNextPath());
+    } catch (err) {
+      // Login errors are uniform server-side (no account enumeration).
+      toast.error(
+        getErrorMessage(err, "Login failed. Please try again.", {
+          UNAUTHENTICATED: "Invalid email or password.",
+          BAD_REQUEST: "Invalid email or password.",
+        }),
+      );
     }
   };
 
@@ -118,6 +112,9 @@ const Login = ({ setToggle }) => {
                 </p>
               </div>
             )}
+          </div>
+          <div className="forgot-link">
+            <Link href="/forgot-password">Forgot password?</Link>
           </div>
           <div className="signup_btn">
             <GreenBoxBtn title={"Login"} loading={loading} />

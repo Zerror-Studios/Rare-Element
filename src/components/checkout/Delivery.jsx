@@ -3,9 +3,8 @@ import React, { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap';
 import { useWatch } from "react-hook-form";
 import { useAuthStore } from "@/store/auth-store";
-import { Sort } from "@/utils/Constant";
 import { useQuery } from "@apollo/client/react";
-import { USER_ADDRESS_LIST } from "@/graphql";
+import { GET_ADDRESSES } from "@/graphql";
 import { RiArrowDownSLine, RiCheckLine } from '@remixicon/react'
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
@@ -13,20 +12,30 @@ import { countriesData, addressType } from "@/helpers/Data";
 import Input from '@/components/ui/Input';
 import Checkbox from '../ui/Checkbox';
 
+// Form fields of a saved address (no ids, timestamps or __typename).
+const toFormAddress = (address = {}) => ({
+  firstname: address.firstname || "",
+  lastname: address.lastname || "",
+  addressType: address.addressType || "",
+  flat: address.flat || "",
+  addressline1: address.addressline1 || "",
+  addressline2: address.addressline2 || "",
+  landmark: address.landmark || "",
+  phone: address.phone || "",
+  countryCode: address.countryCode || "+91",
+  city: address.city || "",
+  country: address.country || "",
+  states: address.states || "",
+  pincode: address.pincode || "",
+  primary: !!address.primary,
+});
+
 const Delivery = ({ errors, control, register, setValue }) => {
-  const LIMIT = 10;
   const addressRef = useRef(null)
   const [isAddress, setIsAddress] = useState(true);
   const [selectedAddress, setSelectedAddress] = useState(null);
-  const [offset, setOffset] = useState(0);
   const shippingAddress = useWatch({ control, name: "shippingAddress" });
-  const { isLoggedIn, user } = useAuthStore((state) => state);
-  const payload = {
-    filters: { userId: user?._id },
-    limit: LIMIT,
-    offset,
-    sort: { createdAt: Sort.DESC, primary: Sort.ASC },
-  };
+  const { isLoggedIn } = useAuthStore((state) => state);
 
   useEffect(() => {
     if (addressRef.current) {
@@ -42,11 +51,10 @@ const Delivery = ({ errors, control, register, setValue }) => {
   const {
     data: addressResponse,
     loading,
-  } = useQuery(USER_ADDRESS_LIST, {
+  } = useQuery(GET_ADDRESSES, {
     skip: !isLoggedIn,
-    variables: payload,
   });
-  const { data = [] } = addressResponse?.getAddressByFilters || {};
+  const data = addressResponse?.getAddresses || [];
 
   useEffect(() => {
     if (data.length > 0) {
@@ -59,8 +67,8 @@ const Delivery = ({ errors, control, register, setValue }) => {
     setSelectedAddress(parsedValue);
     const selected = data[parsedValue];
     if (!selected) return;
-    setValue("shippingAddress", selected, { shouldValidate: true });
-    setValue("billingAddress", selected, { shouldValidate: true });
+    setValue("shippingAddress", toFormAddress(selected), { shouldValidate: true });
+    setValue("billingAddress", toFormAddress(selected), { shouldValidate: true });
   };
 
 

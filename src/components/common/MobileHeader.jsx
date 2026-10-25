@@ -27,7 +27,7 @@ const footer_links = [
     links: [
       { label: "Instagram", href: "https://www.instagram.com/nahara.jewellery/?igsh=MXgwcmQ2ODhnaTR3ag%3D%3D#" },
       { label: "WhatsApp", href: "https://wa.me/+919137159898" },
-      { label: "hello@nahara.co.in", href: "https://mail.google.com/mail/u/0/#inbox?compose=https://mail.google.com/mail/u/0/#inbox?compose=DmwnWsCZFQTSPKdBWzqptmWzRGSXbXPcgGKFLkKhbNnbbmlgJgCbMhkZCbbJRRqmCSbHhCHFkrGB" },
+      { label: "hello@nahara.co.in", href: "mailto:hello@nahara.co.in" },
     ],
   },
 ]
@@ -71,27 +71,25 @@ const MobileHeader = ({ openCart }) => {
     if (window.innerWidth > 750) return
     if (pathname !== "/") return;
 
-    // Kill old ScrollTriggers
-    ScrollTrigger.getAll().forEach((t) => t.kill());
+    // SF-20: revert only this component's timeline and ScrollTrigger
+    // (killing every ScrollTrigger broke other components' animations).
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: ".mobile_header",
+          start: "bottom top",
+          toggleActions: "play none none reverse",
+        },
+      });
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: ".mobile_header",
-        start: "bottom top",
-        toggleActions: "play none none reverse",
-      },
-    });
-
-    tl.to(".mobile_header_bg", {
-      top: 0,
-      duration: 0.25,
+      tl.to(".mobile_header_bg", {
+        top: 0,
+        duration: 0.25,
+      });
     });
 
     // Cleanup
-    return () => {
-      tl.kill();
-      ScrollTrigger.killAll();
-    };
+    return () => ctx.revert();
   }, [pathname]);
 
   const openMenu = () => {
@@ -159,7 +157,7 @@ const MobileHeader = ({ openCart }) => {
                   <Link prefetch scroll={false} key={index} href={`${item?.link}`} onClick={() => closeMenu()} title={item?.title || ""}>
                     <div className="category_box">
                       <div className="category_box_img_paren">
-                        <Image width={200} height={200} src={item?.image} className='category_box_img' alt={item?.title || ""} title={item?.title || ""} />
+                        <Image sizes="50vw" width={200} height={200} src={item?.image} className='category_box_img' alt={item?.title || ""} title={item?.title || ""} />
                       </div>
                       <p className='text-sm bold uppercase'>{item?.title || ""}</p>
                     </div>

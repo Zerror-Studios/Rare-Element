@@ -21,7 +21,7 @@ const slideBoxData = [
     title: "Contact Email",
     desc: "hello@nahara.co.in",
     class: "text_decoration_underline",
-    href: "https://mail.google.com/mail/u/0/#inbox?compose=https://mail.google.com/mail/u/0/#inbox?compose=DmwnWsCZFQTSPKdBWzqptmWzRGSXbXPcgGKFLkKhbNnbbmlgJgCbMhkZCbbJRRqmCSbHhCHFkrGB"
+    href: "mailto:hello@nahara.co.in"
   },
   {
     id: 3,

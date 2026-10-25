@@ -1,5 +1,8 @@
 import { gql } from "@apollo/client";
 
+// Prices come from variants (`price`, strike-through `compareAtPrice`).
+// Nested variants are PUBLISHED only; storefronts get no stock or badge
+// names (both are admin-only), so neither is selected.
 export const GET_PRODUCTS = gql`
   query GetClientSideProducts($limit: Int, $offset: Int, $filters: GetProductsFilterInput) {
     getClientSideProducts(limit: $limit, offset: $offset, filters: $filters) {
@@ -7,7 +10,6 @@ export const GET_PRODUCTS = gql`
         _id
         name
         slug
-        discountedPrice
         assets {
           path
           type
@@ -15,14 +17,10 @@ export const GET_PRODUCTS = gql`
           isFeatured
           isHover
         }
-        ribbon {
-          name
-          ribbonId
-        }
         variants {
-          variantPrice
-          stockQuantity
-          stockStatus
+          _id
+          price
+          compareAtPrice
           status
         }
         categoryIds
@@ -32,27 +30,26 @@ export const GET_PRODUCTS = gql`
   }
 `;
 
+// Look up by `slug` (pages) or by `id` (cart and order links carry only the
+// productId; the page redirects them to the slug URL).
 export const GET_PRODUCT_BY_ID = gql`
-  query GetClientSideProductById($slug: String) {
-    getClientSideProductById(slug: $slug) {
+  query GetClientSideProductById($id: ID, $slug: String) {
+    getClientSideProductById(id: $id, slug: $slug) {
       _id
-      additionalInfo {
-        description
-        title
-      }
-      margin
-      discountedPrice
-      createdAt
-      costOfGoods
+      name
+      description
+      slug
+      status
       categoryIds
       categories {
         _id
         name
         slug
       }
-      description
-      name
-      price
+      additionalInfo {
+        title
+        description
+      }
       productOptions {
         optionName
         choices {
@@ -70,16 +67,22 @@ export const GET_PRODUCT_BY_ID = gql`
         isFeatured
         isHover
       }
-      saleType
-      saleValue
-      status
-      slug
-      meta {
+      variants {
+        _id
+        title
+        sku
+        optionValues
+        price
+        compareAtPrice
+        status
+      }
+      seo {
         title
         description
         keywords
         primaryKeywords
         author
+        canonical
         robots
         og {
           title
@@ -93,25 +96,8 @@ export const GET_PRODUCT_BY_ID = gql`
           image
         }
       }
-      variants {
-        _id
-        selectedOptions
-        priceDifference
-        variantPrice
-        sku
-        variantCostOfGoods
-        shippingWeight
-        trackInventory
-        stockQuantity
-        status
-        stockStatus
-        visibility
-      }
-      ribbon {
-        name
-        ribbonId
-      }
-      profit
+      createdAt
+      updatedAt
     }
   }
 `;

@@ -1,46 +1,23 @@
 "use client";
 
-import { formatePrice, renderVariants } from '@/utils/Util';
+import { formatePrice } from '@/utils/Util';
 import Link from 'next/link';
 import Image from 'next/image'
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useRef } from 'react'
 import GreenBoxBtn from '../buttons/GreenBoxBtn';
 import gsap from 'gsap';
-import { useMutation } from '@apollo/client/react';
-import { ADD_TO_WISHLIST, GET_WISHLIST_ITEMS } from '@/graphql';
 import { useAuthStore } from '@/store/auth-store';
+import { useWishlist } from '@/hooks/useWishlist';
 import { toast } from 'react-toastify';
 import { RiCloseLine } from '@remixicon/react';
+import { CtaEnum, trackCtaClick } from '@/utils/analytics-events';
 
 const WishlistPopup = ({ item, popupActive, setPopupActive, handleAddItem, handleRemoveItem, onClose }) => {
     const router = useRouter();
-    const { user, isLoggedIn } = useAuthStore();
+    const { isLoggedIn } = useAuthStore();
     const popupRef = useRef(null);
-    const userId = user?._id || user?.id;
-
-    const [addToWishlist, { loading }] = useMutation(ADD_TO_WISHLIST, {
-        update(cache, { data: { addToWishlist: newItem } }) {
-            const existing = cache.readQuery({
-                query: GET_WISHLIST_ITEMS,
-                variables: { userId }
-            });
-
-            if (existing && newItem) {
-                cache.writeQuery({
-                    query: GET_WISHLIST_ITEMS,
-                    variables: { userId },
-                    data: {
-                        getWishlistItems: {
-                            ...existing.getWishlistItems,
-                            items: [...existing.getWishlistItems.items, newItem],
-                            totalCount: existing.getWishlistItems.totalCount + 1
-                        }
-                    }
-                });
-            }
-        }
-    });
+    const { isWishlisted, toggle, toggling: loading } = useWishlist();
 
     useEffect(() => {
         if (popupActive) {
@@ -63,33 +40,29 @@ const WishlistPopup = ({ item, popupActive, setPopupActive, handleAddItem, handl
     }, [popupActive])
 
     const handleSaveToWishlist = async () => {
+        trackCtaClick(CtaEnum.WISHLIST, {
+            itemId: item?.variantId || item?.productId,
+        });
         if (!isLoggedIn) {
             setPopupActive(false);
             onClose?.();
             router.push('/login');
             return;
         }
-        try {
-            await addToWishlist({
-                variables: {
-                    input: {
-                        productId: item?.productId,
-                        ...(item?.variantDetail?.variantDetailId ? { variantId: item.variantDetail.variantDetailId } : {})
-                    },
-                    userId
-                }
-            });
-            // Remove from cart
-            toast.success("Saved to wishlist");
-            await handleRemoveItem(item?.productId, item?.variantDetail?.variantDetailId, true);
-            setPopupActive(false);
-        } catch (error) {
-            toast.error("Failed to save to wishlist");
+        // toggleWishlist removes a product that is already saved, so only
+        // call it when the product isn't in the wishlist yet.
+        if (!isWishlisted(item?.productId)) {
+            const added = await toggle(item?.productId, item?.variantId, { silent: true });
+            if (added === null) return;
         }
+        toast.success("Saved to wishlist");
+        // Remove from cart
+        await handleRemoveItem(item?.productId, item?.variantId, true);
+        setPopupActive(false);
     };
 
     const confirmRemove = async () => {
-        await handleRemoveItem(item?.productId, item?.variantDetail?.variantDetailId, true);
+        await handleRemoveItem(item?.productId, item?.variantId, true);
         setPopupActive(false);
     };
 
@@ -131,24 +104,21 @@ const WishlistPopup = ({ item, popupActive, setPopupActive, handleAddItem, handl
                                     className="cover"
                                     src={firstAsset}
                                     alt={item?.name || "Wishlist Item"}
-                                    // sizes="150px"
+                                    sizes="150px"
                                 />
                             </div>
                         </div>
                         <div className="cartBag_bagItemDetails">
                             <div className="cartBag_bagItemTop">
                                 <div className="cartBag_itemHead">
-                                    <Link prefetch scroll={false} href={`/products/${item?.product?.slug || item?.productId}`} className="cartBag_itemName text-base">
+                                    <Link prefetch={false} scroll={false} href={`/products/${item?.productId}`} className="cartBag_itemName text-base">
                                         <p>
                                             {item?.name}
                                         </p>
                                     </Link>
-                                    <div className="cart_varients_div">
-                                        {renderVariants(item?.product?.productOptions || [], item?.variantDetail?.selectedOptions || [])}
-                                    </div>
                                 </div>
                                 <p className='text-xl crt_itms_price'>{` ${formatePrice(
-                                    item?.variantDetail?.variantPrice || 0
+                                    item?.finalPrice || 0
                                 )}`}</p>
                             </div>
                         </div>

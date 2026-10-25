@@ -1,18 +1,20 @@
 "use client";
-"use client";
 
 import React, { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import GreenBoxBtn from "@/components/buttons/GreenBoxBtn";
-import { formatePrice, htmlParser } from "@/utils/Util";
-import { StockStatus } from "@/utils/Constant";
+import { findVariantByOptions, formatePrice, htmlParser } from "@/utils/Util";
 import { useSizeGuideStore } from "@/store/sizeguide-store";
-import { useMutation, useQuery } from "@apollo/client/react";
-import { ADD_TO_WISHLIST, GET_WISHLIST_ITEMS, REMOVE_FROM_WISHLIST } from "@/graphql";
-import { useAuthStore } from "@/store/auth-store";
-import { useRouter, usePathname } from "next/navigation";
-import { toast } from "react-toastify";
+import { useWishlist } from "@/hooks/useWishlist";
+import {
+  CtaEnum,
+  getAnalyticsItemId,
+  trackCtaClick,
+  trackSelectVariant,
+  trackSizeGuideOpen,
+} from "@/utils/analytics-events";
+import { usePathname } from "next/navigation";
 
 const ProductContant = ({
   data = {},
@@ -28,102 +30,17 @@ const ProductContant = ({
   setAssetsFilter,
   handleAddToCart,
   handleNotifyMe,
+  analyticsItemId,
 }) => {
 
   const pathname = usePathname();
-  const router = useRouter();
-  const { user } = useAuthStore();
-  const userId = user?._id || user?.id;
-  // Centralized wishlist query
-  const { data: wishlistData } = useQuery(GET_WISHLIST_ITEMS, {
-    variables: { userId },
-    skip: !userId
-  });
-
-  const wishlistItems = wishlistData?.getWishlistItems?.items || [];
-
-  // Check if current product (and variant, if selected) is in wishlist
-  const wishlistItem = wishlistItems.find(item =>
-    item.productId === data?._id &&
-    (variantMatched?.variantDetailId ? item.variantId === variantMatched.variantDetailId : true)
-  );
-
-  const isWishlisted = !!wishlistItem;
-  const wishlistId = wishlistItem?._id;
-
-  // Mutations with cache updates
-  const [addToWishlist, { loading: addLoading }] = useMutation(ADD_TO_WISHLIST, {
-    update(cache, { data: { addToWishlist: newItem } }) {
-      const existing = cache.readQuery({
-        query: GET_WISHLIST_ITEMS,
-        variables: { userId }
-      });
-      if (existing && newItem) {
-        cache.writeQuery({
-          query: GET_WISHLIST_ITEMS,
-          variables: { userId },
-          data: {
-            getWishlistItems: {
-              ...existing.getWishlistItems,
-              items: [...existing.getWishlistItems.items, newItem],
-              totalCount: existing.getWishlistItems.totalCount + 1
-            }
-          }
-        });
-      }
-    },
-    onCompleted: () => toast.success("Added to wishlist"),
-    onError: (err) => toast.error(err.message),
-  });
-
-  const [removeFromWishlist, { loading: removeLoading }] = useMutation(REMOVE_FROM_WISHLIST, {
-    update(cache) {
-      const existing = cache.readQuery({
-        query: GET_WISHLIST_ITEMS,
-        variables: { userId }
-      });
-      if (existing) {
-        cache.writeQuery({
-          query: GET_WISHLIST_ITEMS,
-          variables: { userId },
-          data: {
-            getWishlistItems: {
-              ...existing.getWishlistItems,
-              items: existing.getWishlistItems.items.filter(item => item._id !== wishlistId),
-              totalCount: Math.max(0, existing.getWishlistItems.totalCount - 1)
-            }
-          }
-        });
-      }
-    },
-    onCompleted: () => toast.success("Removed from wishlist"),
-    onError: (err) => toast.error(err.message),
-  });
+  const { isWishlisted: checkWishlisted, toggle, toggling } = useWishlist();
+  const isWishlisted = checkWishlisted(data?._id);
 
   const handleWishlistToggle = async () => {
-    if (!userId) {
-      toast.info("Please login to add to wishlist");
-      router.push("/login");
-      return;
-    }
-
-    if (isWishlisted) {
-      if (wishlistId) {
-        await removeFromWishlist({ variables: { wishlistId, userId } });
-      } else {
-        toast.error("Could not find wishlist item ID");
-      }
-    } else {
-      await addToWishlist({
-        variables: {
-          input: {
-            productId: data?._id,
-            ...(variantMatched?.variantDetailId ? { variantId: variantMatched.variantDetailId } : {})
-          },
-          userId,
-        },
-      });
-    }
+    if (toggling) return;
+    trackCtaClick(CtaEnum.WISHLIST, { itemId: analyticsItemId });
+    await toggle(data?._id, variantMatched?._id);
   };
   const [selectedVariants, setSelectedVariants] = useState({});
   const [openDropdown, setOpenDropdown] = useState(null); // "color" | "size" | null
@@ -161,30 +78,32 @@ const ProductContant = ({
   };
 
   const updatePriceBasedOnVariant = (updatedVariants) => {
-    const selectedValues = Object.values(updatedVariants).sort();
+    const matchingVariant = findVariantByOptions(
+      data?.variants,
+      Object.values(updatedVariants)
+    );
 
-    const matchingVariant = data?.variants?.find((variant) => {
-      const options = variant.selectedOptions?.sort();
-      return (
-        options?.length === selectedValues.length &&
-        options.every((val, i) => val === selectedValues[i])
-      );
-    });
-
-    if (matchingVariant) {
-      const variantPrice = matchingVariant.variantPrice || 0;
-      const { __typename, _id, ...variantWithoutTypename } = matchingVariant;
-      setVariantMatched({ variantDetailId: _id, ...variantWithoutTypename });
-      setFinalPrice(variantPrice);
-    }
+    // No published variant for this combination → the parent shows it as
+    // unavailable (Notify me).
+    setVariantMatched(matchingVariant || null);
+    if (matchingVariant) setFinalPrice(matchingVariant.price || 0);
+    return matchingVariant || null;
   };
 
   const handleVariants = (name, value) => {
     const updated = { ...selectedVariants, [name]: value };
     setSelectedVariants(updated);
-    updatePriceBasedOnVariant(updated);
+    const matched = updatePriceBasedOnVariant(updated);
 
     const nextIndex = Object.keys(updated).length;
+    // PRD-013 select_variant: there are no stock levels here, so "in
+    // stock" means a published variant exists for the full selection.
+    trackSelectVariant({
+      itemId: getAnalyticsItemId(data, matched),
+      variantId: matched?._id,
+      variantLabel: Object.values(updated).join(" / "),
+      inStock: nextIndex === options.length ? !!matched : undefined,
+    });
     const nextOption = options[nextIndex];
 
     // ✅ IMPORTANT: update cart button readiness
@@ -203,9 +122,11 @@ const ProductContant = ({
 
 
   const clearVariants = () => {
+    const hasOptions = options.length > 0;
     setAssetsFilter([]);
     setSelectedVariants({});
-    setCartBtn(false);
+    setCartBtn(!hasOptions && data?.variants?.length === 1);
+    setVariantMatched(!hasOptions ? data?.variants?.[0] || null : null);
     setOpenDropdown(null);
   };
 
@@ -238,11 +159,21 @@ const ProductContant = ({
 
   const handleOpenSizeGuide = () => {
     if (!sizeGuideAsset) return;
+    trackCtaClick(CtaEnum.SIZE_GUIDE, { itemId: analyticsItemId });
+    trackSizeGuideOpen(analyticsItemId);
     openSizeGuide(sizeGuideAsset);
+  };
+
+  const handleNotifyClick = () => {
+    trackCtaClick(CtaEnum.NOTIFY_ME, { itemId: analyticsItemId });
+    handleNotifyMe();
   };
 
   const handleMainButtonClick = () => {
     if (loading || isOutOfStock) return;
+    trackCtaClick(allSelected ? CtaEnum.ADD_TO_CART : CtaEnum.BUY_NOW, {
+      itemId: analyticsItemId,
+    });
 
     // ✅ ALWAYS allow add to cart when all selected
     if (allSelected) {
@@ -264,7 +195,7 @@ const ProductContant = ({
   const buttonTitle = loading
     ? "Loading..."
     : isOutOfStock
-      ? StockStatus.OUT_OF_STOCK
+      ? "Unavailable"
       : allSelected
         ? "Add To Cart"
         : selectionMode
@@ -293,6 +224,9 @@ const ProductContant = ({
               </div>
               <div className="product_price_group">
                 <p className="productDetail_price text-2xl ">{formatePrice(finalPrice || 0)}</p>
+                {variantMatched?.compareAtPrice > finalPrice && (
+                  <p className="line-through text-base">{formatePrice(variantMatched.compareAtPrice)}</p>
+                )}
                 <p className="inclusive_tax_msg text-xs">(Incl. of all taxes)</p>
               </div>
             </div>
@@ -414,7 +348,7 @@ const ProductContant = ({
             <div className="productDetail_addtocart">
 
               {isOutOfStock && (
-                <GreenBoxBtn title={notifyLoading ? "Loading..." : "Notify me"} onClick={handleNotifyMe} />
+                <GreenBoxBtn title={notifyLoading ? "Loading..." : "Notify me"} onClick={handleNotifyClick} />
               )}
               <GreenBoxBtn
                 loading={loading}
@@ -445,7 +379,7 @@ const ProductContant = ({
             </div>
           </div>
           <div className="additional_info_paren">
-            {data?.additionalInfo.length > 0 && (
+            {data?.additionalInfo?.length > 0 && (
               <div className="accordion_container">
                 {data?.additionalInfo.map((item, index) => (
                   <div className="accordion_item" key={index}>

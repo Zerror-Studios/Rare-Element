@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 
-// ADD ITEM TO CART
+// ADD ITEM TO CART (IDs only; the server prices the line)
 export const ADD_ITEM_TO_CART = gql`
   mutation AddItemToCart($input: CreateCartInput!, $guestId: String) {
     addItemToCart(input: $input, guestId: $guestId)
@@ -14,31 +14,47 @@ export const REMOVE_ITEM_FROM_CART = gql`
   }
 `;
 
-// APPLY COUPON
-export const APPLY_CART_COUPON = gql`
-  mutation ApplyCartCoupon(
-    $couponCode: String!
-    $token: String
-    $guestId: String
-  ) {
-    applyCartCoupon(couponCode: $couponCode, token: $token, guestId: $guestId) {
+// APPLY PROMOTION
+export const APPLY_CART_PROMOTION = gql`
+  mutation ApplyCartPromotion($promotionCode: String!, $guestId: String) {
+    applyCartPromotion(promotionCode: $promotionCode, guestId: $guestId) {
       _id
-      userId
-      guestId
       itemcount
       totalprice
       discountedPrice
       totalDiscount
-      isFreeShippingEnabled
-      createdAt
-      updatedAt
+      totalTax
+      promotion {
+        promotionId
+        promotionName
+        promotionCode
+        discount
+      }
     }
   }
 `;
 
-// REMOVE COUPON
-export const REMOVE_CART_COUPON = gql`
-  mutation RemoveCartCoupon($token: String, $guestId: String) {
-    removeCartCoupon(token: $token, guestId: $guestId)
+// REMOVE PROMOTION
+export const REMOVE_CART_PROMOTION = gql`
+  mutation RemoveCartPromotion($guestId: String) {
+    removeCartPromotion(guestId: $guestId)
+  }
+`;
+
+// GUEST CART ID (PRD-002 R2-C2): a server-signed id for anonymous carts
+export const ISSUE_GUEST_CART_ID = gql`
+  mutation IssueGuestCartId {
+    issueGuestCartId
+  }
+`;
+
+// MERGE GUEST CART (PRD-002 R2-C3): customer-only, idempotent; the server
+// re-prices the moved lines and deletes the guest cart
+export const MERGE_GUEST_CART = gql`
+  mutation MergeGuestCart($guestId: String!) {
+    mergeGuestCart(guestId: $guestId) {
+      _id
+      itemcount
+    }
   }
 `;

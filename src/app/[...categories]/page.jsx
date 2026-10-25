@@ -1,9 +1,14 @@
+import { cache } from 'react'
 import { GET_CLIENT_SIDE_CATEGORY_BY_SLUG } from '@/graphql'
 import { getClient } from '@/lib/apollo-client-rsc'
 import CategoryClient from './category-client'
 import { notFound } from 'next/navigation'
+import { isNotFoundError } from '@/utils/errors'
+import { toCanonicalUrl } from '@/utils/env'
 
 export const revalidate = 300;
+
+const PAGE_SIZE = 12;
 
 const defaultMeta = {
   title: "Shop by Category – Fine Jewellery by Nahara",
@@ -16,63 +21,61 @@ const defaultMeta = {
   robots: "index, follow",
 };
 
-export async function generateMetadata({ params }) {
-  const { categories } = await params;
-  const slug = categories[categories.length - 1];
-
+/**
+ * The category for a slug, or null when it doesn't exist. Other failures
+ * throw to the error boundary, so a backend blip is never cached as a 404
+ * (SF-14). Shared by generateMetadata and the page within a request.
+ */
+const getCategory = cache(async (slug) => {
   try {
     const client = getClient();
     const response = await client.query({
       query: GET_CLIENT_SIDE_CATEGORY_BY_SLUG,
-      variables: { slug, limit: 1, offset: 0 }
+      variables: { slug, limit: PAGE_SIZE, offset: 0 }
     });
-
-    const category = response?.data?.getClientSideCategory;
-    const meta = category?.meta;
-
-    return {
-      title: meta?.title || `${category?.name} | Nahara Jewellery` || defaultMeta.title,
-      description: meta?.description || category?.description || defaultMeta.description,
-      keywords: meta?.keywords || defaultMeta.keywords,
-      robots: meta?.robots || defaultMeta.robots,
-    };
+    return response?.data?.getClientSideCategory || null;
   } catch (error) {
-    return defaultMeta;
+    if (isNotFoundError(error)) return null;
+    throw error;
   }
+});
+
+export async function generateMetadata({ params }) {
+  const { categories } = await params;
+  const slug = categories[categories.length - 1];
+  const category = await getCategory(slug);
+  if (!category) return { title: "Category not found" };
+
+  const seo = category.seo || {};
+  const path = `/${categories.join("/")}`;
+
+  return {
+    // A merchant SEO title is complete; the category name gets the template.
+    title: seo.title ? { absolute: seo.title } : category.name || defaultMeta.title,
+    description: seo.description || category.description || defaultMeta.description,
+    keywords: seo.keywords?.length ? seo.keywords : defaultMeta.keywords,
+    robots: seo.robots || defaultMeta.robots,
+    alternates: { canonical: seo.canonical || toCanonicalUrl(path) },
+  };
 }
 
 export default async function Page({ params }) {
   const { categories } = await params;
   const slug = categories[categories.length - 1];
+  const category = await getCategory(slug);
 
-  try {
-    const client = getClient();
-    const response = await client.query({
-      query: GET_CLIENT_SIDE_CATEGORY_BY_SLUG,
-      variables: {
-        slug,
-        limit: 12,
-        offset: 0
-      }
-    });
-
-    if (!response?.data?.getClientSideCategory) {
-      notFound();
-    }
-
-    const { _id, name, description, imgsrc, slug: categoriesSlug, meta: categoriesMeta, products, productsCount } = response?.data?.getClientSideCategory;
-
-    return (
-      <CategoryClient
-        meta={categoriesMeta || defaultMeta}
-        data={{ _id, name, description, imgsrc, categoriesSlug }}
-        initialProducts={products || []}
-        initialTotalCount={productsCount || 0}
-      />
-    );
-  } catch (error) {
-    console.error("Error fetching category data:", error.message);
+  if (!category) {
     notFound();
   }
-}
 
+  const { _id, name, description, imgsrc, slug: categoriesSlug, seo, products, productsCount } = category;
+
+  return (
+    <CategoryClient
+      meta={seo || defaultMeta}
+      data={{ _id, name, description, imgsrc, categoriesSlug }}
+      initialProducts={products || []}
+      initialTotalCount={productsCount || 0}
+    />
+  );
+}

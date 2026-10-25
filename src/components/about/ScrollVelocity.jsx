@@ -2,8 +2,11 @@
 import React from 'react'
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/dist/ScrollTrigger';
-import AboutImageEffect from './AboutImageEffect'
+import dynamic from 'next/dynamic'
 import { useGSAP } from '@gsap/react'
+
+// SF-17: three / R3F load only in the browser, on the about page.
+const AboutImageEffect = dynamic(() => import('./AboutImageEffect'), { ssr: false })
 gsap.registerPlugin(ScrollTrigger);
 
 const ScrollVelocity = () => {

@@ -1,49 +1,59 @@
 "use client";
 
+/**
+ * Purchase analytics (PRD-002 SF-13): fires GA4 `purchase` and the Meta
+ * `Purchase` event once per paid order. The thank-you page passes the
+ * order only after `myOrder` reports it PAID; a sessionStorage key per
+ * order id stops repeats on refresh or back-navigation in this tab.
+ */
+
 import { useEffect } from "react";
-import { useSearchParams } from "next/navigation";
-import { useQuery } from "@apollo/client/react";
-import { GET_ORDER_BY_ID } from "@/graphql";
 import { trackEcomEvent } from "@/utils/analytics";
 import * as fpixel from "@/lib/fpixel";
 
-export default function PurchaseTracker() {
-  const searchParams = useSearchParams();
-  const orderId = searchParams.get("orderId");
+const TRACKED_KEY_PREFIX = "zc_purchase_tracked:";
 
-  const { data: orderData } = useQuery(GET_ORDER_BY_ID, {
-    variables: { getClientSidePaymentByOrderIdId: orderId },
-    skip: !orderId,
-  });
+const alreadyTracked = (orderId) => {
+  try {
+    return sessionStorage.getItem(`${TRACKED_KEY_PREFIX}${orderId}`) === "1";
+  } catch {
+    return false;
+  }
+};
 
+const markTracked = (orderId) => {
+  try {
+    sessionStorage.setItem(`${TRACKED_KEY_PREFIX}${orderId}`, "1");
+  } catch {
+    // Storage unavailable: the event may repeat on refresh in this tab.
+  }
+};
+
+export default function PurchaseTracker({ order }) {
   useEffect(() => {
-    if (orderData?.getClientSidePaymentByOrderId) {
-      const orderInfo = orderData.getClientSidePaymentByOrderId;
-      const order = orderInfo.order;
+    if (!order?._id || order.paymentStatus !== "PAID") return;
+    if (alreadyTracked(order._id)) return;
+    markTracked(order._id);
 
-      // GA4 Purchase Event
-      trackEcomEvent.purchase(
-        order._id,
-        order.totalprice,
-        order.cart || [],
-        order.shippingAmount || 0,
-        order.taxAmount || 0
-      );
+    const value = order.orderPrice || 0;
 
-      // Facebook Pixel Purchase Event
-      fpixel.event("Purchase", {
-        currency: "INR",
-        value: order.totalprice,
-        content_ids: (order.cart || []).map(item => item.productId),
-        content_type: 'product',
-      });
-    } else if (!orderId) {
-       // Fallback for direct pixel event if no orderId found (existing behavior)
-       fpixel.event("Purchase", {
-         currency: "INR",
-       });
-    }
-  }, [orderData, orderId]);
+    // GA4 Purchase Event
+    trackEcomEvent.purchase(
+      order._id,
+      value,
+      order.cart || [],
+      order.shippingAmount || 0,
+      order.tax?.totalTax || 0
+    );
+
+    // Facebook Pixel Purchase Event
+    fpixel.event("Purchase", {
+      currency: order.currency || "INR",
+      value,
+      content_ids: (order.cart || []).map((item) => item.productId),
+      content_type: "product",
+    });
+  }, [order]);
 
   return null;
 }

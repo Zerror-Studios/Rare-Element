@@ -1,6 +1,7 @@
 import ContactClient from "./contact-client";
 
 export const metadata = {
+  alternates: { canonical: "/contact" },
   title: "Contact Us – Nahara Fine Jewellery Support",
   description: "Need help? Contact Nahara for support, product inquiries, custom jewellery requests, and order assistance.",
   keywords: [

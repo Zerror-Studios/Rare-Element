@@ -1,164 +1,95 @@
 import { gql } from "@apollo/client";
 
-export const ORDER_LIST = gql`
-  query GetOrdersByFilters($offset: Int, $limit: Int, $filter: OrderFilterInput) {
-  getOrdersByFilters(offset: $offset, limit: $limit, filter: $filter) {
-    data {
-      _id
-      orderNo
-      orderPrice
-      paymentStatus
-      currency
-      fulfillmentStatus
-      taxAmount
-      itemcount
-      totalprice
-      discountedPrice
-      totalDiscount
-      awb_code
-      shipmentStatus
-      invoiceUrl
-      cart {
-        name
-        description
-        asset {
-          _id
-          path
-          type
-          isFeatured
-          isHover
-          altText
-        }
-        qty
-        freeQty
-        price
-        variantDetail {
-          variantDetailId
-          selectedOptions
-          priceDifference
-          variantPrice
-          variantCostOfGoods
-          shippingWeight
-          sku
-          trackInventory
-          stockQuantity
-          stockStatus
-          status
-        }
-        finalPrice
-        customTexts
-        productId
-        product {
-          _id
+// Customer-scoped order history (the owner comes from the access token).
+export const MY_ORDERS = gql`
+  query MyOrders($limit: Int, $offset: Int) {
+    myOrders(limit: $limit, offset: $offset) {
+      orders {
+        _id
+        orderNo
+        orderPrice
+        paymentStatus
+        fulfillmentStatus
+        shipmentStatus
+        currency
+        itemcount
+        totalprice
+        discountedPrice
+        totalDiscount
+        shippingAmount
+        cart {
+          productId
+          variantId
           name
-          slug
-          productOptions {
-            optionName
-            choices {
-              name
-            }
-            showInProductPageAs
+          sku
+          qty
+          price
+          finalPrice
+          asset {
+            path
+            altText
           }
         }
+        createdAt
       }
-      nimbblInvoiceId
-      customDiscount {
-        amount
-        discountReason
-      }
-      customFee {
-        amount
-        name
-      }
-      createdAt
-      updatedAt
-      shippingAmount
+      totalCount
     }
-    totalCount
   }
-}
 `;
 
-export const GET_ORDER_BY_ID = gql`
-query GetClientSidePaymentByOrderId($getClientSidePaymentByOrderIdId: ID!) {
-  getClientSidePaymentByOrderId(id: $getClientSidePaymentByOrderIdId) {
-    _id
-    currentStatus
-    nimbblPaymentMode
-    nimbblPaymentPartner
-    totalAmount
-    updatedAt
-    orderId
-    order {
+export const MY_ORDER = gql`
+  query MyOrder($id: ID!) {
+    myOrder(id: $id) {
       _id
       orderNo
       orderPrice
-      billingAddressId
-      shippingAddressId
       paymentStatus
-      currency
       fulfillmentStatus
-      pickup_scheduled_date
-      shippingAmount
-      taxAmount
+      currentStatus
+      shipmentStatus
+      currency
       itemcount
       totalprice
       discountedPrice
       totalDiscount
+      shippingAmount
+      tax {
+        totalTax
+        pricesIncludeTax
+      }
+      promotion {
+        promotionCode
+        discount
+      }
       cart {
-        asset {
-          altText
-          _id
-          isFeatured
-          isHover
-          path
-          type
-        }
-        description
-        finalPrice
+        productId
+        variantId
+        name
+        sku
         qty
         price
-        name
-        variantDetail {
-          selectedOptions
-          sku
-          status
-          stockStatus
-          variantDetailId
-          variantPrice
-          priceDifference
-          stockQuantity
-        }
-        productId
-        product {
+        finalPrice
+        asset {
           _id
-          name
-          slug
-          productOptions {
-            optionName
-            choices {
-              name
-            }
-            showInProductPageAs
-          }
+          path
+          altText
         }
       }
       billingAddress {
         firstname
         lastname
         email
+        addressType
+        flat
         addressline1
         addressline2
-        addressType
+        landmark
+        phone
+        countryCode
         city
         country
-        countryCode
-        phone
-        pincode
         states
-        primary
-        landmark
-        flat
+        pincode
       }
       shippingAddress {
         firstname
@@ -170,28 +101,17 @@ query GetClientSidePaymentByOrderId($getClientSidePaymentByOrderIdId: ID!) {
         addressline2
         landmark
         phone
-        city
         countryCode
+        city
         country
         states
         pincode
-        primary
       }
       awb_code
-      trackInfo {
-        date
-        status
-        activity
-        location
-        sr_status
-        sr_status_label
-      }
       courierName
+      invoiceUrl
       createdAt
       updatedAt
-      shipmentStatus
-      invoiceUrl
     }
   }
-}
 `;
