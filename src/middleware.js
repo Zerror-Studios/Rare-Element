@@ -21,11 +21,37 @@
  * Cookie names (PRD-001 FR-2.1): `__Host-zc_cust_rt` over HTTPS,
  * `zc_cust_rt` in local dev, and the legacy `refresh_token` during the
  * backend's migration window.
+ *
+ * Suspended store (PRD-018 FR-1.6, D6): every page request first asks
+ * `lib/store-status.js` (one cached gateway probe per 30 s); while the
+ * gateway answers `TENANT_SUSPENDED` the page is the branded 503 with
+ * `Retry-After`. `/v1/graphql`, `/api/*` and static files are never held.
+ *
+ * Store identity (PRD-018 FR-4.3): `/.well-known/zcom-store` answers the
+ * signed store slug (`lib/store-identity.js`).
  */
 
 import { NextResponse } from "next/server";
-import { buildGatewayProxyHeaders } from "@/lib/edge-headers";
-import { GRAPHQL_PATH, getServerTenantDomain } from "@/utils/env";
+import {
+  buildGatewayProxyHeaders,
+  getEdgeSecretHeaders,
+} from "@/lib/edge-headers";
+import {
+  STORE_IDENTITY_PATH,
+  storeIdentityResponse,
+} from "@/lib/store-identity";
+import {
+  createStoreStatusCache,
+  probeStoreStatus,
+  storeStatusEnum,
+  storeUnavailableResponse,
+} from "@/lib/store-status";
+import {
+  API_VERSION,
+  GRAPHQL_PATH,
+  SUPPORT_EMAIL,
+  getServerTenantDomain,
+} from "@/utils/env";
 
 // ─── Constants ────────────────────────────────────────────────────────────
 
@@ -38,6 +64,12 @@ const PUBLIC_CHECKOUT_PATHS = [
   "/checkout/thank-you",
   "/checkout/payment-failed",
 ];
+const PROTECTED_PATH_PATTERN = /^\/(account|checkout)(\/|$)/;
+const BRAND = {
+  brandName: "Nahara",
+  background: "#ffffff",
+  foreground: "#111111",
+};
 
 // ─── API proxy ────────────────────────────────────────────────────────────
 
@@ -65,11 +97,40 @@ function proxyGraphql(request) {
   });
 }
 
-// ─── Middleware ───────────────────────────────────────────────────────────
+// ─── Store status ─────────────────────────────────────────────────────────
 
-export function middleware(request) {
+/** The gateway probe with the edge headers; UNKNOWN when unconfigured. */
+async function probeGateway() {
+  const gateway = (process.env.API_GATEWAY_URL || "").replace(/\/+$/, "");
+  if (!gateway) return storeStatusEnum.UNKNOWN;
+  let tenantDomain;
+  try {
+    tenantDomain = getServerTenantDomain();
+  } catch {
+    return storeStatusEnum.UNKNOWN;
+  }
+  return await probeStoreStatus({
+    graphqlUrl: `${gateway}${GRAPHQL_PATH}`,
+    headers: {
+      "x-api-version": API_VERSION,
+      "x-tenant-domain": tenantDomain,
+      ...getEdgeSecretHeaders(),
+    },
+  });
+}
+
+const getStoreStatus = createStoreStatusCache({ probe: probeGateway });
+
+/** Page navigations only (GET/HEAD); never the API or the proxy. */
+function isPageRequest(request) {
+  return request.method === "GET" || request.method === "HEAD";
+}
+
+// ─── Route guard ──────────────────────────────────────────────────────────
+
+function guardRoute(request) {
   const { pathname, search } = request.nextUrl;
-  if (pathname === GRAPHQL_PATH) return proxyGraphql(request);
+  if (!PROTECTED_PATH_PATTERN.test(pathname)) return NextResponse.next();
   if (PUBLIC_CHECKOUT_PATHS.some((path) => pathname.startsWith(path))) {
     return NextResponse.next();
   }
@@ -85,6 +146,32 @@ export function middleware(request) {
   return NextResponse.redirect(url);
 }
 
+// ─── Middleware ───────────────────────────────────────────────────────────
+
+async function servePage(request) {
+  if (
+    isPageRequest(request) &&
+    (await getStoreStatus()) === storeStatusEnum.SUSPENDED
+  ) {
+    return storeUnavailableResponse({ ...BRAND, contactEmail: SUPPORT_EMAIL });
+  }
+  return guardRoute(request);
+}
+
+// The proxy stays synchronous; only page requests wait for the probe.
+export function middleware(request) {
+  const { pathname } = request.nextUrl;
+  if (pathname === GRAPHQL_PATH) return proxyGraphql(request);
+  if (pathname === STORE_IDENTITY_PATH) return storeIdentityResponse();
+  return servePage(request);
+}
+
 export const config = {
-  matcher: ["/v1/graphql", "/account/:path*", "/checkout/:path*"],
+  // Every page (no `_next/`, `api/` or file with an extension), the proxy
+  // and the store identity endpoint.
+  matcher: [
+    "/v1/graphql",
+    "/.well-known/zcom-store",
+    "/((?!_next/|api/|.*\\.).*)",
+  ],
 };

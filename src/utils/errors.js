@@ -66,6 +66,25 @@ export const REASON_MESSAGES = {
   // PRD-003 FR-0.5: customer password reset.
   INVALID_RESET_TOKEN: "This reset link is invalid or has expired.",
   WEAK_PASSWORD: "Use at least 8 characters for your password.",
+  // PRD-016 FR-25: the store's billing has paused new orders.
+  STORE_ORDERS_PAUSED: "This store isn't taking orders right now.",
+  // PRD-015 FR-20: shopper cancel and returns.
+  ORDER_NOT_CANCELLABLE:
+    "This order can no longer be cancelled; contact the store.",
+  PAYMENT_IN_PROGRESS:
+    "A payment is in progress; try again in a few minutes.",
+  ORDER_NOT_DELIVERED: "You can request a return once the order is delivered.",
+  RETURN_WINDOW_CLOSED: "The return window for this order has closed.",
+  RETURNS_DISABLED: "This store doesn't accept returns online; contact the store.",
+  ORDER_NOT_RETURNABLE: "This order can't be returned here; contact the store.",
+  INVALID_ORDER_ITEM:
+    "One of these items isn't on this order. Please refresh and try again.",
+  INVALID_QUANTITY: "Choose a quantity of at least 1.",
+  RETURN_QUANTITY_EXCEEDED:
+    "You've already requested a return for some of these items. Please refresh and try again.",
+  INVALID_TRANSITION:
+    "This return can no longer be changed. Please refresh the page.",
+  RETURN_CHANGED: "This return was updated. Please refresh and try again.",
 };
 
 // PRD-014 COM-32: `removeItemFromCart` without the line's variant is

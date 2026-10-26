@@ -20,6 +20,12 @@ import {
   isInvalidGuestIdError,
 } from "@/utils/errors";
 import { CtaEnum, trackCtaClick } from "@/utils/analytics-events";
+import { useVariantAvailability } from "@/hooks/useVariantAvailability";
+import {
+  SOLD_OUT_CHECKOUT_MESSAGE,
+  getCartLineStockId,
+  hasSoldOutLine,
+} from "@/utils/stock-signal";
 
 import WishlistPopup from "./WishlistPopup";
 
@@ -97,6 +103,15 @@ const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
 
   const count = getCartItemCount(cart);
 
+  // PRD-020 FR-12: a fresh stock read when the bag opens. A sold-out line
+  // blocks checkout until it is removed; no signal changes nothing, and
+  // checkout's own reservation stays the authority.
+  const { fresh: freshStock } = useVariantAvailability(
+    cart.map(getCartLineStockId),
+    { skip: !isOpen },
+  );
+  const blockedBySoldOut = hasSoldOutLine(cart, freshStock);
+
   const handleAddItem = async (productId, variantId) => {
     try {
       const input = { productId, variantId: variantId || null, qty: 1 };
@@ -162,6 +177,10 @@ const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
 
   const navigateCheckout = async () => {
     if (count <= 0) return;
+    if (blockedBySoldOut) {
+      toast.error(SOLD_OUT_CHECKOUT_MESSAGE);
+      return;
+    }
     trackCtaClick(CtaEnum.CHECKOUT);
     try {
       dispatch({ type: "SET_BTN_LOADING", payload: true });
@@ -301,6 +320,7 @@ const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
               handleRemoveItem={handleRemoveItem}
               pricesIncludeTax={pricesIncludeTax}
               onClose={closeCart}
+              freshStock={freshStock}
             />
           ))
         ) : (
@@ -316,17 +336,24 @@ const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
           <p>{formatePrice(discountedPrice)}</p>
         </div>
         <div
-          onClick={closeCart}
+          onClick={blockedBySoldOut ? undefined : closeCart}
           className="cartBag_checkoutButton">
           <GreenBoxBtn
             title={"Proceed to Checkout"}
             onClick={navigateCheckout}
             loading={isBtnLoading}
             data-testid="cart-checkout"
+            aria-disabled={count === 0 || blockedBySoldOut}
+            aria-describedby={blockedBySoldOut ? "cart_sold_out_note" : undefined}
             style={{
-              cursor: count === 0 ? "not-allowed" : "pointer",
+              cursor: count === 0 || blockedBySoldOut ? "not-allowed" : "pointer",
             }}
           />
+          {blockedBySoldOut && (
+            <p id="cart_sold_out_note" className="text-base cart_sold_out_note">
+              {SOLD_OUT_CHECKOUT_MESSAGE}
+            </p>
+          )}
           <p className="text-base  crt_btn_txt"> Free shipping on all orders , with easy returns and fast support—always.</p>
         </div>
       </div>

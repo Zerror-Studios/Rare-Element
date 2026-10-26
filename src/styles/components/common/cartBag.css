@@ -496,3 +496,15 @@ button.cartBag_menuHeaderClose {
   color: #174d38;
   cursor: pointer;
 }
+
+/* PRD-020 FR-12: cart line stock (text, never colour alone) */
+.cartBag_stockNote {
+  margin-top: 0.25rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.cart_sold_out_note {
+  margin-top: 0.5rem;
+  font-weight: 600;
+}

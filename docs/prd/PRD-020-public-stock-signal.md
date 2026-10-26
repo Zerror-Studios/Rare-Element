@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | **Approved** 2026-10-26. Not started |
+| Status | **Approved** 2026-10-26 · **Implemented** 2026-10-26 (FR-12, FR-14; working tree, not browser-tested) |
 | Source-of-truth PRD | [`../../../../zcom-backend/docs/prd/PRD-020-public-stock-signal.md`](../../../../zcom-backend/docs/prd/PRD-020-public-stock-signal.md) |
 | Approved by / on | Anand (owner), 2026-10-26: "please review and approve the six drafted follow-up PRDs" (every §8 recommendation accepted) |
 | Rollout step | Backend §7.1 step 3 (FR-12, FR-14), after the backend ships with the signal off; checked per root `CLAUDE.md` §5.5 with the signal off and on |
@@ -18,4 +18,19 @@ Only this repo's notes are here; requirements, contract and decisions live in th
 - **Analytics:** `src/utils/analytics-events.js` (`in_stock`, today "the combination exists", `ProductContant.jsx`) takes the signal when non-null.
 
 ## Implementation log
-_Not started._
+
+**2026-10-26: FR-12 and FR-14 DONE in code** (working tree, not committed, not browser-tested; the backend is built in its working tree with the signal off for every store).
+
+| Item | Status | Where |
+|---|---|---|
+| Helpers | DONE | `src/utils/stock-signal.js` (twin of deveshe `utils/stock-signal.util.js`): bucket → copy, schema.org, fresh-read merge (the fresh answer wins only for the ids it answered; `null` = no signal), option and cart-line states, analytics flag |
+| Fresh read | DONE | `src/hooks/useVariantAvailability.jsx` + `GET_VARIANT_AVAILABILITY`: ≤ 50 distinct ids, `network-only`; keeps the last good answer, so a pending or failed read shows the ISR value and never blocks add to cart |
+| PDP | DONE | `product-client.jsx` / `ProductContant.jsx`: read on mount and on a variant change; a choice whose variants (with the other selected options) are all `OUT_OF_STOCK` is struck through, still selectable, `aria-label="<value>, sold out"` (the chips are now `role="button"` with Enter/Space); a sold-out selection shows "Sold out" + "Notify me"; `LOW_STOCK` shows "Only N left" (only with `availableQuantity`) or "Low stock" (plain text, not live-announced) |
+| Notify me without login | DONE | guests get an email field (labelled) and `requestBackInStock` is sent with that email (validated on the client, the server checks it too); logged-in shoppers still use their account |
+| Listing | DONE | `components/common/ProductCard.jsx`: "Sold out" / "Low stock" ribbon from `Product.availability` (`GET_PRODUCTS`, `GET_PRODUCTS_BY_IDS`, the category's `products` select it); no client availability filter (the server applies `SHOW | SORT_LAST | HIDE`) |
+| Cart drawer | DONE | `CartDrawer.jsx` / `CartItem.jsx`: fresh read on open (variant id, else product id); "Sold out" on the line (Remove stays, "+" disabled), "Only N left" when qty > the exposed count; "Proceed to Checkout" is held with "Remove sold-out items to continue" (`aria-disabled`, toast, drawer stays open). Rare has no separate cart page |
+| Analytics | DONE | `select_variant.in_stock` from the signal when non-null (`toInStockFlag`), else today's "the combination exists" |
+| SEO (FR-14) | DONE | `src/utils/product-offers.js` `toProductOffers(variants, url, availability)`; `ProductSchema.jsx` passes `Product.availability`; `null` omits it |
+| Tests | DONE | `test/stock-signal.test.mjs` (null behaviour, copy, schema.org on `Offer` and `AggregateOffer`, fresh-read merge and id cap, option chips, cart lines) |
+
+Contract: `getVariantAvailability` plus `availability` / `availableQuantity` fields; `validate:clients` 44/44. Limits: a bag with more than 50 distinct lines checks the first 50 only (the rest render as no signal). Open: the §7.1 step 5 browser check with the signal off and on (including `HIDE` and every sort), owner copy approval (§6 defaults used).

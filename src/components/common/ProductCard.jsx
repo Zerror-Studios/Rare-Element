@@ -10,9 +10,12 @@ import {
     trackSelectItem,
 } from "@/utils/analytics-events";
 import ProductCardSkeleton from "../skeletons/ProductCardSkeleton";
+import { getListingBadge } from "@/utils/stock-signal";
 
 // Badge names are admin-only in the API today (Product exposes badgeIds), so
-// `badge` is an optional label supplied by the caller.
+// `badge` is an optional label supplied by the caller; without one the card
+// shows the PRD-020 stock badge ("Sold out" / "Low stock") from
+// `product.availability` (null = no badge, as before).
 // `product` + `listName` (optional) let the card send GA4 `select_item`
 // (PRD-013); the click still bubbles to the caller's <Link>.
 const ProductCard = React.memo(({ productId, name, badge, price, assets, product, listName }) => {
@@ -34,6 +37,8 @@ const ProductCard = React.memo(({ productId, name, badge, price, assets, product
     };
 
 
+    const ribbon = badge || getListingBadge(product?.availability);
+
     const featuredAsset = assets?.find(a => a.isFeatured === true);
     const hoverAsset = assets?.find(a => a.isHover === true);
 
@@ -50,9 +55,9 @@ const ProductCard = React.memo(({ productId, name, badge, price, assets, product
     return (
         <>
             <div className="shopCard_card" onClick={handleSelect}>
-                {badge && (
+                {ribbon && (
                     <div className="ribbon_btn">
-                        <p className="text-xs">{badge}</p>
+                        <p className="text-xs">{ribbon}</p>
                     </div>
                 )}
                 {/* Heart Icons */}

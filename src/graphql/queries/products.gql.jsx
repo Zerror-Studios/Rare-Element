@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 // Prices come from variants (`price`, strike-through `compareAtPrice`).
-// Nested variants are PUBLISHED only; storefronts get no stock or badge
-// names (both are admin-only), so neither is selected.
+// Nested variants are PUBLISHED only; badge names are admin-only. Stock is
+// the coarse PRD-020 signal (`availability`, nullable: null = no signal).
 export const GET_PRODUCTS = gql`
   query GetClientSideProducts(
     $limit: Int
@@ -34,6 +34,7 @@ export const GET_PRODUCTS = gql`
           status
         }
         categoryIds
+        availability
       }
       totalCount
     }
@@ -85,7 +86,10 @@ export const GET_PRODUCT_BY_ID = gql`
         price
         compareAtPrice
         status
+        availability
+        availableQuantity
       }
+      availability
       seo {
         title
         description
@@ -162,6 +166,21 @@ export const GET_PRODUCTS_BY_IDS = gql`
         status
       }
       categoryIds
+      availability
+    }
+  }
+`;
+
+// PRD-020 FR-8: the fresh read for the PDP (mount, variant change) and the
+// cart (open). Never cached server-side; at most 50 ids; unknown and
+// unpublished ids are left out. A failure keeps the rendered value.
+export const GET_VARIANT_AVAILABILITY = gql`
+  query GetVariantAvailability($variantIds: [ID!]!) {
+    getVariantAvailability(variantIds: $variantIds) {
+      productId
+      variantId
+      availability
+      availableQuantity
     }
   }
 `;

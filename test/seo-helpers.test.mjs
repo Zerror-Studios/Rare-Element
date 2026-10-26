@@ -1,7 +1,7 @@
 /**
  * SEO helpers (PRD-014 FR-2.8, UX-33)
  *
- * Product JSON-LD offers (no availability without a stock signal) and the
+ * Product JSON-LD offers (availability only from the PRD-020 signal) and the
  * robots.txt sitemap URL, which follows the configured site origin instead
  * of a hard-coded domain.
  *

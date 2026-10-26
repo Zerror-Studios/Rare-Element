@@ -8,16 +8,38 @@ import { useQuery } from '@apollo/client/react';
 import { MY_ORDER } from '@/graphql';
 import { formatDateTime, formatePrice, formatPaymentStatus } from '@/utils/Util';
 import Image from 'next/image';
+import OrderTracking from '@/components/account/orders/OrderTracking';
+import OrderCancel from '@/components/account/orders/OrderCancel';
+import OrderReturns from '@/components/account/orders/OrderReturns';
+import { formatOrderDate, getOrderStatusLabel } from '@/utils/order-detail';
 
 const OrderDetailClient = () => {
   const { id } = useParams();
-  const { data: response, loading, error } = useQuery(MY_ORDER, { variables: { id }, skip: !id, fetchPolicy: 'network-only' });
+  const { data: response, loading, error, refetch } = useQuery(MY_ORDER, { variables: { id }, skip: !id, fetchPolicy: 'network-only' });
   // Customer-scoped: another shopper's order id resolves to nothing.
   const data = { order: response?.myOrder };
 
-  if (loading) return <div className="account_rightSection">Loading order details...</div>;
-  if (error && !data?.order) return <div className="account_rightSection">We couldn't load this order. Please try again.</div>;
+  if (loading && !data?.order) return <div className="account_rightSection" role="status">Loading order details...</div>;
+  if (error && !data?.order) {
+    return (
+      <div className="account_rightSection" role="alert">
+        <p>We couldn't load this order. Please try again.</p>
+        <button type="button" className="text-base underline order_link_btn" onClick={() => refetch()}>
+          Try again
+        </button>
+      </div>
+    );
+  }
   if (!data?.order) return <div className="account_rightSection">Order not found.</div>;
+
+  // PRD-015 FR-18/FR-20: the server's display status, never derived here.
+  const statusLabel = getOrderStatusLabel(
+    data.order.displayStatus,
+    formatPaymentStatus(data.order.paymentStatus),
+  );
+  const refresh = async () => {
+    await refetch();
+  };
 
   return (
     <>
@@ -46,13 +68,23 @@ const OrderDetailClient = () => {
             <p className='text-base'>{formatePrice(data?.order?.orderPrice)}</p>
           </div>
           <div className="">
+            <p className='uppercase bold text-base'>Status</p>
+            <p className='text-base order_status_pill'>{statusLabel}</p>
+            {data?.order?.displayStatus === "CANCELLED" && data?.order?.cancelReason && (
+              <p className='text-sm'>{data.order.cancelReason}</p>
+            )}
+            {data?.order?.deliveredAt && (
+              <p className='text-sm'>{`Delivered ${formatOrderDate(data.order.deliveredAt)}`}</p>
+            )}
+          </div>
+          <div className="">
             <p className='uppercase bold text-base'>Payment Status</p>
             <p className='text-base'>{formatPaymentStatus(data?.order?.paymentStatus)}</p>
           </div>
-          <div className="">
-            <p className='uppercase bold text-base'>Shipment Status</p>
-            <p className='text-base'>{data?.order?.shipmentStatus}</p>
-          </div>
+          <OrderTracking shipment={data?.order?.shipment} />
+          {data?.order?.canCancel && (
+            <OrderCancel orderId={data.order._id} onChanged={refresh} />
+          )}
 
           <div className="">
             <p className='uppercase bold text-base'>Billing details</p>
@@ -138,6 +170,13 @@ const OrderDetailClient = () => {
         <div className="checkout_thin_line"></div>
 
         <div className="purchases_ordersList text-base">
+          <OrderReturns
+            orderId={data.order._id}
+            returnableItems={data.order.returnableItems || []}
+            returnableUntil={data.order.returnableUntil}
+            returnRequests={data.order.returnRequests || []}
+            onChanged={refresh}
+          />
           <p className='uppercase bold text-base'>Return & Refund Information</p>
 
           <div className="purchases_orderFooter_inner order_open_prdct">

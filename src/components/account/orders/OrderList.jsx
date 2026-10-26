@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useQuery } from "@apollo/client/react";
 import { MY_ORDERS } from "@/graphql";
 import { formatDateTime, formatePrice, formatPaymentStatus } from "@/utils/Util";
+import { getOrderStatusLabel } from "@/utils/order-detail";
 
 const OrderList = () => {
   const LIMIT = 100;
@@ -31,7 +32,8 @@ const OrderList = () => {
         return (
           <div key={item?._id} className="purchases_orderCard">
             <p className='text-base'>Order: {item?.orderNo}</p>
-            <p className="purchases_status text-base">{`${formatPaymentStatus(item?.paymentStatus)} ${item?.shipmentStatus ? ` - ${item?.shipmentStatus}` : ""}`}</p>
+            {/* PRD-015 FR-18: the server's display status when present */}
+            <p className="purchases_status text-base">{getOrderStatusLabel(item?.displayStatus, `${formatPaymentStatus(item?.paymentStatus)} ${item?.shipmentStatus ? ` - ${item?.shipmentStatus}` : ""}`)}</p>
 
             <div>
               <p>{formatDateTime(item?.createdAt || "")}</p>

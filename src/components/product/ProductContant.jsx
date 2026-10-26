@@ -15,6 +15,11 @@ import {
   trackSizeGuideOpen,
 } from "@/utils/analytics-events";
 import { usePathname } from "next/navigation";
+import {
+  isChoiceSoldOut,
+  resolveVariantSignal,
+  toInStockFlag,
+} from "@/utils/stock-signal";
 
 const ProductContant = ({
   data = {},
@@ -22,6 +27,12 @@ const ProductContant = ({
   loading,
   notifyLoading,
   isOutOfStock,
+  isSoldOut = false,
+  stockNote = null,
+  freshStock,
+  showNotifyEmail = false,
+  notifyEmail = "",
+  setNotifyEmail,
   cartBtn,
   variantMatched, // Receive variantMatched from parent
   setFinalPrice,
@@ -96,13 +107,16 @@ const ProductContant = ({
     const matched = updatePriceBasedOnVariant(updated);
 
     const nextIndex = Object.keys(updated).length;
-    // PRD-013 select_variant: there are no stock levels here, so "in
-    // stock" means a published variant exists for the full selection.
+    // PRD-013 select_variant: "in stock" is the PRD-020 signal when the
+    // store has one, else "a published variant exists for the selection".
     trackSelectVariant({
       itemId: getAnalyticsItemId(data, matched),
       variantId: matched?._id,
       variantLabel: Object.values(updated).join(" / "),
-      inStock: nextIndex === options.length ? !!matched : undefined,
+      inStock:
+        nextIndex === options.length
+          ? toInStockFlag(resolveVariantSignal(matched, freshStock), !!matched)
+          : undefined,
     });
     const nextOption = options[nextIndex];
 
@@ -195,7 +209,9 @@ const ProductContant = ({
   const buttonTitle = loading
     ? "Loading..."
     : isOutOfStock
-      ? "Unavailable"
+      ? isSoldOut
+        ? "Sold out"
+        : "Unavailable"
       : allSelected
         ? "Add To Cart"
         : selectionMode
@@ -272,6 +288,23 @@ const ProductContant = ({
                         {productOption.choices?.map((choice, j) => {
                           const selected =
                             selectedVariants[productOption.optionName] === choice.name;
+                          // PRD-020 FR-12: struck through, still selectable.
+                          const otherValues = Object.entries(selectedVariants)
+                            .filter(([name]) => name !== productOption.optionName)
+                            .map(([, value]) => value);
+                          const choiceSoldOut = isChoiceSoldOut(
+                            data?.variants,
+                            choice.name,
+                            otherValues,
+                            freshStock,
+                          );
+                          const selectChoice = () => {
+                            handleVariants(
+                              productOption.optionName,
+                              choice.name
+                            );
+                            setAssetsFilter(choice?.assetsId)
+                          };
 
                           const hasSelection = Boolean(
                             selectedVariants[productOption.optionName]
@@ -289,15 +322,19 @@ const ProductContant = ({
                                 transition: "opacity 0.25s ease",
                               }}
                               key={`option-value-${j}`}
-                              onClick={() => {
-                                handleVariants(
-                                  productOption.optionName,
-                                  choice.name
-                                );
-                                setAssetsFilter(choice?.assetsId)
+                              onClick={selectChoice}
+                              onKeyDown={(event) => {
+                                if (event.key === "Enter" || event.key === " ") {
+                                  event.preventDefault();
+                                  selectChoice();
+                                }
                               }}
+                              role="button"
+                              tabIndex={0}
+                              aria-pressed={selected}
+                              aria-label={choiceSoldOut ? `${choice?.name}, sold out` : undefined}
                               data-testid="pdp-option-choice"
-                              className="select_color_paren">
+                              className={`select_color_paren ${choiceSoldOut ? "option_sold_out" : ""}`}>
                               {productOption?.optionName === "color" ? (
                                 <>
                                   <div className="color_div">
@@ -306,7 +343,7 @@ const ProductContant = ({
                                   </div>
                                   <p
                                     style={{
-                                      textDecoration: selected ? "underline" : "none",
+                                      textDecoration: choiceSoldOut ? "line-through" : selected ? "underline" : "none",
                                     }} className="text-base capitalize">{choice?.name}</p>
                                 </>
                               ) : (
@@ -314,7 +351,7 @@ const ProductContant = ({
                                   <div className=" size_div">
                                     <div className=" size_inner center">
                                       <p style={{
-                                        textDecoration: selected ? "underline" : "none",
+                                        textDecoration: choiceSoldOut ? "line-through" : selected ? "underline" : "none",
                                       }} className="text-base capitalize ">{choice?.name?.replace(/(\d)([a-zA-Z]+)/, "$1 $2")}</p>
                                     </div>
                                   </div>
@@ -346,6 +383,25 @@ const ProductContant = ({
             </button>
           </div> */}
             </div>
+            {stockNote && (
+              <p className="productDetail_stock_note text-sm">{stockNote}</p>
+            )}
+            {isOutOfStock && showNotifyEmail && (
+              <div className="productDetail_notify_email">
+                <label htmlFor="notify-email" className="sr-only">
+                  Email for back-in-stock notice
+                </label>
+                <input
+                  id="notify-email"
+                  type="email"
+                  autoComplete="email"
+                  placeholder="Your email for a back-in-stock notice"
+                  value={notifyEmail}
+                  onChange={(event) => setNotifyEmail?.(event.target.value)}
+                  className="productDetail_notify_input text-base"
+                />
+              </div>
+            )}
             <div className="productDetail_addtocart">
 
               {isOutOfStock && (

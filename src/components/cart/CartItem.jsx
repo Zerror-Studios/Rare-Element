@@ -5,13 +5,18 @@ import Link from "next/link";
 import { formatePrice } from "@/utils/Util";
 import { RiDeleteBinLine } from "@remixicon/react";
 import Image from "next/image";
+import { SOLD_OUT_LABEL, getCartLineStock } from "@/utils/stock-signal";
+
 const CartItem = ({
   item,
   handleAddItem,
   handleRemoveItem,
   pricesIncludeTax,
   onClose,
+  freshStock,
 }) => {
+  // PRD-020 FR-12: "Sold out" (with Remove) or "Only N left" (opt-in count).
+  const { soldOut, onlyLeft } = getCartLineStock(item, freshStock);
   const [removing, setRemoving] = useState(false);
   const [adding, setAdding] = useState(false);
 
@@ -60,6 +65,12 @@ const CartItem = ({
                   {item?.name}
                 </p>
               </Link>
+              {soldOut && (
+                <p className="cartBag_stockNote text-sm">{SOLD_OUT_LABEL}</p>
+              )}
+              {!soldOut && onlyLeft && (
+                <p className="cartBag_stockNote text-sm">{`Only ${onlyLeft} left`}</p>
+              )}
             </div>
             <div className="crt_itms_price_group">
               <p className='crt_itms_price'>{`${item.qty > 1 ? `${item?.qty} x` : ""} ${formatePrice(
@@ -74,7 +85,7 @@ const CartItem = ({
                 <p>−</p>
               </button>
               <p>{item.qty}</p>
-              <button className="cartBag_qtyControl_inc" disabled={adding} onClick={onAdd}>
+              <button className="cartBag_qtyControl_inc" disabled={adding || soldOut} onClick={onAdd}>
                 <p>+</p>
               </button>
             </div>

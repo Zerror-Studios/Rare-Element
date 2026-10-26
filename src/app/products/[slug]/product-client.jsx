@@ -14,12 +14,20 @@ import ProductImageGrid from '@/components/product/ProductImageGrid';
 import ProductContant from '@/components/product/ProductContant';
 import ProductListGrid from "@/components/product/ProductListGrid";
 import ProductReviews from "@/components/product/ProductReviews";
-import { useRouter } from "next/navigation";
 import { trackEcomEvent } from "@/utils/analytics";
 import { getAnalyticsItemId, trackNotifyMe } from "@/utils/analytics-events";
 import * as fpixel from "@/lib/fpixel";
 import { getMinVariantPrice } from "@/utils/Util";
 import { getErrorInfo, getErrorMessage } from "@/utils/errors";
+import { useVariantAvailability } from "@/hooks/useVariantAvailability";
+import {
+  getStockNote,
+  isSoldOut,
+  resolveVariantSignal,
+} from "@/utils/stock-signal";
+
+// A guest's "Notify me" needs an email (PRD-020 FR-12); the server checks it.
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function ProductClient({ meta, data, productList, slug, reviews = [], reviewCount = 0 }) {
   const breadcrumbList = [
@@ -27,7 +35,6 @@ export default function ProductClient({ meta, data, productList, slug, reviews =
     { name: data?.name, slug: `/products/${data?.slug}` }
   ];
 
-  const router = useRouter();
   const { runWithGuestId } = useVisitor();
   // Prices come from the (published) variants; the server prices the cart.
   const basePrice = useMemo(() => getMinVariantPrice(data?.variants), [data]);
@@ -43,6 +50,7 @@ export default function ProductClient({ meta, data, productList, slug, reviews =
   // Storefronts get no stock levels; an option combination without a
   // published variant, or a PRODUCT_UNAVAILABLE answer, is "unavailable".
   const [isUnavailable, setIsUnavailable] = useState(false);
+  const [notifyEmail, setNotifyEmail] = useState("");
   const { user, isLoggedIn } = useAuthStore((state) => state);
   const { openCart } = useCartStore((state) => state);
 
@@ -53,7 +61,31 @@ export default function ProductClient({ meta, data, productList, slug, reviews =
     setIsUnavailable(false);
   }, [variantMatched, slug]);
 
-  const unavailable = isUnavailable || (cartBtn && !variantMatched);
+  // PRD-020 FR-12: the stock signal (null = today's behaviour). The ISR
+  // value shows first; the fresh read on mount and on variant change
+  // overrides it, and a failed read keeps it.
+  const variantIds = useMemo(
+    () => (data?.variants || []).map((variant) => variant?._id),
+    [data],
+  );
+  const { fresh: freshStock, refresh: refreshStock } = useVariantAvailability(
+    variantIds,
+    { skip: !data?._id },
+  );
+  // Re-read on a variant change (the mount read already covers the first).
+  const lastVariantIdRef = useRef(variantMatched?._id || null);
+  useEffect(() => {
+    const variantId = variantMatched?._id || null;
+    if (variantId && lastVariantIdRef.current && variantId !== lastVariantIdRef.current) {
+      refreshStock();
+    }
+    if (variantId) lastVariantIdRef.current = variantId;
+  }, [variantMatched?._id]);
+  const variantSignal = resolveVariantSignal(variantMatched, freshStock);
+  const soldOut = cartBtn && !!variantMatched && isSoldOut(variantSignal);
+  const stockNote = cartBtn && variantMatched ? getStockNote(variantSignal) : null;
+
+  const unavailable = isUnavailable || (cartBtn && !variantMatched) || soldOut;
   // PRD-013: the same item_id the e-commerce events send (variant id).
   const analyticsItemId = getAnalyticsItemId(data, variantMatched);
 
@@ -134,7 +166,12 @@ export default function ProductClient({ meta, data, productList, slug, reviews =
 
   const handleNotifyMe = async () => {
     if (!unavailable) return;
-    if (!isLoggedIn) return router.push("/login");
+    // PRD-020 FR-12: guests subscribe with an email, no login needed.
+    const email = isLoggedIn ? user?.email : notifyEmail.trim();
+    if (!isLoggedIn && !EMAIL_PATTERN.test(email)) {
+      toast.error("Enter your email to be notified.");
+      return;
+    }
     try {
       const productId = data?._id;
       if (!productId) throw new Error("Product ID not found");
@@ -142,7 +179,7 @@ export default function ProductClient({ meta, data, productList, slug, reviews =
       const payload = {
         input: {
           productId,
-          email: user?.email,
+          ...(email ? { email } : {}),
           ...(variantMatched?._id ? { variantId: variantMatched._id } : {}),
         },
       };
@@ -150,6 +187,7 @@ export default function ProductClient({ meta, data, productList, slug, reviews =
       await createNotifyRequest({ variables: payload });
       trackNotifyMe(analyticsItemId, variantMatched?._id);
       toast.success("You’ll be notified when this item is back in stock!");
+      if (!isLoggedIn) setNotifyEmail("");
     } catch (err) {
       console.error(err);
       toast.error(getErrorMessage(err, "Failed to notify"));
@@ -169,6 +207,12 @@ export default function ProductClient({ meta, data, productList, slug, reviews =
           loading={loading}
           notifyLoading={notifyLoading}
           isOutOfStock={unavailable}
+          isSoldOut={soldOut}
+          stockNote={stockNote}
+          freshStock={freshStock}
+          showNotifyEmail={!isLoggedIn}
+          notifyEmail={notifyEmail}
+          setNotifyEmail={setNotifyEmail}
           setFinalPrice={setFinalPrice}
           setCartBtn={setCartBtn}
           setAssetsFilter={setAssetsFilter}

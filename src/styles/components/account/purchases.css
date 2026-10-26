@@ -155,3 +155,62 @@
   text-decoration: underline;
   cursor: pointer;
 }
+
+/* PRD-015 FR-20: order status, tracking, cancel and returns */
+.order_status_pill {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid #174d38;
+  text-transform: uppercase;
+}
+.order_tracking,
+.order_returns,
+.order_confirm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.order_tracking_scans,
+.order_return_requests,
+.order_return_lines {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0;
+}
+.order_return_line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+.order_return_request {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+.order_actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+}
+.order_action_btn {
+  width: auto;
+  margin-top: 0;
+}
+.order_textarea {
+  height: 6rem;
+  padding: 0.75rem 1rem;
+  resize: vertical;
+}
+.order_link_btn {
+  align-self: flex-start;
+  text-decoration: underline;
+}

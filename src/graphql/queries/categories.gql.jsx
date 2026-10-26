@@ -65,6 +65,7 @@ export const GET_CLIENT_SIDE_CATEGORY_BY_SLUG = gql`
           compareAtPrice
           status
         }
+        availability
       }
       productsCount
     }

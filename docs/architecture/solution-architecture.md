@@ -51,11 +51,11 @@ flowchart TB
 |---|---|---|
 | `/` | Home collections | `revalidate = 300` (ISR) |
 | `/products` | Product list | ISR 300 |
-| `/products/[slug]` | Product detail, `generateMetadata` (seo, Open Graph, Twitter), Product JSON-LD (offers, no availability), latest 10 approved reviews (`getReviews`, PRD-014 FR-2.8); an id permanently redirects to the slug | ISR 300 |
+| `/products/[slug]` | Product detail, `generateMetadata` (seo, Open Graph, Twitter), Product JSON-LD (offers; `availability` from `Product.availability` when the store's stock signal is on, PRD-020 FR-14), latest 10 approved reviews (`getReviews`, PRD-014 FR-2.8); an id permanently redirects to the slug | ISR 300 |
 | `/search?q=` | Product search, `filters.search` on `getClientSideProducts` (client, PRD-014 FR-2.8) | Dynamic, `noindex, follow` |
 | `/sitemap.xml`, `/robots.txt` | `app/sitemap.js` (static pages, categories, ≤ 1000 published products) and `app/robots.js` (sitemap URL from `NEXT_PUBLIC_SITE_URL`), PRD-014 FR-2.8 | Sitemap revalidated hourly; robots static |
 | `/[...categories]` | Category listing, `generateMetadata` | ISR 300 |
-| `/account`, `/account/settings`, `/account/wishlist`, `/account/order/[id]` (`/account/offers` removed, PRD-014 UX-06) | Per user (client side) | Dynamic, never cached |
+| `/account`, `/account/settings`, `/account/wishlist`, `/account/order/[id]` (`/account/offers` removed, PRD-014 UX-06; the order page shows `displayStatus`, tracking, Cancel and returns, PRD-015 FR-20) | Per user (client side) | Dynamic, never cached |
 | `/checkout/[id]` | The customer's own cart (the id in the URL is cosmetic) | Dynamic, login required |
 | `/checkout/thank-you` | Polls `myOrder` (client) | Static shell |
 | `/checkout/payment-failed` | — | Static |
@@ -86,7 +86,7 @@ flowchart LR
 - **Auth link:** if the shopper is logged in (persisted hint) but has no valid token, it waits for the refresh first (page reloads). `context.skipAuth` sends a request anonymously.
 - **Errors** are mapped by `utils/errors.js` from `extensions.reason` / `code`.
 
-**Operations in use (all ✅, 33):** customer auth (`customerLogin`, `customerSignup`, `customerRefreshToken`, `customerLogout`, `getMyProfile`, `updateMyProfile`); catalog (`getClientSideProducts`, `getClientSideProductById`, `getClientSideCategories`, `getClientSideCategory`, `getFilterOptions`); cart (`issueGuestCartId`, `mergeGuestCart`, line mutations) and promotions; checkout (`createCheckoutSessionFromCart`, `getCheckoutSession`, `completeCheckout`, `createPaymentSession`, `verifyPayment`); `myOrders` / `myOrder`; addresses (full CRUD); `getWishlist` / `toggleWishlist`; `submitContactForm`; `requestBackInStock`; PRD-003 FR-0.5 (2026-10-15) adds `customerRequestPasswordReset` and `customerResetPassword` (36 in total with `unsubscribeNewsletter`). PRD-014 FR-2.8 (2026-10-25) adds `subscribeNewsletter` (footer), `getReviews` (PDP) and a sitemap read of `getClientSideProducts`; FE-22 adds `getClientSideProductsByIds` (wishlist). 40 documents, validated with `npm run validate:ops` against the composed supergraph.
+**Operations in use (all ✅, 33):** customer auth (`customerLogin`, `customerSignup`, `customerRefreshToken`, `customerLogout`, `getMyProfile`, `updateMyProfile`); catalog (`getClientSideProducts`, `getClientSideProductById`, `getClientSideCategories`, `getClientSideCategory`, `getFilterOptions`); cart (`issueGuestCartId`, `mergeGuestCart`, line mutations) and promotions; checkout (`createCheckoutSessionFromCart`, `getCheckoutSession`, `completeCheckout`, `createPaymentSession`, `verifyPayment`); `myOrders` / `myOrder`; addresses (full CRUD); `getWishlist` / `toggleWishlist`; `submitContactForm`; `requestBackInStock`; PRD-003 FR-0.5 (2026-10-15) adds `customerRequestPasswordReset` and `customerResetPassword` (36 in total with `unsubscribeNewsletter`). PRD-014 FR-2.8 (2026-10-25) adds `subscribeNewsletter` (footer), `getReviews` (PDP) and a sitemap read of `getClientSideProducts`; FE-22 adds `getClientSideProductsByIds` (wishlist). PRD-020 FR-12 (2026-10-26) adds `getVariantAvailability` (the fresh stock read on the PDP and the cart drawer) and selects `availability` on products and variants; PRD-015 FR-20 adds `cancelMyOrder`, `createReturnRequest` and `cancelMyReturnRequest` on the order page. 44 documents, validated with `npm run validate:ops` against the composed supergraph.
 
 ## 4. Session and guest identity
 
@@ -163,7 +163,8 @@ flowchart LR
 
 | Gap | Impact | Path |
 |---|---|---|
-| No public stock level, badge name, password change or products-by-ids query | No stock UI or ribbons; per-product wishlist loads | Backend T1 PRDs (contract doc §2) |
+| No badge name or password change | No merchant ribbons (stock badges come from PRD-020) | Backend T1 PRDs (contract doc §2) |
+| Stock signal is off by default per store (PRD-020 D8) | `null` renders as before; the owner enables it per store after UAT | Owner, UAT on and off |
 | Strict tenant mode (`EDGE_SHARED_SECRET`) | Code ready (middleware proxy, RSC and SSR clients send the secret); until the owner sets it, the gateway runs in legacy mode and the backend's per-IP login bucket sees every shopper as this host's IP | Owner sets it here, on EB and on the CloudFront origin header at the same moment, in the same deploy as backend round 3; confirm the host's client IP source |
 | SSR calls send no `x-zcom-client-ip` | RSC and client-component SSR calls are rate-limited on the host's IP | Design decision (server-side customer-data path) |
 | Every browser API call runs through the Edge middleware (VPERF-4) | Latency and cost per call | Accepted (R3-D7) |
@@ -171,3 +172,9 @@ flowchart LR
 | Shared logic duplicated with deveshe-dreams | Fixes must be made twice | ADR for a shared package |
 | Not browser-tested; Nimbbl callback shape unverified | Unknown runtime issues | Sandbox run after deploy |
 | ESLint not installed | Hygiene | T2 |
+
+## PRD-020 stock signal and PRD-015 post-purchase (2026-10-26, not browser-tested)
+
+- **Stock (FR-12, FR-14):** `utils/stock-signal.js` (twin of deveshe `utils/stock-signal.util.js`) maps the nullable `availability` / `availableQuantity` to states; `null` is today's behaviour everywhere. The PDP reads the ISR value, then `hooks/useVariantAvailability.jsx` (`getVariantAvailability`, ≤ 50 ids, never cached server-side) on mount and on a variant change; a failed read keeps the ISR value. Sold-out options are struck through (`aria-label="<value>, sold out"`, still selectable); a sold-out selection shows "Sold out" + "Notify me" (an email field for guests, no login); `LOW_STOCK` shows "Only N left" (opt-in count) or "Low stock". Listing cards show "Sold out" / "Low stock" ribbons from `Product.availability`; the store's `SHOW | SORT_LAST | HIDE` is applied by the server. The cart drawer re-reads on open: a sold-out line shows "Sold out" (Remove stays) and checkout is held with "Remove sold-out items to continue". JSON-LD `offers.availability` comes from the rollup (`utils/product-offers.js`). `select_variant.in_stock` uses the signal when non-null.
+- **Post-purchase (FR-20):** `/account/order/[id]` shows the server's `displayStatus`, a tracking block (`shipment { courier awb trackingUrl tracking }`; https links only; the latest five scans), Cancel when `canCancel` (inline confirmation, `cancelMyOrder`), "Request a return" while `returnableItems` is non-empty (per-line steppers capped at `returnableQty`, reason, condition, return-by date, link to `/shipping-returns`; `createReturnRequest` with line ids) and the order's `returnRequests` with "Withdraw" on a REQUESTED one (`cancelMyReturnRequest`). Helpers in `utils/order-detail.js`; every refusal reason is mapped in `utils/errors.js` (also PRD-016 `STORE_ORDERS_PAUSED`).
+- Tests: `test/stock-signal.test.mjs`, `test/order-detail.test.mjs`.

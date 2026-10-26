@@ -3,12 +3,15 @@
  *
  * `Offer` (one price) or `AggregateOffer` (a price range) from the
  * product's published variants. Archived variants and missing or zero
- * prices are skipped; no price means no `offers`. Stock levels aren't
- * exposed to storefronts (PRD-020), so `availability` is omitted rather
- * than guessed.
+ * prices are skipped; no price means no `offers`. `availability` comes
+ * from the product rollup `Product.availability` (PRD-020 FR-14, D12):
+ * IN_STOCK and LOW_STOCK are `InStock`, OUT_OF_STOCK is `OutOfStock`,
+ * BACKORDER is `BackOrder`, and `null` (no signal) leaves it out.
  *
  * Keep in sync with `storefronts/deveshe-dreams/src/utils/product-offers.util.js`.
  */
+
+import { toSchemaAvailability } from "@/utils/stock-signal";
 
 // ─── Constants ────────────────────────────────────────────────────────────
 
@@ -18,7 +21,7 @@ const ARCHIVED_STATUS = "ARCHIVED";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────
 
-export const toProductOffers = (variants, url) => {
+export const toProductOffers = (variants, url, availability = null) => {
   const prices = (variants || [])
     .filter((variant) => variant?.status !== ARCHIVED_STATUS)
     .map((variant) => Number(variant?.price))
@@ -27,10 +30,12 @@ export const toProductOffers = (variants, url) => {
 
   const lowPrice = Math.min(...prices);
   const highPrice = Math.max(...prices);
+  const schemaAvailability = toSchemaAvailability(availability);
   const common = {
     url,
     priceCurrency: OFFER_CURRENCY,
     itemCondition: NEW_CONDITION,
+    ...(schemaAvailability ? { availability: schemaAvailability } : {}),
   };
   return lowPrice === highPrice
     ? { "@type": "Offer", price: lowPrice, ...common }

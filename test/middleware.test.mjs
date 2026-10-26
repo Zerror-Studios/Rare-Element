@@ -15,6 +15,7 @@
  */
 
 import assert from "node:assert/strict";
+import { createHmac } from "node:crypto";
 import { afterEach, describe, it } from "node:test";
 
 import { NextRequest } from "./next-server.shim.mjs";
@@ -27,8 +28,10 @@ const ENV_NAMES = [
   "NEXT_PUBLIC_TENANT_DOMAIN",
   "EDGE_SHARED_SECRET",
   "VERCEL",
+  "ZCOM_STORE_SLUG",
 ];
 const savedEnv = Object.fromEntries(ENV_NAMES.map((name) => [name, process.env[name]]));
+const savedFetch = globalThis.fetch;
 let caseNumber = 0;
 
 /** Fresh modules for this env (env.js reads the domain at load). */
@@ -63,7 +66,31 @@ const PRODUCTION = {
   EDGE_SHARED_SECRET: "edge-secret-for-tests-0123456789abcdef",
 };
 
+/** Stubs the gateway probe (PRD-018): `body` is its GraphQL answer. */
+function stubGateway(body) {
+  const calls = [];
+  globalThis.fetch = async (url, init) => {
+    calls.push({ url: String(url), init });
+    return new Response(JSON.stringify(body), {
+      headers: { "content-type": "application/json" },
+    });
+  };
+  return calls;
+}
+
+const ACTIVE_ANSWER = { data: { getClientSideCategories: { totalCount: 3 } } };
+const SUSPENDED_ANSWER = {
+  data: null,
+  errors: [
+    {
+      message: "This store is not available",
+      extensions: { code: "TENANT_NOT_FOUND", reason: "TENANT_SUSPENDED" },
+    },
+  ],
+};
+
 afterEach(() => {
+  globalThis.fetch = savedFetch;
   for (const name of ENV_NAMES) {
     if (savedEnv[name] === undefined) delete process.env[name];
     else process.env[name] = savedEnv[name];
@@ -183,7 +210,8 @@ describe("rare-element middleware: client IP source (VSEC-3)", () => {
 describe("rare-element middleware: account and checkout guard", () => {
   it("sends a visitor without the session cookie to /login with next", async () => {
     const { middleware } = await loadMiddleware(PRODUCTION);
-    const response = middleware(new NextRequest("https://shop.example/account/orders?page=2"));
+    stubGateway(ACTIVE_ANSWER);
+    const response = await middleware(new NextRequest("https://shop.example/account/orders?page=2"));
     assert.equal(response.status, 307);
     const location = new URL(response.headers.get("location"));
     assert.equal(location.pathname, "/login");
@@ -192,11 +220,96 @@ describe("rare-element middleware: account and checkout guard", () => {
 
   it("lets a session cookie and the public checkout result pages through", async () => {
     const { middleware } = await loadMiddleware(PRODUCTION);
-    const withCookie = middleware(
+    stubGateway(ACTIVE_ANSWER);
+    const withCookie = await middleware(
       new NextRequest("https://shop.example/checkout", { headers: { cookie: "__Host-zc_cust_rt=abc" } }),
     );
     assert.equal(withCookie.headers.get("x-middleware-next"), "1");
-    const thankYou = middleware(new NextRequest("https://shop.example/checkout/thank-you"));
+    const thankYou = await middleware(new NextRequest("https://shop.example/checkout/thank-you"));
     assert.equal(thankYou.headers.get("x-middleware-next"), "1");
+  });
+});
+
+// ─── Suspended store (PRD-018 FR-1.6) ─────────────────────────────────────
+
+describe("rare-element middleware: suspended store page", () => {
+  it("serves the branded 503 with Retry-After and noindex", async () => {
+    const { middleware } = await loadMiddleware(PRODUCTION);
+    const calls = stubGateway(SUSPENDED_ANSWER);
+    const response = await middleware(new NextRequest("https://shop.example/products/ring"));
+    assert.equal(response.status, 503);
+    assert.equal(response.headers.get("retry-after"), "600");
+    assert.equal(response.headers.get("x-robots-tag"), "noindex, nofollow");
+    assert.equal(response.headers.get("cache-control"), "no-store");
+    const html = await response.text();
+    assert.match(html, /Nahara/);
+    assert.match(html, /temporarily unavailable/);
+    assert.match(html, /<meta name="robots" content="noindex, nofollow">/);
+    // The probe is edge-signed for the brand domain
+    assert.equal(calls[0].url, "https://api.example.test/v1/graphql");
+    assert.equal(calls[0].init.headers["x-tenant-domain"], "brand.example");
+    assert.equal(calls[0].init.headers["x-zcom-edge-secret"], PRODUCTION.EDGE_SHARED_SECRET);
+  });
+
+  it("holds account pages too, but never the API proxy", async () => {
+    const { middleware } = await loadMiddleware(PRODUCTION);
+    stubGateway(SUSPENDED_ANSWER);
+    const account = await middleware(new NextRequest("https://shop.example/account/orders"));
+    assert.equal(account.status, 503);
+    const proxied = middleware(graphqlRequest());
+    assert.equal(forwarded(proxied).target, "https://api.example.test/v1/graphql");
+  });
+
+  it("probes once per TTL for a burst of pages", async () => {
+    const { middleware } = await loadMiddleware(PRODUCTION);
+    const calls = stubGateway(ACTIVE_ANSWER);
+    const responses = await Promise.all([
+      middleware(new NextRequest("https://shop.example/")),
+      middleware(new NextRequest("https://shop.example/about")),
+    ]);
+    responses.forEach((response) => assert.equal(response.headers.get("x-middleware-next"), "1"));
+    assert.equal(calls.length, 1);
+  });
+
+  it("fails open when the probe can't reach the gateway", async () => {
+    const { middleware } = await loadMiddleware(PRODUCTION);
+    globalThis.fetch = async () => {
+      throw new Error("ECONNREFUSED");
+    };
+    const response = await middleware(new NextRequest("https://shop.example/"));
+    assert.equal(response.headers.get("x-middleware-next"), "1");
+  });
+
+  it("runs on every page but not on assets, _next or api routes", async () => {
+    const { config } = await loadMiddleware(PRODUCTION);
+    const pattern = new RegExp(`^${config.matcher[2]}$`);
+    assert.ok(pattern.test("/products/ring"));
+    assert.ok(pattern.test("/"));
+    for (const path of ["/_next/static/x.js", "/api/payments/return", "/robots.txt", "/images/a.webp"]) {
+      assert.equal(pattern.test(path), false, path);
+    }
+  });
+});
+
+// ─── Store identity (PRD-018 FR-4.3) ──────────────────────────────────────
+
+describe("rare-element middleware: /.well-known/zcom-store", () => {
+  it("answers the slug signed with the edge secret", async () => {
+    const { middleware, config } = await loadMiddleware({ ...PRODUCTION, ZCOM_STORE_SLUG: "nahara" });
+    assert.ok(config.matcher.includes("/.well-known/zcom-store"));
+    const response = await middleware(new NextRequest("https://shop.example/.well-known/zcom-store"));
+    assert.equal(response.status, 200);
+    const body = await response.json();
+    const expected = createHmac("sha256", PRODUCTION.EDGE_SHARED_SECRET).update("nahara").digest("hex");
+    assert.deepEqual(body, { slug: "nahara", signature: expected });
+  });
+
+  it("answers 503 without a slug or a secret", async () => {
+    for (const env of [{ ...PRODUCTION }, { ...PRODUCTION, ZCOM_STORE_SLUG: "nahara", EDGE_SHARED_SECRET: "" }]) {
+      const { middleware } = await loadMiddleware(env);
+      const response = await middleware(new NextRequest("https://shop.example/.well-known/zcom-store"));
+      assert.equal(response.status, 503);
+      assert.equal("signature" in (await response.json()), false);
+    }
   });
 });

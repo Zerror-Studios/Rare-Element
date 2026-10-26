@@ -12,7 +12,8 @@
  *   `context.skipAuth` sends a request anonymously (guest-cart merge).
  * - error: TOKEN_EXPIRED → refresh once and retry; INVALID_AUTH_TOKEN /
  *   TENANT_MISMATCH → end the session; TENANT_NOT_FOUND
- *   → one "store unavailable" notice (R2-C5). Branches on
+ *   → one "store unavailable" notice (R2-C5), or with the reason
+ *   TENANT_SUSPENDED one reload to the 503 page (PRD-018). Branches on
  *   `extensions.code` only.
  * - tenant: during SSR this client calls the gateway directly (not through
  *   `middleware.js`), so it adds the server-only edge secret itself, as
@@ -34,6 +35,10 @@ import {
 } from "@apollo/client-integration-nextjs";
 import { TokenManager } from "@/utils/tokenManager";
 import { useAuthStore } from "@/store/auth-store";
+import {
+  claimSuspendedReload,
+  isStoreSuspendedError,
+} from "@/lib/store-status";
 import {
   API_VERSION,
   BROWSER_GRAPHQL_URL,
@@ -137,6 +142,15 @@ const errorLink = new ErrorLink(({ error, operation, forward }) => {
   const context = operation.getContext();
   const codes = error.errors.map((item) => item.extensions?.code);
 
+  // PRD-018 FR-1.6: suspended while the page was open → the 503 page
+  if (
+    !isServer() &&
+    isStoreSuspendedError(error.errors) &&
+    claimSuspendedReload(window.sessionStorage)
+  ) {
+    window.location.reload();
+    return;
+  }
   if (codes.includes("TENANT_NOT_FOUND") && !isServer()) {
     toast.error("This store is unavailable right now. Please try later.", {
       toastId: STORE_UNAVAILABLE_TOAST_ID,

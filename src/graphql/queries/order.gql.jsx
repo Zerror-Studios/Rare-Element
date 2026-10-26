@@ -11,6 +11,7 @@ export const MY_ORDERS = gql`
         paymentStatus
         fulfillmentStatus
         shipmentStatus
+        displayStatus
         currency
         itemcount
         totalprice
@@ -37,6 +38,10 @@ export const MY_ORDERS = gql`
   }
 `;
 
+// PRD-015 FR-20: the order detail page. Status, tracking, cancel and
+// returns are server-computed fields (`displayStatus`, `shipment`,
+// `canCancel`, `returnableItems`); the deprecated `awb_code`,
+// `courierName` and `trackInfo` are not selected.
 export const MY_ORDER = gql`
   query MyOrder($id: ID!) {
     myOrder(id: $id) {
@@ -62,6 +67,7 @@ export const MY_ORDER = gql`
         discount
       }
       cart {
+        id
         productId
         variantId
         name
@@ -107,9 +113,40 @@ export const MY_ORDER = gql`
         states
         pincode
       }
-      awb_code
-      courierName
       invoiceUrl
+      displayStatus
+      cancelReason
+      deliveredAt
+      canCancel
+      shipment {
+        awb
+        courier
+        trackingUrl
+        tracking
+      }
+      returnableUntil
+      returnableItems {
+        orderItemId
+        productId
+        variantId
+        name
+        qty
+        returnRequestedQty
+        returnableQty
+      }
+      returnRequests {
+        id
+        status
+        refundAmount
+        createdAt
+        items {
+          orderItemId
+          name
+          quantity
+          reason
+          condition
+        }
+      }
       createdAt
       updatedAt
     }

@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | **Approved** 2026-10-26 (mirrors the source of truth) · not started |
+| Status | **Approved** 2026-10-26 (mirrors the source of truth) · **Implemented** 2026-10-26 (FR-20, working tree, not browser-tested) |
 | Source-of-truth PRD | [`../../../../zcom-backend/docs/prd/PRD-015-post-purchase.md`](../../../../zcom-backend/docs/prd/PRD-015-post-purchase.md) |
 | Approved by / on | Anand (owner), 2026-10-26: "please review and approve the six drafted follow-up PRDs" (every recommendation accepted; backend §8.1 D1–D16) |
 | Created / Updated | 2026-10-26 / 2026-10-26 |
@@ -21,4 +21,17 @@ Requirements, decisions and the contract live in the source-of-truth PRD. This f
 
 ## Implementation log
 
-Not started.
+**2026-10-26: FR-20 DONE in code** (working tree, not committed, not browser-tested; the backend PRD-015 is built in its working tree, not deployed).
+
+| Item | Status | Where |
+|---|---|---|
+| Order detail page | DONE | `src/app/account/order/[id]/order-detail-client.jsx`: status from `displayStatus` (text pill; falls back to the payment label for an older API), cancel reason and delivered date; loading, error (with "Try again") and not-found states |
+| Tracking card | DONE | `src/components/account/orders/OrderTracking.jsx`: courier, AWB, "Track shipment" (only an https `trackingUrl`, new tab, announced), the latest five scans newest first; hidden before an AWB. `MY_ORDER` no longer selects `awb_code` / `courierName` (and never `trackInfo`) |
+| Order list | DONE | `src/components/account/orders/OrderList.jsx`: rows already linked to the page; the status line now uses `displayStatus` (`MY_ORDERS` selects it) |
+| Cancel | DONE | `src/components/account/orders/OrderCancel.jsx`: only when `canCancel`; inline `role="alertdialog"` confirmation (refund to the original method within the store's timeline), optional reason (≤ 500), `cancelMyOrder`, then the order is re-read |
+| Returns | DONE | `src/components/account/orders/OrderReturns.jsx`: "Request a return" only while `returnableItems` is non-empty; per-line stepper (labelled buttons) capped at `returnableQty`, one reason and condition per request, "Return by <`returnableUntil`>", link to `/shipping-returns`; `createReturnRequest` with the line ids; the `returnRequests` list (status, items, refund) with "Withdraw request" on REQUESTED (`cancelMyReturnRequest`) |
+| Error reasons | DONE | `src/utils/errors.js`: `ORDER_NOT_CANCELLABLE`, `PAYMENT_IN_PROGRESS`, `ORDER_NOT_DELIVERED`, `RETURN_WINDOW_CLOSED` (with the date via `getReturnErrorOverrides`), `RETURNS_DISABLED`, `ORDER_NOT_RETURNABLE`, `INVALID_ORDER_ITEM`, `INVALID_QUANTITY`, `RETURN_QUANTITY_EXCEEDED`, `INVALID_TRANSITION`, `RETURN_CHANGED` |
+| Helpers + tests | DONE | `src/utils/order-detail.js` (twin of deveshe `utils/order-detail.util.js`); `test/order-detail.test.mjs` (status labels, https-only tracking, scans, cancel reason, return form state and input, reason mapping) |
+| Contract | DONE | `src/graphql/mutations/order.mutation.jsx` (`CancelMyOrder`, `CreateReturnRequest`, `CancelMyReturnRequest`); `validate:clients` 44/44 |
+
+Reason and condition values are storefront copy (`RETURN_REASONS`, `RETURN_CONDITIONS`; the API stores free strings). Open: UAT in a browser (both storefronts), the store's approved returns-policy copy on `/shipping-returns` (PRD-014 O8; today it still contradicts the cart drawer's "easy returns"), Playwright paths when FR-2.10 lands.
