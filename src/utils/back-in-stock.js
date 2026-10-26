@@ -7,7 +7,9 @@
  * `BACK_IN_STOCK_CONFIRM_PATH`, template `back_in_stock_confirm`). No
  * restock email goes out until that page calls `confirmBackInStock`, so the
  * form can't be used to mail third parties. A signed-in shopper's request
- * goes to the account email and needs no confirmation. Too many requests
+ * goes to the account email and needs no confirmation. The backend mails
+ * one address at most once a day, and that one link confirms all of the
+ * address's pending alerts (CP2-03). Too many requests
  * answer `extensions.reason` `RATE_LIMITED`, shown with neutral copy.
  *
  * Pure helpers, so `node:test` covers them without a browser.
@@ -42,7 +44,7 @@ export const backInStockConfirmStatusEnum = {
 export const NOTIFY_ME_MESSAGES = {
   SIGNED_IN: "You’ll be notified when this item is back in stock!",
   GUEST:
-    "Check your email to confirm your back-in-stock alert. If you’ve confirmed this address before, you’re all set.",
+    "Check your email to confirm your back-in-stock alerts. One link confirms every alert you ask for here, so you only confirm once. If you’ve confirmed this address before, you’re all set.",
 };
 
 // ─── Helpers ──────────────────────────────────────────────────────────────
@@ -59,7 +61,10 @@ export function readConfirmToken(value) {
   return CONFIRM_TOKEN_PATTERN.test(token) ? token : "";
 }
 
-/** `confirmBackInStock` answered: false is an unknown, used or old token. */
+/**
+ * `confirmBackInStock` answered: true confirms every pending alert of the
+ * address; false is an unknown, used, replaced or expired token.
+ */
 export function getConfirmStatusFromAnswer(isConfirmed) {
   return isConfirmed === true
     ? backInStockConfirmStatusEnum.CONFIRMED

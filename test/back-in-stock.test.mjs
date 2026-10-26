@@ -33,6 +33,10 @@ describe("notify-me success copy", () => {
     assert.match(bis.getNotifyMeSuccessMessage(false), /check your email/i);
   });
 
+  it("tells a guest one link confirms all their alerts (CP2-03)", () => {
+    assert.match(bis.getNotifyMeSuccessMessage(false), /only confirm once/i);
+  });
+
   it("keeps the signed-in copy unchanged", () => {
     assert.equal(
       bis.getNotifyMeSuccessMessage(true),
