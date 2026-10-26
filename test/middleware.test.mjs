@@ -293,21 +293,46 @@ describe("rare-element middleware: suspended store page", () => {
 
 // ─── Store identity (PRD-018 FR-4.3) ──────────────────────────────────────
 
+/** A challenge as the backend sends it: 16 random bytes in hex. */
+const NONCE = "0123456789abcdef0123456789abcdef";
+
 describe("rare-element middleware: /.well-known/zcom-store", () => {
-  it("answers the slug signed with the edge secret", async () => {
+  it("answers the slug and the nonce signed together (CP-18)", async () => {
     const { middleware, config } = await loadMiddleware({ ...PRODUCTION, ZCOM_STORE_SLUG: "nahara" });
     assert.ok(config.matcher.includes("/.well-known/zcom-store"));
-    const response = await middleware(new NextRequest("https://shop.example/.well-known/zcom-store"));
+    const response = await middleware(new NextRequest(`https://shop.example/.well-known/zcom-store?nonce=${NONCE}`));
     assert.equal(response.status, 200);
+    assert.equal(response.headers.get("cache-control"), "no-store");
     const body = await response.json();
-    const expected = createHmac("sha256", PRODUCTION.EDGE_SHARED_SECRET).update("nahara").digest("hex");
-    assert.deepEqual(body, { slug: "nahara", signature: expected });
+    // The backend's storeIdentitySignature(slug, secret, nonce)
+    const expected = createHmac("sha256", PRODUCTION.EDGE_SHARED_SECRET).update(`nahara:${NONCE}`).digest("hex");
+    assert.deepEqual(body, { slug: "nahara", nonce: NONCE, signature: expected });
+  });
+
+  it("signs each nonce differently, so an answer can't be replayed", async () => {
+    const { middleware } = await loadMiddleware({ ...PRODUCTION, ZCOM_STORE_SLUG: "nahara" });
+    const other = "f".repeat(64);
+    const first = await (await middleware(new NextRequest(`https://shop.example/.well-known/zcom-store?nonce=${NONCE}`))).json();
+    const second = await (await middleware(new NextRequest(`https://shop.example/.well-known/zcom-store?nonce=${other}`))).json();
+    assert.equal(second.nonce, other);
+    assert.notEqual(first.signature, second.signature);
+  });
+
+  it("answers 400 for a missing or malformed nonce, and signs nothing", async () => {
+    const { middleware } = await loadMiddleware({ ...PRODUCTION, ZCOM_STORE_SLUG: "nahara" });
+    const bad = ["", "?nonce=", "?nonce=abc", `?nonce=${"A".repeat(32)}`, `?nonce=${"a".repeat(65)}`, `?nonce=${"g".repeat(32)}`, `?nonce=${NONCE}%0A`];
+    for (const query of bad) {
+      const response = await middleware(new NextRequest(`https://shop.example/.well-known/zcom-store${query}`));
+      assert.equal(response.status, 400, query);
+      assert.equal(response.headers.get("cache-control"), "no-store");
+      assert.equal("signature" in (await response.json()), false);
+    }
   });
 
   it("answers 503 without a slug or a secret", async () => {
     for (const env of [{ ...PRODUCTION }, { ...PRODUCTION, ZCOM_STORE_SLUG: "nahara", EDGE_SHARED_SECRET: "" }]) {
       const { middleware } = await loadMiddleware(env);
-      const response = await middleware(new NextRequest("https://shop.example/.well-known/zcom-store"));
+      const response = await middleware(new NextRequest(`https://shop.example/.well-known/zcom-store?nonce=${NONCE}`));
       assert.equal(response.status, 503);
       assert.equal("signature" in (await response.json()), false);
     }

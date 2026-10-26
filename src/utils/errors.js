@@ -85,6 +85,8 @@ export const REASON_MESSAGES = {
   INVALID_TRANSITION:
     "This return can no longer be changed. Please refresh the page.",
   RETURN_CHANGED: "This return was updated. Please refresh and try again.",
+  // CP-22: notify-me (and other public) limits; neutral, never the server text.
+  RATE_LIMITED: "We’ve had a lot of requests. Please try again later.",
 };
 
 // PRD-014 COM-32: `removeItemFromCart` without the line's variant is

@@ -58,6 +58,8 @@ describe("robots", () => {
     const result = robots();
     assert.equal(result.sitemap, "https://store.example/sitemap.xml");
     assert.ok(result.rules[0].disallow.includes("/checkout"));
+    // CP-22: single-use confirmation links stay out of the crawl
+    assert.ok(result.rules[0].disallow.includes("/back-in-stock/"));
     delete process.env.NEXT_PUBLIC_SITE_URL;
   });
 });

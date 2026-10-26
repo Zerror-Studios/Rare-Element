@@ -19,6 +19,7 @@ import { getAnalyticsItemId, trackNotifyMe } from "@/utils/analytics-events";
 import * as fpixel from "@/lib/fpixel";
 import { getMinVariantPrice } from "@/utils/Util";
 import { getErrorInfo, getErrorMessage } from "@/utils/errors";
+import { getNotifyMeSuccessMessage } from "@/utils/back-in-stock";
 import { useVariantAvailability } from "@/hooks/useVariantAvailability";
 import {
   getStockNote,
@@ -186,7 +187,8 @@ export default function ProductClient({ meta, data, productList, slug, reviews =
 
       await createNotifyRequest({ variables: payload });
       trackNotifyMe(analyticsItemId, variantMatched?._id);
-      toast.success("You’ll be notified when this item is back in stock!");
+      // CP-22: a guest's alert starts only after the emailed link is opened.
+      toast.success(getNotifyMeSuccessMessage(isLoggedIn));
       if (!isLoggedIn) setNotifyEmail("");
     } catch (err) {
       console.error(err);

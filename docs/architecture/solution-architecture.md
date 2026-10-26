@@ -60,6 +60,7 @@ flowchart TB
 | `/checkout/thank-you` | Polls `myOrder` (client) | Static shell |
 | `/checkout/payment-failed` | — | Static |
 | `/unsubscribe` | Reads `?email=&token=` once, strips them from the URL, calls `unsubscribeNewsletter` (client, VCON-1) | Static shell, `noindex,nofollow` |
+| `/back-in-stock/confirm` | Reads `?token=` once, strips it from the URL, calls `confirmBackInStock(token)` (client, CP-22): confirmed, expired-or-used, rate-limited (`extensions.reason`) and network states. A guest's notify-me alert sends nothing until this runs | Static shell, `noindex,nofollow`, robots-disallowed |
 | `/forgot-password`, `/reset-password` | Password reset (PRD-003 FR-0.5): `customerRequestPasswordReset` (uniform answer), then the emailed link `/reset-password?token=…` is read once, stripped from the URL and sent with `customerResetPassword` (client) | Static shells, `noindex, nofollow` |
 | `/login`, `/about`, `/contact`, legal pages | — | Static |
 

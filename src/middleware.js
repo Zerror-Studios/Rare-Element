@@ -27,8 +27,9 @@
  * gateway answers `TENANT_SUSPENDED` the page is the branded 503 with
  * `Retry-After`. `/v1/graphql`, `/api/*` and static files are never held.
  *
- * Store identity (PRD-018 FR-4.3): `/.well-known/zcom-store` answers the
- * signed store slug (`lib/store-identity.js`).
+ * Store identity (PRD-018 FR-4.3): `/.well-known/zcom-store?nonce=…`
+ * answers the store slug and the caller's nonce, signed together (CP-18,
+ * `lib/store-identity.js`).
  */
 
 import { NextResponse } from "next/server";
@@ -162,7 +163,7 @@ async function servePage(request) {
 export function middleware(request) {
   const { pathname } = request.nextUrl;
   if (pathname === GRAPHQL_PATH) return proxyGraphql(request);
-  if (pathname === STORE_IDENTITY_PATH) return storeIdentityResponse();
+  if (pathname === STORE_IDENTITY_PATH) return storeIdentityResponse(request);
   return servePage(request);
 }
 
