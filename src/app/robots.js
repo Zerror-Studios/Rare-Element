@@ -15,12 +15,14 @@ import { SITE_URL, SITE_URL_CONFIGURED } from "@/utils/env";
 // ─── Constants ────────────────────────────────────────────────────────────
 
 // `/back-in-stock/` holds single-use email links (CP-22): a crawler that
-// runs scripts must not confirm someone's alert.
+// runs scripts must not confirm someone's alert. `/pay/` links are a
+// shopper's payment link (PRD-028 FR-5.4).
 const DISALLOWED_PATHS = [
   "/account",
   "/checkout",
   "/search",
   "/back-in-stock/",
+  "/pay/",
   "/api/",
 ];
 

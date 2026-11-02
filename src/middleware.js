@@ -61,9 +61,12 @@ const SESSION_COOKIE_NAMES = [
   "zc_cust_rt",
   "refresh_token",
 ];
+// PRD-028 FR-10.1: a guest paying a store's payment link (`/pay/<token>`)
+// comes back from a redirect payment app through payment-return
 const PUBLIC_CHECKOUT_PATHS = [
   "/checkout/thank-you",
   "/checkout/payment-failed",
+  "/checkout/payment-return",
 ];
 const PROTECTED_PATH_PATTERN = /^\/(account|checkout)(\/|$)/;
 const BRAND = {
