@@ -30,7 +30,7 @@ import {
 // A guest's "Notify me" needs an email (PRD-020 FR-12); the server checks it.
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export default function ProductClient({ meta, data, productList, slug, reviews = [], reviewCount = 0 }) {
+export default function ProductClient({ meta, data, productList, slug, reviews = [], reviewCount = 0, reviewSummary = null }) {
   const breadcrumbList = [
     { name: data?.categories?.[0]?.name || "Products", slug: data?.categories?.[0]?.slug ? `/${data.categories[0].slug}` : "/products" },
     { name: data?.name, slug: `/products/${data?.slug}` }
@@ -198,7 +198,7 @@ export default function ProductClient({ meta, data, productList, slug, reviews =
 
   return (
     <>
-      <SeoHeader meta={meta} productData={data} breadcrumbList={breadcrumbList} />
+      <SeoHeader meta={meta} productData={data} breadcrumbList={breadcrumbList} reviews={reviews} reviewSummary={reviewSummary} />
       <div className="productDetail_main padding">
         <ProductImageGrid filter={assetsFilter} data={data?.assets || []} title={data?.name} itemId={analyticsItemId} />
         <ProductContant
@@ -224,7 +224,13 @@ export default function ProductClient({ meta, data, productList, slug, reviews =
           analyticsItemId={analyticsItemId}
         />
       </div>
-      <ProductReviews reviews={reviews} totalCount={reviewCount} />
+      <ProductReviews
+        key={data?._id}
+        productId={data?._id}
+        summary={reviewSummary}
+        reviews={reviews}
+        totalCount={reviewCount}
+      />
       <ProductListGrid title="You may also like" data={productList} />
     </>
   );

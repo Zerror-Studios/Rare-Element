@@ -47,6 +47,12 @@ const PAYMENT_CONNECT_ORIGINS =
   "https://api.razorpay.com https://lumberjack.razorpay.com " +
   "https://*.cashfree.com";
 const PAYMENT_IMG_ORIGINS = "https://*.razorpay.com https://*.cashfree.com";
+// PRD-032 FR-P1: shopper review photos are POSTed straight to the store's
+// S3 bucket (presigned, capped) and shown from it when the store has no
+// CDN. The bucket name isn't known here, so every S3 virtual host is
+// allowed for upload and display only. The bucket also needs a CORS rule
+// allowing POST from this site's origin (owner step, PRD-032 pointer).
+const REVIEW_PHOTO_ORIGINS = "https://*.amazonaws.com";
 const PAYMENT_FORM_ORIGINS =
   "https://test.payu.in https://secure.payu.in https://api.razorpay.com " +
   "https://*.cashfree.com";
@@ -70,10 +76,10 @@ const contentSecurityPolicy = [
   // CSP_REPORT_ONLY=true first.
   `script-src 'self' 'unsafe-inline'${isProduction ? "" : " 'unsafe-eval'"} ${GOOGLE_ORIGINS} ${META_ORIGINS} ${NIMBBL_ORIGINS} https://*.openfpcdn.io ${PAYMENT_SCRIPT_ORIGINS}`,
   "style-src 'self' 'unsafe-inline'",
-  `img-src 'self' data: blob: ${ASSET_ORIGIN} ${GOOGLE_ORIGINS} ${META_ORIGINS} ${NIMBBL_ORIGINS} ${PAYMENT_IMG_ORIGINS}`,
+  `img-src 'self' data: blob: ${ASSET_ORIGIN} ${REVIEW_PHOTO_ORIGINS} ${GOOGLE_ORIGINS} ${META_ORIGINS} ${NIMBBL_ORIGINS} ${PAYMENT_IMG_ORIGINS}`,
   "font-src 'self' data:",
   `media-src 'self' blob: ${ASSET_ORIGIN}`,
-  `connect-src 'self' ${absoluteApiOrigin} ${ASSET_ORIGIN} ${GOOGLE_ORIGINS} ${META_ORIGINS} ${NIMBBL_ORIGINS} ${NIMBBL_SUPPORT_ORIGINS} ${PAYMENT_CONNECT_ORIGINS}`,
+  `connect-src 'self' ${absoluteApiOrigin} ${ASSET_ORIGIN} ${REVIEW_PHOTO_ORIGINS} ${GOOGLE_ORIGINS} ${META_ORIGINS} ${NIMBBL_ORIGINS} ${NIMBBL_SUPPORT_ORIGINS} ${PAYMENT_CONNECT_ORIGINS}`,
   `frame-src ${NIMBBL_ORIGINS} ${PAYMENT_FRAME_ORIGINS} https://www.googletagmanager.com`,
   "worker-src 'self' blob:",
   "object-src 'none'",

@@ -23,6 +23,8 @@ const DISALLOWED_PATHS = [
   "/search",
   "/back-in-stock/",
   "/pay/",
+  // PRD-032 FR-R3/R5: a buyer's review link and the opt-out link
+  "/review",
   "/api/",
 ];
 

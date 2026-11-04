@@ -21,3 +21,4 @@ export * from "@/graphql/mutations/newsletter.mutation";
 export * from "@/graphql/mutations/wishlist.mutation";
 export * from "@/graphql/mutations/order.mutation";
 export * from "@/graphql/mutations/payment-request.mutation";
+export * from "@/graphql/mutations/review.mutation";

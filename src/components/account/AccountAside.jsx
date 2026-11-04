@@ -67,6 +67,17 @@ const AccountAside = () => {
           </div>
 
           <div>
+            <Link scroll={false} href={"/account/reviews"}>
+              <p
+                className={`accountLeftSlide_navLink uppercase text-2xl ${pathname === "/account/reviews" ? "active" : ""
+                  }`}
+              >
+                Reviews
+              </p>
+            </Link>
+          </div>
+
+          <div>
             <Link scroll={false} href={"/account/settings"}>
               <p
                 className={`accountLeftSlide_navLink uppercase text-2xl ${pathname === "/account/settings" ? "active" : ""

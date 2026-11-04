@@ -9,7 +9,7 @@ import SiteNavigationSchema from "./SiteNavigationSchema";
 import ProductSchema from "./ProductSchema";
 import BreadcrumbSchema from "./BreadcrumbSchema";
 
-const SeoHeader = ({ meta, productData, breadcrumbList }) => {
+const SeoHeader = ({ meta, productData, breadcrumbList, reviews, reviewSummary }) => {
   const pathname = usePathname();
   const canonical = `${Const.ClientLink}${pathname}`;
 
@@ -47,7 +47,7 @@ const SeoHeader = ({ meta, productData, breadcrumbList }) => {
         ]}
       />
       <SiteNavigationSchema />
-      {productData && <ProductSchema product={productData} />}
+      {productData && <ProductSchema product={productData} reviews={reviews} reviewSummary={reviewSummary} />}
       {breadcrumbList && <BreadcrumbSchema itemList={breadcrumbList} />}
     </>
   );

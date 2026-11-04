@@ -1,5 +1,10 @@
 import { cache } from "react";
-import { GET_PRODUCT_BY_ID, GET_PRODUCT_REVIEWS, GET_PRODUCTS } from "@/graphql";
+import {
+  GET_PRODUCT_BY_ID,
+  GET_PRODUCT_REVIEW_SUMMARY,
+  GET_PRODUCT_REVIEWS,
+  GET_PRODUCTS,
+} from "@/graphql";
 import { getClient } from "@/lib/apollo-client-rsc";
 import { ProductStatus } from "@/utils/Constant";
 import { isNotFoundError } from "@/utils/errors";
@@ -68,6 +73,7 @@ export default async function ProductData({ slug }) {
         offset: 0,
         limit: PRODUCT_REVIEW_LIMIT,
         filter: { productId: data?._id },
+        sort: "NEWEST",
       },
     });
     reviews = reviewRes?.data?.getReviews || reviews;
@@ -75,8 +81,24 @@ export default async function ProductData({ slug }) {
     console.error("Error fetching product reviews:", error.message);
   }
 
+  // PRD-032: the rating summary is its own read; any failure (or a
+  // partial answer) means no summary, never a broken page
+  let reviewSummary = null;
+  try {
+    const client = getClient();
+    const summaryRes = await client.query({
+      query: GET_PRODUCT_REVIEW_SUMMARY,
+      variables: { id: data?._id },
+      errorPolicy: "none",
+    });
+    reviewSummary = summaryRes?.data?.getClientSideProductById?.reviewSummary || null;
+  } catch (error) {
+    console.error("Error fetching the review summary:", error.message);
+  }
+
   return (
     <ProductClient
+      reviewSummary={reviewSummary}
       meta={data?.seo}
       data={data}
       productList={productList}

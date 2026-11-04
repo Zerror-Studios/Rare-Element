@@ -13,6 +13,9 @@ import OrderCancel from '@/components/account/orders/OrderCancel';
 import OrderReturns from '@/components/account/orders/OrderReturns';
 import { formatOrderDate, getOrderStatusLabel } from '@/utils/order-detail';
 
+// PRD-032: orders whose lines a shopper can review
+const REVIEWABLE_DISPLAY_STATUSES = ["DELIVERED", "PARTIALLY_REFUNDED"];
+
 const OrderDetailClient = () => {
   const { id } = useParams();
   const { data: response, loading, error, refetch } = useQuery(MY_ORDER, { variables: { id }, skip: !id, fetchPolicy: 'network-only' });
@@ -157,6 +160,12 @@ const OrderDetailClient = () => {
                         <Link prefetch={false} scroll={false} href={`/products/${item?.productId}`} className="text-sm">
                           <p className="text-sm">View Product</p>
                         </Link>
+                        {/* PRD-032 FR-D4: delivered lines can be reviewed (the server checks) */}
+                        {REVIEWABLE_DISPLAY_STATUSES.includes(data?.order?.displayStatus) && item?.productId && (
+                          <Link prefetch={false} href={`/products/${item.productId}#write-review`} className="text-sm">
+                            <p className="text-sm">Write a review</p>
+                          </Link>
+                        )}
                       </div>
                     </div>
                   </div>
