@@ -8,6 +8,7 @@ export const CREATE_CHECKOUT_SESSION = gql`
     $billingAddress: OrderAddressInput
     $promotionCode: String
     $attribution: OrderAttributionInput
+    $consent: CheckoutConsentInput
   ) {
     createCheckoutSessionFromCart(
       cartId: $cartId
@@ -15,6 +16,7 @@ export const CREATE_CHECKOUT_SESSION = gql`
       billingAddress: $billingAddress
       promotionCode: $promotionCode
       attribution: $attribution
+      consent: $consent
     ) {
       id
       status

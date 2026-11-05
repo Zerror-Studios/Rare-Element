@@ -8,6 +8,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import LenisScroll from "@/components/common/LenisScroll";
 import { useEffect } from "react";
 import { startVisitAttribution } from "@/utils/ga-attribution";
+import { startAdClickIdCapture } from "@/utils/ad-click-ids";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import { usePathname } from "next/navigation";
@@ -21,6 +22,9 @@ export function Providers({ children }) {
   // PRD-012: remember the visit's UTMs, referrer and landing page once
   // (only with analytics consent, W1V-C-03)
   useEffect(() => startVisitAttribution(), []);
+  // PRD-034 FR-1.4: ad click ids for the session (persisted only with
+  // marketing consent)
+  useEffect(() => startAdClickIdCapture(), []);
 
   useEffect(() => {
     const timeout = setTimeout(() => {

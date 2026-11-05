@@ -31,6 +31,13 @@ const GOOGLE_ORIGINS =
   "https://*.google-analytics.com https://*.analytics.google.com " +
   "https://www.google.com https://*.doubleclick.net";
 const META_ORIGINS = "https://connect.facebook.net https://www.facebook.com";
+// PRD-034 FR-1.3: the Google Ads conversion tag (script, conversion
+// pixel, and the td.doubleclick.net frame); `*.doubleclick.net` and
+// `www.google.com` are already in GOOGLE_ORIGINS. Loaded only with
+// "marketing" consent.
+const GOOGLE_ADS_ORIGINS =
+  "https://www.googleadservices.com https://googleads.g.doubleclick.net " +
+  "https://td.doubleclick.net https://www.google.co.in";
 // Nimbbl Sonic: checkout UI/API, event log, device fingerprint, IP lookup.
 const NIMBBL_ORIGINS = "https://*.nimbbl.tech";
 const NIMBBL_SUPPORT_ORIGINS =
@@ -74,13 +81,13 @@ const contentSecurityPolicy = [
   // rendering, which would end ISR on the catalog pages, and GTM custom-HTML
   // tags need 'unsafe-inline' or per-tag nonce propagation. Roll out with
   // CSP_REPORT_ONLY=true first.
-  `script-src 'self' 'unsafe-inline'${isProduction ? "" : " 'unsafe-eval'"} ${GOOGLE_ORIGINS} ${META_ORIGINS} ${NIMBBL_ORIGINS} https://*.openfpcdn.io ${PAYMENT_SCRIPT_ORIGINS}`,
+  `script-src 'self' 'unsafe-inline'${isProduction ? "" : " 'unsafe-eval'"} ${GOOGLE_ORIGINS} ${GOOGLE_ADS_ORIGINS} ${META_ORIGINS} ${NIMBBL_ORIGINS} https://*.openfpcdn.io ${PAYMENT_SCRIPT_ORIGINS}`,
   "style-src 'self' 'unsafe-inline'",
-  `img-src 'self' data: blob: ${ASSET_ORIGIN} ${REVIEW_PHOTO_ORIGINS} ${GOOGLE_ORIGINS} ${META_ORIGINS} ${NIMBBL_ORIGINS} ${PAYMENT_IMG_ORIGINS}`,
+  `img-src 'self' data: blob: ${ASSET_ORIGIN} ${REVIEW_PHOTO_ORIGINS} ${GOOGLE_ORIGINS} ${GOOGLE_ADS_ORIGINS} ${META_ORIGINS} ${NIMBBL_ORIGINS} ${PAYMENT_IMG_ORIGINS}`,
   "font-src 'self' data:",
   `media-src 'self' blob: ${ASSET_ORIGIN}`,
-  `connect-src 'self' ${absoluteApiOrigin} ${ASSET_ORIGIN} ${REVIEW_PHOTO_ORIGINS} ${GOOGLE_ORIGINS} ${META_ORIGINS} ${NIMBBL_ORIGINS} ${NIMBBL_SUPPORT_ORIGINS} ${PAYMENT_CONNECT_ORIGINS}`,
-  `frame-src ${NIMBBL_ORIGINS} ${PAYMENT_FRAME_ORIGINS} https://www.googletagmanager.com`,
+  `connect-src 'self' ${absoluteApiOrigin} ${ASSET_ORIGIN} ${REVIEW_PHOTO_ORIGINS} ${GOOGLE_ORIGINS} ${GOOGLE_ADS_ORIGINS} ${META_ORIGINS} ${NIMBBL_ORIGINS} ${NIMBBL_SUPPORT_ORIGINS} ${PAYMENT_CONNECT_ORIGINS}`,
+  `frame-src ${NIMBBL_ORIGINS} ${PAYMENT_FRAME_ORIGINS} https://www.googletagmanager.com https://td.doubleclick.net`,
   "worker-src 'self' blob:",
   "object-src 'none'",
   "base-uri 'self'",

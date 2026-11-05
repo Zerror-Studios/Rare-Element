@@ -1,15 +1,21 @@
 "use client";
 
 /**
- * Purchase analytics (PRD-002 SF-13): fires GA4 `purchase` and the Meta
- * `Purchase` event once per paid order. The thank-you page passes the
- * order only after `myOrder` reports it PAID; a sessionStorage key per
- * order id stops repeats on refresh or back-navigation in this tab.
+ * Purchase analytics (PRD-002 SF-13): fires GA4 `purchase`, the Meta
+ * `Purchase` and the Google Ads purchase conversion once per paid order.
+ * The thank-you page passes the order only after `myOrder` reports it
+ * PAID; a sessionStorage key per order id stops repeats on refresh or
+ * back-navigation in this tab.
+ *
+ * PRD-034 FR-1.3 / FR-1.6: every network gets the order `_id` (GA4 and
+ * Google Ads `transaction_id`, Pixel `eventID`), the id the server-side
+ * Conversions API uses, so browser and server events deduplicate. The
+ * email and phone are passed for enhanced conversions, which hash them in
+ * the browser (marketing consent and the store's setting only).
  */
 
 import { useEffect } from "react";
 import { trackEcomEvent } from "@/utils/analytics";
-import * as fpixel from "@/lib/fpixel";
 
 const TRACKED_KEY_PREFIX = "zc_purchase_tracked:";
 
@@ -37,22 +43,25 @@ export default function PurchaseTracker({ order }) {
 
     const value = order.orderPrice || 0;
 
-    // GA4 Purchase Event
-    trackEcomEvent.purchase(
-      order._id,
-      value,
-      order.cart || [],
-      order.shippingAmount || 0,
-      order.tax?.totalTax || 0
-    );
-
-    // Facebook Pixel Purchase Event
-    fpixel.event("Purchase", {
-      currency: order.currency || "INR",
-      value,
-      content_ids: (order.cart || []).map((item) => item.productId),
-      content_type: "product",
-    });
+    const contact = order.billingAddress || order.shippingAddress || {};
+    // GA4, Meta Pixel and Google Ads (marketing consent for the ads)
+    Promise.resolve(
+      trackEcomEvent.purchase(
+        order._id,
+        value,
+        order.cart || [],
+        order.shippingAmount || 0,
+        order.tax?.totalTax || 0,
+        {
+          currency: order.currency || "INR",
+          customer: {
+            email: contact.email || order.shippingAddress?.email,
+            phone: contact.phone || order.shippingAddress?.phone,
+            countryCode: contact.countryCode,
+          },
+        },
+      ),
+    ).catch(() => {});
   }, [order]);
 
   return null;

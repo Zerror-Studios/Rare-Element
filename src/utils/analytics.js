@@ -1,11 +1,20 @@
 /**
  * Google Analytics 4 (GA4) Tracking Utility
  * Provides a standardized way to track events across the platform.
+ *
+ * PRD-034 FR-1.3: `trackEcomEvent` is the one e-commerce dispatcher. Each
+ * event goes to GA4 here and to the Meta Pixel and Google Ads through
+ * `utils/ads-tracking.js` (marketing consent only). The GA4 id comes from
+ * `utils/tracking-config.js` (the store's backend config, env fallback).
  */
 
-import { GA_MEASUREMENT_ID } from "@/utils/env";
-
-export const GA_TRACKING_ID = GA_MEASUREMENT_ID;
+import { getGaTrackingId } from "@/utils/tracking-config";
+import {
+  trackAdsAddToCart,
+  trackAdsBeginCheckout,
+  trackAdsPurchase,
+  trackAdsViewContent,
+} from "@/utils/ads-tracking";
 
 /**
  * Maps an internal product object to the standard GA4 items schema.
@@ -57,10 +66,13 @@ export const mapLineToGA4Item = (line) => ({
  * @param {Object} params - Event parameters.
  */
 export const trackGAEvent = (eventName, params = {}) => {
+  const gaId = getGaTrackingId();
+  // No GA4 id: send nothing (an empty send_to would reach the Ads tag).
+  if (!gaId) return;
   if (typeof window !== "undefined" && window.gtag) {
     window.gtag("event", eventName, {
       ...params,
-      send_to: GA_TRACKING_ID
+      send_to: gaId
     });
   } else {
     console.warn(`GA4 event "${eventName}" suppressed (gtag not initialized).`, params);
@@ -72,37 +84,74 @@ export const trackGAEvent = (eventName, params = {}) => {
  */
 export const trackEcomEvent = {
   viewItem: (product, variant = null) => {
+    const item = mapProductToGA4Item(product, variant);
+    const value = getVariantPrice(product, variant);
     trackGAEvent("view_item", {
       currency: "INR",
-      value: getVariantPrice(product, variant),
-      items: [mapProductToGA4Item(product, variant)]
+      value,
+      items: [item]
+    });
+    trackAdsViewContent({
+      itemId: item?.item_id,
+      name: product?.name,
+      category: product?.categories?.[0]?.name,
+      value,
+      currency: "INR",
     });
   },
 
   addToCart: (product, variant = null, quantity = 1) => {
+    const item = mapProductToGA4Item(product, variant, quantity);
+    const value = getVariantPrice(product, variant) * quantity;
     trackGAEvent("add_to_cart", {
       currency: "INR",
-      value: getVariantPrice(product, variant) * quantity,
-      items: [mapProductToGA4Item(product, variant, quantity)]
+      value,
+      items: [item]
+    });
+    trackAdsAddToCart({
+      items: [{ id: item?.item_id, quantity }],
+      name: product?.name,
+      category: product?.categories?.[0]?.name,
+      value,
+      currency: "INR",
     });
   },
 
   beginCheckout: (cartItems = [], totalValue = 0) => {
+    const items = (cartItems || []).map(mapLineToGA4Item);
     trackGAEvent("begin_checkout", {
       currency: "INR",
       value: Number(totalValue),
-      items: (cartItems || []).map(mapLineToGA4Item)
+      items
+    });
+    trackAdsBeginCheckout({
+      items: items.map((item) => ({ id: item.item_id, quantity: item.quantity })),
+      value: totalValue,
+      currency: "INR",
     });
   },
 
-  purchase: (orderId, totalValue, items = [], shipping = 0, tax = 0) => {
+  // PRD-034 FR-1.3: `orderId` is the order `_id` everywhere (GA4
+  // transaction_id, Pixel eventID, Google Ads transaction_id), the id the
+  // server-side events use. `options` = `{ currency, customer }`, where
+  // customer `{ email, phone, countryCode }` is hashed for enhanced
+  // conversions and never sent plain.
+  purchase: (orderId, totalValue, items = [], shipping = 0, tax = 0, options = {}) => {
+    const lines = (items || []).map(mapLineToGA4Item);
     trackGAEvent("purchase", {
       transaction_id: orderId,
       value: Number(totalValue),
-      currency: "INR",
+      currency: options.currency || "INR",
       tax: Number(tax),
       shipping: Number(shipping),
-      items: (items || []).map(mapLineToGA4Item)
+      items: lines
+    });
+    return trackAdsPurchase({
+      orderId,
+      value: totalValue,
+      currency: options.currency || "INR",
+      items: lines.map((item) => ({ id: item.item_id, quantity: item.quantity })),
+      customer: options.customer || null,
     });
   }
 };

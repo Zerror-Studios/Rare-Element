@@ -12,7 +12,7 @@
  * forwarding the request without a tenant.
  *
  * Route protection (PRD-002 SF-16, PRD-001 phase 2):
- * `/account/*` and `/checkout/*` (except the result pages) need a customer
+ * `/account/*` and `/checkout/*` (except the result pages and `/checkout/start`) need a customer
  * session. The HttpOnly refresh cookie is only a hint here: it's present
  * for a session that may still be revoked, and the real check happens
  * server-side on every customer operation. Without the cookie the shopper
@@ -62,11 +62,14 @@ const SESSION_COOKIE_NAMES = [
   "refresh_token",
 ];
 // PRD-028 FR-10.1: a guest paying a store's payment link (`/pay/<token>`)
-// comes back from a redirect payment app through payment-return
+// comes back from a redirect payment app through payment-return.
+// PRD-034 FR-1.9: the checkout URL fills a guest's bag first, then sends
+// the guest to login (which merges it).
 const PUBLIC_CHECKOUT_PATHS = [
   "/checkout/thank-you",
   "/checkout/payment-failed",
   "/checkout/payment-return",
+  "/checkout/start",
 ];
 const PROTECTED_PATH_PATTERN = /^\/(account|checkout)(\/|$)/;
 const BRAND = {

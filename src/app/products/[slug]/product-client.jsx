@@ -16,7 +16,6 @@ import ProductListGrid from "@/components/product/ProductListGrid";
 import ProductReviews from "@/components/product/ProductReviews";
 import { trackEcomEvent } from "@/utils/analytics";
 import { getAnalyticsItemId, trackNotifyMe } from "@/utils/analytics-events";
-import * as fpixel from "@/lib/fpixel";
 import { getMinVariantPrice } from "@/utils/Util";
 import { getErrorInfo, getErrorMessage } from "@/utils/errors";
 import { getNotifyMeSuccessMessage } from "@/utils/back-in-stock";
@@ -105,20 +104,14 @@ export default function ProductClient({ meta, data, productList, slug, reviews =
 
   // PRD-014 FE-24: one view_item / ViewContent per product view, not one
   // per option change (the variant at first render is the default one).
+  // PRD-034 FR-1.3: trackEcomEvent also sends the Meta ViewContent (variant
+  // id, marketing consent only).
   const viewTrackedRef = useRef(null);
   useEffect(() => {
     if (!data?._id || viewTrackedRef.current === data._id) return;
     viewTrackedRef.current = data._id;
-    fpixel.event("ViewContent", {
-      content_name: data.name,
-      content_category: data.categories?.[0]?.name,
-      content_ids: [data._id],
-      content_type: 'product',
-      value: defaultVariant?.price || basePrice,
-      currency: 'INR'
-    });
     trackEcomEvent.viewItem(data, defaultVariant);
-  }, [data, defaultVariant, basePrice])
+  }, [data, defaultVariant])
 
   const handleAddToCart = async () => {
     if (!cartBtn || unavailable || !variantMatched?._id) return;
@@ -143,15 +136,7 @@ export default function ProductClient({ meta, data, productList, slug, reviews =
         );
       }
 
-      fpixel.event("AddToCart", {
-        content_name: data.name,
-        content_category: data.categories?.[0]?.name,
-        content_ids: [data?._id],
-        content_type: 'product',
-        value: finalPrice,
-        currency: 'INR'
-      });
-
+      // GA4, Meta AddToCart and the Google Ads label (PRD-034 FR-1.3)
       trackEcomEvent.addToCart(data, variantMatched);
 
       toast.success("Product added to the cart successfully");

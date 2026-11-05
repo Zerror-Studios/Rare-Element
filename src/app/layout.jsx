@@ -5,6 +5,8 @@ import { Providers } from "./providers";
 import FacebookPixel from "@/components/common/FacebookPixel";
 import ConsentBanner from "@/components/common/ConsentBanner";
 import { getConsentDefaultScript } from "@/utils/consent";
+import { resolveTagIds } from "@/utils/tracking-config";
+import { getStorefrontTrackingConfig } from "@/lib/tracking-config";
 import { SITE_URL, SITE_URL_CONFIGURED } from "@/utils/env";
 import "../styles/globals.css";
 import "../styles/allCssImport.css";
@@ -34,7 +36,11 @@ export const viewport = {
   themeColor: '#ffffff',
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  // PRD-034 FR-1.2: the store's tag ids (backend first, env fallback; a
+  // failed read is null and never breaks the page)
+  const tagIds = resolveTagIds(await getStorefrontTrackingConfig());
+
   return (
     <html lang="en">
       <head>
@@ -43,8 +49,9 @@ export default function RootLayout({ children }) {
         <link rel="preload" as="image" href="/images/homepage/hero_poster.webp" fetchPriority="high" />
 
         {/* PRD-014 FR-1.9 (UX-05): Consent Mode v2 defaults ("denied")
-            before any tag. GTM, GA and the Meta Pixel load only after
-            consent (`components/common/ConsentBanner.jsx`). */}
+            before any tag. GTM, GA, the Meta Pixel and the Google Ads tag
+            load only after consent (`components/common/ConsentBanner.jsx`;
+            ads on "marketing" only, PRD-034 D8). */}
         <Script
           id="consent-default"
           strategy="beforeInteractive"
@@ -56,7 +63,7 @@ export default function RootLayout({ children }) {
           <FacebookPixel />
         </Suspense>
         <Providers>{children}</Providers>
-        <ConsentBanner />
+        <ConsentBanner tagIds={tagIds} />
       </body>
     </html>
   );

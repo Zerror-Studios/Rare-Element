@@ -55,12 +55,15 @@ export const SUPPORT_EMAIL =
 
 // PRD-014 FR-1.9 (FE-24): no hard-coded fallback ids. An unset id loads
 // no tag, so a build without env never reports into another property.
+// PRD-034 FR-1.2: the GA4 and Pixel ids are now only the fallback for a
+// store whose backend `storefrontTrackingConfig` has none
+// (`utils/tracking-config.js`); GTM stays env-only.
 export const GA_MEASUREMENT_ID =
   process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "";
 export const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || "";
 export const FB_PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID || "";
 
-/** Tag ids for `utils/consent.js` (loaded only after consent). */
+/** Env tag ids: the fallback in `utils/tracking-config.js`. */
 export const TAG_IDS = Object.freeze({
   gaId: GA_MEASUREMENT_ID,
   gtmId: GTM_ID,

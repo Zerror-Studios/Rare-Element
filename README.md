@@ -20,7 +20,7 @@ npm run dev        # http://localhost:3000
 - `ZCOM_STORE_SLUG` (server-only, PRD-018 FR-4.3): this store's slug; `/.well-known/zcom-store?nonce=<hex>` answers `{ slug, nonce, signature }` with an HMAC of `<slug>:<nonce>` under `EDGE_SHARED_SECRET` for the platform's go-live check (503 while unset, 400 for a missing or malformed nonce; CP-18).
 - `NEXT_PUBLIC_TENANT_DOMAIN` (**required in production**, `nahara.co.in`): selects the tenant.
 - `NEXT_PUBLIC_GRAPHQL_API_URL`: **leave unset** so the browser uses the same-origin `/v1/graphql` (needed for the session cookie).
-- `NEXT_PUBLIC_SITE_URL` (default `https://<NEXT_PUBLIC_TENANT_DOMAIN>`; with neither set every page is `noindex`, W2V-C-04), `NEXT_PUBLIC_SUPPORT_EMAIL`, `NEXT_PUBLIC_GA_MEASUREMENT_ID`, `NEXT_PUBLIC_GTM_ID`, `NEXT_PUBLIC_FB_PIXEL_ID` (no defaults since PRD-014 FR-1.9: **set the production IDs in hosting**, an unset id loads no tag; tags load only after cookie consent), `CSP_REPORT_ONLY` (optional).
+- `NEXT_PUBLIC_SITE_URL` (default `https://<NEXT_PUBLIC_TENANT_DOMAIN>`; with neither set every page is `noindex`, W2V-C-04), `NEXT_PUBLIC_SUPPORT_EMAIL`, `NEXT_PUBLIC_GA_MEASUREMENT_ID`, `NEXT_PUBLIC_GTM_ID`, `NEXT_PUBLIC_FB_PIXEL_ID` (no defaults since PRD-014 FR-1.9; since PRD-034 the GA4 and Pixel ids come from the store's backend `storefrontTrackingConfig` and these two env names are only the **fallback** when the backend has none (GTM stays env-only); an unset id loads no tag; tags load only after cookie consent, ad tags only after marketing consent), `CSP_REPORT_ONLY` (optional).
 
 Every `NEXT_PUBLIC_*` value is public in the browser bundle.
 

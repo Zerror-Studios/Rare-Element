@@ -19,6 +19,11 @@
  *   until "marketing", which governs only Google tags: any non-Google tag
  *   in a merchant's container MUST fire on a trigger that requires
  *   `zcConsentMarketing` (or the matching built-in consent check).
+ * - Ads (PRD-034 FR-1.3, D8): the Meta Pixel and the Google Ads tag load
+ *   and fire only with "marketing"; ad signals stay denied everywhere until
+ *   the shopper agrees. The tag ids come from `utils/tracking-config.js`
+ *   (backend first, env fallback). `isTagLoaded` lets the event helpers in
+ *   `utils/ads-tracking.js` check that a tag is really on.
  *
  * Keep in sync with `storefronts/deveshe-dreams/src/utils/consent.util.js`.
  */
@@ -117,12 +122,31 @@ function loadTagManager(gtmId) {
   injectScript(`${GTM_SCRIPT_URL}?id=${encodeURIComponent(gtmId)}`);
 }
 
+// gtag.js is requested once; later `config` calls (GA4 or Google Ads)
+// load their own destination through it.
+function ensureGtagScript(tagId) {
+  if (loadedTags.has("gtagjs")) return;
+  loadedTags.add("gtagjs");
+  window.gtag("js", new Date());
+  injectScript(`${GTAG_SCRIPT_URL}?id=${encodeURIComponent(tagId)}`);
+}
+
 function loadGoogleTag(gaId) {
   if (!gaId || loadedTags.has("ga")) return;
   loadedTags.add("ga");
-  window.gtag("js", new Date());
+  ensureGtagScript(gaId);
   window.gtag("config", gaId);
-  injectScript(`${GTAG_SCRIPT_URL}?id=${encodeURIComponent(gaId)}`);
+}
+
+/** PRD-034 FR-1.3: the Google Ads tag, "marketing" consent only. */
+function loadGoogleAdsTag(googleAds) {
+  const conversionId = googleAds?.conversionId;
+  if (!conversionId || loadedTags.has("googleAds")) return;
+  loadedTags.add("googleAds");
+  ensureGtagScript(conversionId);
+  window.gtag("config", conversionId, {
+    allow_enhanced_conversions: googleAds.enhancedConversions === true,
+  });
 }
 
 function loadMetaPixel(pixelId) {
@@ -149,6 +173,11 @@ function loadMetaPixel(pixelId) {
 
 // ─── Public API ───────────────────────────────────────────────────────────
 
+/** True once this page view loaded the tag (`ga`, `gtm`, `pixel`, `googleAds`). */
+export function isTagLoaded(name) {
+  return loadedTags.has(name);
+}
+
 /** The stored choice, or null when the shopper hasn't answered yet. */
 export function readConsent() {
   try {
@@ -165,7 +194,8 @@ export function readConsent() {
 
 /**
  * Applies a choice: Consent Mode update, then loads the tags it allows.
- * `tagIds` = `{ gaId, gtmId, pixelId }`; an empty id loads nothing.
+ * `tagIds` = `{ gaId, gtmId, pixelId, googleAds }` (`getTagIds()`); an
+ * empty id loads nothing.
  */
 export function applyConsent(consent, tagIds = {}) {
   if (typeof window === "undefined") return;
@@ -187,6 +217,7 @@ export function applyConsent(consent, tagIds = {}) {
   if (choice.marketing) {
     if (loadedTags.has("pixel")) window.fbq?.("consent", "grant");
     loadMetaPixel(tagIds.pixelId);
+    loadGoogleAdsTag(tagIds.googleAds);
   }
 }
 

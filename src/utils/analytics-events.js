@@ -21,11 +21,8 @@
  * No parameter may carry PII (emails, names, phones, addresses).
  */
 
-import {
-  GA_TRACKING_ID,
-  mapLineToGA4Item,
-  mapProductToGA4Item,
-} from "@/utils/analytics";
+import { mapLineToGA4Item, mapProductToGA4Item } from "@/utils/analytics";
+import { getGaTrackingId } from "@/utils/tracking-config";
 
 // ─── Vocabulary (mirrors analytics-events.vocabulary.ts) ─────────────────
 
@@ -145,9 +142,12 @@ export function trackEvent(name, params = {}) {
   try {
     if (!name || typeof window === "undefined") return;
     if (typeof window.gtag !== "function") return;
+    // PRD-034: the store's GA4 id (backend, env fallback); none = no event
+    const gaId = getGaTrackingId();
+    if (!gaId) return;
     window.gtag("event", name, {
       ...sanitizeParams(params),
-      send_to: GA_TRACKING_ID,
+      send_to: gaId,
     });
   } catch {
     // Analytics never breaks the UI.

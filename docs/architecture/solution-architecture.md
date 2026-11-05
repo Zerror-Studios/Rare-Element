@@ -20,7 +20,7 @@ flowchart LR
     NX -- "RSC / SSR: API_GATEWAY_URL/v1/graphql<br/>x-tenant-domain / x-forwarded-host = NEXT_PUBLIC_TENANT_DOMAIN<br/>+ x-zcom-edge-secret (server-only)" --> GW
     NX -- "nimbbl_sonic checkout" --> NB["Nimbbl"]
     NX -- "next/image" --> CDN[("assets.nahara.co.in")]
-    NX -- "GTM · GA · Meta Pixel (after consent)" --> AN["Analytics"]
+    NX -- "GTM · GA (analytics consent) · Meta Pixel · Google Ads (marketing consent)" --> AN["Analytics and ads"]
 ```
 
 ## 2. Rendering architecture
@@ -57,6 +57,7 @@ flowchart TB
 | `/[...categories]` | Category listing, `generateMetadata` | ISR 300 |
 | `/account`, `/account/settings`, `/account/wishlist`, `/account/order/[id]` (`/account/offers` removed, PRD-014 UX-06; the order page shows `displayStatus`, tracking, Cancel and returns, PRD-015 FR-20) | Per user (client side) | Dynamic, never cached |
 | `/checkout/[id]` | The customer's own cart (the id in the URL is cosmetic) | Dynamic, login required |
+| `/checkout/start` | PRD-034 FR-1.9: parses `?products=`, `getVariantAvailability` → `addItemToCart` per line, then checkout or login (client) | Dynamic, noindex, public |
 | `/checkout/thank-you` | Polls `myOrder` (client) | Static shell |
 | `/checkout/payment-failed` | — | Static |
 | `/unsubscribe` | Reads `?email=&token=` once, strips them from the URL, calls `unsubscribeNewsletter` (client, VCON-1) | Static shell, `noindex,nofollow` |
@@ -131,7 +132,7 @@ sequenceDiagram
     loop every 3 s, up to 60 s
         TY->>GW: myOrder(orderId)
     end
-    Note over TY: PAID → GA4 + Pixel purchase (once per order id); polling → "Processing"; ends unpaid → "Payment not confirmed yet" (RBUG-20)
+    Note over TY: PAID → GA4 + Pixel + Google Ads purchase (once per order id; Pixel eventID = order id, PRD-034); polling → "Processing"; ends unpaid → "Payment not confirmed yet" (RBUG-20)
 ```
 
 The client **never sends prices**: `addItemToCart` takes `{productId, variantId, qty}` plus `guestId`, and the payable total comes from the session pricing. Closing the Nimbbl window re-enables "Pay Now" for the same order. The pending order is forgotten when payment succeeds or the cart lines or coupon change; a changed email or address creates a new order (VBUG-4), and a legacy entry without the details fingerprint is never reused; the backend separately reuses an unchanged cart's active checkout session and cancels it when the cart changed (R2-C8). Reservation reasons `CHECKOUT_EXPIRED` and `RESERVATION_RELEASED` map to "reservation expired" (R2-C7); `CHECKOUT_REPLACED`, `PAYMENT_NOT_CONFIGURED`, `MISSING_PROVIDER_ORDER` and `INVALID_EMAIL` have their own messages (VCON-2). PRD-014 Wave 1: a ₹0 order skips the payment steps; `SHIPPING_UNAVAILABLE` (no shipping zone for the address) shows "We can't ship to this address yet" and focuses the address; a `VARIANT_REQUIRED` cart remove refetches the bag.
@@ -148,7 +149,7 @@ The client **never sends prices**: `addItemToCart` takes `{productId, variantId,
 | SEO | `metadataBase` from `NEXT_PUBLIC_SITE_URL`; per-route canonicals; `generateMetadata` on categories and products; JSON-LD schema components serialised with `utils/json-ld.js` |
 | CMS HTML | `utils/sanitize-html.js` (allowlist over `html-react-parser`'s `htmlToDOM`) |
 | Security headers | CSP (GTM/GA, Meta, `*.nimbbl.tech` + Nimbbl helper hosts, assets, `frame-ancestors 'none'`; report-only with `CSP_REPORT_ONLY=true`), X-Frame-Options DENY, nosniff, strict-origin referrer, Permissions-Policy, HSTS in production. `script-src 'unsafe-inline'` is kept: a nonce would force dynamic rendering (no ISR) and GTM custom-HTML tags need it (SF-9 partial) |
-| Analytics | Consent first (PRD-014 FR-1.9, D10): `layout.jsx` runs only the Google Consent Mode v2 defaults ("denied"); `components/common/ConsentBanner.jsx` + `utils/consent.js` load GTM and GA after "analytics" consent and the Meta Pixel (first PageView) after "marketing" consent, choice in localStorage `zc_consent`, reopened from the footer "Cookie preferences"; no hard-coded tag ids. Meta Pixel helpers `lib/fpixel.js` (`FacebookPixel.jsx` tracks client navigations only), `utils/analytics.js` (GA4 e-commerce events), `utils/analytics-events.js` (PRD-013 event layer: `select_item`, `select_variant`, `cta_click`, `gallery_interaction`, `size_guide_open`, `notify_me`, `coupon_apply`/`coupon_failed`, `add_shipping_info`, `add_payment_info`, `checkout_error`; `item_id` = variant id), `utils/ga-attribution.js` (PRD-012 order attribution); IDs from env |
+| Analytics | Consent first (PRD-014 FR-1.9, D10): `layout.jsx` runs only the Google Consent Mode v2 defaults ("denied"); `components/common/ConsentBanner.jsx` + `utils/consent.js` load GTM and GA after "analytics" consent and the Meta Pixel (first PageView) after "marketing" consent, choice in localStorage `zc_consent`, reopened from the footer "Cookie preferences"; no hard-coded tag ids. Meta Pixel helpers `lib/fpixel.js` (`FacebookPixel.jsx` tracks client navigations only), `utils/analytics.js` (GA4 e-commerce events), `utils/analytics-events.js` (PRD-013 event layer: `select_item`, `select_variant`, `cta_click`, `gallery_interaction`, `size_guide_open`, `notify_me`, `coupon_apply`/`coupon_failed`, `add_shipping_info`, `add_payment_info`, `checkout_error`; `item_id` = variant id), `utils/ga-attribution.js` (PRD-012 order attribution); PRD-034: tag ids from the backend `storefrontTrackingConfig` read in `app/layout.jsx` (`lib/tracking-config.js`, revalidate 5 min) with the env ids as fallback (`utils/tracking-config.js`; GTM env-only), the Pixel and Google Ads tag only after "marketing", `trackEcomEvent` also sending Meta and Google Ads events (`utils/ads-tracking.js`: variant ids, Purchase `eventID` / `transaction_id` = order `_id`, enhanced conversions hashed in the browser), click ids + `_fbp`/`_fbc` with checkout only under "marketing" and a `consent` snapshot always (`utils/ad-click-ids.js`) |
 
 ## 7. Deployment
 

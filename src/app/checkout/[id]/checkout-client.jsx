@@ -56,7 +56,7 @@ import Link from "next/link";
 import { trackEcomEvent } from "@/utils/analytics";
 import { getErrorInfo, getErrorMessage, getReasonMessage } from "@/utils/errors";
 import { PendingOrder } from "@/utils/pending-order";
-import { getOrderAttribution } from "@/utils/ga-attribution";
+import { getCheckoutTrackingVariables } from "@/utils/ad-click-ids";
 import {
   CheckoutStepEnum,
   trackAddPaymentInfo,
@@ -346,13 +346,17 @@ const CheckoutClient = () => {
   };
 
   const placeOrder = async (details) => {
+    const tracking = getCheckoutTrackingVariables();
     const { data } = await createCheckoutSession({
       variables: {
         cartId: cartData?._id,
         shippingAddress: details.shippingAddress,
         billingAddress: details.billingAddress,
-        // PRD-012: GA ids and UTMs so the order can be attributed
-        attribution: getOrderAttribution(),
+        // PRD-012: GA ids and UTMs (analytics consent); PRD-034 FR-1.4:
+        // ad click ids and _fbp/_fbc (marketing consent) and the consent
+        // snapshot itself, always
+        attribution: tracking.attribution,
+        consent: tracking.consent,
       },
     });
     const created = data?.createCheckoutSessionFromCart;

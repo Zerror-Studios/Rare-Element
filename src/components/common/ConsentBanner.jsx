@@ -7,6 +7,11 @@
  * until the shopper answers; nothing but essential storage is used before
  * that. "Cookie preferences" in the footer reopens it with the categories.
  * Escape closes it only when a choice already exists.
+ *
+ * PRD-034 FR-1.2: `tagIds` are the store's tag ids resolved on the server
+ * (`app/layout.jsx`: backend config first, env fallback). They are stored
+ * for the tag helpers while this renders, before any effect (a product
+ * page's first view event included) runs.
  */
 
 import React, { useEffect, useRef, useState } from "react";
@@ -19,9 +24,12 @@ import {
   readConsent,
   saveConsent,
 } from "@/utils/consent";
-import { TAG_IDS } from "@/utils/env";
+import { getTagIds, setTagIds } from "@/utils/tracking-config";
 
-const ConsentBanner = () => {
+const ConsentBanner = ({ tagIds = null }) => {
+  // Idempotent: the same server-resolved ids on every render.
+  if (tagIds) setTagIds(tagIds);
+
   const [isOpen, setIsOpen] = useState(false);
   const [showChoices, setShowChoices] = useState(false);
   const [choice, setChoice] = useState(CONSENT_DENIED_ALL);
@@ -32,7 +40,7 @@ const ConsentBanner = () => {
   useEffect(() => {
     const stored = readConsent();
     if (stored) {
-      applyConsent(stored, TAG_IDS);
+      applyConsent(stored, getTagIds());
       setChoice(stored);
       setHasChoice(true);
     } else {
@@ -60,7 +68,7 @@ const ConsentBanner = () => {
   };
 
   const save = (nextChoice) => {
-    setChoice(saveConsent(nextChoice, TAG_IDS));
+    setChoice(saveConsent(nextChoice, getTagIds()));
     setHasChoice(true);
     close();
   };

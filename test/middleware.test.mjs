@@ -135,6 +135,15 @@ describe("rare-element middleware: /v1/graphql proxy", () => {
     assert.equal(headers.cookie, "__Host-zc_cust_rt=abc");
   });
 
+  it("forwards the browser's real user agent (PRD-034 FR-1.4)", async () => {
+    const { middleware } = await loadMiddleware(PRODUCTION);
+    const userAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X)";
+    const { headers } = forwarded(
+      middleware(graphqlRequest({ "user-agent": userAgent })),
+    );
+    assert.equal(headers["user-agent"], userAgent);
+  });
+
   it("adds no edge secret when none is configured", async () => {
     const { middleware } = await loadMiddleware({ ...PRODUCTION, EDGE_SHARED_SECRET: "" });
     const { headers } = forwarded(middleware(graphqlRequest({ "x-zcom-edge-secret": "forged" })));
@@ -227,6 +236,15 @@ describe("rare-element middleware: account and checkout guard", () => {
     assert.equal(withCookie.headers.get("x-middleware-next"), "1");
     const thankYou = await middleware(new NextRequest("https://shop.example/checkout/thank-you"));
     assert.equal(thankYou.headers.get("x-middleware-next"), "1");
+  });
+
+  it("lets a guest open the checkout URL (PRD-034 FR-1.9)", async () => {
+    const { middleware } = await loadMiddleware(PRODUCTION);
+    stubGateway(ACTIVE_ANSWER);
+    const start = await middleware(
+      new NextRequest("https://shop.example/checkout/start?products=a:1"),
+    );
+    assert.equal(start.headers.get("x-middleware-next"), "1");
   });
 });
 
