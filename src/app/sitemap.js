@@ -10,7 +10,7 @@
  */
 
 import { GET_CLIENT_SIDE_CATEGORIES, GET_SITEMAP_PRODUCTS } from "@/graphql";
-import { getClient } from "@/lib/apollo-client-rsc";
+import { serverQuery } from "@/lib/server-query";
 import { ProductStatus } from "@/utils/Constant";
 import { SITE_URL_CONFIGURED, toCanonicalUrl } from "@/utils/env";
 
@@ -42,21 +42,18 @@ const toDate = (value) => {
   return date && !Number.isNaN(date.getTime()) ? date : undefined;
 };
 
-async function fetchProductEntries(client) {
+async function fetchProductEntries() {
   const entries = [];
   for (
     let offset = 0;
     offset < SITEMAP_PRODUCT_LIMIT;
     offset += SITEMAP_PAGE_SIZE
   ) {
-    const { data } = await client.query({
-      query: GET_SITEMAP_PRODUCTS,
-      variables: {
+    const data = await serverQuery(GET_SITEMAP_PRODUCTS, {
         offset,
         limit: SITEMAP_PAGE_SIZE,
         filters: { status: ProductStatus.PUBLISHED },
-      },
-    });
+      });
     const page = data?.getClientSideProducts;
     const products = page?.products || [];
     products
@@ -79,15 +76,12 @@ async function fetchProductEntries(client) {
   return entries;
 }
 
-async function fetchCategoryEntries(client) {
-  const { data } = await client.query({
-    query: GET_CLIENT_SIDE_CATEGORIES,
-    variables: {
+async function fetchCategoryEntries() {
+  const data = await serverQuery(GET_CLIENT_SIDE_CATEGORIES, {
       offset: 0,
       limit: SITEMAP_CATEGORY_LIMIT,
       filter: { isSpecialCategory: false },
-    },
-  });
+    });
   return (data?.getClientSideCategories?.categories || [])
     .filter((category) => category?.slug)
     .map((category) => ({
@@ -108,16 +102,10 @@ export default async function sitemap() {
     priority,
   }));
 
-  let client = null;
-  try {
-    client = getClient();
-  } catch {
-    // No gateway configured (e.g. a build without env): static pages only.
-    return staticEntries;
-  }
+  // A section that fails (or no gateway configured) is left out
   const [categories, products] = await Promise.allSettled([
-    fetchCategoryEntries(client),
-    fetchProductEntries(client),
+    fetchCategoryEntries(),
+    fetchProductEntries(),
   ]);
   return [
     ...staticEntries,

@@ -3,30 +3,24 @@
 /**
  * Checkout URL (PRD-034 FR-1.9)
  *
- * Adds the link's lines to the shopper's bag through the existing cart
- * operations (signed-in customer, or the server-issued guest id), then
- * opens checkout; a guest goes through login first, where the guest bag
- * is merged (as the bag drawer does). Variant ids are mapped to their
- * products with `getVariantAvailability` (published products only). Bad
- * input or nothing addable shows a message with a link to the shop.
+ * The kit's `useCheckoutStart` (PRD-002 FR-4.1) adds the link's lines to
+ * the shopper's bag (signed-in customer, or the server-issued guest id),
+ * once per link and tab, skipping archived or sold-out variants. Then this
+ * opens the cart's checkout; a guest goes through login first, where the
+ * guest bag is merged (as the bag drawer does). Bad input or nothing
+ * addable shows a message with a link to the shop.
  */
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useApolloClient, useMutation } from "@apollo/client/react";
+import { useApolloClient } from "@apollo/client/react";
+import { useCheckoutStart } from "@zcom/storefront-kit/client";
 import GreenBoxBtn from "@/components/buttons/GreenBoxBtn";
-import {
-  ADD_ITEM_TO_CART,
-  CART_LIST,
-  GET_VARIANT_AVAILABILITY,
-} from "@/graphql";
+import { CART_LIST } from "@/graphql";
 import { useVisitor } from "@/hooks/useVisitor";
 import { useAuthStore } from "@/store/auth-store";
-import {
-  getCheckoutStartMessage,
-  parseCheckoutStartProducts,
-} from "@/utils/checkout-start";
+import { getCheckoutStartMessage } from "@/utils/checkout-start";
 
 // ─── Component ────────────────────────────────────────────────────────────
 
@@ -35,63 +29,15 @@ const CheckoutStartClient = ({ products }) => {
   const client = useApolloClient();
   const { isLoggedIn } = useAuthStore((state) => state);
   const { runWithGuestId } = useVisitor();
-  const [addItemToCart] = useMutation(ADD_ITEM_TO_CART);
-  const [error, setError] = useState(null);
-  const startedRef = useRef(false);
+  // The kit adds the link's items to the bag once per link and tab
+  const state = useCheckoutStart(products ?? null);
+  const [openError, setOpenError] = useState(null);
+  const error = state.status === "error" ? state.errorKey : openError;
 
   useEffect(() => {
-    if (startedRef.current) return;
-    startedRef.current = true;
-
-    const parsed = parseCheckoutStartProducts(products);
-    if (parsed.error) {
-      setError(parsed.error);
-      return;
-    }
-
-    const addLine = (input) =>
+    if (state.status !== "ready") return;
+    const readCart = () =>
       isLoggedIn
-        ? addItemToCart({ variables: { input } })
-        : runWithGuestId((guestId) =>
-            addItemToCart({ variables: { input, guestId } }),
-          );
-
-    const run = async () => {
-      const { data } = await client.query({
-        query: GET_VARIANT_AVAILABILITY,
-        variables: { variantIds: parsed.lines.map((line) => line.variantId) },
-        fetchPolicy: "network-only",
-      });
-      const productOf = new Map(
-        (data?.getVariantAvailability || []).map((row) => [
-          String(row.variantId),
-          row,
-        ]),
-      );
-      const addable = parsed.lines.filter((line) =>
-        productOf.has(line.variantId),
-      );
-      if (!addable.length) return "UNAVAILABLE";
-
-      let added = 0;
-      // One at a time: each add re-prices the same bag on the server.
-      for (const line of addable) {
-        const row = productOf.get(line.variantId);
-        // A simple product's id stands for its only "variant".
-        const variantId =
-          String(row.variantId) === String(row.productId)
-            ? undefined
-            : line.variantId;
-        try {
-          await addLine({ productId: row.productId, variantId, qty: line.qty });
-          added += 1;
-        } catch {
-          // Unavailable line: the others still go in the bag.
-        }
-      }
-      if (!added) return "ADD_FAILED";
-
-      const { data: cartResponse } = await (isLoggedIn
         ? client.query({ query: CART_LIST, fetchPolicy: "network-only" })
         : runWithGuestId((guestId) =>
             client.query({
@@ -99,26 +45,24 @@ const CheckoutStartClient = ({ products }) => {
               variables: { guestId },
               fetchPolicy: "network-only",
             }),
-          ));
-      const cartId = cartResponse?.getCart?._id;
-      if (!cartId) return "ADD_FAILED";
-
-      const checkoutPath = `/checkout/${encodeURIComponent(cartId)}`;
-      // Checkout is customer-only; login merges the guest bag.
-      router.replace(
-        isLoggedIn
-          ? checkoutPath
-          : `/login?next=${encodeURIComponent(checkoutPath)}`,
-      );
-      return null;
-    };
-
-    run()
-      .then((failure) => {
-        if (failure) setError(failure);
+          );
+    readCart()
+      .then(({ data }) => {
+        const cartId = data?.getCart?._id;
+        if (!cartId) {
+          setOpenError("ADD_FAILED");
+          return;
+        }
+        const checkoutPath = `/checkout/${encodeURIComponent(cartId)}`;
+        // Checkout is customer-only; login merges the guest bag.
+        router.replace(
+          isLoggedIn
+            ? checkoutPath
+            : `/login?next=${encodeURIComponent(checkoutPath)}`,
+        );
       })
-      .catch(() => setError("ADD_FAILED"));
-  }, [products, isLoggedIn, client, addItemToCart, runWithGuestId, router]);
+      .catch(() => setOpenError("ADD_FAILED"));
+  }, [state.status, isLoggedIn, client, runWithGuestId, router]);
 
   if (!error) {
     return (

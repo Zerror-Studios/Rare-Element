@@ -95,32 +95,5 @@ describe("payment request view", () => {
   });
 });
 
-// ─── Return from a redirect payment app ───────────────────────────────────
-
-describe("payment request return", () => {
-  it("remembers the link once and forgets it after", () => {
-    const storage = memoryStorage();
-    pay.savePayReturn(storage, TOKEN, 1000);
-    assert.equal(pay.takePayReturn(storage, 2000), TOKEN);
-    assert.equal(pay.takePayReturn(storage, 2000), null);
-  });
-
-  it("ignores a stale, malformed or missing entry", () => {
-    const storage = memoryStorage();
-    pay.savePayReturn(storage, TOKEN, 0);
-    assert.equal(pay.takePayReturn(storage, pay.PAY_RETURN_MAX_AGE_MS + 1), null);
-    pay.savePayReturn(storage, "not-a-token", 0);
-    assert.equal(pay.takePayReturn(storage, 1), null);
-    storage.setItem(pay.PAY_RETURN_STORAGE_KEY, "{broken");
-    assert.equal(pay.takePayReturn(storage, 1), null);
-    assert.equal(pay.takePayReturn(null, 1), null);
-  });
-
-  it("clears without throwing", () => {
-    const storage = memoryStorage();
-    pay.savePayReturn(storage, TOKEN, 0);
-    pay.clearPayReturn(storage);
-    assert.equal(pay.takePayReturn(storage, 1), null);
-    pay.clearPayReturn(null);
-  });
-});
+// The link's return storage is the kit's PaymentLinkTokenStore, tested in
+// zcom-storefront-kit (test/tracking.test.ts) with a browser storage.

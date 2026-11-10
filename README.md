@@ -1,6 +1,6 @@
 # rare-element — Rare Element (Nahara) storefront
 
-This is a custom-designed shopper storefront on the **ZCommerce** platform by Zerror Studios. It's built with Next.js 15 with the App Router (React 19, RSC + ISR) in JavaScript, and it consumes the shared ZCommerce GraphQL gateway (`../../zcom-backend`). Payments go through Nimbbl.
+This is a custom-designed shopper storefront on the **ZCommerce** platform by Zerror Studios. It's built with Next.js 16 with the App Router (React 19.3, RSC + ISR) in JavaScript on **`@zcom/storefront-kit`** (the proxy, session, cart, checkout, payments, consent, tags and SEO helpers every Zcom storefront shares; `../../zcom-storefront-kit`), and it consumes the shared ZCommerce GraphQL gateway (`../../zcom-backend`). Payments go through the store's payment app (Razorpay, Cashfree or PayU).
 
 > Working here with Claude Code or as a new engineer? Read [`CLAUDE.md`](CLAUDE.md), then [`docs/README.md`](docs/README.md). The API contract every storefront follows is in `../../zcom-backend/docs/architecture/storefront-api-contract.md`.
 
@@ -16,7 +16,8 @@ npm run dev        # http://localhost:3000
 
 **Environment variables** (names only, see `.env.example`):
 - `API_GATEWAY_URL` (server-only, **required in production**): the gateway origin; `/v1/graphql` is proxied to it and server components call it directly.
-- `EDGE_SHARED_SECRET` (server-only, optional): the gateway's edge secret, sent as `x-zcom-edge-secret` on proxied and server-side calls so strict tenant mode trusts this site's tenant and client-IP headers. Never prefix it with `NEXT_PUBLIC_`.
+- `EDGE_SHARED_SECRET` (server-only, **required in production**): the gateway's edge secret; the kit signs proxied and server-side calls with it, so the gateway trusts this site's tenant and client-IP headers. Never prefix it with `NEXT_PUBLIC_`.
+- `GITHUB_TOKEN` (hosting only): the shared read token that installs the kit from its private repo (Vercel team shared variable; `vercel.json` uses it). See the kit README, "Build token".
 - `ZCOM_STORE_SLUG` (server-only, PRD-018 FR-4.3): this store's slug; `/.well-known/zcom-store?nonce=<hex>` answers `{ slug, nonce, signature }` with an HMAC of `<slug>:<nonce>` under `EDGE_SHARED_SECRET` for the platform's go-live check (503 while unset, 400 for a missing or malformed nonce; CP-18).
 - `NEXT_PUBLIC_TENANT_DOMAIN` (**required in production**, `nahara.co.in`): selects the tenant.
 - `NEXT_PUBLIC_GRAPHQL_API_URL`: **leave unset** so the browser uses the same-origin `/v1/graphql` (needed for the session cookie).
@@ -24,7 +25,7 @@ npm run dev        # http://localhost:3000
 
 Every `NEXT_PUBLIC_*` value is public in the browser bundle.
 
-**Deploying** (owner): set the required variables in hosting, unset any absolute `NEXT_PUBLIC_GRAPHQL_API_URL`, add `https://nahara.co.in` to the gateway's `CORS_ORIGINS`, and consider rolling the CSP out with `CSP_REPORT_ONLY=true` first. For strict tenant mode, set `EDGE_SHARED_SECRET` here at the same moment as on Elastic Beanstalk and the CloudFront origin header, and confirm the host's client IP source (`x-vercel-forwarded-for` on Vercel, else the right-most `x-forwarded-for` hop). Set it in the **same deploy** as backend PRD-002 round 3: its new 30/min per-IP login bucket would otherwise see every shopper as this host's IP. In production the `/v1/graphql` proxy fails closed (500) without `NEXT_PUBLIC_TENANT_DOMAIN`. Guest bags from before PRD-002 round 2 are dropped once at deploy (guest ids are now server-signed).
+**Deploying** (owner): set the required variables in hosting (with the shared `GITHUB_TOKEN` linked), unset any absolute `NEXT_PUBLIC_GRAPHQL_API_URL`, set `EDGE_SHARED_SECRET` to the same value as on Elastic Beanstalk, and consider rolling the CSP out with `CSP_REPORT_ONLY=true` first. The storefront's domain is never added to the gateway's `CORS_ORIGINS` (PRD-007 FR-8.2: the kit's proxy is edge-signed).
 
 Dev runs with Turbopack.
 
@@ -38,14 +39,14 @@ Dev runs with Turbopack.
 | Contract check | `npm run validate:ops` (operations and `variables` shapes against the composed supergraph; needs `../../zcom-backend` installed and built; PRD-014 FR-1.6) |
 | Lint | `npm run lint` (currently not functional; see `CLAUDE.md` §4) |
 
-Tests: `npm test` runs `test/*.test.mjs` with `node:test` (Node ≥ 22.15, no extra dependency) and **runs before every `npm run build`** (`prebuild`, PRD-014 K-01), so a failing test stops the deploy; keep the host's Build Command at `npm run build` (the Vercel default; a `next build` override skips the tests) and its Node at 22.15+. 50 tests: 11 over the `/v1/graphql` proxy in `src/middleware.js` (`test/middleware.test.mjs`, PRD-014 QA-12), 4 over the consent gate on order attribution (`test/attribution-consent.test.mjs`, W1V-C-03), 6 over the SEO helpers (`test/seo-helpers.test.mjs`, PRD-014 Wave 2 and W2V-C-04) 4 over the listing sort values (`test/listing-sort.test.mjs`), 13 over the PRD-020 stock-signal helpers (`test/stock-signal.test.mjs`: `null` = today's behaviour, copy, schema.org, fresh-read merge, option chips, cart lines) and 12 over the PRD-015 order helpers and error reasons (`test/order-detail.test.mjs`, also PRD-016 `STORE_ORDERS_PAUSED`). There are no page or component tests.
+Tests: `npm test` runs `test/*.test.mjs` with `node:test` (Node ≥ 22.15, no extra dependency) and **runs before every `npm run build`** (`prebuild`, PRD-014 K-01), so a failing test stops the deploy; keep the host's Build Command at `npm run build` (`vercel.json`). 60 tests over Nahara's own helpers (SEO, sort, stock labels, order detail, back-in-stock, payment-request views, reviews); the proxy, session, consent, tags and store status are tested in the kit.
 
 ## Structure
 
-Routes: `/`, `/products`, `/products/[slug]`, `/[...categories]`, `/account/*` (orders, settings, wishlist; the fake offers page was removed, PRD-014 UX-06), `/checkout/[id]` (+ `thank-you`, `payment-failed`), `/login`, `/about`, `/contact`, and the legal pages. `src/middleware.js` proxies `/v1/graphql` to the gateway and sends shoppers without a session to `/login?next=…` for `/account/*` and checkout. Source lives under `src/`, using the `@/*` alias. The full map is in `CLAUDE.md` §2.
+Routes: `/`, `/products`, `/products/[slug]`, `/[...categories]`, `/account/*` (orders, settings, wishlist; the fake offers page was removed, PRD-014 UX-06), `/checkout/[id]` (+ `thank-you`, `payment-failed`), `/login`, `/about`, `/contact`, and the legal pages. `src/proxy.js` (the kit's middleware) proxies `/v1/graphql` to the gateway and sends shoppers without a session to `/login?next=…` for `/account/*` and checkout. Source lives under `src/`, using the `@/*` alias. The full map is in `CLAUDE.md` §2.
 
 ## Contributing
 
 - **Tiered PRD-first workflow.** T1 changes need an approved PRD; anything that touches the API has its source of truth in `../../zcom-backend/docs/prd/`. T2 changes need a changelog line in `docs/changelog/`.
-- **Shared logic.** Fixes to shared logic (tokens, the Apollo client, checkout, stores) must be checked against the other storefronts.
+- **Shared logic lives in the kit.** A fix to the proxy, session, Apollo client, consent, tags, payments or SEO helpers goes into `@zcom/storefront-kit` (every store gets it with the next tag), not into this repo.
 - **Keep docs current.** Update this README and `CLAUDE.md` in the same change. Commit with Conventional Commits.

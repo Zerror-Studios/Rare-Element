@@ -1,8 +1,9 @@
 "use client";
 
 /**
- * Purchase analytics (PRD-002 SF-13): fires GA4 `purchase`, the Meta
- * `Purchase` and the Google Ads purchase conversion once per paid order.
+ * Purchase analytics (PRD-002 SF-13): the Meta `Purchase` and the Google
+ * Ads purchase conversion once per paid order (kit; the GA4 `purchase` is
+ * sent by the backend from the paid order, PRD-012).
  * The thank-you page passes the order only after `myOrder` reports it
  * PAID; a sessionStorage key per order id stops repeats on refresh or
  * back-navigation in this tab.

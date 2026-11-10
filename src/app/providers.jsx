@@ -1,30 +1,43 @@
 "use client";
 
-import { ToastContainer, Zoom } from "react-toastify";
-import Layout from "@/components/layouts/Layout";
+/**
+ * Client providers (PRD-002 FR-4.1): the kit's `ZcomSsrProvider` (Apollo
+ * Client 4 shared with the store's own queries, the customer session,
+ * guest cart, visit attribution and click-id capture) and `ZcomTags`
+ * (GA4/GTM with analytics consent, Meta Pixel and Google Ads with ads
+ * consent; backend ids first, env fallback). The store keeps its layout,
+ * smooth scroll and toasts.
+ */
 
-import { ApolloWrapper } from "@/lib/apollo-wrapper";
-import { AuthProvider } from "@/context/AuthContext";
-import LenisScroll from "@/components/common/LenisScroll";
 import { useEffect } from "react";
-import { startVisitAttribution } from "@/utils/ga-attribution";
-import { startAdClickIdCapture } from "@/utils/ad-click-ids";
+import { usePathname } from "next/navigation";
+import { toast, ToastContainer, Zoom } from "react-toastify";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
-import { usePathname } from "next/navigation";
+import { ZcomSsrProvider } from "@zcom/storefront-kit/ssr";
+import { ZcomTags } from "@zcom/storefront-kit/client";
+
+import Layout from "@/components/layouts/Layout";
+import LenisScroll from "@/components/common/LenisScroll";
+import { AuthProvider } from "@/context/AuthContext";
+import { zcomConfig } from "@/zcom.config";
+
 gsap.registerPlugin(ScrollTrigger);
 
+const STORE_UNAVAILABLE_TOAST_ID = "store-unavailable";
+const TAG_ID_FALLBACK = {
+  ga4MeasurementId: process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID,
+  gtmId: process.env.NEXT_PUBLIC_GTM_ID,
+  metaPixelId: process.env.NEXT_PUBLIC_FB_PIXEL_ID,
+};
+
+const showStoreUnavailable = () =>
+  toast.error("This store isn't available right now.", {
+    toastId: STORE_UNAVAILABLE_TOAST_ID,
+  });
 
 export function Providers({ children }) {
-
   const pathname = usePathname();
-
-  // PRD-012: remember the visit's UTMs, referrer and landing page once
-  // (only with analytics consent, W1V-C-03)
-  useEffect(() => startVisitAttribution(), []);
-  // PRD-034 FR-1.4: ad click ids for the session (persisted only with
-  // marketing consent)
-  useEffect(() => startAdClickIdCapture(), []);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -32,7 +45,7 @@ export function Providers({ children }) {
       ScrollTrigger.refresh();
       if (window.lenis) {
         window.lenis.resize();
-        lenis.scrollTo(0, { immediate: true });
+        window.lenis.scrollTo(0, { immediate: true });
       }
     }, 500);
 
@@ -40,19 +53,14 @@ export function Providers({ children }) {
   }, [pathname]);
 
   return (
-    <ApolloWrapper>
+    <ZcomSsrProvider config={zcomConfig} onStoreUnavailable={showStoreUnavailable}>
+      <ZcomTags fallback={TAG_ID_FALLBACK} />
       <AuthProvider>
         <LenisScroll>
-          <Layout>
-            {children}
-          </Layout>
+          <Layout>{children}</Layout>
         </LenisScroll>
-        <ToastContainer
-          position="top-right"
-          autoClose={1500}
-          transition={Zoom}
-        />
+        <ToastContainer position="top-right" autoClose={1500} transition={Zoom} />
       </AuthProvider>
-    </ApolloWrapper>
+    </ZcomSsrProvider>
   );
 }

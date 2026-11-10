@@ -10,7 +10,8 @@
  * commerce/payment services); see PRD-002 RMAINT-7.
  */
 
-import { CombinedGraphQLErrors, ServerError } from "@apollo/client";
+import { ServerError } from "@apollo/client";
+import { getErrorInfo as readKitError } from "@zcom/storefront-kit/core";
 
 // ─── Messages ─────────────────────────────────────────────────────────────
 
@@ -111,20 +112,20 @@ const CODE_MESSAGES = {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────
 
-/** `{ code, reason, message }` of the first GraphQL error, if any. */
+/**
+ * `{ code, reason, message }` of the first GraphQL error, if any: Apollo's
+ * `CombinedGraphQLErrors` and the kit's `ZcomError` alike (the kit's reader).
+ */
 export function getErrorInfo(error) {
-  if (CombinedGraphQLErrors.is(error)) {
-    const first = error.errors?.[0] || {};
-    return {
-      code: first.extensions?.code,
-      reason: first.extensions?.reason,
-      message: first.message,
-    };
-  }
   if (ServerError.is(error) && error.statusCode === 429) {
     return { code: "RATE_LIMITED", reason: undefined, message: error.message };
   }
-  return { code: undefined, reason: undefined, message: error?.message };
+  const info = readKitError(error);
+  return {
+    code: info.code || undefined,
+    reason: info.reason || undefined,
+    message: info.rawMessage || error?.message,
+  };
 }
 
 /** Message for a reason code (e.g. a checkout `failureReason`). */

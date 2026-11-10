@@ -3,33 +3,44 @@
 /**
  * Cookie consent banner (PRD-014 FR-1.9, UX-05, D10)
  *
- * In-house banner on Google Consent Mode v2 (`utils/consent.js`). It shows
- * until the shopper answers; nothing but essential storage is used before
- * that. "Cookie preferences" in the footer reopens it with the categories.
- * Escape closes it only when a choice already exists.
- *
- * PRD-034 FR-1.2: `tagIds` are the store's tag ids resolved on the server
- * (`app/layout.jsx`: backend config first, env fallback). They are stored
- * for the tag helpers while this renders, before any effect (a product
- * page's first view event included) runs.
+ * The store's banner on the kit's consent (PRD-002 FR-4.1, FR-1.13): it
+ * shows until the shopper answers; nothing but essential storage is used
+ * before that. "Cookie preferences" in the footer reopens it with the
+ * categories (`openConsentPreferences`). Escape closes it only when a
+ * choice already exists. Saving calls the kit's `updateConsent`, which
+ * updates Consent Mode, keeps or drops attribution and click ids, and makes
+ * `ZcomTags` load what the choice allows. "marketing" here is the kit's
+ * "ads" consent.
  */
 
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
-  CONSENT_DENIED_ALL,
-  CONSENT_GRANTED_ALL,
   CONSENT_OPEN_EVENT,
-  applyConsent,
-  readConsent,
-  saveConsent,
-} from "@/utils/consent";
-import { getTagIds, setTagIds } from "@/utils/tracking-config";
+  getStoredConsent,
+  updateConsent,
+} from "@zcom/storefront-kit/core";
 
-const ConsentBanner = ({ tagIds = null }) => {
-  // Idempotent: the same server-resolved ids on every render.
-  if (tagIds) setTagIds(tagIds);
+const CONSENT_DENIED_ALL = Object.freeze({ analytics: false, marketing: false });
+const CONSENT_GRANTED_ALL = Object.freeze({ analytics: true, marketing: true });
 
+/** The kit's stored choice as the banner's two switches, or null. */
+const readConsent = () => {
+  const stored = getStoredConsent();
+  return stored
+    ? { analytics: stored.analytics === "granted", marketing: stored.ads === "granted" }
+    : null;
+};
+
+const saveConsent = (choice) => {
+  updateConsent({
+    analytics: choice.analytics ? "granted" : "denied",
+    ads: choice.marketing ? "granted" : "denied",
+  });
+  return { analytics: !!choice.analytics, marketing: !!choice.marketing };
+};
+
+const ConsentBanner = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [showChoices, setShowChoices] = useState(false);
   const [choice, setChoice] = useState(CONSENT_DENIED_ALL);
@@ -40,7 +51,6 @@ const ConsentBanner = ({ tagIds = null }) => {
   useEffect(() => {
     const stored = readConsent();
     if (stored) {
-      applyConsent(stored, getTagIds());
       setChoice(stored);
       setHasChoice(true);
     } else {
@@ -68,7 +78,7 @@ const ConsentBanner = ({ tagIds = null }) => {
   };
 
   const save = (nextChoice) => {
-    setChoice(saveConsent(nextChoice, getTagIds()));
+    setChoice(saveConsent(nextChoice));
     setHasChoice(true);
     close();
   };

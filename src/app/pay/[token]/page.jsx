@@ -9,9 +9,8 @@
  * payment-return page sends a shopper back from a redirect payment app.
  */
 
-import { headers } from "next/headers";
-import { getClient } from "@/lib/apollo-client-rsc";
-import { CLIENT_IP_HEADER, getClientIp } from "@/lib/edge-headers";
+import { getRequestClientIp } from "@zcom/storefront-kit/server";
+import { serverQuery } from "@/lib/server-query";
 import { GET_PAYMENT_REQUEST } from "@/graphql";
 import { getErrorInfo } from "@/utils/errors";
 import {
@@ -37,13 +36,12 @@ async function loadRequest(token) {
   if (!isPaymentRequestToken(token)) {
     return { view: PayViewEnum.NOT_FOUND, request: null };
   }
-  const clientIp = getClientIp({ headers: await headers() });
+  // The shopper's IP: payment links are rate-limited per client
+  const clientIp = await getRequestClientIp();
   try {
-    const { data } = await getClient().query({
-      query: GET_PAYMENT_REQUEST,
-      variables: { token },
-      fetchPolicy: "no-cache",
-      context: clientIp ? { headers: { [CLIENT_IP_HEADER]: clientIp } } : {},
+    const data = await serverQuery(GET_PAYMENT_REQUEST, { token }, {
+      revalidate: false,
+      clientIp,
     });
     const request = data?.getPaymentRequest ?? null;
     return { view: viewFromRequest(request), request };

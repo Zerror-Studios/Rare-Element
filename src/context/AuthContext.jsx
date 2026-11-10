@@ -1,136 +1,93 @@
 "use client";
 
 /**
- * Customer session context (PRD-001 phase 2 / PRD-002 SF-11, SF-18)
+ * Customer session context on the kit (PRD-002 FR-4.1).
  *
- * - `completeLogin(accessToken, expiresIn)`: keeps the token in memory,
- *   loads the profile and merges the guest cart into the customer cart
- *   with one `mergeGuestCart(guestId)` call (PRD-002 R2-C3: idempotent,
- *   server re-priced). On failure the guest id is kept and the shopper is
- *   warned; a rejected id (`INVALID_GUEST_ID`) is dropped.
- * - The profile is not persisted (RSEC-11): after a reload it is fetched
- *   again when the logged-in hint is set.
- * - `logout()`: `customerLogout` revokes the cookie session server-side;
- *   local state and the Apollo store are always cleared (`finally`).
- * - A session the server ends (refresh rejected) clears local state too.
- *
- * Keep the merge in sync with
- * `storefronts/deveshe-dreams/src/lib/customer-session.service.js`.
+ * The kit owns the session (in-memory access token, the HttpOnly refresh
+ * cookie, single-flight refresh, guest-cart merge at login). This keeps the
+ * store's `useAuthStore` (the `isLoggedIn` flag and the profile many
+ * components read) in step with it, loads the profile after a sign-in or a
+ * reload, and shows the store's own messages:
+ * - "Some items from your bag could not be added." when the merge failed;
+ * - "Your session has ended…" when the server ended the session.
  */
 
 import React, { createContext, useCallback, useContext, useEffect } from "react";
 import { useApolloClient } from "@apollo/client/react";
 import { toast } from "react-toastify";
+import { tokenManager, useAuth as useKitAuth, useSession } from "@zcom/storefront-kit/client";
+
+import { GET_MY_PROFILE } from "@/graphql";
 import { useAuthStore } from "@/store/auth-store";
-import { CUSTOMER_LOGOUT, GET_MY_PROFILE, MERGE_GUEST_CART } from "@/graphql";
-import { TokenManager } from "@/utils/tokenManager";
-import { isInvalidGuestIdError } from "@/utils/errors";
-import { clearVisitorId, readVisitorId } from "@/hooks/useVisitor";
 
-const AuthContext = createContext();
-
-// ─── Guest cart merge ─────────────────────────────────────────────────────
-
-/** Moves the guest cart into the customer cart; false when it failed. */
-async function mergeGuestCart(client) {
-  const guestId = readVisitorId();
-  if (!guestId) return true;
-
-  try {
-    await client.mutate({
-      mutation: MERGE_GUEST_CART,
-      variables: { guestId },
-    });
-    clearVisitorId();
-    return true;
-  } catch (error) {
-    if (isInvalidGuestIdError(error)) {
-      clearVisitorId();
-      return true;
-    }
-    console.error("Guest cart merge failed:", error);
-    return false;
-  }
-}
+const AuthContext = createContext(null);
 
 // ─── Provider ─────────────────────────────────────────────────────────────
 
 export const AuthProvider = ({ children }) => {
   const client = useApolloClient();
+  const kit = useKitAuth();
+  const session = useSession();
   const { clearAuth, setUser, setIsLoggedIn } = useAuthStore((state) => state);
 
-  const resetLocalSession = useCallback(async () => {
-    TokenManager.clear();
-    clearAuth();
-    try {
-      localStorage.removeItem("user-data");
-    } catch {
-      // Storage unavailable; the in-memory store is already cleared.
-    }
-    await client.clearStore();
-  }, [clearAuth, client]);
-
-  // Restore the in-memory token after a reload and follow server-side ends.
-  useEffect(() => {
-    TokenManager.purgeLegacyStorage();
-    const unsubscribe = TokenManager.subscribe(async (event) => {
-      if (event !== "SESSION_ENDED") return;
-      if (!useAuthStore.getState().isLoggedIn) return;
-      await resetLocalSession();
-      toast.info("Your session has ended. Please log in again.");
-    });
-    const { isLoggedIn, user } = useAuthStore.getState();
-    if (isLoggedIn && !TokenManager.hasValidToken()) {
-      TokenManager.refresh();
-    }
-    // The profile isn't persisted (RSEC-11); the auth link waits for the
-    // refresh above before this query goes out.
-    if (isLoggedIn && !user) {
-      client
-        .query({ query: GET_MY_PROFILE, fetchPolicy: "network-only" })
-        .then(({ data }) => {
-          if (data?.getMyProfile && useAuthStore.getState().isLoggedIn) {
-            setUser(data.getMyProfile);
-          }
-        })
-        .catch(() => {
-          // A refused session ends through SESSION_ENDED above.
-        });
-    }
-    return unsubscribe;
-  }, [client, resetLocalSession, setUser]);
-
-  const completeLogin = async (accessToken, expiresIn) => {
-    await client.clearStore();
-    TokenManager.setAccessToken(accessToken, expiresIn);
-
+  const loadProfile = useCallback(async () => {
     const { data } = await client.query({
       query: GET_MY_PROFILE,
       fetchPolicy: "network-only",
     });
     const user = data?.getMyProfile || null;
-    setUser(user);
-    setIsLoggedIn(true);
+    if (user && tokenManager.getState().status === "customer") setUser(user);
+    return user;
+  }, [client, setUser]);
 
-    if (!(await mergeGuestCart(client))) {
+  // Follow the kit's session: signed in after a reload, or ended on its own
+  useEffect(() => {
+    if (session.status === "customer") {
+      setIsLoggedIn(true);
+      if (!useAuthStore.getState().user) loadProfile().catch(() => undefined);
+    } else if (session.status === "guest") {
+      clearAuth();
+    }
+  }, [clearAuth, loadProfile, session.status, setIsLoggedIn]);
+
+  useEffect(
+    () =>
+      tokenManager.onSessionEnded(() => {
+        toast.info("Your session has ended. Please log in again.");
+      }),
+    [],
+  );
+
+  /** Signs in, merges the guest bag and loads the profile. */
+  const login = async (email, password) => {
+    const auth = await kit.login(email, password);
+    if (auth.merge === "failed") {
       toast.warn("Some items from your bag could not be added.");
     }
-    await client.resetStore();
-    return user;
+    setIsLoggedIn(true);
+    return await loadProfile();
+  };
+
+  /** Creates the account, then signs in (`login` above). */
+  const signup = async (input) => {
+    const auth = await kit.signup(input);
+    if (auth.merge === "failed") {
+      toast.warn("Some items from your bag could not be added.");
+    }
+    setIsLoggedIn(true);
+    return await loadProfile();
   };
 
   const logout = async () => {
     try {
-      await client.mutate({ mutation: CUSTOMER_LOGOUT });
-    } catch (err) {
-      console.error("Logout error:", err);
+      await kit.logout();
     } finally {
-      await resetLocalSession();
+      clearAuth();
     }
   };
 
   return (
-    <AuthContext.Provider value={{ logout, completeLogin }}>
+    <AuthContext.Provider value={{ login, signup, logout }}>
       {children}
     </AuthContext.Provider>
   );

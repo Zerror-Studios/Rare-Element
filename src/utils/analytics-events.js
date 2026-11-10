@@ -7,13 +7,13 @@
  * `analytics_page_daily`, `analytics_product_daily` and
  * `analytics_event_daily`; a name that drifts is simply never counted).
  *
- * The four GA4 e-commerce events (`view_item`, `add_to_cart`,
- * `begin_checkout`, `purchase`) stay in `utils/analytics.js`
- * (`trackEcomEvent`). Everything else goes through `trackEvent`, which:
- * - is a no-op outside the browser or when `gtag` isn't loaded;
- * - clips every string to `EVENT_PARAMETER_MAX_LENGTH`, drops `null`,
- *   `undefined` and empty values (also inside `items[]`);
- * - never throws: analytics must not break the UI.
+ * The GA4 e-commerce events (`view_item`, `add_to_cart`, `begin_checkout`)
+ * stay in `utils/analytics.js` (`trackEcomEvent`); the GA4 `purchase` is
+ * sent by the backend (PRD-012). Everything else goes through
+ * `trackEvent`, which clips every string to `EVENT_PARAMETER_MAX_LENGTH`
+ * and drops empty values (also inside `items[]`), then hands the event to
+ * the kit (PRD-002): sent only with analytics consent, queued until GA4
+ * has loaded, to GA4 only. It never throws.
  *
  * `item_id` is always the identifier `mapProductToGA4Item` uses for this
  * storefront (the variant id, falling back to the first variant), so the
@@ -21,8 +21,8 @@
  * No parameter may carry PII (emails, names, phones, addresses).
  */
 
+import { trackEvent as kitTrackEvent } from "@zcom/storefront-kit/core";
 import { mapLineToGA4Item, mapProductToGA4Item } from "@/utils/analytics";
-import { getGaTrackingId } from "@/utils/tracking-config";
 
 // ─── Vocabulary (mirrors analytics-events.vocabulary.ts) ─────────────────
 
@@ -134,24 +134,10 @@ const currentPagePath = () =>
 
 // ─── Core ─────────────────────────────────────────────────────────────────
 
-/**
- * Sends one GA4 event. Silent no-op without a browser or `gtag`, and it
- * never throws.
- */
+/** Sends one GA4 event through the kit (consent, queue, GA4 only). */
 export function trackEvent(name, params = {}) {
-  try {
-    if (!name || typeof window === "undefined") return;
-    if (typeof window.gtag !== "function") return;
-    // PRD-034: the store's GA4 id (backend, env fallback); none = no event
-    const gaId = getGaTrackingId();
-    if (!gaId) return;
-    window.gtag("event", name, {
-      ...sanitizeParams(params),
-      send_to: gaId,
-    });
-  } catch {
-    // Analytics never breaks the UI.
-  }
+  if (!name) return;
+  kitTrackEvent(name, sanitizeParams(params));
 }
 
 /** The `item_id` the e-commerce events send for this product (+ variant). */

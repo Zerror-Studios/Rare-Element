@@ -7,8 +7,6 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RiEyeLine, RiEyeOffLine } from "@remixicon/react";
 import GreenBoxBtn from "../buttons/GreenBoxBtn";
-import { useMutation } from "@apollo/client/react";
-import { CUSTOMER_LOGIN } from "@/graphql";
 import { toast } from "react-toastify";
 import { useAuth } from "@/context/AuthContext";
 import { getErrorMessage } from "@/utils/errors";
@@ -25,8 +23,8 @@ const LoginSchema = z.object({
 const Login = ({ setToggle }) => {
   const router = useRouter();
   const [visible, setVisible] = useState(false);
-  const { completeLogin } = useAuth();
-  const [customerLogin, { loading }] = useMutation(CUSTOMER_LOGIN);
+  const { login } = useAuth();
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -37,16 +35,9 @@ const Login = ({ setToggle }) => {
   });
 
   const onSubmit = async (formData) => {
+    setLoading(true);
     try {
-      const { data } = await customerLogin({ variables: { input: formData } });
-      const { accessToken, expiresIn } = data?.customerLogin || {};
-
-      if (!accessToken) {
-        toast.error("Invalid email or password.");
-        return;
-      }
-
-      const user = await completeLogin(accessToken, expiresIn);
+      const user = await login(formData.email, formData.password);
       if (!user) {
         toast.error("Profile not found after login.");
         return;
@@ -57,10 +48,13 @@ const Login = ({ setToggle }) => {
       // Login errors are uniform server-side (no account enumeration).
       toast.error(
         getErrorMessage(err, "Login failed. Please try again.", {
+          INVALID_CREDENTIALS: "Invalid email or password.",
           UNAUTHENTICATED: "Invalid email or password.",
           BAD_REQUEST: "Invalid email or password.",
         }),
       );
+    } finally {
+      setLoading(false);
     }
   };
 

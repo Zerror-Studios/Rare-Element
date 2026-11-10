@@ -2,7 +2,7 @@ import dynamic from 'next/dynamic'
 import SeoHeader from '@/components/seo/SeoHeader'
 import Hero from '@/components/home/Hero'
 import { GET_CLIENT_SIDE_CATEGORY_BY_SLUG } from '@/graphql'
-import { getClient } from '@/lib/apollo-client-rsc'
+import { serverQuery } from '@/lib/server-query'
 import { MenuData } from '@/helpers/MenuData'
 import { indexableRobots } from '@/utils/env'
 
@@ -51,13 +51,11 @@ export default async function Page() {
   try {
     const newEleganceSlug = "new-elegance";
     const giftGuideSlug = "gift-guide";
-    const client = getClient();
-
     // Catch errors individually so missing categories don't fail the whole block
     const fetchCategory = async (slug) => {
       try {
-        const res = await client.query({ query: GET_CLIENT_SIDE_CATEGORY_BY_SLUG, variables: { slug } });
-        return res?.data?.getClientSideCategory?.products || [];
+        const res = await serverQuery(GET_CLIENT_SIDE_CATEGORY_BY_SLUG, { slug });
+        return res?.getClientSideCategory?.products || [];
       } catch (err) {
         return [];
       }

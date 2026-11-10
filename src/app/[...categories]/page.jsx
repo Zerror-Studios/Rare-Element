@@ -1,6 +1,6 @@
 import { cache } from 'react'
 import { GET_CLIENT_SIDE_CATEGORY_BY_SLUG } from '@/graphql'
-import { getClient } from '@/lib/apollo-client-rsc'
+import { serverQuery } from '@/lib/server-query'
 import CategoryClient from './category-client'
 import { notFound } from 'next/navigation'
 import { isNotFoundError } from '@/utils/errors'
@@ -28,12 +28,12 @@ const defaultMeta = {
  */
 const getCategory = cache(async (slug) => {
   try {
-    const client = getClient();
-    const response = await client.query({
-      query: GET_CLIENT_SIDE_CATEGORY_BY_SLUG,
-      variables: { slug, limit: PAGE_SIZE, offset: 0 }
+    const response = await serverQuery(GET_CLIENT_SIDE_CATEGORY_BY_SLUG, {
+      slug,
+      limit: PAGE_SIZE,
+      offset: 0,
     });
-    return response?.data?.getClientSideCategory || null;
+    return response?.getClientSideCategory || null;
   } catch (error) {
     if (isNotFoundError(error)) return null;
     throw error;

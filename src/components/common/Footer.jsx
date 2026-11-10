@@ -7,7 +7,7 @@ import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import Image from 'next/image';
-import { openConsentPreferences } from '@/utils/consent';
+import { openConsentPreferences } from '@zcom/storefront-kit/core';
 import NewsletterForm from './NewsletterForm';
 gsap.registerPlugin(ScrollTrigger)
 

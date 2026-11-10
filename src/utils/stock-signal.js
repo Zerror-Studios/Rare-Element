@@ -1,21 +1,14 @@
 /**
- * Public stock signal → storefront states (PRD-020 FR-12, FR-14)
+ * Public stock signal → storefront states (PRD-020 FR-12, FR-14) on the
+ * kit's stock helpers (PRD-002 FR-4.1).
  *
- * The catalog API gives each variant (and product) a nullable
- * `availability` bucket and, only when the store opts in, an exact
- * `availableQuantity` for low stock. `null` means "no signal" (the store has
- * it off, stock isn't tracked, or the figure isn't seeded yet), and every
- * helper here maps it to today's behaviour: no badge, no note, nothing
- * blocked. `getVariantAvailability` (the fresh read) overrides the
- * server-rendered value for the ids it answers; a failed read keeps the
- * server value. Checkout reservation stays the authority.
- *
- * Pure functions, no imports, so `node:test` loads them directly.
- *
- * Keep in sync with `storefronts/deveshe-dreams/src/utils/stock-signal.util.js`.
+ * `null` availability means "no signal": no badge, no note, nothing
+ * blocked. The fresh read (`useVariantAvailability`) overrides the
+ * server-rendered value for the ids it answered. The store keeps its
+ * labels and the schema.org mapping; the rules are the kit's.
  */
 
-// ─── Constants ────────────────────────────────────────────────────────────
+import * as kit from "@zcom/storefront-kit/core";
 
 export const StockAvailabilityEnum = {
   IN_STOCK: "IN_STOCK",
@@ -31,6 +24,12 @@ export const SOLD_OUT_LABEL = "Sold out";
 export const LOW_STOCK_LABEL = "Low stock";
 export const SOLD_OUT_CHECKOUT_MESSAGE = "Remove sold-out items to continue";
 
+const LABELS = {
+  ...kit.STOCK_LABELS,
+  soldOut: SOLD_OUT_LABEL,
+  lowStock: LOW_STOCK_LABEL,
+};
+
 const SCHEMA_ORG_AVAILABILITY = {
   [StockAvailabilityEnum.IN_STOCK]: "https://schema.org/InStock",
   [StockAvailabilityEnum.LOW_STOCK]: "https://schema.org/InStock",
@@ -38,10 +37,9 @@ const SCHEMA_ORG_AVAILABILITY = {
   [StockAvailabilityEnum.BACKORDER]: "https://schema.org/BackOrder",
 };
 
-const NO_SIGNAL = Object.freeze({
-  availability: null,
-  availableQuantity: null,
-});
+/** The store's `{ [id]: signal }` answers as the kit's Map. */
+const toMap = (fresh) =>
+  fresh instanceof Map ? fresh : new Map(Object.entries(fresh || {}));
 
 // ─── Helpers ──────────────────────────────────────────────────────────────
 
@@ -69,102 +67,32 @@ export const toAvailabilityMap = (rows) => {
   return map;
 };
 
-/**
- * The signal for one variant (or a cart line's id): the fresh read when it
- * answered this id, else the server-rendered fields, else no signal.
- */
-export const resolveSignal = (id, fallback, fresh) => {
-  if (id && fresh && Object.prototype.hasOwnProperty.call(fresh, id)) {
-    return fresh[id];
-  }
-  if (!fallback) return NO_SIGNAL;
-  return {
-    availability: fallback.availability ?? null,
-    availableQuantity: fallback.availableQuantity ?? null,
-  };
-};
+export const resolveSignal = (id, fallback, fresh) =>
+  kit.resolveSignal(id, fallback, toMap(fresh));
 
-/** A variant's signal (its own fields, overridden by the fresh read). */
 export const resolveVariantSignal = (variant, fresh) =>
-  resolveSignal(variant?._id, variant, fresh);
+  kit.resolveVariantSignal(variant, toMap(fresh));
 
-export const isSoldOut = (signal) =>
-  signal?.availability === StockAvailabilityEnum.OUT_OF_STOCK;
+export const isSoldOut = kit.isSoldOut;
 
-export const isLowStock = (signal) =>
-  signal?.availability === StockAvailabilityEnum.LOW_STOCK;
+export const isLowStock = kit.isLowStock;
 
-/**
- * PDP note under the CTA: "Only N left" when the store exposes the count,
- * else "Low stock"; nothing for any other state.
- */
-export const getStockNote = (signal) => {
-  if (!isLowStock(signal)) return null;
-  const quantity = Number(signal.availableQuantity);
-  return Number.isInteger(quantity) && quantity > 0
-    ? `Only ${quantity} left`
-    : LOW_STOCK_LABEL;
-};
+/** "Only N left" when the store exposes the count, else "Low stock". */
+export const getStockNote = (signal) => kit.getStockNote(signal, LABELS);
 
 /** Listing card badge from `Product.availability`. */
-export const getListingBadge = (availability) => {
-  if (availability === StockAvailabilityEnum.OUT_OF_STOCK) {
-    return SOLD_OUT_LABEL;
-  }
-  if (availability === StockAvailabilityEnum.LOW_STOCK) return LOW_STOCK_LABEL;
-  return null;
-};
+export const getListingBadge = (availability) =>
+  kit.getListingBadge(availability, LABELS);
 
-/**
- * True when every published variant carrying `choiceName` (and the other
- * selected option values) is sold out. A choice with no such variant, or
- * any variant without a signal, is not struck through.
- */
-export const isChoiceSoldOut = (variants, choiceName, otherValues, fresh) => {
-  const wanted = (otherValues || []).filter(Boolean).map(String);
-  const matching = (variants || []).filter((variant) => {
-    const values = (variant?.optionValues || []).map(String);
-    return (
-      variant?.status !== "ARCHIVED" &&
-      values.includes(String(choiceName)) &&
-      wanted.every((value) => values.includes(value))
-    );
-  });
-  return (
-    matching.length > 0 &&
-    matching.every((variant) => isSoldOut(resolveVariantSignal(variant, fresh)))
-  );
-};
+export const isChoiceSoldOut = (variants, choiceName, otherValues, fresh) =>
+  kit.isChoiceSoldOut(variants, String(choiceName), otherValues || [], toMap(fresh));
 
-/** The id a cart line is checked by: its variant, else the product. */
-export const getCartLineStockId = (line) =>
-  line?.variantId || line?.productId || null;
+export const getCartLineStockId = kit.getCartLineStockId;
 
-/**
- * Cart line state: `soldOut`, and `onlyLeft` (the count) when the store
- * exposes it and the line asks for more than that.
- */
-export const getCartLineStock = (line, fresh) => {
-  const signal = resolveSignal(getCartLineStockId(line), null, fresh);
-  const quantity = Number(signal.availableQuantity);
-  const onlyLeft =
-    isLowStock(signal) &&
-    Number.isInteger(quantity) &&
-    quantity > 0 &&
-    Number(line?.qty) > quantity
-      ? quantity
-      : null;
-  return { soldOut: isSoldOut(signal), onlyLeft };
-};
+export const getCartLineStock = (line, fresh) =>
+  kit.getCartLineStock(line, toMap(fresh));
 
 export const hasSoldOutLine = (lines, fresh) =>
-  (lines || []).some((line) => getCartLineStock(line, fresh).soldOut);
+  kit.hasSoldOutLine(lines, toMap(fresh));
 
-/**
- * Analytics `in_stock` (PRD-013): the signal when there is one, else the
- * caller's fallback (today's "the combination exists").
- */
-export const toInStockFlag = (signal, fallback) => {
-  if (!signal?.availability) return fallback;
-  return signal.availability !== StockAvailabilityEnum.OUT_OF_STOCK;
-};
+export const toInStockFlag = kit.toInStockFlag;

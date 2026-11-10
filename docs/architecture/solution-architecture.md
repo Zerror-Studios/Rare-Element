@@ -2,23 +2,23 @@
 
 | | |
 |---|---|
-| **Status** | Living document. Verified against code on **2026-10-14** (after PRD-002 WS-F1 and round 2, R2-W6) |
+| **Status** | Living document. Verified against code on **2026-11-10** (on `@zcom/storefront-kit` 1.x, kit PRD-002 step 3; earlier: PRD-002 WS-F1 and round 2) |
 | **Parent** | Workspace `../../ARCHITECTURE.md` · `../../storefronts/CLAUDE.md` |
 | **API contract** | `../../zcom-backend/docs/architecture/storefront-api-contract.md` |
-| **Role** | **Reference pattern** for new storefronts (App Router, RSC, ISR, host-based tenant, same-origin API through a middleware proxy, cookie session). Contract: 34/34 operations valid |
+| **Role** | App Router storefront on the kit (RSC, ISR, host-based tenant, same-origin API through the kit's proxy, cookie session). New storefronts start from the kit's `/integrate-zcom` skill. Contract: 61/61 operations valid |
 
 ---
 
 ## 1. Purpose and context
 
-This is the brand storefront where shoppers browse Rare Element / Nahara products, manage an account and wishlist, and check out with Nimbbl.
+This is the brand storefront where shoppers browse Rare Element / Nahara products, manage an account and wishlist, and check out with the store's payment app (Razorpay, Cashfree or PayU).
 
 ```mermaid
 flowchart LR
-    SH(["👤 Shopper"]) --> NX["rare-element<br/>Next.js 15 App Router<br/>(host [Unverified])"]
-    NX -- "browser: same-origin /v1/graphql<br/>middleware.js proxy → API_GATEWAY_URL<br/>+ x-zcom-client-ip · x-tenant-domain · x-zcom-edge-secret<br/>Bearer (memory) · cookie __Host-zc_cust_rt" --> GW["ZCommerce gateway"]
-    NX -- "RSC / SSR: API_GATEWAY_URL/v1/graphql<br/>x-tenant-domain / x-forwarded-host = NEXT_PUBLIC_TENANT_DOMAIN<br/>+ x-zcom-edge-secret (server-only)" --> GW
-    NX -- "nimbbl_sonic checkout" --> NB["Nimbbl"]
+    SH(["👤 Shopper"]) --> NX["rare-element<br/>Next.js 16 App Router<br/>on @zcom/storefront-kit (Vercel)"]
+    NX -- "browser: same-origin /v1/graphql<br/>proxy.js = kit createZcomMiddleware → API_GATEWAY_URL<br/>+ x-zcom-client-ip · x-tenant-domain · x-zcom-edge-secret<br/>Bearer (memory) · cookie __Host-zc_cust_rt only" --> GW["ZCommerce gateway"]
+    NX -- "RSC (kit zcomFetch) / SSR (kit ZcomSsrProvider):<br/>API_GATEWAY_URL/v1/graphql + edge headers (server-only)" --> GW
+    NX -- "kit launchPayment (known hosts only)" --> NB["Payment app<br/>Razorpay · Cashfree · PayU"]
     NX -- "next/image" --> CDN[("assets.nahara.co.in")]
     NX -- "GTM · GA (analytics consent) · Meta Pixel · Google Ads (marketing consent)" --> AN["Analytics and ads"]
 ```
@@ -28,13 +28,13 @@ flowchart LR
 ```mermaid
 flowchart TB
     subgraph Server["Server (RSC)"]
-        MW["middleware.js<br/>/v1/graphql → gateway proxy with edge headers<br/>/account/*, /checkout/* → /login?next= without a session cookie"]
-        L["app/layout.jsx<br/>next/font Inter · Consent Mode defaults + ConsentBanner · providers · metadataBase"]
-        P["route page.jsx<br/>getClient() from lib/apollo-client-rsc.js<br/>metadata / generateMetadata (canonical per route)<br/>notFound() only on null / NOT_FOUND; else app/error.jsx"]
+        MW["proxy.js (kit createZcomMiddleware)<br/>/v1/graphql → gateway with edge headers · /.well-known/zcom-store<br/>suspended → branded 503 · /account/*, /checkout/* → /login?next= without a session cookie"]
+        L["app/layout.jsx<br/>next/font Inter · kit CONSENT_DEFAULT_SCRIPT + ConsentBanner · providers · metadataBase"]
+        P["route page.jsx<br/>serverQuery() (lib/server-query.js = kit zcomFetch, 300 s)<br/>metadata / generateMetadata (canonical per route)<br/>notFound() only on null / NOT_FOUND; else app/error.jsx"]
         LD["loading.jsx (per route)"]
     end
     subgraph Client["Client components ('use client')"]
-        PR["app/providers.jsx<br/>ApolloNextAppProvider (lib/apollo-wrapper.js)<br/>GSAP plugin registration"]
+        PR["app/providers.jsx<br/>kit ZcomSsrProvider (Apollo Client 4, session) + ZcomTags<br/>AuthProvider · GSAP plugin registration"]
         CC["*-client.jsx<br/>interactions, cart, forms"]
         LS["LenisScroll (window.lenis)"]
         ZS["zustand stores<br/>auth · cart · product · category · sizeguide"]
@@ -70,39 +70,38 @@ flowchart TB
 ```mermaid
 flowchart LR
     subgraph RSC
-        GC["getClient()<br/>registerApolloClient"] -- "API_GATEWAY_URL/v1/graphql<br/>x-tenant-domain + x-forwarded-host = NEXT_PUBLIC_TENANT_DOMAIN<br/>+ x-zcom-edge-secret" --> GW["Gateway"]
+        SQ["serverQuery() — kit zcomFetch<br/>Nahara's own documents · revalidate 300 s<br/>throws on any error but NOT_FOUND"] -- "API_GATEWAY_URL/v1/graphql<br/>x-tenant-domain + x-zcom-edge-secret" --> GW["Gateway"]
     end
-    subgraph Edge["Next middleware (server)"]
-        MW["middleware.js + lib/edge-headers.js<br/>strip client x-zcom-*, x-tenant-domain, x-forwarded-host<br/>add x-zcom-client-ip (x-vercel-forwarded-for on Vercel,<br/>else request.ip, else right-most XFF hop),<br/>x-tenant-domain, x-zcom-edge-secret (if set)<br/>no tenant domain in production → 500"]
+    subgraph Edge["Next proxy (server)"]
+        MW["proxy.js — kit createZcomMiddleware<br/>strip client tenant headers · forward only the refresh cookie<br/>x-zcom-client-ip from Vercel's header only<br/>body cap (413) · no tenant domain → fails closed"]
     end
     subgraph Browser
-        AW["ApolloNextAppProvider (lib/apollo-wrapper.js)<br/>error → tenant → auth → http<br/>credentials: include"] -- "/v1/graphql (same origin)<br/>Authorization: Bearer (memory)" --> MW
-        TM["utils/tokenManager.js<br/>single-flight customerRefreshToken<br/>60 s before exp"] --> AW
+        AW["kit ZcomSsrProvider<br/>Apollo Client 4: error → auth → http<br/>shared with Nahara's useQuery calls"] -- "/v1/graphql (same origin)<br/>Authorization: Bearer (memory)" --> MW
+        TM["kit tokenManager<br/>single-flight customerRefreshToken<br/>60 s before exp · ready() on first load"] --> AW
     end
-    MW -- "rewrite → API_GATEWAY_URL/v1/graphql" --> GW
+    MW -- "→ API_GATEWAY_URL/v1/graphql" --> GW
 ```
 
-- **Edge headers (PRD-002 R2-C1, ROPS-1):** the gateway trusts `x-tenant-domain` and `x-zcom-client-ip` only with a valid `x-zcom-edge-secret`, so per-shopper rate limits key on the real IP instead of the host's. `EDGE_SHARED_SECRET` is server-only: `lib/edge-headers.js` is imported by `middleware.js` and the RSC client, and by `apollo-wrapper.js` only under an inline `typeof window === "undefined"` check (the SSR pass of client components calls the gateway directly), so the browser bundle never contains it. The old `next.config.mjs` rewrite was removed because a config rewrite can't set request headers.
-- **Client IP and tenant (PRD-002 round 3, VSEC-3/VSEC-4):** `getClientIp` takes `x-vercel-forwarded-for` only when `VERCEL` is set (Vercel overwrites it), then `request.ip`, then the right-most `x-forwarded-for` hop; the first hop and `x-real-ip` are client-controlled and never used. The proxy strips client `x-tenant-domain` and `x-forwarded-host`, and in production fails closed (500) without `NEXT_PUBLIC_TENANT_DOMAIN`; dev falls back to `localhost:3000`. The RSC client and the SSR pass of client components send no `x-zcom-client-ip` (a client component can't read `headers()`, and `headers()` in the root layout would end ISR), so the gateway sees the host's IP for those calls; this is an open design decision. The backend's 30/min per-IP login bucket across tenants (`AUTH_IP_RATE_LIMIT_PER_MIN`) makes setting `EDGE_SHARED_SECRET` in the same deploy as backend round 3 necessary.
-- **Error link:** `TOKEN_EXPIRED` → refresh once, retry; `INVALID_AUTH_TOKEN` / `TENANT_MISMATCH` / `INVALID_DB_TOKEN` → `SESSION_ENDED`; `TENANT_NOT_FOUND` → one "store unavailable" toast (R2-C5). A refresh ends the session only on auth or tenant codes, never on network or rate-limit errors (RBUG-19).
-- **Auth link:** if the shopper is logged in (persisted hint) but has no valid token, it waits for the refresh first (page reloads). `context.skipAuth` sends a request anonymously.
-- **Errors** are mapped by `utils/errors.js` from `extensions.reason` / `code`.
+- **Edge headers (PRD-002 R2-C1):** the gateway trusts `x-tenant-domain` and `x-zcom-client-ip` only with a valid `x-zcom-edge-secret`. Only the kit reads `EDGE_SHARED_SECRET` (proxy, `zcomFetch`, the SSR pass of `ZcomSsrProvider`); it is required in production and staging.
+- **Client IP:** the kit takes it only from a trusted source (Vercel's `x-vercel-forwarded-for` here); server reads send none (cached pages are shared), except the payment-link page (`getRequestClientIp`).
+- **Error link (kit):** `TOKEN_EXPIRED` / `UNAUTHENTICATED` → refresh once, retry; `INVALID_AUTH_TOKEN` / `TENANT_MISMATCH` → the session ends (Nahara toasts it); `TENANT_NOT_FOUND` → one "store unavailable" toast (`onStoreUnavailable`); `TENANT_SUSPENDED` → reload at most once a minute. Network, 429 and 5xx never end a session. `context.skipAuth` sends a request anonymously.
+- **Errors** are shown with `utils/errors.js` (Nahara's copy; it reads Apollo and kit errors through the kit).
 
-**Operations in use (all ✅, 33):** customer auth (`customerLogin`, `customerSignup`, `customerRefreshToken`, `customerLogout`, `getMyProfile`, `updateMyProfile`); catalog (`getClientSideProducts`, `getClientSideProductById`, `getClientSideCategories`, `getClientSideCategory`, `getFilterOptions`); cart (`issueGuestCartId`, `mergeGuestCart`, line mutations) and promotions; checkout (`createCheckoutSessionFromCart`, `getCheckoutSession`, `completeCheckout`, `createPaymentSession`, `verifyPayment`); `myOrders` / `myOrder`; addresses (full CRUD); `getWishlist` / `toggleWishlist`; `submitContactForm`; `requestBackInStock`; PRD-003 FR-0.5 (2026-10-15) adds `customerRequestPasswordReset` and `customerResetPassword` (36 in total with `unsubscribeNewsletter`). PRD-014 FR-2.8 (2026-10-25) adds `subscribeNewsletter` (footer), `getReviews` (PDP) and a sitemap read of `getClientSideProducts`; FE-22 adds `getClientSideProductsByIds` (wishlist). PRD-020 FR-12 (2026-10-26) adds `getVariantAvailability` (the fresh stock read on the PDP and the cart drawer) and selects `availability` on products and variants; PRD-015 FR-20 adds `cancelMyOrder`, `createReturnRequest` and `cancelMyReturnRequest` on the order page. 44 documents, validated with `npm run validate:ops` against the composed supergraph.
+**Operations in use:** 61 documents (Nahara's own, `src/graphql/`), all valid against the composed supergraph (`npm run validate:ops`, backend `validate:clients` 61/61, 2026-11-10), plus the kit's own documents for the flows it runs (session refresh and logout, checkout start, payment return, tag config).
 
 ## 4. Session and guest identity
 
 ```mermaid
 stateDiagram-v2
     [*] --> Guest: first visit
-    Guest: visitorId = server-signed id from issueGuestCartId<br/>(issued lazily at first add, 7-day sliding, useVisitor) = cart guestId<br/>INVALID_GUEST_ID → drop, re-issue, retry once
-    Guest --> Authenticated: customerLogin / customerSignup<br/>AuthContext.completeLogin: mergeGuestCart(guestId), reset store
-    Authenticated: access token in memory (tokenManager)<br/>refresh = HttpOnly __Host-zc_cust_rt<br/>auth-store persists hint + customer id only (v1)
+    Guest: guest id = server-signed id from issueGuestCartId<br/>(issued lazily at first add; kit guestCartStore via useVisitor) = cart guestId<br/>INVALID_GUEST_ID → drop, re-issue, retry once
+    Guest --> Authenticated: kit login / signup (AuthContext)<br/>clear store · mergeGuestCart(guestId) · reset store · load profile
+    Authenticated: access token in memory (kit tokenManager)<br/>refresh = HttpOnly __Host-zc_cust_rt<br/>auth-store persists hint + customer id, kept in step with the kit
     Authenticated --> Authenticated: customerRefreshToken (single-flight)
     Authenticated --> Guest: logout → customerLogout, then always clear token, store, localStorage, cache<br/>or refresh refused (UNAUTHENTICATED/FORBIDDEN)
 ```
 
-The visitor id is cleared after a successful `mergeGuestCart` (one idempotent, server-re-priced call, R2-C3), or when the server rejects it; on any other failure it is kept and the shopper is warned. Unsigned UUIDs from before R2-C2 are dropped on read, so old guest bags are lost once at deploy. The profile isn't persisted (RSEC-11); after a reload it's fetched again with `getMyProfile`. The legacy JS `refresh_token` cookie is left for the backend to read and expire during `LEGACY_REFRESH_COOKIE_UNTIL`; the old access token is purged from localStorage.
+The guest id is cleared after a successful `mergeGuestCart` (one idempotent, server-re-priced call, R2-C3), or when the server rejects it; on any other failure it is kept and the shopper is warned ("Some items from your bag could not be added"). The profile isn't persisted (RSEC-11); after a reload it's fetched again with `getMyProfile`. On the first visit after the move to the kit, the old `user-data` hint, `visitorId`, `zc_consent` and click ids are moved to the kit's keys once (`migrateLegacyStorage`), and old token keys are removed. The legacy `refresh_token` cookie isn't forwarded (kit PRD-002 D10).
 
 ## 5. Checkout flow
 
@@ -112,7 +111,7 @@ sequenceDiagram
     actor S as Shopper (logged in)
     participant C as checkout-client.jsx
     participant GW as Gateway
-    participant NB as Nimbbl
+    participant NB as Payment app
     participant TY as thank-you
 
     S->>C: fill the form (zod CheckoutSchema)
@@ -124,18 +123,18 @@ sequenceDiagram
     C->>GW: completeCheckout → orderId + pricing.total (bag locked from here)
     Note over C: pricing.total = 0 → the order is already PAID (PRD-014 COM-08):<br/>no payment session, straight to thank-you
     Note over C: orderId + cart fingerprint + details fingerprint (email, shipping, billing) saved in sessionStorage (utils/pending-order.js); a retry or reload pays this order while both match
-    C->>GW: createPaymentSession({orderId}) → token
-    C->>NB: Checkout({token}).open() ("Pay Now" disabled until the callback)
+    C->>GW: createPaymentSession({orderId}) → provider-neutral checkout
+    C->>NB: kit launchPayment (SDK window, redirect or form post; known hosts only, 20 s script timeout; "Pay Now" disabled until the callback)
     NB-->>C: callback (processed once)
     C->>GW: verifyPayment(payload)
     C->>TY: success / PENDING / ALREADY_PAID → thank-you; else payment-failed (VERIFY_FAILED, NO_PAYMENT_SESSION, FAILED)
     loop every 3 s, up to 60 s
         TY->>GW: myOrder(orderId)
     end
-    Note over TY: PAID → GA4 + Pixel + Google Ads purchase (once per order id; Pixel eventID = order id, PRD-034); polling → "Processing"; ends unpaid → "Payment not confirmed yet" (RBUG-20)
+    Note over TY: PAID → Pixel + Google Ads purchase through the kit (once per order id; eventID = order id, PRD-034); GA4 purchase from the backend; polling → "Processing"; ends unpaid → "Payment not confirmed yet" (RBUG-20)
 ```
 
-The client **never sends prices**: `addItemToCart` takes `{productId, variantId, qty}` plus `guestId`, and the payable total comes from the session pricing. Closing the Nimbbl window re-enables "Pay Now" for the same order. The pending order is forgotten when payment succeeds or the cart lines or coupon change; a changed email or address creates a new order (VBUG-4), and a legacy entry without the details fingerprint is never reused; the backend separately reuses an unchanged cart's active checkout session and cancels it when the cart changed (R2-C8). Reservation reasons `CHECKOUT_EXPIRED` and `RESERVATION_RELEASED` map to "reservation expired" (R2-C7); `CHECKOUT_REPLACED`, `PAYMENT_NOT_CONFIGURED`, `MISSING_PROVIDER_ORDER` and `INVALID_EMAIL` have their own messages (VCON-2). PRD-014 Wave 1: a ₹0 order skips the payment steps; `SHIPPING_UNAVAILABLE` (no shipping zone for the address) shows "We can't ship to this address yet" and focuses the address; a `VARIANT_REQUIRED` cart remove refetches the bag.
+The client **never sends prices**: `addItemToCart` takes `{productId, variantId, qty}` plus `guestId`, and the payable total comes from the session pricing. Closing the payment window re-enables "Pay Now" for the same order. The pending order is forgotten when payment succeeds or the cart lines or coupon change; a changed email or address creates a new order (VBUG-4), and a legacy entry without the details fingerprint is never reused; the backend separately reuses an unchanged cart's active checkout session and cancels it when the cart changed (R2-C8). Reservation reasons `CHECKOUT_EXPIRED` and `RESERVATION_RELEASED` map to "reservation expired" (R2-C7); `CHECKOUT_REPLACED`, `PAYMENT_NOT_CONFIGURED`, `MISSING_PROVIDER_ORDER` and `INVALID_EMAIL` have their own messages (VCON-2). PRD-014 Wave 1: a ₹0 order skips the payment steps; `SHIPPING_UNAVAILABLE` (no shipping zone for the address) shows "We can't ship to this address yet" and focuses the address; a `VARIANT_REQUIRED` cart remove refetches the bag.
 
 ## 6. Presentation layer
 
@@ -148,8 +147,8 @@ The client **never sends prices**: `addItemToCart` takes `{productId, variantId,
 | Images | `next/image` with `sizes`; `remotePatterns` allows only `assets.nahara.co.in`; avif/webp; 1-year cache TTL |
 | SEO | `metadataBase` from `NEXT_PUBLIC_SITE_URL`; per-route canonicals; `generateMetadata` on categories and products; JSON-LD schema components serialised with `utils/json-ld.js` |
 | CMS HTML | `utils/sanitize-html.js` (allowlist over `html-react-parser`'s `htmlToDOM`) |
-| Security headers | CSP (GTM/GA, Meta, `*.nimbbl.tech` + Nimbbl helper hosts, assets, `frame-ancestors 'none'`; report-only with `CSP_REPORT_ONLY=true`), X-Frame-Options DENY, nosniff, strict-origin referrer, Permissions-Policy, HSTS in production. `script-src 'unsafe-inline'` is kept: a nonce would force dynamic rendering (no ISR) and GTM custom-HTML tags need it (SF-9 partial) |
-| Analytics | Consent first (PRD-014 FR-1.9, D10): `layout.jsx` runs only the Google Consent Mode v2 defaults ("denied"); `components/common/ConsentBanner.jsx` + `utils/consent.js` load GTM and GA after "analytics" consent and the Meta Pixel (first PageView) after "marketing" consent, choice in localStorage `zc_consent`, reopened from the footer "Cookie preferences"; no hard-coded tag ids. Meta Pixel helpers `lib/fpixel.js` (`FacebookPixel.jsx` tracks client navigations only), `utils/analytics.js` (GA4 e-commerce events), `utils/analytics-events.js` (PRD-013 event layer: `select_item`, `select_variant`, `cta_click`, `gallery_interaction`, `size_guide_open`, `notify_me`, `coupon_apply`/`coupon_failed`, `add_shipping_info`, `add_payment_info`, `checkout_error`; `item_id` = variant id), `utils/ga-attribution.js` (PRD-012 order attribution); PRD-034: tag ids from the backend `storefrontTrackingConfig` read in `app/layout.jsx` (`lib/tracking-config.js`, revalidate 5 min) with the env ids as fallback (`utils/tracking-config.js`; GTM env-only), the Pixel and Google Ads tag only after "marketing", `trackEcomEvent` also sending Meta and Google Ads events (`utils/ads-tracking.js`: variant ids, Purchase `eventID` / `transaction_id` = order `_id`, enhanced conversions hashed in the browser), click ids + `_fbp`/`_fbc` with checkout only under "marketing" and a `consent` snapshot always (`utils/ad-click-ids.js`) |
+| Security headers | The kit's `buildSecurityHeaders` (payment apps, GA4/GTM, Meta and Google Ads, platform media CDN and S3 uploads, `frame-ancestors 'none'`, HSTS in production) plus `assets.nahara.co.in`; report-only with `CSP_REPORT_ONLY=true` |
+| Analytics | Consent first (PRD-014 FR-1.9, D10): the kit's `CONSENT_DEFAULT_SCRIPT` (denied, then the stored choice); `ConsentBanner` saves through the kit's `updateConsent`; the kit's `ZcomTags` loads GTM + GA4 with analytics consent and the Meta Pixel + Google Ads with ads ("marketing") consent, tag ids from `storefrontTrackingConfig` with the env fallback; GA4 events queue until GA4 loads and go to GA4 only; attribution only with analytics consent, click ids only with ads consent |
 
 ## 7. Deployment
 
@@ -172,7 +171,7 @@ flowchart LR
 | Every browser API call runs through the Edge middleware (VPERF-4) | Latency and cost per call | Accepted (R3-D7) |
 | CSP keeps `script-src 'unsafe-inline'` | XSS defence relies on the sanitiser and JSON-LD escaping | Accepted (ISR, GTM); report-only rollout first |
 | Shared logic duplicated with deveshe-dreams | Fixes must be made twice | ADR for a shared package |
-| Not browser-tested; Nimbbl callback shape unverified | Unknown runtime issues | Sandbox run after deploy |
+| Not browser-tested since the move onto the kit (Next 16, library majors); no payment app run against a sandbox | Unknown runtime and visual issues | Kit `zcom-live-check` + a manual browser pass (owner), then a sandbox payment |
 | ESLint not installed | Hygiene | T2 |
 
 ## PRD-020 stock signal and PRD-015 post-purchase (2026-10-26, not browser-tested)

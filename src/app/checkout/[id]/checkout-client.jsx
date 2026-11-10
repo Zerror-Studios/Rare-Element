@@ -9,7 +9,7 @@
  * 2. completeCheckout → orderId (UN_PAID order, idempotent per session).
  * 3. createPaymentSession({ orderId }) → a provider-neutral `checkout` on
  *    the store's active payment app (server amount, PRD-011).
- * 4. `openPaymentCheckout`: Razorpay / Cashfree / Nimbbl window → response
+ * 4. `openPaymentCheckout` (kit launcher): Razorpay / Cashfree window or a redirect → response
  *    → verifyPayment (server-to-server); PayU posts back to
  *    `/api/payments/return` → `/checkout/payment-return`.
  * 5. thank-you?orderId=… (PAID or pending), payment-failed otherwise.
@@ -56,7 +56,7 @@ import Link from "next/link";
 import { trackEcomEvent } from "@/utils/analytics";
 import { getErrorInfo, getErrorMessage, getReasonMessage } from "@/utils/errors";
 import { PendingOrder } from "@/utils/pending-order";
-import { getCheckoutTrackingVariables } from "@/utils/ad-click-ids";
+import { buildAttribution, buildCheckoutConsent } from "@zcom/storefront-kit/core";
 import {
   CheckoutStepEnum,
   trackAddPaymentInfo,
@@ -346,7 +346,12 @@ const CheckoutClient = () => {
   };
 
   const placeOrder = async (details) => {
-    const tracking = getCheckoutTrackingVariables();
+    // GA ids and UTMs (analytics consent), ad click ids and _fbp/_fbc
+    // (ads consent), and the consent snapshot itself (kit, PRD-034)
+    const tracking = {
+      attribution: buildAttribution(),
+      consent: buildCheckoutConsent(),
+    };
     const { data } = await createCheckoutSession({
       variables: {
         cartId: cartData?._id,

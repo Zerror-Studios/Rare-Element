@@ -12,8 +12,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { RiEyeLine, RiEyeOffLine } from "@remixicon/react";
 import GreenBoxBtn from "../buttons/GreenBoxBtn";
 import { PhoneInput } from "react-international-phone";
-import { useMutation } from "@apollo/client/react";
-import { SIGN_UP_USER, CUSTOMER_LOGIN } from "@/graphql";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "react-toastify";
 import { getErrorMessage } from "@/utils/errors";
@@ -43,9 +41,8 @@ const Signup = ({ setToggle }) => {
   const router = useRouter();
   const [visible, setVisible] = useState(false);
   const [confirmVisible, setConfirmVisible] = useState(false);
-  const [signupUser, { loading }] = useMutation(SIGN_UP_USER);
-  const [customerLogin] = useMutation(CUSTOMER_LOGIN);
-  const { completeLogin } = useAuth();
+  const { signup } = useAuth();
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -58,42 +55,23 @@ const Signup = ({ setToggle }) => {
   });
 
   const onSubmit = async (data) => {
-    let createdUser = null;
+    setLoading(true);
     try {
       // The account status is decided server-side, never sent.
       const { confirmPassword, ...input } = data;
-
-      const { data: signupResponse } = await signupUser({ variables: { input } });
-      createdUser = signupResponse?.customerSignup;
-      if (!createdUser?._id) return;
-
-      // Automatically login the user after successful signup
-      const { data: loginResponse } = await customerLogin({
-        variables: {
-          input: {
-            email: input.email,
-            password: input.password
-          }
-        }
-      });
-
-      const { accessToken, expiresIn } = loginResponse?.customerLogin || {};
-      if (!accessToken) throw new Error("Login after signup failed");
-
-      await completeLogin(accessToken, expiresIn);
+      // Creates the account, then signs in and merges the guest bag (kit)
+      await signup(input);
       toast.success("Account created successfully!");
       router.replace(getNextPath());
     } catch (err) {
-      if (createdUser?._id) {
-        toast.error("Account created, but login failed. Please login manually.");
-        setToggle(false); // Switch to login tab
-        return;
-      }
       toast.error(
         getErrorMessage(err, "Signup failed. Please try again.", {
+          EMAIL_TAKEN: "This email is already registered. Please log in.",
           CONFLICT: "This email is already registered. Please log in.",
         }),
       );
+    } finally {
+      setLoading(false);
     }
   };
 

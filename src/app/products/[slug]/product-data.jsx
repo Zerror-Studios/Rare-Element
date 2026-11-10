@@ -5,7 +5,7 @@ import {
   GET_PRODUCT_REVIEWS,
   GET_PRODUCTS,
 } from "@/graphql";
-import { getClient } from "@/lib/apollo-client-rsc";
+import { serverQuery } from "@/lib/server-query";
 import { ProductStatus } from "@/utils/Constant";
 import { isNotFoundError } from "@/utils/errors";
 import ProductClient from "./product-client";
@@ -21,16 +21,12 @@ const PRODUCT_REVIEW_LIMIT = 10;
  * `generateMetadata` and the page share one fetch.
  */
 export const getProduct = cache(async (slug) => {
-  const client = getClient();
   const lookups = [{ slug }];
   if (OBJECT_ID_PATTERN.test(slug)) lookups.push({ id: slug });
 
   for (const variables of lookups) {
     try {
-      const { data } = await client.query({
-        query: GET_PRODUCT_BY_ID,
-        variables,
-      });
+      const data = await serverQuery(GET_PRODUCT_BY_ID, variables);
       if (data?.getClientSideProductById) return data.getClientSideProductById;
     } catch (error) {
       if (!isNotFoundError(error)) throw error;
@@ -46,19 +42,15 @@ export default async function ProductData({ slug }) {
   // "You may also like" is optional: a failure leaves it empty.
   let productList = [];
   try {
-    const client = getClient();
-    const productListRes = await client.query({
-      query: GET_PRODUCTS,
-      variables: {
-        offset: 0,
-        limit: 12,
-        filters: {
-          status: ProductStatus.PUBLISHED,
-          slugNotInclude: slug,
-        },
+    const productListRes = await serverQuery(GET_PRODUCTS, {
+      offset: 0,
+      limit: 12,
+      filters: {
+        status: ProductStatus.PUBLISHED,
+        slugNotInclude: slug,
       },
     });
-    productList = productListRes?.data?.getClientSideProducts?.products || [];
+    productList = productListRes?.getClientSideProducts?.products || [];
   } catch (error) {
     console.error("Error fetching related products:", error.message);
   }
@@ -66,17 +58,13 @@ export default async function ProductData({ slug }) {
   // Reviews are optional as well: a failure hides the section.
   let reviews = { data: [], totalCount: 0 };
   try {
-    const client = getClient();
-    const reviewRes = await client.query({
-      query: GET_PRODUCT_REVIEWS,
-      variables: {
-        offset: 0,
-        limit: PRODUCT_REVIEW_LIMIT,
-        filter: { productId: data?._id },
-        sort: "NEWEST",
-      },
+    const reviewRes = await serverQuery(GET_PRODUCT_REVIEWS, {
+      offset: 0,
+      limit: PRODUCT_REVIEW_LIMIT,
+      filter: { productId: data?._id },
+      sort: "NEWEST",
     });
-    reviews = reviewRes?.data?.getReviews || reviews;
+    reviews = reviewRes?.getReviews || reviews;
   } catch (error) {
     console.error("Error fetching product reviews:", error.message);
   }
@@ -85,13 +73,8 @@ export default async function ProductData({ slug }) {
   // partial answer) means no summary, never a broken page
   let reviewSummary = null;
   try {
-    const client = getClient();
-    const summaryRes = await client.query({
-      query: GET_PRODUCT_REVIEW_SUMMARY,
-      variables: { id: data?._id },
-      errorPolicy: "none",
-    });
-    reviewSummary = summaryRes?.data?.getClientSideProductById?.reviewSummary || null;
+    const summaryRes = await serverQuery(GET_PRODUCT_REVIEW_SUMMARY, { id: data?._id });
+    reviewSummary = summaryRes?.getClientSideProductById?.reviewSummary || null;
   } catch (error) {
     console.error("Error fetching the review summary:", error.message);
   }
