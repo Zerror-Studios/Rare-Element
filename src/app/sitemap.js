@@ -2,13 +2,15 @@
  * sitemap.xml (PRD-014 FR-2.8, UX-33)
  *
  * The public pages, every storefront category and the published products,
- * read from the catalog with the anonymous server client. Capped at
+ * and the published lookbooks, read from the catalog with the anonymous
+ * server client. Capped at
  * `SITEMAP_PRODUCT_LIMIT` products (pages of `SITEMAP_PAGE_SIZE`, the
  * backend's page cap) so one request never walks an unbounded catalog. A
  * catalog failure still serves the static pages; the next revalidation
  * fills the rest in.
  */
 
+import { getLookbooks } from "@zcom/storefront-kit/server";
 import { GET_CLIENT_SIDE_CATEGORIES, GET_SITEMAP_PRODUCTS } from "@/graphql";
 import { serverQuery } from "@/lib/server-query";
 import { ProductStatus } from "@/utils/Constant";
@@ -21,6 +23,7 @@ export const revalidate = 3600;
 const SITEMAP_PAGE_SIZE = 100;
 const SITEMAP_PRODUCT_LIMIT = 1000;
 const SITEMAP_CATEGORY_LIMIT = 100;
+const SITEMAP_LOOKBOOK_LIMIT = 50;
 
 const STATIC_PATHS = [
   { path: "/", priority: 1 },
@@ -91,6 +94,23 @@ async function fetchCategoryEntries() {
     }));
 }
 
+/** `/lookbook` and each published lookbook; nothing while there are none. */
+async function fetchLookbookEntries() {
+  const { lookbooks } = await getLookbooks({ limit: SITEMAP_LOOKBOOK_LIMIT });
+  if (!lookbooks.length) return [];
+  return [
+    { url: toCanonicalUrl("/lookbook"), changeFrequency: "weekly", priority: 0.6 },
+    ...lookbooks
+      .filter((lookbook) => lookbook?.slug)
+      .map((lookbook) => ({
+        url: toCanonicalUrl(`/lookbook/${encodeURIComponent(lookbook.slug)}`),
+        lastModified: toDate(lookbook.publishedAt),
+        changeFrequency: "weekly",
+        priority: 0.6,
+      })),
+  ];
+}
+
 // ─── Route ────────────────────────────────────────────────────────────────
 
 export default async function sitemap() {
@@ -103,13 +123,15 @@ export default async function sitemap() {
   }));
 
   // A section that fails (or no gateway configured) is left out
-  const [categories, products] = await Promise.allSettled([
+  const [categories, products, lookbooks] = await Promise.allSettled([
     fetchCategoryEntries(),
     fetchProductEntries(),
+    fetchLookbookEntries(),
   ]);
   return [
     ...staticEntries,
     ...(categories.status === "fulfilled" ? categories.value : []),
     ...(products.status === "fulfilled" ? products.value : []),
+    ...(lookbooks.status === "fulfilled" ? lookbooks.value : []),
   ];
 }

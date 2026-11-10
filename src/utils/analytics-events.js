@@ -46,6 +46,9 @@ export const StorefrontEventEnum = {
   COUPON_APPLY: "coupon_apply",
   COUPON_FAILED: "coupon_failed",
   CHECKOUT_ERROR: "checkout_error",
+  // PRD-027 FR-8: lookbook pages
+  LOOKBOOK_VIEW: "lookbook_view",
+  LOOKBOOK_HOTSPOT_CLICK: "lookbook_hotspot_click",
 };
 
 /** The `cta` parameter values of `cta_click`. */
@@ -90,6 +93,9 @@ export const CUSTOM_DIMENSION_PARAMETERS = [
   "coupon",
   "page_path",
   "item_id",
+  // PRD-027 FR-8
+  "lookbook_slug",
+  "look_position",
 ];
 
 /** Parameter values are clipped to this length before they reach GA4. */
@@ -149,14 +155,32 @@ const toLineItems = (cart) => (cart?.cart || []).map(mapLineToGA4Item);
 // ─── Typed helpers ────────────────────────────────────────────────────────
 
 /** A product card was clicked in a list (`select_item`). */
-export const trackSelectItem = (product, listName) => {
+export const trackSelectItem = (product, listName, listId) => {
   const item = mapProductToGA4Item(product);
   if (!item) return;
   trackEvent(StorefrontEventEnum.SELECT_ITEM, {
+    item_list_id: listId,
     item_list_name: listName,
-    items: [{ ...item, item_list_name: listName }],
+    items: [{ ...item, item_list_id: listId, item_list_name: listName }],
   });
 };
+
+// ─── Lookbooks (PRD-027 FR-8, F10) ────────────────────────────────────────
+
+/** GA4 `item_list_id` of a lookbook page (backend `lookbookItemListId`). */
+export const lookbookItemListId = (slug) => `lookbook:${slug}`;
+
+/** A lookbook page was viewed. */
+export const trackLookbookView = (slug) =>
+  trackEvent(StorefrontEventEnum.LOOKBOOK_VIEW, { lookbook_slug: slug });
+
+/** A product dot on a look was opened; `position` is the look's position. */
+export const trackLookbookHotspotClick = (slug, position, itemId) =>
+  trackEvent(StorefrontEventEnum.LOOKBOOK_HOTSPOT_CLICK, {
+    lookbook_slug: slug,
+    look_position: position,
+    item_id: itemId,
+  });
 
 /** A size, colour or other option was chosen on the product page. */
 export const trackSelectVariant = ({

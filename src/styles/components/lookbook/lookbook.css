@@ -1,0 +1,200 @@
+/* Lookbooks (backend PRD-027): list, header and looks, in the shop's
+   white, bordered-grid style (`components/products/products.css`). */
+
+/* ─── List ─────────────────────────────────────────────────────────────── */
+
+.lookbook_list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  padding-bottom: 4rem;
+}
+
+.lookbook_list_item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.lookbook_list_cover {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background-color: #f5f5f5;
+}
+
+.lookbook_list_cover img {
+  object-fit: cover;
+  transition: transform ease 0.6s;
+}
+
+.lookbook_list_item:hover .lookbook_list_cover img {
+  transform: scale(1.02);
+}
+
+.lookbook_empty {
+  text-align: center;
+  padding: 4rem 1rem 6rem;
+}
+
+/* ─── Header ───────────────────────────────────────────────────────────── */
+
+.lookbook_intro {
+  max-width: 720px;
+  margin: 0 auto 3rem;
+  text-align: center;
+}
+
+/* ─── Looks ────────────────────────────────────────────────────────────── */
+
+.lookbook_look {
+  width: 100%;
+  padding-bottom: 4rem;
+}
+
+.lookbook_look_text {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 3rem 1rem 2rem;
+  text-align: center;
+}
+
+.lookbook_look_body {
+  margin-top: 1rem;
+}
+
+.lookbook_full {
+  width: 100%;
+}
+
+.lookbook_split,
+.lookbook_grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+.lookbook_split .lookbook_look_text {
+  padding: 2rem 0;
+  text-align: left;
+}
+
+.lookbook_image {
+  position: relative;
+  width: 100%;
+}
+
+/* Tagged images keep their own aspect ratio (no crop, PRD-027 §6) */
+.lookbook_image_img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.lookbook_video {
+  position: relative;
+  width: 100%;
+}
+
+.lookbook_video video {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.lookbook_video_toggle {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  background: none;
+  border: none;
+  color: white;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* ─── Hotspots ─────────────────────────────────────────────────────────── */
+
+.lookbook_hotspot {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+/* 28 px: above the 24 px minimum target (PRD-027 §6) */
+.lookbook_hotspot_dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid white;
+  background-color: rgba(17, 17, 17, 0.6);
+  cursor: pointer;
+  transition: transform ease 0.3s;
+}
+
+.lookbook_hotspot_dot:hover,
+.lookbook_hotspot_dot[aria-expanded="true"] {
+  transform: scale(1.15);
+}
+
+.lookbook_hotspot_dot:focus-visible {
+  outline: 2px solid #111;
+  outline-offset: 2px;
+}
+
+.lookbook_hotspot_card {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  background-color: white;
+  color: #111;
+  border: 1px solid #f5f5f5;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* ─── Products and CTA ─────────────────────────────────────────────────── */
+
+.lookbook_shop_title {
+  text-align: center;
+  padding: 2rem 0 1rem;
+}
+
+.lookbook_cta {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 1rem 0;
+}
+
+.lookbook_cta .green_box_btn {
+  max-width: 320px;
+}
+
+@media (min-width: 768px) {
+  .lookbook_list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .lookbook_split,
+  .lookbook_grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+
+  .lookbook_split .lookbook_look_text {
+    padding: 4rem 2rem;
+  }
+}
+
+@media (min-width: 1100px) {
+  .lookbook_list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

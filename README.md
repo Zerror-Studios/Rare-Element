@@ -43,7 +43,7 @@ Tests: `npm test` runs `test/*.test.mjs` with `node:test` (Node ≥ 22.15, no ex
 
 ## Structure
 
-Routes: `/`, `/products`, `/products/[slug]`, `/[...categories]`, `/account/*` (orders, settings, wishlist; the fake offers page was removed, PRD-014 UX-06), `/checkout/[id]` (+ `thank-you`, `payment-failed`), `/login`, `/about`, `/contact`, and the legal pages. `src/proxy.js` (the kit's middleware) proxies `/v1/graphql` to the gateway and sends shoppers without a session to `/login?next=…` for `/account/*` and checkout. Source lives under `src/`, using the `@/*` alias. The full map is in `CLAUDE.md` §2.
+Routes: `/`, `/products`, `/products/[slug]`, `/[...categories]`, `/account/*` (orders, settings, wishlist; the fake offers page was removed, PRD-014 UX-06), `/checkout/[id]` (+ `thank-you`, `payment-failed`), `/lookbook`, `/lookbook/[slug]` (backend lookbooks, PRD-027), `/login`, `/about`, `/contact`, and the legal pages. `src/proxy.js` (the kit's middleware) proxies `/v1/graphql` to the gateway and sends shoppers without a session to `/login?next=…` for `/account/*` and checkout. Source lives under `src/`, using the `@/*` alias. The full map is in `CLAUDE.md` §2.
 
 ## Contributing
 

@@ -34,6 +34,7 @@
 
 @import "./components/products/products.css";
 @import "./components/products/productDetail.css";
+@import "./components/lookbook/lookbook.css";
 @import "./pages/password-reset.css";
 @import "./pages/search.css";
 @import "./pages/pay.css";

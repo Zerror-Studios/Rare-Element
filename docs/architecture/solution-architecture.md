@@ -54,7 +54,8 @@ flowchart TB
 | `/products/[slug]` | Product detail, `generateMetadata` (seo, Open Graph, Twitter), Product JSON-LD (offers; `availability` from `Product.availability` when the store's stock signal is on, PRD-020 FR-14), latest 10 approved reviews (`getReviews`, PRD-014 FR-2.8); an id permanently redirects to the slug | ISR 300 |
 | `/search?q=` | Product search, `filters.search` on `getClientSideProducts` (client, PRD-014 FR-2.8) | Dynamic, `noindex, follow` |
 | `/sitemap.xml`, `/robots.txt` | `app/sitemap.js` (static pages, categories, ≤ 1000 published products) and `app/robots.js` (sitemap URL from `NEXT_PUBLIC_SITE_URL`), PRD-014 FR-2.8 | Sitemap revalidated hourly; robots static |
-| `/[...categories]` | Category listing, `generateMetadata` | ISR 300 |
+| `/[...categories]` | Category listing, `generateMetadata`; an unknown path answers a real 404 (no `loading.jsx` here) | ISR 300 |
+| `/lookbook`, `/lookbook/[slug]` | Backend lookbooks through the kit (`getLookbooks`, `getLookbook`; PRD-027 D10): cover grid, then hero, featured products and one look section per look; an old slug → 308, unknown → 404; in the sitemap | ISR 300 |
 | `/account`, `/account/settings`, `/account/wishlist`, `/account/order/[id]` (`/account/offers` removed, PRD-014 UX-06; the order page shows `displayStatus`, tracking, Cancel and returns, PRD-015 FR-20) | Per user (client side) | Dynamic, never cached |
 | `/checkout/[id]` | The customer's own cart (the id in the URL is cosmetic) | Dynamic, login required |
 | `/checkout/start` | PRD-034 FR-1.9: parses `?products=`, `getVariantAvailability` → `addItemToCart` per line, then checkout or login (client) | Dynamic, noindex, public |
@@ -144,7 +145,7 @@ The client **never sends prices**: `addItemToCart` takes `{productId, variantId,
 | Fonts | `next/font` Inter + `styles/fontSetting.css` |
 | Motion | GSAP 3.13 (ScrollTrigger, CustomEase) registered once in `providers.jsx`, scoped cleanup (`gsap.context`); `lenis` smooth scroll; lottie via `LazyLottie` (visible only, JSON from `/public`); three/R3F via `dynamic(..., {ssr:false})` |
 | Icons | `@remixicon/react` |
-| Images | `next/image` with `sizes`; `remotePatterns` allows only `assets.nahara.co.in`; avif/webp; 1-year cache TTL |
+| Images | `next/image` with `sizes`; `remotePatterns` allows `assets.nahara.co.in` and the platform media CDN (`media.zerrorstudios.com`, `media-uat.zerrorstudios.com`, PRD-039); avif/webp; 1-year cache TTL |
 | SEO | `metadataBase` from `NEXT_PUBLIC_SITE_URL`; per-route canonicals; `generateMetadata` on categories and products; JSON-LD schema components serialised with `utils/json-ld.js` |
 | CMS HTML | `utils/sanitize-html.js` (allowlist over `html-react-parser`'s `htmlToDOM`) |
 | Security headers | The kit's `buildSecurityHeaders` (payment apps, GA4/GTM, Meta and Google Ads, platform media CDN and S3 uploads, `frame-ancestors 'none'`, HSTS in production) plus `assets.nahara.co.in`; report-only with `CSP_REPORT_ONLY=true` |

@@ -59,6 +59,10 @@ export async function generateMetadata({ params }) {
   };
 }
 
+// No `loading.jsx` in this route (removed 2026-11-11): a loading boundary
+// makes the page stream, and a missing category then answered 200 instead of
+// 404 (SF-14, found by the kit's live check). The category is read before
+// anything renders, as the product page does.
 export default async function Page({ params }) {
   const { categories } = await params;
   const slug = categories[categories.length - 1];

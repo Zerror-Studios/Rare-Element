@@ -1,5 +1,12 @@
 import GreenBoxBtn from "@/components/buttons/GreenBoxBtn";
 
+// One robots signal: without this the page inherits the layout's
+// "index, follow" next to Next's own "noindex".
+export const metadata = {
+  title: "Page not found",
+  robots: { index: false, follow: true },
+};
+
 // PRD-014 UX-36: the site's own status layout (plain CSS, no Tailwind).
 export default function NotFound() {
   return (

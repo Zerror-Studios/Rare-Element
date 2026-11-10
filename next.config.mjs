@@ -66,6 +66,11 @@ const nextConfig = {
         protocol: "https",
         hostname: "assets.nahara.co.in",
       },
+      // The platform media CDN every store's files are served from since
+      // backend PRD-039 (2026-11-10; the UAT one too): without it the image
+      // optimiser refuses product and lookbook images.
+      { protocol: "https", hostname: "media.zerrorstudios.com" },
+      { protocol: "https", hostname: "media-uat.zerrorstudios.com" },
     ],
   },
 

@@ -17,8 +17,9 @@ import { getListingBadge } from "@/utils/stock-signal";
 // shows the PRD-020 stock badge ("Sold out" / "Low stock") from
 // `product.availability` (null = no badge, as before).
 // `product` + `listName` (optional) let the card send GA4 `select_item`
-// (PRD-013); the click still bubbles to the caller's <Link>.
-const ProductCard = React.memo(({ productId, name, badge, price, assets, product, listName }) => {
+// (PRD-013; `listId`: a lookbook's GA4 item_list_id, PRD-027 F10); the
+// click still bubbles to the caller's <Link>.
+const ProductCard = React.memo(({ productId, name, badge, price, assets, product, listName, listId }) => {
     const [imgLoaded, setImgLoaded] = useState(false);
     const { isWishlisted: checkWishlisted, toggle } = useWishlist();
     const isWishlisted = checkWishlisted(productId);
@@ -33,7 +34,7 @@ const ProductCard = React.memo(({ productId, name, badge, price, assets, product
     };
 
     const handleSelect = () => {
-        if (product) trackSelectItem(product, listName);
+        if (product) trackSelectItem(product, listName, listId);
     };
 
 
