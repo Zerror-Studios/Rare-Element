@@ -43,12 +43,24 @@ export default function CategoryClient({ meta, data, initialProducts, initialTot
   // a slow older list never renders under the newer sort label.
   const listRequestRef = useRef(0);
 
+  // SEO (kit live check): the store is filled after mount (and again per
+  // category), so until it holds this path's first page the server's page
+  // renders from the props; the server HTML then links every listed product.
+  const [storePath, setStorePath] = useState(null);
+
   useEffect(() => {
     listRequestRef.current += 1;
     setImageReady(false);
     resetStore();
     setInitialProducts(initialProducts, initialTotalCount);
+    setStorePath(pathname);
   }, [pathname, initialProducts, initialTotalCount]);
+
+  const isStoreReady = storePath === pathname;
+  const listedProducts = isStoreReady ? products : initialProducts || [];
+  const listHasMore = isStoreReady
+    ? hasMore
+    : listedProducts.length < (initialTotalCount || 0);
 
   const { fetchMore } = useQuery(
     GET_CLIENT_SIDE_CATEGORY_BY_SLUG,
@@ -193,8 +205,8 @@ export default function CategoryClient({ meta, data, initialProducts, initialTot
 
         <div className="padding">
           <div className={`allproducts_paren  categories_paren ${loading ? "opacity-50" : ""}`}>
-            {products?.length > 0 ? (
-              products?.map((item) => (
+            {listedProducts.length > 0 ? (
+              listedProducts.map((item) => (
                 <Link
                   key={item._id}
                   scroll={false}
@@ -216,7 +228,7 @@ export default function CategoryClient({ meta, data, initialProducts, initialTot
             }
           </div>
 
-          {hasMore && (
+          {listHasMore && (
             <div className="load_more_container">
               <GreenBoxBtn title="Load More" onClick={handleLoadMore} loading={loading} />
             </div>

@@ -33,9 +33,20 @@ const ProductsClient = ({ initialProducts, initialTotalCount, categories, initia
     setLoading
   } = useProductStore()
 
+  // SEO (kit live check): the store is filled after mount, so until then
+  // the server's first page renders from the props; the server HTML then
+  // links every listed product, and the first client render matches it.
+  const [isStoreReady, setIsStoreReady] = useState(false)
+
   useEffect(() => {
     setInitialProducts(initialProducts, initialTotalCount)
+    setIsStoreReady(true)
   }, [])
+
+  const listedProducts = isStoreReady ? products : initialProducts || []
+  const listHasMore = isStoreReady
+    ? hasMore
+    : listedProducts.length < (initialTotalCount || 0)
 
   const { refetch, fetchMore } = useQuery(GET_PRODUCTS, {
     variables: {
@@ -194,7 +205,7 @@ const ProductsClient = ({ initialProducts, initialTotalCount, categories, initia
         />
         <div className="allproducts_paren_warp">
           <div className={`allproducts_paren  ${loading ? "opacity-50" : ""}`}>
-            {products?.length == 0 && !loading && (
+            {listedProducts.length == 0 && !loading && (
               <div className="empty_products_box">
                 <h2 className='text-xl'>No products found</h2>
                 <p onClick={handleClearFilter} className='text_decoration_underline'>Clear Filter</p>
@@ -202,7 +213,7 @@ const ProductsClient = ({ initialProducts, initialTotalCount, categories, initia
             )
             }
 
-            {products?.map((item) => (
+            {listedProducts.map((item) => (
               <Link prefetch key={item?._id} scroll={false} title={item?.name || ""} href={`/products/${item?.slug || item?._id}`} data-testid="product-card-link">
                 <ProductCard
                   key={item?._id}
@@ -217,7 +228,7 @@ const ProductsClient = ({ initialProducts, initialTotalCount, categories, initia
             ))}
           </div>
 
-          {hasMore && (
+          {listHasMore && (
             <div className="load_more_container">
               <GreenBoxBtn title="Load More" onClick={handleLoadMore} loading={loading} />
             </div>

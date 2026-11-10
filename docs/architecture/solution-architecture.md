@@ -31,7 +31,7 @@ flowchart TB
         MW["proxy.js (kit createZcomMiddleware)<br/>/v1/graphql → gateway with edge headers · /.well-known/zcom-store<br/>suspended → branded 503 · /account/*, /checkout/* → /login?next= without a session cookie"]
         L["app/layout.jsx<br/>next/font Inter · kit CONSENT_DEFAULT_SCRIPT + ConsentBanner · providers · metadataBase"]
         P["route page.jsx<br/>serverQuery() (lib/server-query.js = kit zcomFetch, 300 s)<br/>metadata / generateMetadata (canonical per route)<br/>notFound() only on null / NOT_FOUND; else app/error.jsx"]
-        LD["loading.jsx (per route)"]
+        LD["loading.jsx (per route; none at the root: the home skeleton is in the (home) group,<br/>so product pages answer a real 404 / 308)"]
     end
     subgraph Client["Client components ('use client')"]
         PR["app/providers.jsx<br/>kit ZcomSsrProvider (Apollo Client 4, session) + ZcomTags<br/>AuthProvider · GSAP plugin registration"]

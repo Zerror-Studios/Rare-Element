@@ -71,7 +71,8 @@ The **Rare Element** brand storefront (the brand name in content and assets is *
 
 ```
 app/                 layout.jsx (fonts, the kit's CONSENT_DEFAULT_SCRIPT + ConsentBanner, metadataBase), providers.jsx (kit ZcomSsrProvider +
-                     ZcomTags, AuthProvider, Lenis, toasts, GSAP registration), error.jsx, not-found.jsx, page.jsx, products/,
+                     ZcomTags, AuthProvider, Lenis, toasts, GSAP registration), error.jsx, not-found.jsx, (home)/ (page.jsx + its loading.jsx
+                     skeleton, a route group: URL `/`), products/,
                      products/[slug]/ (generateMetadata), [...categories]/, account/{order/[id],settings,wishlist,reviews},
                      checkout/[id] (checkout-client.jsx: the store's flow on kit payment launch, attribution and consent),
                      checkout/thank-you, checkout/payment-failed, checkout/payment-return (kit usePaymentReturn),
@@ -103,7 +104,8 @@ components/common/   LenisScroll.jsx (sets window.lenis), ConsentBanner.jsx (on 
 ## 3. Rules
 
 - **App Router conventions.**
-  - A server `page.jsx` fetches data with the RSC client and exports `metadata` or `generateMetadata` (with a per-route canonical). Interactivity goes into a sibling `*-client.jsx` with `'use client'`. Add a `loading.jsx` for new routes.
+  - A server `page.jsx` fetches data with the RSC client and exports `metadata` or `generateMetadata` (with a per-route canonical). Interactivity goes into a sibling `*-client.jsx` with `'use client'`. Add a `loading.jsx` for new routes, but **never a root `app/loading.jsx`**: a loading boundary above a page makes it stream, so its `notFound()` answers 200 and `permanentRedirect` can't be a 308 (the home skeleton lives in the `(home)` group for that reason; 2026-11-11). Product pages have none above them: they check the product, then show their own Suspense skeleton.
+  - A client listing that keeps its products in a store renders the server's `initialProducts` until the store holds them (after mount), so the server HTML links every listed product (`products-client.jsx`, `category-client.jsx`; the kit's live check tests it).
   - Never import `next/router` (use `next/navigation`). Don't use Pages Router APIs.
   - Call `notFound()` only for a null result or `NOT_FOUND`; other errors go to `app/error.jsx`.
 - **Caching.** Catalog pages use `export const revalidate = 300`. Keep account, cart and checkout dynamic, and never cache per-user data.
