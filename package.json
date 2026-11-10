@@ -40,5 +40,8 @@
     "three": "^0.187.0",
     "zod": "^4.6.7",
     "zustand": "^5.1.0"
+  },
+  "allowScripts": {
+    "github:Zerror-Studios/zcom-storefront-kit#b4728fe313d2810d10601a1cc066b33192455e58": true
   }
 }

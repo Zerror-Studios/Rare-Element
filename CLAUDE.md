@@ -50,7 +50,7 @@ The **Rare Element** brand storefront (the brand name in content and assets is *
 
 **Stack (PRD-002 D3, one version table with the kit and Deveshe Dreams, 2026-11-10):**
 - Next.js 16.4 with the **App Router** (`src/proxy.js`, Turbopack), React 19.3, **JavaScript**.
-- **`@zcom/storefront-kit` 1.x** (installed from its GitHub tag; builds need the shared `GITHUB_TOKEN`, `vercel.json`), Apollo Client 4.3 (a kit peer: the store's own queries share the kit's client) + `@apollo/client-integration-nextjs` (the kit's `ZcomSsrProvider`), graphql 17, rxjs 7, zustand 5, react-hook-form + zod 4.
+- **`@zcom/storefront-kit` 1.x** (installed from its GitHub tag; builds need the shared `GITHUB_TOKEN`, `vercel.json`; its build-on-install is approved in `package.json` `allowScripts`, pinned to the tag's commit, so a new tag needs `npm approve-scripts @zcom/storefront-kit`), Apollo Client 4.3 (a kit peer: the store's own queries share the kit's client) + `@apollo/client-integration-nextjs` (the kit's `ZcomSsrProvider`), graphql 17, rxjs 7, zustand 5, react-hook-form + zod 4.
 - GSAP 3.15 (public package) with ScrollTrigger and CustomEase, `lenis`, Swiper 14.
 - three / R3F (dynamic import, `ssr: false`), lottie-react (only through `LazyLottie`, JSON fetched from `/public`), `@remixicon/react` icons, react-toastify, `html-react-parser` (also used by the sanitiser).
 
