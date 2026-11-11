@@ -1,0 +1,32 @@
+# AWS Amplify Hosting build (Next.js SSR). The twin of vercel.json.
+#
+# - The kit (@zcom/storefront-kit) is a git dependency on a private repo
+#   (the lockfile pins git+ssh); Amplify has no SSH key, so git fetches it
+#   over https with GITHUB_TOKEN (read access to the kit repo). The .npmrc
+#   token line only covers the npm registry, not git dependencies.
+# - Amplify gives console variables to the build only. The kit's server-only
+#   variables are read at runtime (the proxy, server pages and the
+#   well-known route), so they are written to .env.production for the
+#   server. They have no NEXT_PUBLIC_ prefix and never reach the browser.
+# - Node 22.15+: `npm run build` runs the tests first (prebuild, K-01).
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - nvm install 22 && nvm use 22
+        - git config --global url."https://x-access-token:${GITHUB_TOKEN}@github.com/".insteadOf "ssh://git@github.com/"
+        - git config --global --add url."https://x-access-token:${GITHUB_TOKEN}@github.com/".insteadOf "git@github.com:"
+        - git config --global --add url."https://x-access-token:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
+        - npm ci
+    build:
+      commands:
+        - env | grep -E '^(API_GATEWAY_URL|EDGE_SHARED_SECRET|ZCOM_STORE_SLUG|ZCOM_TRUSTED_IP_HEADER|ZCOM_TRUST_FORWARDED_FOR|ZCOM_REVALIDATE_SECONDS)=' >> .env.production || true
+        - npm run build
+  artifacts:
+    baseDirectory: .next
+    files:
+      - "**/*"
+  cache:
+    paths:
+      - .next/cache/**/*

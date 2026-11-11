@@ -25,7 +25,11 @@ npm run dev        # http://localhost:3000
 
 Every `NEXT_PUBLIC_*` value is public in the browser bundle.
 
-**Deploying** (owner): set the required variables in hosting (with the shared `GITHUB_TOKEN` linked), unset any absolute `NEXT_PUBLIC_GRAPHQL_API_URL`, set `EDGE_SHARED_SECRET` to the same value as on Elastic Beanstalk, and consider rolling the CSP out with `CSP_REPORT_ONLY=true` first. The storefront's domain is never added to the gateway's `CORS_ORIGINS` (PRD-007 FR-8.2: the kit's proxy is edge-signed).
+**Deploying** (owner):
+
+- **AWS Amplify** (`amplify.yml`, the twin of `vercel.json`): set `GITHUB_TOKEN` (read access to the private kit repo) and the server variables (`API_GATEWAY_URL`, `EDGE_SHARED_SECRET`, `ZCOM_STORE_SLUG`, and `ZCOM_TRUSTED_IP_HEADER` once the host's trusted client-IP header is confirmed) as Amplify environment variables. The build rewrites GitHub git URLs to https with the token (the kit is a git dependency; the `.npmrc` token line only covers the npm registry) and writes the server variables to `.env.production`, because Amplify gives console variables to the build only and the kit reads these at runtime. `NEXT_PUBLIC_*` names are baked in at build and need nothing extra. Confirm on the first `dev` deploy that Amplify runs Next 16 with `src/proxy.js`.
+
+On any host: set the required variables in hosting (with the shared `GITHUB_TOKEN` linked), unset any absolute `NEXT_PUBLIC_GRAPHQL_API_URL`, set `EDGE_SHARED_SECRET` to the same value as on Elastic Beanstalk, and consider rolling the CSP out with `CSP_REPORT_ONLY=true` first. The storefront's domain is never added to the gateway's `CORS_ORIGINS` (PRD-007 FR-8.2: the kit's proxy is edge-signed).
 
 Dev runs with Turbopack.
 
