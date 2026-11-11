@@ -33,7 +33,9 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    // suppressHydrationWarning: the kit consent script adds data-zcom-consent
+    // to <html> before React hydrates (kit 1.0.5), which is expected
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://assets.nahara.co.in" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://assets.nahara.co.in" />
