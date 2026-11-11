@@ -280,13 +280,15 @@ button {
   animation: shine 1s infinite;
 }
 
+/* Moves with transform, not `left`: animating `left` is a layout shift on
+   every frame (CLS). -75% → 125% of the logo is 4× the stripe's width. */
 @keyframes shine {
   0% {
-    left: -75%;
+    transform: translateX(0) rotate(25deg);
   }
 
   100% {
-    left: 125%;
+    transform: translateX(400%) rotate(25deg);
   }
 }
 

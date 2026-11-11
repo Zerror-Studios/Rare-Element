@@ -7,9 +7,34 @@
   text-align: center;
   padding: 8rem 0rem;
 }
+/* The gallery fades in from CSS, so the first images paint without waiting
+   for JavaScript (mobile LCP); same timing as the old GSAP tween:
+   0.5 s delay, 1.2 s expo-out, 0.1 s apart. */
+@keyframes about-img-fade-in {
+  to {
+    opacity: 1;
+  }
+}
 .abt_img_galry img,
 .abt_mob_txt img {
   opacity: 0;
+  animation: about-img-fade-in 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
+}
+.abt_img_galry .marq_img_2 img {
+  animation-delay: 0.6s;
+}
+.abt_img_galry .marq_img_3 img {
+  animation-delay: 0.7s;
+}
+.abt_mob_txt img {
+  animation-delay: 0.8s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .abt_img_galry img,
+  .abt_mob_txt img {
+    animation: none;
+    opacity: 1;
+  }
 }
 .about_mr_pr {
   width: 100%;

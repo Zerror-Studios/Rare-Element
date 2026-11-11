@@ -16,7 +16,7 @@ import GreenBoxBtn from '@/components/buttons/GreenBoxBtn'
 import ListingSortSelect from '@/components/product/ListingSortSelect'
 import { useListingSort } from '@/hooks/useListingSort'
 import { ProductStatus } from '@/utils/Constant'
-import { DEFAULT_LISTING_SORT, toSortQueryValue } from '@/utils/listing-sort'
+import { DEFAULT_LISTING_SORT, LISTING_PRELOAD_COUNT, toSortQueryValue } from '@/utils/listing-sort'
 
 export default function CategoryClient({ meta, data, initialProducts, initialTotalCount }) {
   const {
@@ -206,13 +206,14 @@ export default function CategoryClient({ meta, data, initialProducts, initialTot
         <div className="padding">
           <div className={`allproducts_paren  categories_paren ${loading ? "opacity-50" : ""}`}>
             {listedProducts.length > 0 ? (
-              listedProducts.map((item) => (
+              listedProducts.map((item, index) => (
                 <Link
                   key={item._id}
                   scroll={false}
                   href={`/products/${item.slug || item._id}`}
                 >
                   <ProductCard
+                    preload={index < LISTING_PRELOAD_COUNT}
                     productId={item._id}
                     name={item.name || ""}
                     price={getProductPriceLabel(item.variants)}

@@ -1,5 +1,4 @@
 import { Inter } from "next/font/google";
-import Script from "next/script";
 import { CONSENT_DEFAULT_SCRIPT } from "@zcom/storefront-kit/core";
 import { Providers } from "./providers";
 import ConsentBanner from "@/components/common/ConsentBanner";
@@ -38,15 +37,21 @@ export default function RootLayout({ children }) {
       <head>
         <link rel="preconnect" href="https://assets.nahara.co.in" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://assets.nahara.co.in" />
-        <link rel="preload" as="image" href="/images/homepage/hero_poster.webp" fetchPriority="high" />
+        {/* The three fonts above the fold, at their public URLs (fontSetting.css),
+            so text doesn't reflow when they arrive late (CLS) */}
+        <link rel="preload" href="/fonts/raleway/Raleway-Medium.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/raleway/Raleway-Regular.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/safira/SafiraMarchPersonalUse-gxeKY.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
 
         {/* Consent Mode v2 defaults ("denied", then the stored choice)
             before any tag. The kit's ZcomTags loads GTM/GA4 with analytics
             consent and the Meta Pixel / Google Ads with ads consent. The
             script is the kit's constant, no shopper or tenant data. */}
-        <Script
+        {/* A plain <script>, not next/script: in the App Router
+            beforeInteractive runs only after Next's runtime loads, after
+            the first paint, and this must mark <html> before it (kit 1.0.5). */}
+        <script
           id="consent-default"
-          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: CONSENT_DEFAULT_SCRIPT }}
         />
       </head>

@@ -1,103 +1,56 @@
 "use client";
 
 import React, {
+  useEffect,
   useRef,
   memo
 } from 'react';
 
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import Link from 'next/link';
 import WhiteBorderBtn from '../buttons/WhiteBorderBtn';
-import { useGSAP } from '@gsap/react';
 import Image from 'next/image';
+import { preload } from 'react-dom';
 
-gsap.registerPlugin(ScrollTrigger);
+const HERO_VIDEO_SRC = '/videos/hero_video.webm';
+const HERO_POSTER_SRC = '/images/homepage/heroPoster.webp';
 
 const Hero = () => {
+  // The poster is the first screen. Called here, in a client component, the
+  // hint is only in the home page's HTML (a server-page preload travelled
+  // with the home page's prefetch into every page).
+  preload(HERO_POSTER_SRC, { as: 'image', fetchPriority: 'high' });
   const heroRef = useRef(null);
   const videoRef = useRef(null);
   const innerRef = useRef(null);
   const infoRef = useRef(null);
 
-  useGSAP(() => {
+  // The poster is the first screen; the 3 MB video is attached only after
+  // the page has loaded, so it never competes with the first paint (LCP).
+  useEffect(() => {
     const video = videoRef.current;
-    if (!video) return;
-
-    video.muted = true;
-    video.playsInline = true;
-    video.loop = true;
-    video.preload = 'metadata';
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          video.play().catch(() => { });
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.3 }
-    );
-
-    observer.observe(video);
-
-    return () => observer.disconnect();
+    if (!video) return undefined;
+    const start = () => {
+      if (!video.getAttribute('src')) video.setAttribute('src', HERO_VIDEO_SRC);
+      video.play().catch(() => { });
+    };
+    if (document.readyState === 'complete') {
+      start();
+      return undefined;
+    }
+    window.addEventListener('load', start, { once: true });
+    return () => window.removeEventListener('load', start);
   }, []);
 
-  useGSAP(() => {
-    if (!heroRef.current) return;
-    // PRD-014 UX-30: reduced motion gets the final state at once (the CSS
-    // starts the hero hidden for the reveal), never a blank first screen.
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      gsap.set(heroRef.current, {
-        opacity: 1,
-        clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
-      });
-      gsap.set([infoRef.current, innerRef.current], { opacity: 1 });
-      gsap.set(".introloader_paren", { opacity: 0, display: "none" });
-      return;
-    }
-
-    // Immediately make it visible so browser can paint it for LCP
-    gsap.set(heroRef.current, { opacity: 1 });
-
-    const tl = gsap.timeline();
-
-    tl.to(heroRef.current, {
-      clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
-      duration: 0.8,
-      delay: 0.1, // Reduced from 1.5s to fix LCP/FCP
-      ease: 'ease-secondary',
-    })
-      .to(
-        infoRef.current,
-        {
-          opacity: 1,
-          duration: 0.4,
-        }, "<"
-      )
-      .to(
-        innerRef.current,
-        {
-          opacity: 1,
-          duration: 0.5,
-        },
-      )
-      .to(".introloader_paren", {
-        opacity: 0,
-        display: "none",
-        duration: 0.3
-      }, "<")
-
-    return () => tl.kill();
-  });
+  // The reveal (hero clip, info bar, loader fade) runs in CSS
+  // (styles/components/home/hero.css), so the first screen paints without
+  // waiting for JavaScript (LCP); reduced motion shows the final state.
 
   return (
     <>
 
-      <div className="introloader_paren center">
+      <div className="introloader_paren hero_introloader center">
         <div className="loader_img">
-          <Image sizes="(max-width: 750px) 50vw, 25vw" src="/green_logo.svg" alt="Nahara Loading Logo" width={400} height={400}
+          <Image sizes="(max-width: 750px) 50vw, 25vw" src="/green_logo.svg" alt="Nahara Loading Logo" width={400} height={400} preload
           //  sizes="(max-width: 768px) 80vw, 400px"
             />
         </div>
@@ -123,13 +76,11 @@ const Hero = () => {
         <video
           ref={videoRef}
           className="home_hero_video cover"
-          src="/videos/hero_video.webm"
-          poster="/images/homepage/heroPoster.webp"
-          autoPlay
+          poster={HERO_POSTER_SRC}
           muted
           playsInline
           loop
-          preload="metadata"
+          preload="none"
         />
 
         <div

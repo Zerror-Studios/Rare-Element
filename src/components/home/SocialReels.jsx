@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 export const SocialCardData = [
   {
@@ -35,6 +35,36 @@ export const SocialCardData = [
   },
 ]
 
+// The four reels are about 18 MB together: each loads only when its card
+// comes near the screen, and pauses when it leaves (page speed on phones).
+const REEL_ROOT_MARGIN = '200px';
+
+const ReelVideo = ({ src }) => {
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || typeof IntersectionObserver === 'undefined') return undefined;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          if (!video.getAttribute('src')) video.setAttribute('src', src);
+          video.play().catch(() => { });
+        } else if (!video.paused) {
+          video.pause();
+        }
+      },
+      { rootMargin: REEL_ROOT_MARGIN },
+    );
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, [src]);
+
+  return (
+    <video ref={videoRef} className='cover socialCard_box_vid ' loop muted playsInline preload='none'></video>
+  );
+};
+
 const SocialReels = () => {
   const [imgReady, setImgReady] = useState({});
   return (
@@ -59,7 +89,7 @@ const SocialReels = () => {
                   }}
                 />
               )}
-              <video className='cover socialCard_box_vid ' loop autoPlay muted playsInline src={item.vid}></video>
+              <ReelVideo src={item.vid} />
               <div className="socialCard_image_wrapper">
                 <Image
                   sizes="(max-width: 750px) 50vw, 20vw"

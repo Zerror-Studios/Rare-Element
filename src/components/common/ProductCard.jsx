@@ -19,7 +19,9 @@ import { getListingBadge } from "@/utils/stock-signal";
 // `product` + `listName` (optional) let the card send GA4 `select_item`
 // (PRD-013; `listId`: a lookbook's GA4 item_list_id, PRD-027 F10); the
 // click still bubbles to the caller's <Link>.
-const ProductCard = React.memo(({ productId, name, badge, price, assets, product, listName, listId }) => {
+// `preload`: a listing's first row, loaded at once and shown without the
+// skeleton (it is the page's LCP)
+const ProductCard = React.memo(({ productId, name, badge, price, assets, product, listName, listId, preload = false }) => {
     const [imgLoaded, setImgLoaded] = useState(false);
     const { isWishlisted: checkWishlisted, toggle } = useWishlist();
     const isWishlisted = checkWishlisted(productId);
@@ -100,8 +102,8 @@ const ProductCard = React.memo(({ productId, name, badge, price, assets, product
                 </div>
 
                 {/* Main Image */}
-                {!imgLoaded && (
-                    <div className="shopCard_img_wrapper  center">
+                {!imgLoaded && !preload && (
+                    <div className="shopCard_img_wrapper shopCard_img_skeleton center">
                         <div className="skeleton_box main_img_skeleton skeleton_animate"></div>
                     </div>
                 )}
@@ -114,6 +116,8 @@ const ProductCard = React.memo(({ productId, name, badge, price, assets, product
                             width={600}
                             height={800}
                             onLoad={() => setImgLoaded(true)}
+                            preload={preload}
+                            fetchPriority={preload ? "high" : undefined}
                             sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 300px"
                         />
                     </div>

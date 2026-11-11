@@ -28,6 +28,14 @@
   height: 100%;
 }
 
+/* The loading skeleton lies over the image, so removing it moves nothing
+   (it used to sit above the image in the flow: CLS) */
+.shopCard_img_skeleton {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
 .shopCard_img_wrapper_img {
   width: 100%;
   aspect-ratio: 3 / 4;

@@ -202,11 +202,15 @@ const ProductImageGrid = ({ filter, data, title, itemId }) => {
                       <Image
                         sizes="100vw"
                         fill
+                        // The first photo is the page's LCP on a phone: loaded
+                        // at once and shown without waiting for its fade
+                        preload={index === 0}
+                        fetchPriority={index === 0 ? "high" : undefined}
                         src={src}
                         alt={`${title} - Product Image ${index + 1}`}
                         className="MobileImageSlider_slideImage"
                         style={{
-                          opacity: loaded ? 1 : 0,
+                          opacity: loaded || index === 0 ? 1 : 0,
                           transition: "opacity .4s ease"
                         }}
                         onLoad={() =>

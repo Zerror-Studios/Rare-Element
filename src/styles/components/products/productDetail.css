@@ -297,6 +297,12 @@
 .size_guide_btn {
   transform: translateY(0.5rem);
 }
+.clear_variatns_btn button {
+  /* A 24 px tap target (WCAG 2.2 target size) */
+  min-height: 24px;
+  display: inline-flex;
+  align-items: center;
+}
 .clear_variatns_btn button p {
   color: #174d38 !important;
   font-weight: 1000 !important;

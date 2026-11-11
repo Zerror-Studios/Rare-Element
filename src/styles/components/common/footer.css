@@ -70,7 +70,9 @@
 }
 
 /* Animation Below */
-.footer_below p {
+.footer_below p,
+.footer_below .footer_consent_btn span {
+  /* .thin forces black; the consent button's label is a span, not a p */
   color: white !important;
 }
 
@@ -127,8 +129,15 @@
   margin-top: 1rem;
 }
 
+.footer_links_column a {
+  /* A 24 px tap target (WCAG 2.2 target size): part of the old 0.5 rem
+     margin moves into the link's padding, so the spacing stays the same */
+  display: block;
+  padding: 0.3rem 0;
+}
+
 .footer_links_column p {
-  margin: 0.5rem 0;
+  margin: 0.2rem 0;
   cursor: pointer;
   transition: opacity 0.3s ease;
 }
@@ -204,9 +213,13 @@
   text-align: left;
   cursor: pointer;
 }
+.footer_consent_btn {
+  display: block;
+  padding: 0.3rem 0;
+}
 .footer_consent_btn span {
   display: block;
-  margin: 0.5rem 0;
+  margin: 0.2rem 0;
   transition: opacity 0.3s ease;
 }
 .footer_consent_btn:hover span {

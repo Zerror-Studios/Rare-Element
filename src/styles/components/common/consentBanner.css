@@ -19,7 +19,10 @@
 }
 
 .consent_banner a {
-  color: inherit;
+  /* The global link rule forces black with !important; the link keeps the
+     banner's colour and an underline (link-in-text-block) */
+  color: inherit !important;
+  text-decoration: underline;
 }
 
 .consent_banner_choices {
@@ -77,4 +80,10 @@
     left: auto;
     max-width: 32rem;
   }
+}
+
+/* A stored choice: the kit's head script marks <html> before the first
+   paint, so the server-rendered banner never flashes (kit 1.0.5). */
+html[data-zcom-consent] .consent_banner[data-initial] {
+  display: none;
 }

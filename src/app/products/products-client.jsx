@@ -14,7 +14,7 @@ import useProductStore from '@/store/product-store'
 import GreenBoxBtn from '@/components/buttons/GreenBoxBtn'
 import ListingSortSelect from '@/components/product/ListingSortSelect'
 import { useListingSort } from '@/hooks/useListingSort'
-import { toSortQueryValue } from '@/utils/listing-sort'
+import { LISTING_PRELOAD_COUNT, toSortQueryValue } from '@/utils/listing-sort'
 
 const ProductsClient = ({ initialProducts, initialTotalCount, categories, initialFilterOptions }) => {
   const [openFilter, setOpenFilter] = useState(false)
@@ -213,9 +213,10 @@ const ProductsClient = ({ initialProducts, initialTotalCount, categories, initia
             )
             }
 
-            {listedProducts.map((item) => (
+            {listedProducts.map((item, index) => (
               <Link prefetch key={item?._id} scroll={false} title={item?.name || ""} href={`/products/${item?.slug || item?._id}`} data-testid="product-card-link">
                 <ProductCard
+                  preload={index < LISTING_PRELOAD_COUNT}
                   key={item?._id}
                   productId={item?._id}
                   name={item?.name || ""}

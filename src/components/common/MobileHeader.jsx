@@ -41,34 +41,10 @@ const MobileHeader = ({ openCart }) => {
   const menuRef = useRef(null);
 
   const pathname = usePathname()
-
-  useEffect(() => {
-    if (window.innerWidth > 750) return
-    if (pathname !== "/") {
-      gsap.set(".mobile_header_bg", { top: 0 });
-    }
-  }, [pathname]);
-
-  useEffect(() => {
-    if (window.innerWidth > 750) return
-    if (pathname === "/") {
-      gsap.set(".mobile_dummy_paren", { display: "block" });
-      gsap.set(".mobile_header", {
-        position: "sticky",
-        height: "4rem",
-        display: "flex",
-      });
-      gsap.set(".mobile_header_bg", { top: "-4.1rem", height: "4rem" });
-    }
-  }, [pathname]);
-
-  useEffect(() => {
-    if (window.innerWidth > 750) return
-    if (pathname !== "/") {
-      gsap.set(".mobile_dummy_paren", { display: "none" });
-      gsap.set(".mobile_header", { top: 0, position: "fixed", left: 0 });
-    }
-  }, [pathname]);
+  // The home and page header states are classes from the route (known while
+  // the server renders), so the first paint is final; they were gsap.set()
+  // after hydration and moved every page down (CLS).
+  const isHome = pathname === "/"
 
   useEffect(() => {
     if (window.innerWidth > 750) return
@@ -213,8 +189,8 @@ const MobileHeader = ({ openCart }) => {
       </div>
 
 
-      <div className="mobile_dummy_paren"></div>
-      <div className="mobile_header padding">
+      <div className={`mobile_dummy_paren ${isHome ? "" : "mobile_dummy_paren_off"}`}></div>
+      <div className={`mobile_header padding ${isHome ? "mobile_header_home" : "mobile_header_page"}`}>
         <div className="mobile_header_bg"></div>
         <div className="mobile_menu_icon_paren">
           <button type="button" className="mobile_icon_btn" onClick={openMenu} aria-label="Open menu" aria-expanded={isMenuOpen} aria-controls="mobile_menu">

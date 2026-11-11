@@ -171,8 +171,8 @@ const Footer = () => {
 
             {/* ABOUT TEXT — stays static */}
             <div className="footer_classname_about">
-              <Link scroll={false} href="/">
-                <Image height={40} width={40} className="footer_logo" src="/logo.svg" alt="Nahara Logo" />
+              <Link scroll={false} href="/" aria-label="Nahara home">
+                <Image height={40} width={40} className="footer_logo" src="/logo.svg" alt="" />
               </Link>
               <p className=" footer_about text-base thin">
                 Nahara brings a bold, playful edge to modern jewellery. Designed and crafted in-house, each piece blends inventive ideas with refined details, creating a fresh kind of elegance spirited, stylish, and made to stand out.
@@ -210,8 +210,8 @@ const Footer = () => {
 
           {/* Footer Bottom Section */}
           <div className="footer_classname_bottom">
-            <Link scroll={false} href="/" >
-              <Image height={40} width={40} className="footer_logo" src="/logo.svg" alt="Nahara Logo" />
+            <Link scroll={false} href="/" aria-label="Nahara home">
+              <Image height={40} width={40} className="footer_logo" src="/logo.svg" alt="" />
             </Link>
             <div className="uppercase text-xs copyright_txt">
               <p>© {currentYear} Nahara. All rights reserved.</p>

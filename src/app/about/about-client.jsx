@@ -11,9 +11,7 @@ gsap.registerPlugin(ScrollTrigger)
 export default function AboutClient() {
 
   useGSAP(() => {
-    gsap.to(".abt_img_galry img, .abt_mob_txt img ", {
-      opacity: 1, duration: 1.2, stagger: 0.1, delay: .5, ease: "expo.out"
-    })
+    // The gallery fade-in is CSS now (styles/pages/about.css, mobile LCP)
 
     gsap.fromTo(".sticker_bg_img", {
       y: -150
@@ -62,7 +60,7 @@ export default function AboutClient() {
             </div>
           </div>
           <div className="marq_img_3">
-            <Image sizes="(max-width: 750px) 100vw, 50vw" className='cover' src="/images/aboutpage/img3.avif" alt="img" width={800} height={600} />
+            <Image sizes="(max-width: 750px) 100vw, 50vw" className='cover' src="/images/aboutpage/img3.avif" alt="img" width={800} height={600} preload />
           </div>
         </div>
       </div>
@@ -90,12 +88,12 @@ export default function AboutClient() {
       </div>
 
       <div className="about_sticker_section">
-        <img className=' sticker_bg_img cover' src="/images/aboutpage/about_sticker_bg.webp" alt="img" />
+        <img className=' sticker_bg_img cover' src="/images/aboutpage/about_sticker_bg.webp" alt="" loading="lazy" decoding="async" />
 
-        <img className='mobile_sticker_1' src="/images/aboutpage/mobile_stickr_1.png" alt="img" />
-        <img className='about_sticker_1' src="/images/aboutpage/desktop_sticker_1.png" alt="img" />
+        <img className='mobile_sticker_1' src="/images/aboutpage/mobile_stickr_1.webp" alt="" loading="lazy" decoding="async" />
+        <img className='about_sticker_1' src="/images/aboutpage/desktop_sticker_1.webp" alt="" loading="lazy" decoding="async" />
 
-        <img className='about_sticker_2' src="/images/aboutpage/sticker_2.png" alt="img" />
+        <img className='about_sticker_2' src="/images/aboutpage/sticker_2.webp" alt="" loading="lazy" decoding="async" />
       </div>
     </>
   );

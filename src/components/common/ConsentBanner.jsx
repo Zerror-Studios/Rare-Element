@@ -41,7 +41,13 @@ const saveConsent = (choice) => {
 };
 
 const ConsentBanner = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  // Open in the server HTML so a first visit paints it at once (it is
+  // often the largest element on a phone); for a returning shopper the
+  // kit's head script marks <html> and CSS hides this first copy
+  // (`html[data-zcom-consent] .consent_banner[data-initial]`) until the
+  // effect closes it.
+  const [isOpen, setIsOpen] = useState(true);
+  const [isInitial, setIsInitial] = useState(true);
   const [showChoices, setShowChoices] = useState(false);
   const [choice, setChoice] = useState(CONSENT_DENIED_ALL);
   const [hasChoice, setHasChoice] = useState(false);
@@ -53,9 +59,9 @@ const ConsentBanner = () => {
     if (stored) {
       setChoice(stored);
       setHasChoice(true);
-    } else {
-      setIsOpen(true);
+      setIsOpen(false);
     }
+    setIsInitial(false);
 
     const handleOpen = () => {
       openerRef.current = document.activeElement;
@@ -102,6 +108,7 @@ const ConsentBanner = () => {
       aria-describedby="consent_banner_text"
       onKeyDown={handleKeyDown}
       data-lenis-prevent
+      data-initial={isInitial ? "" : undefined}
     >
       <p id="consent_banner_title" className="text-base uppercase bold">
         Cookies on Nahara
