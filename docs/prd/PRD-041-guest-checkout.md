@@ -5,7 +5,7 @@
 | Status | **Implemented** in the working tree 2026-11-12 (this repo's FR-17); not committed, not browser-tested, not run against a live gateway or payment sandbox |
 | Source-of-truth PRD | [`../../../../zcom-backend/docs/prd/PRD-041-guest-checkout.md`](../../../../zcom-backend/docs/prd/PRD-041-guest-checkout.md) |
 | Approved by / on | Anand (owner), 2026-11-11, as recommended (backend PRD-041 §9.1) |
-| Needs | `@zcom/storefront-kit` **1.1.0** (`startGuest`, `pay`, `retryPayment`, `useCodeSignIn`, `getOrderStatus`, `useStoreCheckoutOptions`, `useMyOrderStatusToken`, `orderStatusPath`). Since 2026-11-12 `package.json` and the lockfile pin the kit's `v1.1.0` tag (commit `0daf3ea`). A build from a clean `npm ci` before that has kit 1.0.6 and fails on the missing exports. |
+| Needs | `@zcom/storefront-kit` **1.1.0** (`startGuest`, `pay`, `retryPayment`, `useCodeSignIn`, `getOrderStatus`, `useStoreCheckoutOptions`, `useMyOrderStatusToken`, `orderStatusPath`). Since 2026-11-12 `package.json` and the lockfile pin the kit's `v1.1.1` tag (commit `38002c1`). A build from a clean `npm ci` before that has kit 1.0.6 and fails on the missing exports. |
 
 This storefront's part is **FR-17**: checkout without signing in, sign-in with an email code (also the sign-up), and the order status page. Every new flow goes through the kit, so the store stays in step with it and with Deveshe Dreams (built the same day; its pointer PRD is the twin of this one).
 
