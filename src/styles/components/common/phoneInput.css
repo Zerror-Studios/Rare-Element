@@ -23,12 +23,42 @@
   color: inherit;
 }
 
-.phone_field .phone_field_country {
+/*
+ * Closed, the selector shows only "🇮🇳 +91 ▾" (never truncated in a narrow
+ * column); the native select sits transparent on top, so tapping or
+ * focusing it opens the full country list.
+ */
+.phone_field .phone_field_country_wrap {
+  position: relative;
   flex: 0 0 auto;
-  width: 10rem;
-  max-width: 45%;
-  min-width: 0;
-  text-overflow: ellipsis;
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+}
+
+.phone_field .phone_field_country_display {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.phone_field .phone_field_country_display::after {
+  content: "";
+  width: 0.4em;
+  height: 0.4em;
+  margin-left: 0.15rem;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  transform: translateY(-25%) rotate(45deg);
+}
+
+.phone_field .phone_field_country {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  opacity: 0;
   cursor: pointer;
 }
 

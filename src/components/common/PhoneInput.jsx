@@ -8,7 +8,10 @@
  * values as before, `countryCode` ("+91") and `phone` (national digits),
  * and gets both back through `onChange({ countryCode, phone })`.
  * - The selector is a native `<select>` ("🇮🇳 India (+91)", India first)
- *   for keyboards, screen readers and phone pickers.
+ *   for keyboards, screen readers and phone pickers. Closed, it shows only
+ *   the flag and the code ("🇮🇳 +91"): the select sits transparent over a
+ *   compact label, so the field never truncates in a narrow column, and
+ *   the open list keeps the full country names.
  * - The number is `type="tel"`; a pasted "+91 98765 43210" moves the
  *   country and keeps only the national digits (`splitPhoneInput`).
  * - `error` is shown under the field (`errorClassName`, the form's own
@@ -25,6 +28,7 @@ import {
   DEFAULT_DIAL_CODE,
   getCountryForPhone,
   getDialCode,
+  getFlagEmoji,
   getPhoneCountries,
   splitPhoneInput,
   toDigits,
@@ -73,25 +77,30 @@ const PhoneInput = ({
   return (
     <>
       <div className={`phone_field ${className}`.trim()}>
-        <select
-          id={`${fieldId}-country`}
-          className={`phone_field_country ${selectClassName}`.trim()}
-          aria-label={`${label}: country code`}
-          autoComplete="tel-country-code"
-          value={iso}
-          disabled={disabled}
-          onChange={handleCountry}
-        >
-          {countries.map((country) => (
-            <option
-              key={country.iso}
-              value={country.iso}
-              suppressHydrationWarning
-            >
-              {country.label}
-            </option>
-          ))}
-        </select>
+        <span className="phone_field_country_wrap">
+          <span className="phone_field_country_display" aria-hidden="true">
+            {getFlagEmoji(iso)} {getDialCode(iso)}
+          </span>
+          <select
+            id={`${fieldId}-country`}
+            className={`phone_field_country ${selectClassName}`.trim()}
+            aria-label={`${label}: country code`}
+            autoComplete="tel-country-code"
+            value={iso}
+            disabled={disabled}
+            onChange={handleCountry}
+          >
+            {countries.map((country) => (
+              <option
+                key={country.iso}
+                value={country.iso}
+                suppressHydrationWarning
+              >
+                {country.label}
+              </option>
+            ))}
+          </select>
+        </span>
         <input
           id={fieldId}
           className={`phone_field_number ${inputClassName}`.trim()}
