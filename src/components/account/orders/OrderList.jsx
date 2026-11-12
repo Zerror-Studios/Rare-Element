@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useQuery } from "@apollo/client/react";
 import { MY_ORDERS } from "@/graphql";
 import { formatDateTime, formatePrice, formatPaymentStatus } from "@/utils/Util";
+import { getShipmentStatusLabel } from "@zcom/storefront-kit/core";
 import { getOrderStatusLabel } from "@/utils/order-detail";
 
 const OrderList = () => {
@@ -29,11 +30,13 @@ const OrderList = () => {
       )}
       {data?.map((item) => {
         const cart = item?.cart && item?.cart?.length > 0 ? item?.cart : [];
+        // Our shipment status (backend PRD-044), never the provider's wording
+        const shipmentLabel = getShipmentStatusLabel(item?.trackingStatus);
         return (
           <div key={item?._id} className="purchases_orderCard">
             <p className='text-base'>Order: {item?.orderNo}</p>
             {/* PRD-015 FR-18: the server's display status when present */}
-            <p className="purchases_status text-base">{getOrderStatusLabel(item?.displayStatus, `${formatPaymentStatus(item?.paymentStatus)} ${item?.shipmentStatus ? ` - ${item?.shipmentStatus}` : ""}`)}</p>
+            <p className="purchases_status text-base">{getOrderStatusLabel(item?.displayStatus, `${formatPaymentStatus(item?.paymentStatus)}${shipmentLabel ? ` - ${shipmentLabel}` : ""}`)}</p>
 
             <div>
               <p>{formatDateTime(item?.createdAt || "")}</p>

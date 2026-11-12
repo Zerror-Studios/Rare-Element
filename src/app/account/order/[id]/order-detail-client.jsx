@@ -93,7 +93,10 @@ const OrderDetailClient = () => {
             <p className='uppercase bold text-base'>Payment Status</p>
             <p className='text-base'>{formatPaymentStatus(data?.order?.paymentStatus)}</p>
           </div>
-          <OrderTracking shipment={data?.order?.shipment} />
+          <OrderTracking
+            shipment={data?.order?.shipment}
+            trackingStatus={data?.order?.trackingStatus}
+          />
           {data?.order?.canCancel && (
             <OrderCancel orderId={data.order._id} onChanged={refresh} />
           )}

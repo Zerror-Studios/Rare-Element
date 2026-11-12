@@ -1,6 +1,8 @@
 import { gql } from "@apollo/client";
 
 // Customer-scoped order history (the owner comes from the access token).
+// The shipment's progress is `trackingStatus` (ours, backend PRD-044),
+// never Shiprocket's `shipmentStatus` wording or `shipmentStatusId`.
 export const MY_ORDERS = gql`
   query MyOrders($limit: Int, $offset: Int) {
     myOrders(limit: $limit, offset: $offset) {
@@ -10,7 +12,7 @@ export const MY_ORDERS = gql`
         orderPrice
         paymentStatus
         fulfillmentStatus
-        shipmentStatus
+        trackingStatus
         displayStatus
         currency
         itemcount
@@ -51,7 +53,7 @@ export const MY_ORDER = gql`
       paymentStatus
       fulfillmentStatus
       currentStatus
-      shipmentStatus
+      trackingStatus
       currency
       itemcount
       totalprice

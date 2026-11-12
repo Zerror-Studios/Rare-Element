@@ -11,7 +11,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { formatMoney } from "@zcom/storefront-kit/core";
+import { formatMoney, getShipmentStatusLabel } from "@zcom/storefront-kit/core";
 import GreenBoxBtn from "@/components/buttons/GreenBoxBtn";
 import OrderStatusSignIn from "@/components/orderStatus/OrderStatusSignIn";
 import { SUPPORT_EMAIL } from "@/utils/env";
@@ -31,6 +31,9 @@ const Timeline = ({ status }) => {
   const steps = getOrderTimeline(status);
   const shipment = status.shipment;
   const trackingUrl = getSafeTrackingUrl(shipment?.trackingUrl);
+  // Our shipment status (backend PRD-044), never the provider's wording,
+  // shown on the step the order is at ("Packed", "In transit", …)
+  const shipmentLabel = getShipmentStatusLabel(shipment?.trackingStatus);
   return (
     <ol className="order_status_timeline" aria-label="Order progress">
       {steps.map((step) => (
@@ -53,11 +56,20 @@ const Timeline = ({ status }) => {
                 {step.done ? " (done)" : " (to come)"}
               </span>
             </p>
+            {step.key === OrderTimelineStepEnum.CONFIRMED &&
+              step.current &&
+              shipmentLabel && (
+                <p className="order_status_muted text-sm">{shipmentLabel}</p>
+              )}
             {step.key === OrderTimelineStepEnum.SHIPPED &&
               step.done &&
               shipment && (
                 <p className="order_status_muted text-sm">
-                  {[shipment.courierName, shipment.awbCode && `AWB ${shipment.awbCode}`]
+                  {[
+                    step.current && shipmentLabel,
+                    shipment.courierName,
+                    shipment.awbCode && `AWB ${shipment.awbCode}`,
+                  ]
                     .filter(Boolean)
                     .join(" · ")}
                   {trackingUrl && (

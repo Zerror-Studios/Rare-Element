@@ -59,6 +59,10 @@ const SHIPPED_STATUSES = new Set([
   "IN_TRANSIT",
   "OUT_FOR_DELIVERY",
   "PICKED_UP",
+  "DELIVERY_FAILED",
+  "RTO_INITIATED",
+  "RTO_IN_TRANSIT",
+  "RTO_DELIVERED",
 ]);
 
 export const PAYMENT_STATUS_LABELS = {
@@ -137,7 +141,11 @@ export const toGuestCheckoutInput = (cart, values = {}) => {
  */
 export const getOrderTimeline = (status) => {
   const fulfilment = text(status?.fulfillmentStatus).toUpperCase();
-  const shipment = text(status?.shipment?.status)
+  // Ours (`trackingStatus`, backend PRD-044) first; the provider's wording
+  // only for an order whose shipment has no status of ours yet (Q6).
+  const shipment = text(
+    status?.shipment?.trackingStatus || status?.shipment?.status,
+  )
     .toUpperCase()
     .replace(/[\s-]+/g, "_");
   const isPaid = text(status?.paymentStatus).toUpperCase() === "PAID";

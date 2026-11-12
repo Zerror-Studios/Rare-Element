@@ -268,6 +268,21 @@ describe("getOrderTimeline", () => {
     assert.equal(currentKey(inTransit), "SHIPPED");
   });
 
+  it("reads our shipment status first (backend PRD-044)", () => {
+    const pickupScheduled = status({
+      shipment: { trackingStatus: "PICKUP_SCHEDULED", status: "In Transit" },
+    });
+    assert.equal(currentKey(pickupScheduled), "CONFIRMED");
+    const outForDelivery = status({
+      shipment: { trackingStatus: "OUT_FOR_DELIVERY", status: null },
+    });
+    assert.equal(currentKey(outForDelivery), "SHIPPED");
+    const delivered = status({
+      shipment: { trackingStatus: "DELIVERED", status: null },
+    });
+    assert.equal(currentKey(delivered), "DELIVERED");
+  });
+
   it("marks Delivered from the delivery date", () => {
     const delivered = status({
       fulfillmentStatus: "FULFILLED",
