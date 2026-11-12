@@ -6,10 +6,9 @@ import { useAuthStore } from "@/store/auth-store";
 import { useQuery } from "@apollo/client/react";
 import { GET_ADDRESSES } from "@/graphql";
 import { RiArrowDownSLine, RiCheckLine } from '@remixicon/react'
-import { PhoneInput } from "react-international-phone";
-import "react-international-phone/style.css";
 import { countriesData, addressType } from "@/helpers/Data";
 import Input from '@/components/ui/Input';
+import PhoneInput from '@/components/common/PhoneInput';
 import Checkbox from '../ui/Checkbox';
 
 // Form fields of a saved address (no ids, timestamps or __typename).
@@ -113,34 +112,27 @@ const Delivery = ({ errors, control, register, setValue }) => {
 
             {/* Phone + Address Type */}
             <div className="checkout_inp_flex">
-              <div className="checkOut_input">
+              <div className="w-full checkout_delivery_phone">
                 <PhoneInput
-                  defaultCountry="in"
-                  className="delivery__phone_btn"
-                  inputClassName="delivery__input__phone"
-                  value={`+${shippingAddress?.countryCode?.replace("+", "") || "91"
-                    }${shippingAddress?.phone || ""}`}
-                  onChange={(value, metadata) => {
-                    const countryCode = `+${metadata?.country?.dialCode || "91"}`;
-                    const numberOnly = value.replace(countryCode, "").trim();
-
+                  label="Phone"
+                  className="checkOut_input"
+                  countryCode={shippingAddress?.countryCode}
+                  phone={shippingAddress?.phone}
+                  onChange={({ countryCode, phone }) => {
                     setValue("shippingAddress.countryCode", countryCode, {
                       shouldValidate: true,
                     });
-                    setValue("shippingAddress.phone", numberOnly, {
+                    setValue("shippingAddress.phone", phone, {
                       shouldValidate: true,
                     });
                   }}
+                  error={errors?.shippingAddress?.phone?.message || ""}
                 />
-                <Input
+                <input
                   type="hidden"
                   {...register("shippingAddress.countryCode")}
                 />
-                <Input
-                  type="hidden"
-                  error={errors?.shippingAddress?.phone}
-                  {...register("shippingAddress.phone")}
-                />
+                <input type="hidden" {...register("shippingAddress.phone")} />
               </div>
               <div className="relative checkOut_input_pren">
                 <RiArrowDownSLine size={12} className="select_arrow" />

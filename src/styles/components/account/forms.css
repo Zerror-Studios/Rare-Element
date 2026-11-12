@@ -57,9 +57,6 @@
 .settings_input span {
   color: black;
 }
-.settings_input .react-international-phone-country-selector {
-  z-index: 99 !important;
-}
 .input_error_msg {
   margin-top: 0.5rem;
   color: red;

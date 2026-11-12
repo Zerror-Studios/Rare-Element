@@ -15,9 +15,9 @@ import {
 import { useAuthStore } from "@/store/auth-store";
 import { addressType, countriesData } from "@/helpers/Data";
 import { getErrorMessage } from "@/utils/errors";
-import { PhoneInput } from "react-international-phone";
-import "react-international-phone/style.css";
 import Input from "@/components/ui/Input";
+import PhoneInput from "@/components/common/PhoneInput";
+import { PHONE_INVALID_MESSAGE, isValidPhone } from "@/utils/phone";
 import GreenBoxBtn from "@/components/buttons/GreenBoxBtn";
 
 const addressSchema = z.object({
@@ -30,8 +30,16 @@ const addressSchema = z.object({
   pincode: z.string().min(4, "Pincode is required"),
   country: z.string().min(1, "Country is required"),
   states: z.string().min(1, "State is required"),
-  phone: z.string().min(8, "Phone number required"),
+  phone: z.string().min(1, "Phone number required"),
   countryCode: z.string().min(1, "Country code required"),
+}).superRefine((values, ctx) => {
+  // A real number for its country; for India a mobile (Shiprocket)
+  if (!values.phone || isValidPhone(values.countryCode, values.phone)) return;
+  ctx.addIssue({
+    code: "custom",
+    path: ["phone"],
+    message: PHONE_INVALID_MESSAGE,
+  });
 });
 
 const AddressBlock = () => {
@@ -66,6 +74,7 @@ const AddressBlock = () => {
     register,
     handleSubmit,
     setValue,
+    watch,
     reset,
     formState: { errors },
   } = useForm({
@@ -221,26 +230,23 @@ const AddressBlock = () => {
               {/* PHONE */}
               <div className="inp_paren">
                 <p className="text-sm">Contact <span>*</span></p>
-                <div className="settings_input">
+                <div>
                   <PhoneInput
-                    defaultCountry="in"
-                    className="delivery__phone_btn"
-                    inputClassName="delivery__input__phone"
-                    enableSearch={true}   // allows searching countries
-                    inputStyle={{ width: "100%" }} // full width like other inputs
-                    buttonStyle={{ border: "none" }} // clean flag dropdown
+                    label="Phone number"
                     placeholder="Enter phone number"
-                    onChange={(value, meta) => {
-                      const countryCode = `+${meta.country.dialCode}`;
-                      const number = value.replace(countryCode, "").trim();
-
+                    className="settings_input"
+                    countryCode={watch("countryCode")}
+                    phone={watch("phone")}
+                    onChange={({ countryCode, phone }) => {
                       setValue("countryCode", countryCode, { shouldValidate: true });
-                      setValue("phone", number, { shouldValidate: true });
+                      setValue("phone", phone, { shouldValidate: true });
                     }}
+                    error={errors.phone?.message || ""}
+                    errorClassName="input_error_msg"
                   />
 
                   <Input type="hidden" {...register("countryCode")} />
-                  <Input type="hidden" error={errors.phone} {...register("phone")} />
+                  <Input type="hidden" {...register("phone")} />
                 </div>
               </div>
             </div>

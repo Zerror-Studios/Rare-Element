@@ -2,8 +2,10 @@
  * Guest checkout and the order status page (backend PRD-041 FR-17)
  *
  * The store's address form must reach the kit's `startGuest` as the
- * backend's `OrderAddressInput` and `GuestContact`, the guest form must
- * validate like the backend (email and phone required), and the status
+ * backend's `OrderAddressInput` and `GuestContact` (Contact is the email
+ * only; the name and phone come from the delivery address, owner
+ * 2026-11-12), the guest form must validate like the backend (email, and
+ * a real delivery phone), and the status
  * page must read the public order status into the heading and timeline
  * the UX asks for. The kit's own messages are used for its error keys
  * unless the store has its own.
@@ -41,10 +43,6 @@ const formAddress = (overrides = {}) => ({
 
 const contact = (overrides = {}) => ({
   email: " Priya.Sharma@Gmail.com ",
-  countryCode: "+91",
-  phone: "98000 00000",
-  firstName: "Priya",
-  lastName: "",
   ...overrides,
 });
 
@@ -95,17 +93,30 @@ describe("toOrderAddressInput", () => {
 });
 
 describe("toGuestContact", () => {
-  it("lower-cases the email and joins the country code and digits", () => {
-    assert.deepEqual(guest.toGuestContact(contact()), {
-      email: "priya.sharma@gmail.com",
-      phone: "+919800000000",
-      firstName: "Priya",
-    });
+  it("takes the email and the delivery address's names and phone", () => {
+    assert.deepEqual(
+      guest.toGuestContact(" Priya.Sharma@Gmail.com ", formAddress({ phone: "98000 00000" })),
+      {
+        email: "priya.sharma@gmail.com",
+        phone: "+919800000000",
+        firstName: "Priya",
+        lastName: "Sharma",
+      },
+    );
+  });
+
+  it("joins another country's code with the national number", () => {
+    const result = guest.toGuestContact(
+      "a@b.co",
+      formAddress({ countryCode: "+1", phone: "(212) 555-0123", lastname: "" }),
+    );
+    assert.equal(result.phone, "+12125550123");
+    assert.equal("lastName" in result, false);
   });
 
   it("keeps a phone without a country code as digits", () => {
     assert.equal(
-      guest.toGuestContact(contact({ countryCode: "" })).phone,
+      guest.toGuestContact("a@b.co", formAddress({ countryCode: "" })).phone,
       "9800000000",
     );
   });
@@ -124,6 +135,10 @@ describe("toGuestCheckoutInput", () => {
       { productId: "p2", variantId: null, qty: 1 },
     ]);
     assert.equal(input.contact.email, "priya.sharma@gmail.com");
+    // Name and phone come from the delivery address
+    assert.equal(input.contact.firstName, "Priya");
+    assert.equal(input.contact.lastName, "Sharma");
+    assert.equal(input.contact.phone, "+919800000000");
     assert.equal(input.shippingAddress.email, "priya.sharma@gmail.com");
     assert.equal(input.billingAddress, null);
     // The bag's own coupon applies on the server; none is sent
@@ -165,17 +180,32 @@ describe("GuestCheckoutSchema", () => {
     assert.equal(GuestCheckoutSchema.safeParse(values()).success, true);
   });
 
-  it("requires a valid email and a 7 to 15 digit phone", () => {
+  it("asks Contact for the email only", () => {
     const badEmail = GuestCheckoutSchema.safeParse(
       values({ contact: contact({ email: "not-an-email" }) }),
     );
     assert.equal(badEmail.success, false);
     assert.deepEqual(badEmail.error.issues[0].path, ["contact", "email"]);
+    // No phone or name in Contact any more
+    assert.equal(GuestCheckoutSchema.safeParse(values({ contact: { email: "a@b.co" } })).success, true);
+  });
+
+  it("requires the delivery names and a valid delivery phone", () => {
+    const noName = GuestCheckoutSchema.safeParse(
+      values({ shippingAddress: formAddress({ firstname: "" }) }),
+    );
+    assert.equal(noName.success, false);
+    assert.deepEqual(noName.error.issues[0].path, ["shippingAddress", "firstname"]);
+    const landline = GuestCheckoutSchema.safeParse(
+      values({ shippingAddress: formAddress({ phone: "5800000000" }) }),
+    );
+    assert.equal(landline.success, false);
+    assert.deepEqual(landline.error.issues[0].path, ["shippingAddress", "phone"]);
+    assert.equal(landline.error.issues[0].message, "Enter a valid phone number");
     const shortPhone = GuestCheckoutSchema.safeParse(
-      values({ contact: contact({ phone: "12345" }) }),
+      values({ shippingAddress: formAddress({ phone: "12345" }) }),
     );
     assert.equal(shortPhone.success, false);
-    assert.deepEqual(shortPhone.error.issues[0].path, ["contact", "phone"]);
   });
 
   it("checks the billing address only when it is separate", () => {

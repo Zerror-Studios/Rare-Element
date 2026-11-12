@@ -1,0 +1,53 @@
+/*
+ * Phone field (components/common/PhoneInput.jsx, 2026-11-12): the country
+ * selector and the number side by side inside one bordered box (the
+ * form's own `checkOut_input` or `settings_input` class on the wrapper).
+ */
+.phone_field {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.phone_field .phone_field_country,
+.phone_field .phone_field_number,
+.inp_paren .phone_field .phone_field_number {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: none !important;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+}
+
+.phone_field .phone_field_country {
+  flex: 0 0 auto;
+  width: 10rem;
+  max-width: 45%;
+  min-width: 0;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.phone_field .phone_field_number {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* The box shows focus as the form's own inputs do */
+.checkOut_input.phone_field:focus-within {
+  border: 2px solid #1f9468 !important;
+}
+
+.settings_input.phone_field:focus-within {
+  border: 1px solid rgb(0, 0, 0);
+}
+
+.phone_field:has(input:disabled) {
+  pointer-events: none;
+  opacity: 0.4;
+  cursor: not-allowed;
+}

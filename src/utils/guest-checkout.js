@@ -6,14 +6,17 @@
  *   backend's `OrderAddressInput` (flat strings, empty fields dropped);
  * - `toGuestContact`, `toCheckoutLines` and `toGuestCheckoutInput` build
  *   what the kit's `useCheckout().startGuest` takes from the form and the
- *   bag (`getCart`);
+ *   bag (`getCart`); the Contact step is the email only, the name and
+ *   phone come from the delivery address (owner, 2026-11-12);
  * - `getOrderTimeline`, `getStatusHeading` and `getPaymentStatusLabel`
  *   read the public order status (`orderStatus(token)`).
  *
- * No imports, so `node:test` loads them directly.
+ * Only `utils/phone` is imported, so `node:test` loads them directly.
  *
  * Keep in sync with `storefronts/deveshe-dreams/src/utils/guest-checkout.util.js`.
  */
+
+import { formatPhoneE164 } from "./phone";
 
 // ─── Constants ────────────────────────────────────────────────────────────
 
@@ -81,18 +84,18 @@ export const toOrderAddressInput = (address = {}, email) => {
 };
 
 /**
- * The Contact step → the kit's `GuestContact`: the email lower-cased, the
- * phone with its country code (`+919800000000`), names only when typed.
+ * The email and the delivery address → the kit's `GuestContact`: the
+ * email lower-cased, the first and last name and the phone of the
+ * delivery address, the phone in international form (`+919800000000`,
+ * the backend wants 7 to 15 digits). Names only when typed.
  */
-export const toGuestContact = (contact = {}) => {
-  const digits = text(contact.phone).replace(/\D/g, "");
-  const code = text(contact.countryCode).replace(/\D/g, "");
+export const toGuestContact = (email, address = {}) => {
   const result = {
-    email: text(contact.email).toLowerCase(),
-    phone: code && digits ? `+${code}${digits}` : digits,
+    email: text(email).toLowerCase(),
+    phone: formatPhoneE164(address?.countryCode, address?.phone),
   };
-  const firstName = text(contact.firstName);
-  const lastName = text(contact.lastName);
+  const firstName = text(address?.firstname);
+  const lastName = text(address?.lastname);
   if (firstName) result.firstName = firstName;
   if (lastName) result.lastName = lastName;
   return result;
@@ -114,7 +117,7 @@ export const toCheckoutLines = (cart) =>
  * FR-7): `acceptsMarketing`, never the cookie banner's choice.
  */
 export const toGuestCheckoutInput = (cart, values = {}) => {
-  const contact = toGuestContact(values.contact);
+  const contact = toGuestContact(values.contact?.email, values.shippingAddress);
   return {
     cartId: cart?._id || "",
     lines: toCheckoutLines(cart),

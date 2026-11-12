@@ -1,11 +1,10 @@
 "use client";
 import React, { useEffect } from "react";
 import { useWatch } from "react-hook-form";
-import { PhoneInput } from "react-international-phone";
 import { countriesData, addressType } from "@/helpers/Data";
 import Input from "@/components/ui/Input";
 import Checkbox from "@/components/ui/Checkbox";
-import "react-international-phone/style.css";
+import PhoneInput from "@/components/common/PhoneInput";
 import { RiArrowDownSLine } from "@remixicon/react";
 
 const BillingAddress = ({ errors, control, register, setValue }) => {
@@ -63,43 +62,28 @@ const BillingAddress = ({ errors, control, register, setValue }) => {
 
           {/* Phone + Address Type */}
           <div className="checkout_inp_flex">
-            <div className="checkOut_input">
+            <div className="w-full">
               <PhoneInput
+                label="Billing phone"
+                className="checkOut_input"
                 disabled={useShippingAsBilling}
-                value={`+${billingAddress?.countryCode?.replace("+", "") ||
-                  "91"
-                  }${billingAddress?.phone || ""}`}
-                defaultCountry="in"
-                className="delivery__phone_btn"
-                inputClassName="delivery__input__phone"
-                onChange={(value, metadata) => {
-                  const countryCode = `+${metadata?.country?.dialCode || "91"
-                    }`;
-                  const numberOnly = value
-                    .replace(countryCode, "")
-                    .trim();
-
-                  setValue(
-                    "billingAddress.countryCode",
-                    countryCode,
-                    {
-                      shouldValidate: true,
-                    }
-                  );
-                  setValue("billingAddress.phone", numberOnly, {
+                countryCode={billingAddress?.countryCode}
+                phone={billingAddress?.phone}
+                onChange={({ countryCode, phone }) => {
+                  setValue("billingAddress.countryCode", countryCode, {
+                    shouldValidate: true,
+                  });
+                  setValue("billingAddress.phone", phone, {
                     shouldValidate: true,
                   });
                 }}
+                error={errors?.billingAddress?.phone?.message || ""}
               />
-              <Input
+              <input
                 type="hidden"
                 {...register("billingAddress.countryCode")}
               />
-              <Input
-                type="hidden"
-                error={errors?.billingAddress?.phone}
-                {...register("billingAddress.phone")}
-              />
+              <input type="hidden" {...register("billingAddress.phone")} />
             </div>
 
             <div className="relative checkOut_input_pren">

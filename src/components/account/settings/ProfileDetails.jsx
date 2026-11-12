@@ -10,10 +10,10 @@ import { useAuthStore } from "@/store/auth-store";
 import { toast } from 'react-toastify';
 import { getErrorMessage } from '@/utils/errors';
 import { RiCheckLine } from '@remixicon/react'
-import { PhoneInput } from "react-international-phone";
 import Input from '@/components/ui/Input';
+import PhoneInput from '@/components/common/PhoneInput';
+import { PHONE_INVALID_MESSAGE, isValidPhone } from '@/utils/phone';
 import GreenBoxBtn from '@/components/buttons/GreenBoxBtn'
-import "react-international-phone/style.css";
 
 const ProfileSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -21,6 +21,15 @@ const ProfileSchema = z.object({
   countryCode: z.string().min(1, "Country Code is required"),
   phoneNumber: z.string().min(1, "Phone number is required"),
   email: z.string().email("Invalid email"),
+}).superRefine((values, ctx) => {
+  if (!values.phoneNumber || isValidPhone(values.countryCode, values.phoneNumber)) {
+    return;
+  }
+  ctx.addIssue({
+    code: "custom",
+    path: ["phoneNumber"],
+    message: PHONE_INVALID_MESSAGE,
+  });
 });
 
 const ProfileDetails = () => {
@@ -39,6 +48,7 @@ const ProfileDetails = () => {
     register,
     handleSubmit,
     setValue,
+    watch,
     reset,
     formState: { errors },
   } = useForm({
@@ -117,34 +127,26 @@ const ProfileDetails = () => {
               </div>
               <div className="inp_paren text-base">
                 <p className='text-sm '>Contact <span>*</span> </p>
-                <div className="settings_input">
+                <div>
                   <PhoneInput
-                    defaultCountry="in"
-                    className="delivery__phone_btn"
-                    inputClassName="delivery__input__phone"
-                    enableSearch={true}   // allows searching countries
-                    inputStyle={{ width: "100%" }} // full width like other inputs
-                    buttonStyle={{ border: "none" }} // clean flag dropdown
+                    label="Phone number"
                     placeholder="Enter phone number"
-                    value={`+${user?.countryCode?.replace("+", "") || "91"}${user?.phoneNumber || ""
-                      }`}
-                    onChange={(value, metadata) => {
-                      const countryCode = `+${metadata?.country?.dialCode || 91
-                        }`;
-                      const numberOnly = value
-                        ?.replace(countryCode, "")
-                        .trim();
-
+                    className="settings_input"
+                    countryCode={watch("countryCode")}
+                    phone={watch("phoneNumber")}
+                    onChange={({ countryCode, phone }) => {
                       setValue("countryCode", countryCode, {
                         shouldValidate: true,
                       });
-                      setValue("phoneNumber", numberOnly, {
+                      setValue("phoneNumber", phone, {
                         shouldValidate: true,
                       });
                     }}
+                    error={errors.phoneNumber?.message || ""}
+                    errorClassName="input_error_msg"
                   />
                   <Input type="hidden" error={errors.countryCode} {...register("countryCode")} />
-                  <Input type="hidden" error={errors.phoneNumber} {...register("phoneNumber")} />
+                  <Input type="hidden" {...register("phoneNumber")} />
                 </div>
                 {/* <RiCheckLine className='check_icon' /> */}
               </div>

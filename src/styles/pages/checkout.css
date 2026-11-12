@@ -228,11 +228,6 @@
   pointer-events: none;
 }
 
-.delivery__phone_btn:has(input:disabled) {
-  pointer-events: none;
-  opacity: 0.4;
-  cursor: not-allowed !important;
-}
 
 
 
@@ -303,30 +298,6 @@
   transition: background-color 9999s ease-in-out 0s;
 }
 
-.delivery__input__phone {
-  height: 3rem !important;
-  font-family: suisse !important;
-  position: relative;
-  /* padding: 1rem !important; */
-  border: 1px solid #dedede !important;
-  /* border: none !important; */
-  font-size: 0.9rem !important;
-  background-color: rgb(245 243 243 / 60%) !important;
-  width: 100% !important;
-}
-
-.react-international-phone-input-container .react-international-phone-input.delivery__input__phone {
-  border: 1px solid #dedede !important;
-  border: none !important;
-}
-
-.delivery__phone_btn .react-international-phone-country-selector-button {
-  /* border: 1px solid #dedede !important; */
-  scale: 1;
-  border: none !important;
-  background-color: rgba(198, 38, 38, 0) !important;
-  height: 110%;
-}
 
 /* 50% opacity placeholder */
 .placeholderOption {

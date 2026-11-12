@@ -5,12 +5,14 @@
  * `useCheckout().startGuest` → `pay()` (kit 1.1.0).
  *
  * One page, three steps in the store's checkout design:
- * - **Contact** (`GuestContactDetail`): email and phone (required), names,
- *   the unticked news box and "Already have an account? Sign in" (the
- *   code sign-in, back to this checkout, where the signed-in checkout
- *   opens the bag merged at sign-in);
+ * - **Contact** (`GuestContactDetail`): the email only (required, owner
+ *   2026-11-12), the unticked news box and "Already have an account?
+ *   Sign in" (the code sign-in, back to this checkout, where the
+ *   signed-in checkout opens the bag merged at sign-in);
  * - **Delivery:** the address form (`Delivery`; a guest has no saved
- *   addresses) and the billing address;
+ *   addresses; first name, last name and phone required) and the billing
+ *   address. The guest contact's name and phone are the delivery
+ *   address's (`toGuestContact`);
  * - **Payment** (`OrderSummary`): "Continue to payment" opens the guest
  *   session (its stock hold only on this explicit action, PRD-014
  *   W0V2-02) and shows the server total; "Pay now" (disabled until then,
@@ -78,8 +80,10 @@ const CART_REFRESH_KEYS = [
 ];
 /** Answers that belong to the delivery address. */
 const ADDRESS_KEYS = ["SHIPPING_UNAVAILABLE", "ADDRESS_REQUIRED"];
-/** Answers that belong to the contact. */
-const CONTACT_KEYS = ["INVALID_EMAIL", "INVALID_PHONE"];
+/** A refused phone is the delivery address's. */
+const PHONE_KEYS = ["INVALID_PHONE"];
+/** Answers that belong to the contact (the email). */
+const CONTACT_KEYS = ["INVALID_EMAIL"];
 /** Failures with no placed order to retry (stay on this page). */
 const NO_RETRY_KEYS = ["INVALID_GUEST_TOKEN", "ORDER_CANCELLED", "ORDER_NOT_FOUND"];
 /** After any of these the checkout starts over from "Continue". */
@@ -149,7 +153,6 @@ const GuestCheckout = () => {
     register,
     handleSubmit,
     setValue,
-    getValues,
     setFocus,
     control,
     formState: { errors },
@@ -158,13 +161,7 @@ const GuestCheckout = () => {
     mode: "onBlur",
     reValidateMode: "onBlur",
     defaultValues: {
-      contact: {
-        email: "",
-        countryCode: "+91",
-        phone: "",
-        firstName: "",
-        lastName: "",
-      },
+      contact: { email: "" },
       shippingAddress: { ...DEFAULT_ADDRESS, primary: true },
       billingAddress: { ...DEFAULT_ADDRESS, primary: false },
       // PRD-014 UX-29: marketing email is opt-in, never pre-ticked
@@ -228,32 +225,15 @@ const GuestCheckout = () => {
     }
     if (CART_REFRESH_KEYS.includes(key) || isPromotionReason(key)) refetch();
     if (ADDRESS_KEYS.includes(key)) setFocus("shippingAddress.states");
+    if (PHONE_KEYS.includes(key)) scrollTo(".checkout_delivery_phone");
     if (CONTACT_KEYS.includes(key)) scrollTo(".guest_contact");
   }, [checkout.step, checkout.error]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // ─── Contact → delivery prefill ─────────────────────────────────────────
-
-  /** Copies the contact's names and phone into empty delivery fields. */
-  const prefillDelivery = () => {
-    const contact = getValues("contact") || {};
-    const address = getValues("shippingAddress") || {};
-    if (!address.firstname && contact.firstName) {
-      setValue("shippingAddress.firstname", contact.firstName);
-    }
-    if (!address.lastname && contact.lastName) {
-      setValue("shippingAddress.lastname", contact.lastName);
-    }
-    if (!address.phone && contact.phone) {
-      setValue("shippingAddress.phone", contact.phone);
-      setValue("shippingAddress.countryCode", contact.countryCode || "+91");
-    }
-  };
 
   // ─── Steps ──────────────────────────────────────────────────────────────
 
   const onInvalid = (formErrors) => {
     const message = formErrors?.contact
-      ? "Please check your contact details."
+      ? "Please check your email."
       : formErrors?.shippingAddress
         ? "Please complete your shipping address."
         : "Please complete your billing address.";
@@ -389,7 +369,6 @@ const GuestCheckout = () => {
                 control={control}
                 errors={errors}
                 signInPath={signInPath}
-                onPrefill={prefillDelivery}
               />
               <Delivery
                 control={control}
