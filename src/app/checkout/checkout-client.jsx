@@ -45,6 +45,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { useAuthStore } from "@/store/auth-store";
 import { useForm, useWatch } from "react-hook-form";
+import { useCheckoutShippingEstimate } from "@/hooks/useCheckoutShippingEstimate";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckoutSchema } from "@/validations/CheckoutValidation";
 import { useApolloClient, useQuery } from "@apollo/client/react";
@@ -260,6 +261,9 @@ const CustomerCheckout = () => {
     ],
   });
   const cartFingerprint = cartData?._id ? getCartFingerprint(cartData) : null;
+  // Shipping for the address entered, before "Continue to payment"
+  const { estimate: shippingEstimate, estimating: isEstimatingShipping } =
+    useCheckoutShippingEstimate(watchedShipping, cartFingerprint);
   // Built from the raw form values (the parsed ones drop a saved address's
   // flat), exactly as `start` receives them
   const inputOf = (values) => toCustomerCheckoutInput(cartData, values);
@@ -500,6 +504,9 @@ const CustomerCheckout = () => {
             <OrderSummary
               data={cartData}
               session={shownPricing ? { pricing: shownPricing } : null}
+              shippingEstimate={shippingEstimate}
+              isEstimatingShipping={isEstimatingShipping}
+              isPricing={checkout.step === "reserving"}
               loading={isBusy || !isReady}
               locked={isBusy}
               refetch={refetch}

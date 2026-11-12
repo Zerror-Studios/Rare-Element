@@ -38,6 +38,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@apollo/client/react";
 import { useForm, useWatch } from "react-hook-form";
+import { useCheckoutShippingEstimate } from "@/hooks/useCheckoutShippingEstimate";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
 import { useCheckout } from "@zcom/storefront-kit/client";
@@ -176,6 +177,9 @@ const GuestCheckout = () => {
 
   // The bag and every detail as sent: a change needs "Continue" again
   const cartFingerprint = cartData?._id ? getCartFingerprint(cartData) : null;
+  // Shipping for the address entered, before "Continue to payment"
+  const { estimate: shippingEstimate, estimating: isEstimatingShipping } =
+    useCheckoutShippingEstimate(values?.shippingAddress, cartFingerprint);
   const details = toGuestCheckoutInput(cartData, {
     acceptsMarketing: wantsNews,
     contact: values?.contact,
@@ -403,6 +407,9 @@ const GuestCheckout = () => {
             <OrderSummary
               data={cartData}
               session={isReserved ? checkout.session : null}
+              shippingEstimate={shippingEstimate}
+              isEstimatingShipping={isEstimatingShipping}
+              isPricing={checkout.step === "reserving"}
               loading={isBusy || !isReady}
               locked={isBusy}
               refetch={refetch}

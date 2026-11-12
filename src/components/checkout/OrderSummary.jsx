@@ -9,6 +9,7 @@ import { useMutation } from "@apollo/client/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formatePrice } from '@/utils/Util';
+import { getEstimatedShipping, getShippingLabel } from '@/utils/shipping-label';
 import { RiQuestionLine } from '@remixicon/react';
 import { ADD_ITEM_TO_CART, APPLY_CART_PROMOTION, REMOVE_CART_PROMOTION, REMOVE_ITEM_FROM_CART } from "@/graphql";
 import WishlistPopup from '../cart/WishlistPopup';
@@ -65,6 +66,10 @@ const OrderSummary = ({
   payLoading = false,
   onPay = null,
   couponNotice = "",
+  // Shipping for the address entered, before "Continue to payment"
+  shippingEstimate = null,
+  isEstimatingShipping = false,
+  isPricing = false,
 }) => {
   const guestVariables = guestId ? { guestId } : {};
   const {
@@ -320,9 +325,14 @@ const OrderSummary = ({
           <p className="checkout_textBase text-sm uppercase">Shipping Charges</p>
           <div className="shipping_price_group">
             <p className="checkout_textSm text-sm ">
-              {pricing
-                ? (pricing.isFreeShipping || pricing.shipping === 0 ? "Free" : formatePrice(pricing.shipping))
-                : (isFreeShippingEnabled ? "Free" : "Calculated at payment")}
+              {getShippingLabel({
+                pricing,
+                isPricing,
+                estimate: shippingEstimate,
+                estimating: isEstimatingShipping,
+                isFreeShippingEnabled,
+                format: formatePrice,
+              })}
             </p>
           </div>
         </div>
@@ -365,8 +375,16 @@ const OrderSummary = ({
         <div className="checkout_borderRow"></div>
         {/* The payable total is the server's checkout-session total. */}
         <div className="checkout_row semibold uppercase text-2xl ">
-          <p className="checkout_textBase text-lg uppercase">{pricing ? "Total Payable Amount" : "Subtotal"}</p>
-          <p className="checkout_subtotalValue">{formatePrice(pricing ? pricing.total : discountedPrice)}</p>
+          <p className="checkout_textBase text-lg uppercase">
+            {pricing ? "Total Payable Amount" : shippingEstimate?.available ? "Estimated Total" : "Subtotal"}
+          </p>
+          <p className="checkout_subtotalValue">
+            {formatePrice(
+              pricing
+                ? pricing.total
+                : Math.round((Number(discountedPrice) + getEstimatedShipping(pricing, shippingEstimate)) * 100) / 100,
+            )}
+          </p>
         </div>
 
         {!canPay && (
