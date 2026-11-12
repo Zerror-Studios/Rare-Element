@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery } from "@apollo/client/react";
+import { useStoreCheckoutOptions } from "@zcom/storefront-kit/client";
 import { ADD_ITEM_TO_CART, CART_LIST, REMOVE_ITEM_FROM_CART } from "@/graphql";
 import { useAuthStore } from "@/store/auth-store";
 import { useVisitor } from "@/hooks/useVisitor";
@@ -36,6 +37,8 @@ const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
   // PRD-014 UX-31: focus trap, Escape and inert-while-closed.
   useDialogA11y(drawerRef, isOpen, closeCart);
   const { isLoggedIn } = useAuthStore((state) => state);
+  // PRD-041: guests check out without signing in unless accounts are REQUIRED
+  const { allowsGuest } = useStoreCheckoutOptions();
   // The owner is the logged-in customer (token) or the guest id (SF-3).
   const guestVariables = !isLoggedIn && visitorId ? { guestId: visitorId } : {};
   const initialState = {
@@ -184,12 +187,14 @@ const CartDrawer = ({ isOpen, closeCart, overlayRef }) => {
     trackCtaClick(CtaEnum.CHECKOUT);
     try {
       dispatch({ type: "SET_BTN_LOADING", payload: true });
-      // Checkout is customer-only; the guest bag is merged at login.
-      if (!isLoggedIn) {
+      // PRD-041 FR-17: straight to checkout, also for a guest (their own
+      // bag). When the store requires accounts a guest signs in first; the
+      // guest bag is merged at sign-in.
+      if (!isLoggedIn && !allowsGuest) {
         toast.info("Please log in to check out.");
-        await router.push(`/login?next=${encodeURIComponent(`/checkout/${_id}`)}`);
+        await router.push(`/login?next=${encodeURIComponent("/checkout")}`);
       } else {
-        await router.push(`/checkout/${_id}`);
+        await router.push("/checkout");
       }
       closeCart();
     } catch (err) {

@@ -12,6 +12,7 @@ import { formatePrice } from '@/utils/Util';
 import { RiQuestionLine } from '@remixicon/react';
 import { ADD_ITEM_TO_CART, APPLY_CART_PROMOTION, REMOVE_CART_PROMOTION, REMOVE_ITEM_FROM_CART } from "@/graphql";
 import WishlistPopup from '../cart/WishlistPopup';
+import CouponMessage from './CouponMessage';
 import {
   REMOVE_ITEM_OVERRIDES,
   getErrorInfo,
@@ -23,13 +24,49 @@ import {
   trackCouponFailed,
   trackCtaClick,
 } from "@/utils/analytics-events";
+import {
+  COUPON_CODE_MAX_LENGTH,
+  isPromotionReason,
+  normaliseCouponCode,
+} from "@/utils/coupon";
 
-const couponSchema = z.object({ couponCode: z.string().min(1, "Enter Valid Coupon").optional() });
+const couponSchema = z.object({
+  couponCode: z
+    .string()
+    .trim()
+    .min(1, "Enter Valid Coupon")
+    .max(COUPON_CODE_MAX_LENGTH)
+    .optional(),
+});
 
-// Checkout is customer-only, so the cart owner is always the access token.
-// `session` (after "Pay Now") carries the authoritative server total;
-// `locked` freezes the bag once an order exists for it.
-const OrderSummary = ({ data, session, loading, locked = false, refetch }) => {
+// The cart owner is the access token (signed in) or `guestId` (the guest
+// checkout, backend PRD-041 FR-17). `session` (once reserved, or the kept
+// unpaid order's) carries the authoritative server total; `locked` freezes
+// the bag while the checkout is busy. One flow on both paths (owner,
+// 2026-11-12): "Continue to payment" (`showContinue`, the form's submit
+// button) reserves and shows the server total; "Pay now" (`payLabel`, or
+// "Pay again" after a closed window) calls `onPay` and is enabled only
+// while `canPay` (the session is reserved for exactly these details),
+// otherwise disabled with a short hint. The kit tracks the place-order and
+// pay-now clicks itself (kit 1.1.0). `couponNotice` is the checkout's note
+// that the server dropped the bag's code at "Continue to payment".
+
+const OrderSummary = ({
+  data,
+  session,
+  loading,
+  locked = false,
+  refetch,
+  guestId = null,
+  showContinue = false,
+  continueLoading = false,
+  canPay = false,
+  payLabel = "Pay now",
+  payLoading = false,
+  onPay = null,
+  couponNotice = "",
+}) => {
+  const guestVariables = guestId ? { guestId } : {};
   const {
     totalprice = 0,
     pricesIncludeTax = false,
@@ -71,6 +108,9 @@ const OrderSummary = ({ data, session, loading, locked = false, refetch }) => {
 
   const [applyCoupon, { loading: applyCouponLoading }] = useMutation(APPLY_CART_PROMOTION);
   const [removeCoupon, { loading: removeCouponLoading }] = useMutation(REMOVE_CART_PROMOTION);
+  // A refused code: its own message under the field (and "Sign in" when
+  // the code needs an account)
+  const [couponError, setCouponError] = React.useState(null);
   const {
     register,
     handleSubmit,
@@ -99,9 +139,10 @@ const OrderSummary = ({ data, session, loading, locked = false, refetch }) => {
     if (loading || isLocked()) return;
     const couponCode = formData?.couponCode || "";
     trackCtaClick(CtaEnum.APPLY_COUPON);
+    setCouponError(null);
     try {
       const { data: res } = await applyCoupon({
-        variables: { promotionCode: couponCode },
+        variables: { promotionCode: couponCode, ...guestVariables },
       });
       if (res?.applyCartPromotion?._id) {
         trackCouponApply(couponCode);
@@ -111,7 +152,12 @@ const OrderSummary = ({ data, session, loading, locked = false, refetch }) => {
       // PRD-013: the reason is the server code, never the message text.
       const { reason, code } = getErrorInfo(err);
       trackCouponFailed(couponCode, reason || code || "UNKNOWN");
-      toast.error(getErrorMessage(err, "Failed to apply coupon"));
+      const message = getErrorMessage(err, "Failed to apply coupon");
+      if (isPromotionReason(reason)) {
+        setCouponError({ message, reason });
+      } else {
+        toast.error(message);
+      }
     } finally {
       refetch();
     }
@@ -119,8 +165,9 @@ const OrderSummary = ({ data, session, loading, locked = false, refetch }) => {
 
   const onRemove = async () => {
     if (loading || isLocked()) return;
+    setCouponError(null);
     try {
-      const { data: res } = await removeCoupon();
+      const { data: res } = await removeCoupon({ variables: guestVariables });
       if (res?.removeCartPromotion) {
         toast.success("Coupon Removed successfully!");
       }
@@ -136,7 +183,10 @@ const OrderSummary = ({ data, session, loading, locked = false, refetch }) => {
     if (isLocked()) return;
     try {
       const { data: res } = await addCartItem({
-        variables: { input: { productId, variantId: variantId || null, qty: 1 } },
+        variables: {
+          input: { productId, variantId: variantId || null, qty: 1 },
+          ...guestVariables,
+        },
       });
       if (!res?.addItemToCart) return;
       toast.success("Item added successfully!");
@@ -155,6 +205,7 @@ const OrderSummary = ({ data, session, loading, locked = false, refetch }) => {
     if (isLocked()) return;
     try {
       const input = {
+        ...guestVariables,
         productId,
         variantId: variantId || null,
         isCompleteRemove,
@@ -189,6 +240,9 @@ const OrderSummary = ({ data, session, loading, locked = false, refetch }) => {
     await performRemoveItem(productId, variantId, isCompleteRemove);
   };
 
+  const applyCode = handleSubmit(onSubmit);
+  const couponField = register("couponCode");
+
   return (
     <div className="checkout_summaryContainer">
       {popupActive && (
@@ -207,23 +261,45 @@ const OrderSummary = ({ data, session, loading, locked = false, refetch }) => {
         <div className="coupon_div">
           <div className="coupon_div_inner">
             <Input
-              {...register("couponCode")}
+              {...couponField}
               placeholder="Discount Code"
+              aria-label="Discount code"
               className="checkout_couponInput"
               style={{ width: "100%" }}
+              maxLength={COUPON_CODE_MAX_LENGTH}
               disabled={applyCouponLoading || removeCouponLoading || isCouponApplied || locked}
               error={errors?.couponCode}
+              // Normalise, then tell react-hook-form, so the form value is
+              // always current (Safari keeps focus, so blur never comes)
               onChange={(e) => {
-                let value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
-                value = value.toUpperCase();
-                e.target.value = value;
+                e.target.value = normaliseCouponCode(e.target.value);
+                setCouponError(null);
+                couponField.onChange(e);
+              }}
+              // Enter applies the code; it never submits the checkout form
+              onKeyDown={(e) => {
+                if (e.key !== "Enter") return;
+                e.preventDefault();
+                if (!isCouponApplied) applyCode();
               }} />
             <div className="checkout_couponBtn text-base uppercase">
-              <GreenBoxBtn type="button" title={!isCouponApplied ? "Apply" : "Remove"} loading={applyCouponLoading || removeCouponLoading} onClick={!isCouponApplied ? handleSubmit(onSubmit) : handleSubmit(onRemove)} />
+              <GreenBoxBtn type="button" title={!isCouponApplied ? "Apply" : "Remove"} loading={applyCouponLoading || removeCouponLoading} onClick={!isCouponApplied ? applyCode : handleSubmit(onRemove)} />
             </div>
           </div>
+          {couponError && !errors?.couponCode && (
+            <p className="input_error_msg text-xs" role="alert">
+              <CouponMessage
+                message={couponError.message}
+                reason={couponError.reason}
+              />
+            </p>
+          )}
+          {couponNotice && (
+            <p className="input_error_msg text-xs" role="status">
+              {couponNotice}
+            </p>
+          )}
           <div className=" coupon_info text-xs">
-            <p> • Offer applicable to first-time customers only.</p>
             <p> • Limited to one coupon per transaction. </p>
           </div>
         </div>
@@ -293,11 +369,25 @@ const OrderSummary = ({ data, session, loading, locked = false, refetch }) => {
           <p className="checkout_subtotalValue">{formatePrice(pricing ? pricing.total : discountedPrice)}</p>
         </div>
 
+        {!canPay && (
+          <p className="checkout_paymentNote text-sm" role="status">
+            Continue to payment to see your final total.
+          </p>
+        )}
         <div className="checkout_btn text-base uppercase">
+          {showContinue && (
+            <GreenBoxBtn
+              title="Continue to payment"
+              loading={continueLoading}
+              data-testid="checkout-continue"
+            />
+          )}
           <GreenBoxBtn
-            title={"Pay Now"}
-            loading={loading}
-            onClick={() => trackCtaClick(CtaEnum.PAY_NOW)}
+            type="button"
+            title={payLabel}
+            loading={payLoading}
+            disabled={!canPay}
+            onClick={onPay || undefined}
             data-testid="checkout-pay-now"
           />
         </div>

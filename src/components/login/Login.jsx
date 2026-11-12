@@ -20,7 +20,9 @@ const LoginSchema = z.object({
 });
 
 
-const Login = ({ setToggle }) => {
+// Password sign-in (backend PRD-041 FR-11): only for customers who already
+// have a password; the default is the email code (`CodeSignIn`).
+const Login = ({ onUseCode, inactive = false }) => {
   const router = useRouter();
   const [visible, setVisible] = useState(false);
   const { login } = useAuth();
@@ -59,11 +61,11 @@ const Login = ({ setToggle }) => {
   };
 
   return (
-    <div className="left-two">
+    <div className="left-two" inert={inactive || undefined}>
       <div className="login-inner">
         <div className="login-t text-3xl">
           <p>
-            LOGIN
+            SIGN IN WITH PASSWORD
           </p>
         </div>
 
@@ -111,14 +113,20 @@ const Login = ({ setToggle }) => {
             <Link href="/forgot-password">Forgot password?</Link>
           </div>
           <div className="signup_btn">
-            <GreenBoxBtn title={"Login"} loading={loading} />
+            <GreenBoxBtn title={"Sign in"} loading={loading} />
           </div>
         </form>
 
         <div className="not-up">
           <p>
-            Not a member yet?{" "}
-            <span onClick={() => setToggle(true)}>Sign up</span>
+            No password?{" "}
+            <button
+              type="button"
+              className="login-text-btn text-base"
+              onClick={onUseCode}
+            >
+              Sign in with an email code
+            </button>
           </p>
         </div>
       </div>

@@ -3,7 +3,9 @@
  *
  * No test framework and no new dependency: `node --test` with module
  * hooks (Node >= 22.15) that
- * - resolve the `@/…` alias and extensionless imports under `src/`, and
+ * - resolve the `@/…` alias and extensionless imports under `src/`
+ *   (`.js`, `.mjs`, and `.jsx` files without JSX such as the zod
+ *   validations, PRD-041), and
  *   load those files as ES modules (the package has no `"type"`);
  * - map `next/server` to a shim that re-exports Next's real
  *   `NextRequest` / `NextResponse` (CommonJS in the installed `next`);
@@ -26,7 +28,7 @@ const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const SRC = path.join(ROOT, "src");
 const SRC_URL = pathToFileURL(SRC).href;
 const NEXT_SERVER_SHIM = new URL("./next-server.shim.mjs", import.meta.url).href;
-const CANDIDATE_SUFFIXES = ["", ".js", ".mjs", "/index.js"];
+const CANDIDATE_SUFFIXES = ["", ".js", ".mjs", ".jsx", "/index.js"];
 
 // ─── Helpers ──────────────────────────────────────────────────────────────
 

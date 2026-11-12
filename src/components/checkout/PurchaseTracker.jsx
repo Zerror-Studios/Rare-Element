@@ -5,14 +5,16 @@
  * Ads purchase conversion once per paid order (kit; the GA4 `purchase` is
  * sent by the backend from the paid order, PRD-012).
  * The thank-you page passes the order only after `myOrder` reports it
- * PAID; a sessionStorage key per order id stops repeats on refresh or
- * back-navigation in this tab.
+ * PAID. The kit's `trackAdsPurchase` dedupes on the order id (kit 1.1.0),
+ * so the paying tab, which the kit's `useCheckout` already sent it from,
+ * and this page count it once; a sessionStorage key per order id also
+ * stops repeats on refresh or back-navigation in this tab.
  *
- * PRD-034 FR-1.3 / FR-1.6: every network gets the order `_id` (GA4 and
- * Google Ads `transaction_id`, Pixel `eventID`), the id the server-side
- * Conversions API uses, so browser and server events deduplicate. The
- * email and phone are passed for enhanced conversions, which hash them in
- * the browser (marketing consent and the store's setting only).
+ * PRD-034 FR-1.3 / FR-1.6: every network gets the order `_id` (Google Ads
+ * `transaction_id`, Pixel `eventID`), the id the server-side Conversions
+ * API uses, so browser and server events deduplicate. The email and phone
+ * are passed for enhanced conversions, which hash them in the browser
+ * (marketing consent and the store's setting only).
  */
 
 import { useEffect } from "react";
@@ -45,14 +47,12 @@ export default function PurchaseTracker({ order }) {
     const value = order.orderPrice || 0;
 
     const contact = order.billingAddress || order.shippingAddress || {};
-    // GA4, Meta Pixel and Google Ads (marketing consent for the ads)
+    // Meta Pixel and Google Ads (marketing consent)
     Promise.resolve(
-      trackEcomEvent.purchase(
+      trackEcomEvent.adsPurchase(
         order._id,
         value,
         order.cart || [],
-        order.shippingAmount || 0,
-        order.tax?.totalTax || 0,
         {
           currency: order.currency || "INR",
           customer: {

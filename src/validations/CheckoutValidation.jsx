@@ -52,3 +52,51 @@ export const CheckoutSchema = z
       });
     }
   });
+
+// ─── Guest checkout (backend PRD-041 FR-4, FR-17) ─────────────────────────
+
+// The backend accepts 7 to 15 digits (`INVALID_PHONE` otherwise).
+const PHONE_DIGITS_MIN = 7;
+const PHONE_DIGITS_MAX = 15;
+
+const phoneDigits = (value) => String(value || "").replace(/\D/g, "").length;
+
+/** The Contact step: email and phone required, names optional. */
+export const GuestContactSchema = z.object({
+  email: z.string().trim().min(1, "Email is required").email("Enter a valid email"),
+  countryCode: z.string().min(1, "Country code is required"),
+  phone: z
+    .string()
+    .min(1, "Phone number is required")
+    .refine(
+      (value) =>
+        phoneDigits(value) >= PHONE_DIGITS_MIN &&
+        phoneDigits(value) <= PHONE_DIGITS_MAX,
+      "Enter a valid phone number",
+    ),
+  firstName: z.string().trim().max(100, "That name is too long").optional(),
+  lastName: z.string().trim().max(100, "That name is too long").optional(),
+});
+
+/** The guest checkout form; the billing address only when it is separate. */
+export const GuestCheckoutSchema = z
+  .object({
+    contact: GuestContactSchema,
+    emailSubscribedStatus: z
+      .enum(Object.values(EmailSubscribedStatus))
+      .default(EmailSubscribedStatus.UNSUBSCRIBED),
+    useShippingAsBilling: z.boolean().default(true),
+    shippingAddress: AddressSchema,
+    billingAddress: z.any().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.useShippingAsBilling) return;
+    const result = AddressSchema.safeParse(data.billingAddress);
+    if (result.success) return;
+    for (const issue of result.error.issues) {
+      ctx.addIssue({
+        ...issue,
+        path: ["billingAddress", ...(issue.path ?? [])],
+      });
+    }
+  });

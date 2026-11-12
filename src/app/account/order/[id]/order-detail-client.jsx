@@ -5,6 +5,8 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import AccountBreadcrumb from '@/components/account/AccountBreadcrumb';
 import { useQuery } from '@apollo/client/react';
+import { useMyOrderStatusToken } from '@zcom/storefront-kit/client';
+import { orderStatusPath } from '@zcom/storefront-kit/core';
 import { MY_ORDER } from '@/graphql';
 import { formatDateTime, formatePrice, formatPaymentStatus } from '@/utils/Util';
 import Image from 'next/image';
@@ -21,6 +23,8 @@ const OrderDetailClient = () => {
   const { data: response, loading, error, refetch } = useQuery(MY_ORDER, { variables: { id }, skip: !id, fetchPolicy: 'network-only' });
   // Customer-scoped: another shopper's order id resolves to nothing.
   const data = { order: response?.myOrder };
+  // PRD-041 FR-14: the same order status page the order emails link to
+  const statusPath = orderStatusPath(useMyOrderStatusToken(response?.myOrder?._id ?? null));
 
   if (loading && !data?.order) return <div className="account_rightSection" role="status">Loading order details...</div>;
   if (error && !data?.order) {
@@ -78,6 +82,11 @@ const OrderDetailClient = () => {
             )}
             {data?.order?.deliveredAt && (
               <p className='text-sm'>{`Delivered ${formatOrderDate(data.order.deliveredAt)}`}</p>
+            )}
+            {statusPath && (
+              <Link prefetch={false} href={statusPath} className='text-sm underline order_link_btn'>
+                View order status
+              </Link>
             )}
           </div>
           <div className="">

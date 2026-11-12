@@ -11,7 +11,12 @@
  */
 
 import { ServerError } from "@apollo/client";
-import { getErrorInfo as readKitError } from "@zcom/storefront-kit/core";
+import {
+  DEFAULT_ERROR_MESSAGES as KIT_MESSAGES,
+  getErrorInfo as readKitError,
+  getErrorMessage as getKitErrorMessage,
+} from "@zcom/storefront-kit/core";
+import { isPromotionReason } from "./coupon";
 
 // ─── Messages ─────────────────────────────────────────────────────────────
 
@@ -43,6 +48,10 @@ export const REASON_MESSAGES = {
   PROMOTION_CUSTOMER_LIMIT: "You have already used this discount code.",
   PROMOTION_MINIMUM: "Your bag doesn't meet the minimum for this code.",
   PROMOTION_NOT_APPLICABLE: "This code doesn't apply to items in your bag.",
+  // Who can use a code (backend PRD-036 round 2)
+  PROMOTION_SIGN_IN_REQUIRED: "Sign in to use this discount code.",
+  PROMOTION_NEW_CUSTOMERS_ONLY: "This discount code is for first orders only.",
+  PROMOTION_NOT_ELIGIBLE: "This discount code isn't available for your account.",
   ALREADY_PAID: "This order has already been paid.",
   ORDER_CANCELLED: "This order was cancelled.",
   ACCOUNT_INACTIVE: "This account is inactive. Please contact support.",
@@ -134,6 +143,19 @@ export function getReasonMessage(reason, fallback) {
 }
 
 /**
+ * Its own message for every promotion answer (`PROMOTION_*`): the store's
+ * copy, else the kit's (a reason the backend adds later), never a generic
+ * "Failed to apply coupon".
+ */
+export function getPromotionMessage(reason) {
+  return (
+    REASON_MESSAGES[reason] ||
+    KIT_MESSAGES[reason] ||
+    REASON_MESSAGES.PROMOTION_INVALID
+  );
+}
+
+/**
  * Shopper-facing message for an Apollo error. `overrides` maps a reason or
  * code to a screen-specific message (e.g. `{ UNAUTHENTICATED: "…" }`).
  */
@@ -143,10 +165,28 @@ export function getErrorMessage(
   overrides = {},
 ) {
   const { code, reason } = getErrorInfo(error);
+  if (isPromotionReason(reason) && !overrides[reason]) {
+    return getPromotionMessage(reason);
+  }
   return (
     (reason && (overrides[reason] || REASON_MESSAGES[reason])) ||
     (code && (overrides[code] || CODE_MESSAGES[code])) ||
     fallback
+  );
+}
+
+/**
+ * Shopper copy for an error key a kit hook holds (`useCheckout().error`,
+ * `useCodeSignIn().error`, a `CheckoutResult.reason`; backend PRD-041):
+ * the store's own message when it has one, else the kit's (the kit owns
+ * the guest checkout and code sign-in copy). "" for no key.
+ */
+export function getKitKeyMessage(key, overrides = {}) {
+  if (!key) return "";
+  if (isPromotionReason(key) && !overrides[key]) return getPromotionMessage(key);
+  return getKitErrorMessage(
+    { extensions: { reason: key } },
+    { ...REASON_MESSAGES, ...overrides },
   );
 }
 

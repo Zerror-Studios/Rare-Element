@@ -6,9 +6,12 @@
  *   headers stripped; fails closed without NEXT_PUBLIC_TENANT_DOMAIN.
  * - `/.well-known/zcom-store` → the go-live identity check (PRD-018 FR-4.3).
  * - A suspended store answers the branded 503 on every page (PRD-018 FR-1.6).
- * - `/account/*` and `/checkout/*` need a customer session cookie, except
- *   the result pages and `/checkout/start` (a guest's bag is filled first,
- *   then login merges it). The cookie is a hint; the API verifies.
+ * - `/account/*` needs a customer session cookie (a hint; the API
+ *   verifies). Checkout is open to guests since backend PRD-041 FR-17: the
+ *   page itself offers guest checkout, or "Sign in to check out" when the
+ *   store's accounts are REQUIRED. `/orders/status/<token>` (the order
+ *   status page) is public; the kit serves it noindex, `no-store` and
+ *   `no-referrer`.
  */
 
 import {
@@ -21,13 +24,7 @@ const SUPPORT_EMAIL =
 
 const proxy = createZcomMiddleware({
   loginGuard: {
-    paths: ["/account", "/checkout"],
-    publicPaths: [
-      "/checkout/thank-you",
-      "/checkout/payment-failed",
-      "/checkout/payment-return",
-      "/checkout/start",
-    ],
+    paths: ["/account"],
   },
   unavailableHtml: buildStoreUnavailableHtml({
     brandName: "Nahara",

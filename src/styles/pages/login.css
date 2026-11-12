@@ -433,3 +433,41 @@
     width: 50%;
   }
 }
+
+/* Backend PRD-041 FR-12: sign in with an email code */
+.login-copy {
+  text-align: center;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+.login-error {
+  margin: 10px 0 0;
+  color: red;
+}
+.login-code-inp {
+  letter-spacing: 0.5em;
+  text-align: center;
+}
+.login-code-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 14px;
+}
+.login-text-btn {
+  padding: 0;
+  border: none;
+  background: none;
+  color: black;
+  text-decoration: underline;
+  cursor: pointer;
+  font-family: inherit;
+}
+.login-text-btn:hover {
+  opacity: 0.5;
+}
+.login-text-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+  text-decoration: none;
+}

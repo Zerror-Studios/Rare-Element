@@ -7,6 +7,12 @@
  * When polling ends without PAID the page settles on a terminal "not
  * confirmed yet" state with the support contact (RBUG-20); a missing or
  * unknown order never shows success.
+ *
+ * The checkout lands here only when the order has no status page token
+ * (else it goes to `orderStatusPath`, backend PRD-041 FR-14). Once PAID,
+ * `PurchaseTracker` sends the ads purchase, which the kit dedupes per
+ * order (the paying tab already sent it); GA4's `purchase` is sent
+ * server-side by the backend (PRD-012), never from here.
  */
 
 import React, { useEffect, useState } from "react";
@@ -18,7 +24,7 @@ import GreenBoxBtn from "@/components/buttons/GreenBoxBtn";
 import PurchaseTracker from "@/components/checkout/PurchaseTracker";
 import { MY_ORDER } from "@/graphql";
 import { SUPPORT_EMAIL } from "@/utils/env";
-import { PendingOrder } from "@/utils/pending-order";
+import { PendingOrderStore } from "@zcom/storefront-kit/core";
 
 const POLL_INTERVAL_MS = 3000;
 const POLL_DURATION_MS = 60 * 1000;
@@ -53,9 +59,10 @@ const ThankYouClient = () => {
     };
   }, [loadedOrderId, isPaid, startPolling, stopPolling]);
 
-  // The order is paid: a later checkout must not reuse it (RBUG-8).
+  // The order is paid: a later checkout must not reuse the kit's kept
+  // unpaid order (RBUG-8; the kit also forgets it once PAID).
   useEffect(() => {
-    if (isPaid) PendingOrder.clear();
+    if (isPaid) PendingOrderStore.clear();
   }, [isPaid]);
 
   let title = "Payment Successful";

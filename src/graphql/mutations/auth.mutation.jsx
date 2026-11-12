@@ -17,25 +17,6 @@ export const CUSTOMER_LOGOUT = gql`
   }
 `;
 
-// Sign Up (duplicate email → extensions.code CONFLICT)
-export const SIGN_UP_USER = gql`
-  mutation CustomerSignup($input: CreateUserInput!) {
-    customerSignup(input: $input) {
-      _id
-      firstName
-      lastName
-      email
-      phoneNumber
-      countryCode
-      gender
-      profileImg
-      dateOfBirth
-      status
-      emailSubscribedStatus
-    }
-  }
-`;
-
 // Login: the refresh token is set as an HttpOnly cookie, never selected.
 export const CUSTOMER_LOGIN = gql`
   mutation CustomerLogin($input: CustomerLoginInput!) {

@@ -3,6 +3,10 @@
 /**
  * Customer session context on the kit (PRD-002 FR-4.1).
  *
+ * Sign-in is the kit's email code (`useCodeSignIn`, backend PRD-041 FR-9
+ * to FR-12; it is also the sign-up), then `completeCodeSignIn`; password
+ * sign-in (`login`) stays for customers who have a password (FR-11).
+ *
  * The kit owns the session (in-memory access token, the HttpOnly refresh
  * cookie, single-flight refresh, guest-cart merge at login). This keeps the
  * store's `useAuthStore` (the `isLoggedIn` flag and the profile many
@@ -68,10 +72,14 @@ export const AuthProvider = ({ children }) => {
     return await loadProfile();
   };
 
-  /** Creates the account, then signs in (`login` above). */
-  const signup = async (input) => {
-    const auth = await kit.signup(input);
-    if (auth.merge === "failed") {
+  /**
+   * After the kit's `useCodeSignIn().verifyCode` (backend PRD-041 FR-10):
+   * the kit already started the session and merged the guest bag; this
+   * brings the store's state in step exactly as `login` does and resolves
+   * the profile.
+   */
+  const completeCodeSignIn = async ({ merge } = {}) => {
+    if (merge === "failed") {
       toast.warn("Some items from your bag could not be added.");
     }
     setIsLoggedIn(true);
@@ -87,7 +95,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ login, signup, logout }}>
+    <AuthContext.Provider value={{ login, completeCodeSignIn, logout }}>
       {children}
     </AuthContext.Provider>
   );

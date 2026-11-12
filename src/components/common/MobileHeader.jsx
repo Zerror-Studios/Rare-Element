@@ -129,7 +129,7 @@ const MobileHeader = ({ openCart }) => {
             </div>
           ) : (
             <Link scroll={false} href={"/login"} onClick={() => closeMenu()} title='login'>
-              <p className='text-base uppercase '>Login/Signup</p>
+              <p className='text-base uppercase '>Sign in</p>
             </Link>
           )}
         </div>

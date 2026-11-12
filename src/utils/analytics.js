@@ -1,13 +1,17 @@
 /**
  * GA4 and ads e-commerce events (PRD-034 FR-1.3, PRD-002 FR-4.1).
  *
- * `trackEcomEvent` is the store's one e-commerce dispatcher: GA4 through the
- * kit's `trackEvent` (analytics consent, queued until GA4 loads), the Meta
- * Pixel and Google Ads through the kit's ads functions (ads consent; the ids
- * `ZcomTags` loaded). The GA4 `purchase` is sent by the backend from the
- * paid order (PRD-012), so the browser sends only the ads purchase, with the
- * order `_id` as Pixel `eventID` / Google Ads `transaction_id` (the
- * server-side events use the same id, so each network counts it once).
+ * `trackEcomEvent` is where the store's own e-commerce events start: GA4
+ * through the kit's `trackEvent` (analytics consent, queued until GA4
+ * loads), the Meta Pixel and Google Ads through the kit's ads functions (ads
+ * consent; the ids `ZcomTags` loaded). The checkout's GA4 events
+ * (`begin_checkout`, `add_shipping_info`, `add_payment_info`,
+ * `checkout_error`, the place-order and pay-now clicks) and the paying
+ * tab's ads purchase are the kit's (`useCheckout`, kit 1.1.0), for both
+ * checkouts. The GA4 `purchase` is sent by the backend from the paid order
+ * (PRD-012). The ads purchase uses the order `_id` as Pixel `eventID` /
+ * Google Ads `transaction_id` (the server-side events use the same id, so
+ * each network counts it once).
  */
 
 import {
@@ -93,13 +97,13 @@ export const trackEcomEvent = {
     }
   },
 
-  beginCheckout: (cartItems = [], totalValue = 0) => {
+  /**
+   * The ads networks' begin checkout (Meta `InitiateCheckout`, Google Ads)
+   * when the signed-in checkout opens. GA4's `begin_checkout` is the kit's
+   * (`useCheckout`, once the session is reserved), so it isn't sent here.
+   */
+  adsBeginCheckout: (cartItems = [], totalValue = 0) => {
     const items = (cartItems || []).map(mapLineToGA4Item);
-    trackGAEvent("begin_checkout", {
-      currency: CURRENCY,
-      value: Number(totalValue),
-      items,
-    });
     trackAdsBeginCheckout(
       null,
       items.map((item) => ({ id: item.item_id, quantity: item.quantity, price: item.price })),
@@ -109,11 +113,13 @@ export const trackEcomEvent = {
   },
 
   /**
-   * The ads purchase of a PAID order (once per order on this browser). The
+   * The ads purchase of a PAID order, once per order on this browser: the
+   * kit's `trackAdsPurchase` dedupes on the order id, so the paying tab
+   * (the kit sends it once PAID) and the thank-you page count it once. The
    * GA4 purchase comes from the backend. `options` = `{ currency, customer }`;
    * the customer's email and phone are hashed by the kit, never sent plain.
    */
-  purchase: (orderId, totalValue, items = [], _shipping = 0, _tax = 0, options = {}) =>
+  adsPurchase: (orderId, totalValue, items = [], options = {}) =>
     trackAdsPurchase(null, {
       orderId,
       value: Number(totalValue),

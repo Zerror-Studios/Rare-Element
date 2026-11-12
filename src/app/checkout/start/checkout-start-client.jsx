@@ -6,16 +6,21 @@
  * The kit's `useCheckoutStart` (PRD-002 FR-4.1) adds the link's lines to
  * the shopper's bag (signed-in customer, or the server-issued guest id),
  * once per link and tab, skipping archived or sold-out variants. Then this
- * opens the cart's checkout; a guest goes through login first, where the
- * guest bag is merged (as the bag drawer does). Bad input or nothing
- * addable shows a message with a link to the shop.
+ * opens the cart's checkout: a guest's own bag while the store's accounts
+ * are OPTIONAL (backend PRD-041 FR-17); with REQUIRED accounts a guest
+ * goes through login first, where the guest bag is merged (as the bag
+ * drawer does). Bad input or nothing addable shows a message with a link
+ * to the shop.
  */
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useApolloClient } from "@apollo/client/react";
-import { useCheckoutStart } from "@zcom/storefront-kit/client";
+import {
+  useCheckoutStart,
+  useStoreCheckoutOptions,
+} from "@zcom/storefront-kit/client";
 import GreenBoxBtn from "@/components/buttons/GreenBoxBtn";
 import { CART_LIST } from "@/graphql";
 import { useVisitor } from "@/hooks/useVisitor";
@@ -29,13 +34,19 @@ const CheckoutStartClient = ({ products }) => {
   const client = useApolloClient();
   const { isLoggedIn } = useAuthStore((state) => state);
   const { runWithGuestId } = useVisitor();
+  const { allowsGuest, loading: optionsLoading } = useStoreCheckoutOptions();
   // The kit adds the link's items to the bag once per link and tab
   const state = useCheckoutStart(products ?? null);
   const [openError, setOpenError] = useState(null);
+  // Checkout opens once, whatever re-renders after the bag is ready
+  const openedRef = useRef(false);
   const error = state.status === "error" ? state.errorKey : openError;
 
   useEffect(() => {
     if (state.status !== "ready") return;
+    if (openedRef.current) return;
+    if (!isLoggedIn && optionsLoading) return;
+    openedRef.current = true;
     const readCart = () =>
       isLoggedIn
         ? client.query({ query: CART_LIST, fetchPolicy: "network-only" })
@@ -53,16 +64,25 @@ const CheckoutStartClient = ({ products }) => {
           setOpenError("ADD_FAILED");
           return;
         }
-        const checkoutPath = `/checkout/${encodeURIComponent(cartId)}`;
-        // Checkout is customer-only; login merges the guest bag.
+        const checkoutPath = "/checkout";
+        // PRD-041: a guest's own bag unless accounts are REQUIRED (then
+        // login, which merges the guest bag).
         router.replace(
-          isLoggedIn
+          isLoggedIn || allowsGuest
             ? checkoutPath
             : `/login?next=${encodeURIComponent(checkoutPath)}`,
         );
       })
       .catch(() => setOpenError("ADD_FAILED"));
-  }, [state.status, isLoggedIn, client, runWithGuestId, router]);
+  }, [
+    state.status,
+    isLoggedIn,
+    allowsGuest,
+    optionsLoading,
+    client,
+    runWithGuestId,
+    router,
+  ]);
 
   if (!error) {
     return (

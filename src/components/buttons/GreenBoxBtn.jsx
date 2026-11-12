@@ -3,7 +3,7 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 
-const GreenBoxBtn = ({ title, href, onClick, loading = false, type = "submit", ...props }) => {
+const GreenBoxBtn = ({ title, href, onClick, loading = false, disabled = false, type = "submit", ...props }) => {
     const router = useRouter();
 
     const handleClick = () => {
@@ -17,7 +17,7 @@ const GreenBoxBtn = ({ title, href, onClick, loading = false, type = "submit", .
         <button className="green_box_btn" type={type}
             onClick={handleClick}
             {...props}
-            disabled={loading}>
+            disabled={loading || disabled}>
             {loading ? (
                 <div className="spinner_loader"></div>
             ) : (

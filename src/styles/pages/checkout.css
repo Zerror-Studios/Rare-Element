@@ -693,6 +693,19 @@
 .checkout_btn {
   width: 100%;
   margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* "Pay now" before "Continue to payment" (not while it spins) */
+.checkout_btn .green_box_btn:disabled:not(:has(.spinner_loader)),
+.checkout_btn .green_box_btn:disabled:not(:has(.spinner_loader)):hover {
+  background-color: white;
+  color: #174d38;
+  border: 1px solid white;
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .status_section {
@@ -875,4 +888,18 @@
 /* Payment-failed actions: retry, back to cart, continue (PRD-014) */
 .payment_failed_actions {
   gap: 0.75rem;
+}
+
+/* Backend PRD-041 FR-17: the guest checkout's messages */
+
+.guest_signin_hint a {
+  margin-left: 0.25rem;
+}
+
+.guest_checkout_error {
+  color: red;
+}
+
+.guest_checkout_note {
+  opacity: 0.7;
 }
