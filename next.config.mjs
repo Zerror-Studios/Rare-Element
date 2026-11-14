@@ -55,6 +55,17 @@ const securityHeaders = buildSecurityHeaders({
 const nextConfig = {
   reactStrictMode: true,
 
+  // lottie-react bundles all three Lottie players; the store renders only
+  // `LottieLight` (components/common/LazyLottie.jsx), so the other two point
+  // at the light one too: no `eval` (the CSP blocks it) and a smaller chunk.
+  turbopack: {
+    resolveAlias: {
+      "lottie-web": "lottie-web/build/player/lottie_light.js",
+      "lottie-web/build/player/lottie_svg.js":
+        "lottie-web/build/player/lottie_light.js",
+    },
+  },
+
   images: {
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 31536000, // 1 year - images are immutable

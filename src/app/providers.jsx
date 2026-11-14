@@ -14,6 +14,7 @@ import { usePathname } from "next/navigation";
 import { toast, ToastContainer, Zoom } from "react-toastify";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
+import { config as zodConfig } from "zod";
 import { ZcomSsrProvider } from "@zcom/storefront-kit/ssr";
 import { registerNimbblCheckout, ZcomTags } from "@zcom/storefront-kit/client";
 
@@ -23,6 +24,10 @@ import { AuthProvider } from "@/context/AuthContext";
 import { zcomConfig } from "@/zcom.config";
 
 gsap.registerPlugin(ScrollTrigger);
+
+// zod 4 probes `Function("")` once to decide whether to compile its
+// validators; the CSP blocks `eval`, so the probe only logs a violation.
+zodConfig({ jitless: true });
 
 // Nimbbl until its 2026-11-15 shutdown (backend PRD-029 D1): the kit opens
 // this store's Sonic for a NIMBBL checkout; the module loads only on "Pay".

@@ -8,6 +8,14 @@ import { indexableRobots, toCanonicalUrl } from '@/utils/env'
 
 export const revalidate = 300;
 
+// No page is built ahead: each is rendered on its first visit, then cached
+// and rebuilt every `revalidate` seconds (ISR). Without this export a
+// dynamic segment is rendered on every request and sent as no-store, so
+// the CDN can't cache it.
+export async function generateStaticParams() {
+  return [];
+}
+
 const PAGE_SIZE = 12;
 
 const defaultMeta = {

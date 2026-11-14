@@ -2,14 +2,12 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import gsap from 'gsap'
 import SeoHeader from '@/components/seo/SeoHeader'
 import ProductCard from '@/components/common/ProductCard'
 import { GET_CLIENT_SIDE_CATEGORY_BY_SLUG, GET_PRODUCTS } from '@/graphql'
 import { getProductPriceLabel } from '@/utils/Util'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import ScrollTrigger from 'gsap/dist/ScrollTrigger'
 import { useApolloClient, useQuery } from '@apollo/client/react'
 import useCategoryStore from '@/store/category-store'
 import GreenBoxBtn from '@/components/buttons/GreenBoxBtn'
@@ -149,25 +147,6 @@ export default function CategoryClient({ meta, data, initialProducts, initialTot
     }
   };
 
-  useEffect(() => {
-    if (!containerRef.current) return;
-
-    const ctx = gsap.context(() => {
-      const heroImg = containerRef.current.querySelector(".products_hero-img");
-      if (!heroImg) return;
-
-      gsap.set(heroImg, { opacity: 0 });
-
-      gsap.to(heroImg, {
-        opacity: 1,
-        duration: 0.8,
-        ease: "power2.out",
-      });
-    }, containerRef);
-
-    return () => ctx.revert();
-  }, [pathname]);
-
   return (
     <>
       <SeoHeader meta={meta} breadcrumbList={breadcrumbList} />
@@ -182,7 +161,9 @@ export default function CategoryClient({ meta, data, initialProducts, initialTot
             fetchPriority="high"
             // sizes="100vw"
             quality={75}
-            className="products_hero-img hidden "
+            // The banner is the page's LCP: shown as soon as it loads, never
+            // hidden behind a JavaScript fade (page speed rules, CLAUDE.md §1)
+            className="products_hero-img"
             src={data?.imgsrc}
             alt={data?.name || ""}
             onLoad={() => setImageReady(true)}

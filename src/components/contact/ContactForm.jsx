@@ -118,7 +118,7 @@ const ContactForm = () => {
         </div>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="input lineanime">
-            <input type="text" className="text-base" error={errors.name} {...register("name")} />
+            <input type="text" className="text-base" aria-label="Name" autoComplete="name" aria-invalid={!!errors.name} {...register("name")} />
             <p className="text-sm">name*</p>
             <div className="linei"></div>
             {errors.name && (
@@ -132,7 +132,7 @@ const ContactForm = () => {
           </div>
 
           <div className="input lineanime">
-            <input type="email" className="text-base" error={errors.email} {...register("email")} />
+            <input type="email" className="text-base" aria-label="Email" autoComplete="email" aria-invalid={!!errors.email} {...register("email")} />
             <p className="text-sm">email*</p>
             <div className="linei"></div>
             {errors.email && (
@@ -146,7 +146,7 @@ const ContactForm = () => {
           </div>
 
           <div className="input lineanime">
-            <input type="text" className="text-base" error={errors.subject} {...register("subject")} />
+            <input type="text" className="text-base" aria-label="Topic" aria-invalid={!!errors.subject} {...register("subject")} />
             <p className="text-sm">topic*</p>
             <div className="linei"></div>
             {errors.subject && (
@@ -160,7 +160,7 @@ const ContactForm = () => {
           </div>
 
           <div className="input lineanime">
-            <input type="number" className="text-base" error={errors.subject} {...register("phoneNumber")} />
+            <input type="tel" inputMode="numeric" className="text-base" aria-label="Phone number" autoComplete="tel-national" aria-invalid={!!errors.phoneNumber} {...register("phoneNumber")} />
             <p className="text-sm">phone number*</p>
             <div className="linei"></div>
             {errors.phoneNumber && (
@@ -176,7 +176,7 @@ const ContactForm = () => {
           <div className="textarea lineanime">
             <p className="text-sm">message*</p>
             <div className="linei"></div>
-            <textarea className="text-base" {...register("message")} />
+            <textarea className="text-base" aria-label="Message" aria-invalid={!!errors.message} {...register("message")} />
             {errors.message && (
               <span className="error-p">{errors.message.message}</span>
             )}

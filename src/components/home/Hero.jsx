@@ -50,7 +50,8 @@ const Hero = () => {
 
       <div className="introloader_paren hero_introloader center">
         <div className="loader_img">
-          <Image sizes="(max-width: 750px) 50vw, 25vw" src="/green_logo.svg" alt="Nahara Loading Logo" width={400} height={400} preload
+          {/* The intro logo is the first screen's largest paint (LCP) */}
+          <Image sizes="(max-width: 750px) 50vw, 25vw" src="/green_logo.svg" alt="Nahara Loading Logo" width={400} height={400} preload fetchPriority="high"
           //  sizes="(max-width: 768px) 80vw, 400px"
             />
         </div>

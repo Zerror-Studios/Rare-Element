@@ -106,7 +106,11 @@ export default function ContactClient({ meta }) {
                 <p className='text-lg'>( 0{item.id} )</p>
                 <h2 className='text-xl font-semibold'>{item.title}</h2>
                 <div className="desc_prn">
-                  <a href={item.href} target='_blank' className={`text-lg ${item.class} `}>{item.desc}</a>
+                  {item.href ? (
+                    <a href={item.href} target='_blank' rel='noopener noreferrer' className={`text-lg ${item.class}`}>{item.desc}</a>
+                  ) : (
+                    <p className='text-lg'>{item.desc}</p>
+                  )}
                 </div>
               </div>
             ))}

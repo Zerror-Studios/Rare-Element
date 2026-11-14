@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, A11y, Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
@@ -16,6 +16,29 @@ const ProductImageGrid = ({ filter, data, title, itemId }) => {
   const [selectedAssetIndex, setSelectedAssetIndex] = useState(0);
   const [thumbLoaded, setThumbLoaded] = useState({});
   const [slideLoaded, setSlideLoaded] = useState({});
+  const videoPlaysTracked = useRef(new Set());
+
+  // Product videos play muted and looped like a photo, but only on the slide
+  // in view and only after the page has loaded: no autoPlay in the markup
+  // (page speed rules, CLAUDE.md §1).
+  const playActiveVideo = (swiper) => {
+    if (!swiper?.slides || document.readyState !== "complete") return;
+    swiper.slides.forEach((slide, i) => {
+      const video = slide.querySelector("video");
+      if (!video) return;
+      if (i === swiper.activeIndex) video.play().catch(() => {});
+      else video.pause();
+    });
+  };
+
+  useEffect(() => {
+    videoPlaysTracked.current.clear();
+    if (!swiperInstance) return undefined;
+    const start = () => playActiveVideo(swiperInstance);
+    if (document.readyState === "complete") start();
+    else window.addEventListener("load", start, { once: true });
+    return () => window.removeEventListener("load", start);
+  }, [swiperInstance, data, filter]);
 
   useEffect(() => {
     if (swiperInstance && data?.length) {
@@ -57,7 +80,13 @@ const ProductImageGrid = ({ filter, data, title, itemId }) => {
             return (
               <div
                 key={index}
-                onMouseEnter={() => handleThumbnailClick(index)}
+                onMouseEnter={() => {
+                  handleThumbnailClick(index);
+                  swiperInstance?.autoplay?.stop();
+                }}
+                onMouseLeave={() => {
+                  swiperInstance?.autoplay?.start();
+                }}
                 className={`MobileImageSlider_thumbnail ${selectedAssetIndex === index
                     ? "MobileImageSlider_thumbnail--active"
                     : "MobileImageSlider_thumbnail--inactive"
@@ -147,7 +176,10 @@ const ProductImageGrid = ({ filter, data, title, itemId }) => {
             className="MobileImageSlider_swiper"
             autoplay={{ delay: 4500, disableOnInteraction: false }}
             onSwiper={setSwiperInstance}
-            onSlideChange={(swiper) => setSelectedAssetIndex(swiper.realIndex)}
+            onSlideChange={(swiper) => {
+              setSelectedAssetIndex(swiper.realIndex);
+              playActiveVideo(swiper);
+            }}
           >
             {filteredAssets.map((item, index) => {
               const src = item?.path || "/green_logo.svg";
@@ -180,14 +212,19 @@ const ProductImageGrid = ({ filter, data, title, itemId }) => {
 
                     {video ? (
                       <video
-                        className="w-full"
-                        controls
-                        controlsList="nodownload noplaybackrate"
+                        className="cover"
+                        loop
+                        muted
+                        playsInline
+                        preload="none"
                         disablePictureInPicture
                         onContextMenu={(e) => e.preventDefault()}
-                        onPlay={() =>
-                          trackGalleryInteraction(itemId, GalleryActionEnum.VIDEO_PLAY)
-                        }
+                        onPlay={() => {
+                          // Once per video and page: it replays on every visit
+                          if (videoPlaysTracked.current.has(index)) return;
+                          videoPlaysTracked.current.add(index);
+                          trackGalleryInteraction(itemId, GalleryActionEnum.VIDEO_PLAY);
+                        }}
                         style={{
                           opacity: loaded ? 1 : 0,
                           transition: "opacity .4s ease"

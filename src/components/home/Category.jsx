@@ -48,7 +48,8 @@ const Category = ({ data }) => {
                                             height={150}
                                             src={item?.image}
                                             className="category_box_img"
-                                            alt={item?.title || "Jewellery Category"}
+                                            // Decorative: the category name is printed right below
+                                            alt=""
                                             style={{
                                                 opacity: imgLoaded ? 1 : 0,
                                             }}

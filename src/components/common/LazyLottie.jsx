@@ -18,8 +18,11 @@
 import dynamic from "next/dynamic";
 import { useEffect, useMemo, useRef, useState } from "react";
 
+// `LottieLight`: SVG only and no expressions, so no `eval` (the CSP blocks
+// it) and a smaller player. None of the store's animations
+// (public/icons/animationJson) use expressions.
 const Lottie = dynamic(
-  () => import("lottie-react").then((module) => module.Lottie),
+  () => import("lottie-react").then((module) => module.LottieLight),
   { ssr: false },
 );
 
