@@ -1,23 +1,6 @@
 import { gql } from "@apollo/client";
 
-// Category Queries
-export const GET_CLIENT_SIDE_CATEGORIES = gql`
-  query GetClientSideCategories(
-    $offset: Int
-    $limit: Int
-    $filter: CategoriesFilterInput
-  ) {
-    getClientSideCategories(offset: $offset, limit: $limit, filter: $filter) {
-      categories {
-        _id
-        name
-        imgsrc
-        slug
-      }
-      totalCount
-    }
-  }
-`;
+export { GetCategoriesDocument as GET_CLIENT_SIDE_CATEGORIES } from "@zcom/storefront-kit/graphql";
 
 export const GET_CLIENT_SIDE_CATEGORY_BY_SLUG = gql`
   query GetClientSideCategory($slug: String, $limit: Int, $offset: Int) {

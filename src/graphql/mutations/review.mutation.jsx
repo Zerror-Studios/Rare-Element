@@ -1,78 +1,16 @@
-import { gql } from "@apollo/client";
+// PRD-032 shopper review writes, reports, the review-request opt-out and the
+// two-step photo upload, from the kit (kit PRD-003).
 
-// PRD-032: shopper review writes, reports, the review-request opt-out and
-// the two-step photo upload (media: ticket, then confirm → receipt).
-// Keep in sync with `storefronts/deveshe-dreams/src/graphql/mutations/review.mutation.jsx`.
+export { SubmitReviewDocument as SUBMIT_REVIEW } from "@zcom/storefront-kit/graphql";
 
-export const SUBMIT_REVIEW = gql`
-  mutation SubmitReview($input: SubmitReviewInput!) {
-    submitReview(input: $input) {
-      _id
-      productId
-      rating
-      title
-      comment
-      displayName
-      status
-      photos {
-        key
-        url
-      }
-    }
-  }
-`;
+export { SubmitReviewsWithLinkDocument as SUBMIT_REVIEWS_WITH_LINK } from "@zcom/storefront-kit/graphql";
 
-export const SUBMIT_REVIEWS_WITH_LINK = gql`
-  mutation SubmitReviewsWithLink($token: String!, $items: [SubmitReviewInput!]!) {
-    submitReviewsWithLink(token: $token, items: $items) {
-      _id
-      productId
-      status
-    }
-  }
-`;
+export { DeleteMyReviewDocument as DELETE_MY_REVIEW } from "@zcom/storefront-kit/graphql";
 
-export const DELETE_MY_REVIEW = gql`
-  mutation DeleteMyReview($productId: ID!) {
-    deleteMyReview(productId: $productId)
-  }
-`;
+export { ReportReviewDocument as REPORT_REVIEW } from "@zcom/storefront-kit/graphql";
 
-export const REPORT_REVIEW = gql`
-  mutation ReportReview($id: ID!, $reason: String!) {
-    reportReview(id: $id, reason: $reason)
-  }
-`;
+export { UnsubscribeReviewRequestsDocument as UNSUBSCRIBE_REVIEW_REQUESTS } from "@zcom/storefront-kit/graphql";
 
-export const UNSUBSCRIBE_REVIEW_REQUESTS = gql`
-  mutation UnsubscribeReviewRequests($email: String!, $token: String!) {
-    unsubscribeReviewRequests(email: $email, token: $token)
-  }
-`;
+export { RequestReviewPhotoUploadDocument as REQUEST_REVIEW_PHOTO_UPLOAD } from "@zcom/storefront-kit/graphql";
 
-export const REQUEST_REVIEW_PHOTO_UPLOAD = gql`
-  mutation RequestReviewPhotoUpload($input: ReviewPhotoUploadInput!) {
-    requestReviewPhotoUpload(input: $input) {
-      uploadId
-      maxSize
-      presignedPost {
-        url
-        fields {
-          name
-          value
-        }
-      }
-    }
-  }
-`;
-
-export const CONFIRM_REVIEW_PHOTO = gql`
-  mutation ConfirmReviewPhoto($uploadId: ID!, $linkToken: String) {
-    confirmReviewPhoto(uploadId: $uploadId, linkToken: $linkToken) {
-      receipt
-      url
-      width
-      height
-    }
-  }
-`;
+export { ConfirmReviewPhotoDocument as CONFIRM_REVIEW_PHOTO } from "@zcom/storefront-kit/graphql";
