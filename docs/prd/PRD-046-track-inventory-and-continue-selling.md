@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | **Implemented** in the working tree 2026-11-16 (this repo's part of FR-20); not committed, not browser-tested, not run against a backend with PRD-046 deployed |
+| Status | **Implemented** 2026-11-16 (this repo's part of FR-20); released to `dev`, `uat` and `main` on kit **v1.4.0** the same day (owner); not browser-tested |
 | Source-of-truth PRD | [`../../../../zcom-backend/docs/prd/PRD-046-track-inventory-and-continue-selling.md`](../../../../zcom-backend/docs/prd/PRD-046-track-inventory-and-continue-selling.md) |
 | Approved by / on | Anand (owner), backend PRD-046 (2026-11-16) |
 | Needs | Nothing new from the API: the PRD-020 stock signal starts emitting `BACKORDER` once the backend's PRD-046 is deployed. Works on kit 1.3.0 and 1.4.0 (`package.json` unchanged) |

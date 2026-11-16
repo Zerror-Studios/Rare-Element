@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | **Implemented** in the working tree 2026-11-16 (this repo's part of FR-4 and FR-7); not committed, not browser-tested, not run against a backend with PRD-045 deployed |
+| Status | **Implemented** 2026-11-16 (this repo's part of FR-4 and FR-7); released to `dev`, `uat` and `main` on kit **v1.4.0** the same day (owner); not browser-tested |
 | Source-of-truth PRD | [`../../../../zcom-backend/docs/prd/PRD-045-merchandising-order-and-banners.md`](../../../../zcom-backend/docs/prd/PRD-045-merchandising-order-and-banners.md) |
 | Approved by / on | Anand (owner), backend PRD-045 |
 | Needs | The backend's PRD-045 deploy **before** this store's (the store's own `GetClientSideCategory` selects `Category.banner`). Kit **1.4.0** is optional: the code reads every new field defensively and works on 1.3.0 (`package.json` unchanged) |
