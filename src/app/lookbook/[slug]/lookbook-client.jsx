@@ -9,10 +9,10 @@
  */
 
 import React, { useEffect } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import ProductCard from "@/components/common/ProductCard";
 import LookSection from "@/components/lookbook/LookSection";
+import ResponsiveHeroImage from "@/components/common/ResponsiveHeroImage";
 import { getProductPriceLabel, htmlParser } from "@/utils/Util";
 import {
   lookbookItemListId,
@@ -20,6 +20,7 @@ import {
   trackLookbookView,
 } from "@/utils/analytics-events";
 import { featuredProducts, sortLooks } from "@/utils/lookbook";
+import { getLookbookCover } from "@/utils/responsive-image";
 
 // ─── View ─────────────────────────────────────────────────────────────────
 
@@ -28,6 +29,8 @@ const LookbookClient = ({ lookbook }) => {
   const listName = `Lookbook: ${lookbook?.title || ""}`;
   const listId = lookbookItemListId(slug);
   const featured = featuredProducts(lookbook);
+  // PRD-045 FR-7: `coverMobile` below 750 px, else the cover
+  const cover = getLookbookCover(lookbook);
 
   useEffect(() => {
     if (slug) trackLookbookView(slug);
@@ -38,12 +41,12 @@ const LookbookClient = ({ lookbook }) => {
 
   return (
     <div>
-      {lookbook?.cover?.url && (
+      {cover.desktop && (
         <div className="products_hero-section">
-          <Image
-            src={lookbook.cover.url}
-            alt={lookbook.cover.alt || lookbook.title || ""}
-            fill
+          <ResponsiveHeroImage
+            desktop={cover.desktop}
+            mobile={cover.mobile}
+            alt={cover.desktop.alt || lookbook?.title || ""}
             priority
             sizes="100vw"
             className="products_hero-img"

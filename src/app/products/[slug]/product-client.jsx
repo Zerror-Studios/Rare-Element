@@ -21,8 +21,10 @@ import { getErrorInfo, getErrorMessage } from "@/utils/errors";
 import { getNotifyMeSuccessMessage } from "@/utils/back-in-stock";
 import { useVariantAvailability } from "@/hooks/useVariantAvailability";
 import {
+  getBackorderNote,
   getStockNote,
   isSoldOut,
+  resolveSignal,
   resolveVariantSignal,
 } from "@/utils/stock-signal";
 
@@ -83,7 +85,13 @@ export default function ProductClient({ meta, data, productList, slug, reviews =
   }, [variantMatched?._id]);
   const variantSignal = resolveVariantSignal(variantMatched, freshStock);
   const soldOut = cartBtn && !!variantMatched && isSoldOut(variantSignal);
-  const stockNote = cartBtn && variantMatched ? getStockNote(variantSignal) : null;
+  // Backend PRD-046 FR-20: "Available on backorder" for the chosen variant,
+  // or the product's rollup before one is chosen; the button stays enabled.
+  const backorderNote = getBackorderNote(
+    variantMatched ? variantSignal : resolveSignal(data?._id, data, freshStock),
+  );
+  const stockNote =
+    (cartBtn && variantMatched ? getStockNote(variantSignal) : null) || backorderNote;
 
   const unavailable = isUnavailable || (cartBtn && !variantMatched) || soldOut;
   // PRD-013: the same item_id the e-commerce events send (variant id).

@@ -6,7 +6,8 @@ import SeoHeader from '@/components/seo/SeoHeader'
 import ProductCard from '@/components/common/ProductCard'
 import { GET_CLIENT_SIDE_CATEGORY_BY_SLUG, GET_PRODUCTS } from '@/graphql'
 import { getProductPriceLabel } from '@/utils/Util'
-import Image from 'next/image'
+import ResponsiveHeroImage from '@/components/common/ResponsiveHeroImage'
+import { getCategoryBanner } from '@/utils/responsive-image'
 import { usePathname } from 'next/navigation'
 import { useApolloClient, useQuery } from '@apollo/client/react'
 import useCategoryStore from '@/store/category-store'
@@ -35,6 +36,9 @@ export default function CategoryClient({ meta, data, initialProducts, initialTot
   const pathname = usePathname()
   const containerRef = useRef(null)
   const [imageReady, setImageReady] = useState(false);
+  // PRD-045 FR-7: the phone banner below 750 px, else the desktop one
+  // (then the legacy imgsrc)
+  const banner = getCategoryBanner(data);
 
   // W2V2-05: each first-page load (sort change, new category) takes a new
   // number; a response that comes back after a newer request is dropped, so
@@ -153,19 +157,16 @@ export default function CategoryClient({ meta, data, initialProducts, initialTot
       <div ref={containerRef}>
 
         <div className="products_hero-section skeleton_animate">
-          <Image
+          <ResponsiveHeroImage
+            desktop={banner.desktop}
+            mobile={banner.mobile}
             sizes="100vw"
-            key={data?.imgsrc}
-            fill
             priority
-            fetchPriority="high"
-            // sizes="100vw"
             quality={75}
             // The banner is the page's LCP: shown as soon as it loads, never
             // hidden behind a JavaScript fade (page speed rules, CLAUDE.md §1)
             className="products_hero-img"
-            src={data?.imgsrc}
-            alt={data?.name || ""}
+            alt={banner.desktop?.alt || data?.name || ""}
             onLoad={() => setImageReady(true)}
           />
         </div>

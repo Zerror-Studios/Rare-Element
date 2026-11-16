@@ -80,14 +80,14 @@ export default async function Page({ params }) {
     notFound();
   }
 
-  const { _id, name, description, imgsrc, slug: categoriesSlug, seo, products, productsCount } = category;
+  const { _id, name, description, imgsrc, banner, slug: categoriesSlug, seo, products, productsCount } = category;
 
   return (
     <CategoryClient
       // A new category starts with its own sort and list (W2-STORE).
       key={slug}
       meta={seo || defaultMeta}
-      data={{ _id, name, description, imgsrc, categoriesSlug }}
+      data={{ _id, name, description, imgsrc, banner, categoriesSlug }}
       initialProducts={products || []}
       initialTotalCount={productsCount || 0}
     />

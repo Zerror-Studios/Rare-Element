@@ -9,6 +9,41 @@ export const GET_CLIENT_SIDE_CATEGORY_BY_SLUG = gql`
       name
       description
       imgsrc
+      # Backend PRD-045 D6: desktop + optional mobile banner
+      banner {
+        desktop {
+          url
+          width
+          height
+          alt
+          focalPoint {
+            x
+            y
+          }
+          crop {
+            x
+            y
+            width
+            height
+          }
+        }
+        mobile {
+          url
+          width
+          height
+          alt
+          focalPoint {
+            x
+            y
+          }
+          crop {
+            x
+            y
+            width
+            height
+          }
+        }
+      }
       slug
       seo {
         title

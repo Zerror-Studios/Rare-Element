@@ -16,6 +16,38 @@
   object-fit: cover;
 }
 
+/* PRD-045 FR-7: the placement's focal point, per breakpoint
+   (components/common/ResponsiveHeroImage.jsx) */
+.responsive_hero_img {
+  object-position: var(--hero-pos-desktop, center);
+}
+
+@media (max-width: 749.98px) {
+  .responsive_hero_img {
+    object-position: var(--hero-pos-mobile, var(--hero-pos-desktop, center));
+  }
+}
+
+/* PRD-045: the placement's crop. Where object-view-box works only the crop
+   fills the hero; elsewhere the whole image stays centred on the crop
+   (--hero-pos-* above, set by toHeroImageStyle). */
+@supports (object-view-box: inset(0%)) {
+  .responsive_hero_img {
+    object-view-box: var(--hero-view-desktop, none);
+    object-position: var(--hero-viewpos-desktop, var(--hero-pos-desktop, center));
+  }
+
+  @media (max-width: 749.98px) {
+    .responsive_hero_img {
+      object-view-box: var(--hero-view-mobile, var(--hero-view-desktop, none));
+      object-position: var(
+        --hero-viewpos-mobile,
+        var(--hero-pos-mobile, var(--hero-viewpos-desktop, var(--hero-pos-desktop, center)))
+      );
+    }
+  }
+}
+
 .products_content {
   color: black;
   width: 100%;

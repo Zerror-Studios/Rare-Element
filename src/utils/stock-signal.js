@@ -23,6 +23,7 @@ export const MAX_AVAILABILITY_IDS = 50;
 export const SOLD_OUT_LABEL = "Sold out";
 export const LOW_STOCK_LABEL = "Low stock";
 export const SOLD_OUT_CHECKOUT_MESSAGE = "Remove sold-out items to continue";
+export const BACKORDER_LABEL = "Available on backorder";
 
 const LABELS = {
   ...kit.STOCK_LABELS,
@@ -76,6 +77,18 @@ export const resolveVariantSignal = (variant, fresh) =>
 export const isSoldOut = kit.isSoldOut;
 
 export const isLowStock = kit.isLowStock;
+
+/**
+ * Backend PRD-046 FR-20: the merchant keeps selling this variant at zero.
+ * Buyable (never sold out or low); read directly, so it works on kit 1.3.0
+ * too (`isBackorder` is new in 1.4.0).
+ */
+export const isBackorder = (signal) =>
+  signal?.availability === StockAvailabilityEnum.BACKORDER;
+
+/** The PDP note for a backorder variant (or product), else null. */
+export const getBackorderNote = (signal) =>
+  isBackorder(signal) ? BACKORDER_LABEL : null;
 
 /** "Only N left" when the store exposes the count, else "Low stock". */
 export const getStockNote = (signal) => kit.getStockNote(signal, LABELS);

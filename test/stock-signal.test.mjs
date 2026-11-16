@@ -212,3 +212,41 @@ describe("cart lines", () => {
     );
   });
 });
+
+// ─── Backorder (backend PRD-046 FR-14, FR-20) ─────────────────────────────
+
+describe("backorder", () => {
+  const backorder = signal.resolveVariantSignal(variant("b", "BACKORDER"), {});
+
+  it("is buyable: never sold out, low, badged or struck through", () => {
+    assert.equal(signal.isBackorder(backorder), true);
+    assert.equal(signal.isSoldOut(backorder), false);
+    assert.equal(signal.getStockNote(backorder), null);
+    assert.equal(signal.getListingBadge("BACKORDER"), null);
+    assert.equal(signal.toInStockFlag(backorder, false), true);
+    const fresh = signal.toAvailabilityMap([
+      { variantId: "b", availability: "BACKORDER" },
+    ]);
+    assert.equal(signal.hasSoldOutLine([{ variantId: "b", qty: 4 }], fresh), false);
+    assert.equal(
+      signal.isChoiceSoldOut([variant("b", "BACKORDER", { optionValues: ["M"] })], "M"),
+      false,
+    );
+    assert.equal(
+      signal.toSchemaAvailability("BACKORDER"),
+      "https://schema.org/BackOrder",
+    );
+  });
+
+  it("shows the store's backorder note, and only for BACKORDER", () => {
+    assert.equal(signal.getBackorderNote(backorder), "Available on backorder");
+    assert.equal(signal.BACKORDER_LABEL, "Available on backorder");
+    for (const availability of ["IN_STOCK", "LOW_STOCK", "OUT_OF_STOCK", null]) {
+      assert.equal(
+        signal.getBackorderNote(signal.resolveVariantSignal(variant("x", availability), {})),
+        null,
+      );
+    }
+    assert.equal(signal.getBackorderNote(null), null);
+  });
+});
