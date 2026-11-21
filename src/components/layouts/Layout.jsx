@@ -12,8 +12,8 @@ import { RiCloseLine } from "@remixicon/react";
 import { useSizeGuideStore } from "@/store/sizeguide-store";
 import Image from "next/image";
 import { useGSAP } from "@gsap/react";
-import Link from "next/link";
 import { useDialogA11y } from "@/hooks/useDialogA11y";
+import StoreChatLauncher from "@/components/chat/StoreChatLauncher";
 
 const Layout = ({ children }) => {
   const pathname = usePathname();
@@ -104,14 +104,8 @@ const Layout = ({ children }) => {
 
   return (
     <>
-      <Link target="_blank" href="https://wa.me/+919137159898">
-        <div className="whatsapp_chat">
-          <div className="whatsapp_chat_img center">
-            <Image height={5} width={5} className="cover" src="/gifs/whatsapp.gif" alt="loading" />
-          </div>
-          <p className="bold">CHAT</p>
-        </div>
-      </Link>
+      {/* PRD-049 B0/B0.1: the store chat, else the WhatsApp link as before */}
+      <StoreChatLauncher />
       <div
         ref={sizeGuideRef}
         className="ring_size_guide"

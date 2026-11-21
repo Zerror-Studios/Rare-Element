@@ -189,8 +189,7 @@ button {
 .whatsapp_chat {
   opacity: 0;
   display: flex;
-  padding-right: 1rem;
-  padding-left: 0.5rem;
+  /* padding is on .whatsapp_chat_link (storeChat.css), the whole pill clicks */
   align-items: center;
   position: fixed;
   background-color: white;

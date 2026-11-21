@@ -1,0 +1,366 @@
+/* Store chat (backend PRD-049 B0 and B0.1): the CHAT pill's button or
+   WhatsApp link, and the chat panel (components/chat/StoreChat.jsx).
+   Nahara's colours: green #174d38 on white; panel animates with
+   transform and opacity only. */
+
+/* ─── The CHAT pill ─────────────────────────────────────────────────── */
+
+.whatsapp_chat_link {
+  display: flex;
+  align-items: center;
+  padding: 0 1rem 0 0.5rem;
+  border: 0;
+  border-radius: 100px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.whatsapp_chat_link:focus-visible {
+  outline: 2px solid #174d38;
+  outline-offset: 2px;
+}
+
+/* ─── Panel ─────────────────────────────────────────────────────────── */
+
+.store_chat {
+  position: fixed;
+  z-index: 1000;
+  right: 2rem;
+  bottom: 6.5rem;
+  width: 24rem;
+  height: min(36rem, calc(100svh - 8.5rem));
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  color: black;
+  border: 1px solid #174d38;
+  border-radius: 0.25rem;
+  box-shadow: 0 0 0.5rem 0.25rem #00804f21;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(1rem);
+  transition:
+    opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1),
+    transform 0.6s cubic-bezier(0.19, 1, 0.22, 1),
+    visibility 0s linear 0.6s;
+}
+
+.store_chat_open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+  transition:
+    opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1),
+    transform 0.6s cubic-bezier(0.19, 1, 0.22, 1),
+    visibility 0s;
+}
+
+.store_chat:focus-visible {
+  outline: none;
+}
+
+.store_chat_header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #174d3826;
+}
+
+.store_chat_title {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+
+.store_chat_icon_btn {
+  width: 1.75rem;
+  height: 1.75rem;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 9999px;
+  background-color: #174d38;
+  color: white;
+  cursor: pointer;
+}
+
+.store_chat_header_btn {
+  flex-shrink: 0;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid #174d38;
+  background-color: white;
+  color: #174d38;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1) 0s;
+}
+
+/* ─── Transcript ────────────────────────────────────────────────────── */
+
+.store_chat_list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  margin: 0;
+  padding: 1rem;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.store_chat_row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+  max-width: 88%;
+}
+
+.store_chat_row_mine {
+  align-self: flex-end;
+  align-items: flex-end;
+}
+
+.store_chat_note {
+  align-self: center;
+  max-width: 100%;
+  text-align: center;
+}
+
+.store_chat_bubble {
+  margin: 0;
+  padding: 0.6rem 0.85rem;
+  background-color: #f3f6f4;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  cursor: auto;
+}
+
+.store_chat_row_mine .store_chat_bubble {
+  background-color: #174d38;
+  color: white;
+}
+
+.store_chat_typing {
+  letter-spacing: 0.2rem;
+}
+
+.store_chat_links {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.store_chat_links a,
+.store_chat_whatsapp {
+  text-decoration: underline;
+}
+
+.store_chat_chips,
+.store_chat_suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.store_chat_suggestions p {
+  width: 100%;
+  cursor: auto;
+}
+
+.store_chat_chip {
+  padding: 0.35rem 0.75rem;
+  border: 1px solid #174d38;
+  border-radius: 100px;
+  background-color: white;
+  color: #174d38;
+  text-align: left;
+  cursor: pointer;
+}
+
+.store_chat_chip:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.store_chat_quiet_btn {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #174d38;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.store_chat_team_btn {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border: 1px solid #174d38;
+  background-color: #174d38;
+  color: white !important;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1) 0s;
+}
+
+/* ─── Footer and forms ──────────────────────────────────────────────── */
+
+.store_chat_footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.75rem 1rem 1rem;
+  border-top: 1px solid #174d3826;
+}
+
+.store_chat_footer p {
+  margin: 0;
+  cursor: auto;
+}
+
+.store_chat_signin,
+.store_chat_draft {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.store_chat_draft {
+  padding: 0.5rem 0.75rem;
+  background-color: #f3f6f4;
+}
+
+.store_chat_error {
+  color: #b42318 !important;
+}
+
+.store_chat_form {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+/* The answers view has no footer: the form keeps its own spacing */
+.store_chat_list + .store_chat_form {
+  padding: 0.75rem 1rem 1rem;
+  border-top: 1px solid #174d3826;
+}
+
+.store_chat_input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #174d3866;
+  border-radius: 0;
+  background-color: white;
+  color: black;
+  /* 16px stops iOS from zooming into the field */
+  font-size: 1rem;
+}
+
+.store_chat_textarea {
+  resize: none;
+  max-height: 8rem;
+  font-family: railway-medium, sans-serif;
+  letter-spacing: 0.05rem;
+}
+
+.store_chat_input:focus-visible {
+  outline: 2px solid #174d38;
+  outline-offset: 0;
+}
+
+.store_chat_send {
+  width: 2.6rem;
+  height: 2.6rem;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #174d38;
+  background-color: #174d38;
+  color: white;
+  cursor: pointer;
+}
+
+.store_chat_send:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.store_chat_send .spinner_loader {
+  width: 1.1rem;
+  height: 1.1rem;
+  border-width: 0.15rem;
+}
+
+.store_chat_state {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.store_chat button:focus-visible,
+.store_chat a:focus-visible {
+  outline: 2px solid #174d38;
+  outline-offset: 2px;
+}
+
+@media (min-width: 750px) {
+  .store_chat_header_btn:hover {
+    background-color: #174d38;
+    color: white;
+  }
+
+  .store_chat_team_btn:hover {
+    background-color: white;
+    color: #174d38 !important;
+  }
+}
+
+/* ─── Phones: a full-width sheet ────────────────────────────────────── */
+
+@media (max-width: 749px) {
+  .store_chat {
+    right: 0;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 85svh;
+    border: 0;
+    border-top: 1px solid #174d38;
+    border-radius: 0.75rem 0.75rem 0 0;
+    transform: translateY(100%);
+  }
+
+  .store_chat_open {
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .store_chat,
+  .store_chat_open {
+    transform: none;
+    transition: none;
+  }
+}

@@ -22,7 +22,7 @@
     "@react-three/drei": "^10.7.9",
     "@react-three/fiber": "^9.8.2",
     "@remixicon/react": "^4.9.0",
-    "@zcom/storefront-kit": "github:Zerror-Studios/zcom-storefront-kit#v1.5.0",
+    "@zcom/storefront-kit": "github:Zerror-Studios/zcom-storefront-kit#v1.6.0",
     "graphql": "^17.1.0",
     "gsap": "^3.15.1",
     "html-react-parser": "^6.1.9",
@@ -43,6 +43,6 @@
     "zustand": "^5.1.0"
   },
   "allowScripts": {
-    "github:Zerror-Studios/zcom-storefront-kit#fa7e43714b339beb0c4f39ae3f12aa343d6a0449": true
+    "github:Zerror-Studios/zcom-storefront-kit#e35ace70229d668e8d6a678d261aa82835472a7d": true
   }
 }
