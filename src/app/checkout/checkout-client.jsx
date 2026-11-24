@@ -9,8 +9,7 @@
  * `components/checkout/GuestCheckout.jsx` with `startGuest` → `pay`. The
  * kit opens the checkout session and waits for RESERVED, completes it (a
  * ₹0 order is placed PAID, COM-08), opens the store's payment app
- * (`launchPayment`; Nimbbl through the `nimbbl_sonic` registered in
- * `app/providers.jsx`), verifies and waits for PAID. It keeps the unpaid
+ * (`launchPayment`), verifies and waits for PAID. It keeps the unpaid
  * order for a retry (`PendingOrderStore`, this tab) and sends the
  * checkout's GA4 events and the paid order's ads purchase itself.
  *

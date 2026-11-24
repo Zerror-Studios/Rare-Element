@@ -16,7 +16,7 @@ import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import { config as zodConfig } from "zod";
 import { ZcomSsrProvider } from "@zcom/storefront-kit/ssr";
-import { registerNimbblCheckout, ZcomTags } from "@zcom/storefront-kit/client";
+import { ZcomTags } from "@zcom/storefront-kit/client";
 
 import Layout from "@/components/layouts/Layout";
 import LenisScroll from "@/components/common/LenisScroll";
@@ -28,10 +28,6 @@ gsap.registerPlugin(ScrollTrigger);
 // zod 4 probes `Function("")` once to decide whether to compile its
 // validators; the CSP blocks `eval`, so the probe only logs a violation.
 zodConfig({ jitless: true });
-
-// Nimbbl until its 2026-11-15 shutdown (backend PRD-029 D1): the kit opens
-// this store's Sonic for a NIMBBL checkout; the module loads only on "Pay".
-registerNimbblCheckout(() => import("nimbbl_sonic").then((m) => m.default));
 
 const STORE_UNAVAILABLE_TOAST_ID = "store-unavailable";
 const TAG_ID_FALLBACK = {
