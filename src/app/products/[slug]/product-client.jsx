@@ -6,6 +6,7 @@ import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import { toast } from 'react-toastify';
 import { useVisitor } from "@/hooks/useVisitor";
 import { useMutation } from '@apollo/client/react';
+import { useRecordProductView } from "@zcom/storefront-kit/client";
 import { useAuthStore } from '@/store/auth-store';
 import { useCartStore } from '@/store/cart-store';
 import { ADD_ITEM_TO_CART, REQUEST_BACK_IN_STOCK } from "@/graphql";
@@ -58,6 +59,11 @@ export default function ProductClient({ meta, data, productList, slug, reviews =
 
   const [addItemToCart, { loading }] = useMutation(ADD_ITEM_TO_CART);
   const [createNotifyRequest, { loading: notifyLoading }] = useMutation(REQUEST_BACK_IN_STOCK);
+
+  // Backend PRD-050 FR-5.5 (browse abandonment): the kit records the view
+  // for a signed-in shopper with analytics consent, once per session, and
+  // never for a guest; fire and forget.
+  useRecordProductView(data?._id);
 
   useEffect(() => {
     setIsUnavailable(false);

@@ -1,58 +1,57 @@
 "use client";
 
 /**
- * Email preference (PRD-014 FR-2.8, UX-29)
+ * Email preference (backend PRD-050 FR-3.6, FR-3.8; was PRD-014 FR-2.8)
  *
- * Shows the customer's real marketing-email consent
- * (`emailSubscribedStatus`, 1 = opted in) and changes it with
- * `updateMyProfile`. Replaces a static "Not Subscribed" block.
+ * Reads the shopper's marketing-email consent with the kit's
+ * `useMyEmailPreferences` (`myEmailPreferences`: subscribed, waiting for
+ * the confirmation click, or not) and changes it with
+ * `updateMyEmailPreferences`, sending the version of the wording shown
+ * here. Subscribing starts double opt-in: the status reads "Waiting for
+ * your confirmation" until the shopper clicks the emailed link.
+ * Unsubscribing stops news and offers only.
+ *
+ * Keep in sync with
+ * `storefronts/deveshe-dreams/src/components/profileNew/myProfile/EmailPreferences.jsx`.
  */
 
 import React from "react";
-import { useMutation } from "@apollo/client/react";
 import { toast } from "react-toastify";
+import { useMyEmailPreferences } from "@zcom/storefront-kit/client";
 
-import { UPDATE_USER_PROFILE } from "@/graphql";
-import { useAuthStore } from "@/store/auth-store";
-import { getErrorMessage } from "@/utils/errors";
-
-// ─── Constants ────────────────────────────────────────────────────────────
-
-const EMAIL_STATUS_SUBSCRIBED_CODE = 1;
-const EMAIL_STATUS_UNSUBSCRIBED_CODE = 0;
+import {
+  EMAIL_CONFIRMATION_HINT,
+  EMAIL_CONSENT_LABEL,
+  EMAIL_NOTICE_VERSION,
+  getConsentErrorMessage,
+  getSavedMessage,
+  getSubscriptionCopy,
+} from "@/utils/email-consent";
 
 // ─── Component ────────────────────────────────────────────────────────────
 
 const EmailPreference = () => {
-  const { user, setUser } = useAuthStore((state) => state);
-  const [updateUser, { loading }] = useMutation(UPDATE_USER_PROFILE);
-  const isKnown = user?.emailSubscribedStatus !== undefined;
-  const isSubscribed =
-    user?.emailSubscribedStatus === EMAIL_STATUS_SUBSCRIBED_CODE;
+  const {
+    preferences,
+    loading,
+    error,
+    save,
+    saving,
+    saveError,
+    retryAfterMs,
+    reload,
+  } = useMyEmailPreferences({ noticeVersion: EMAIL_NOTICE_VERSION });
+  const subscription = preferences?.subscription ?? null;
+  const isSubscribed = subscription === "subscribed";
+  const isPending = subscription === "pending";
+  const status = subscription ? getSubscriptionCopy(subscription) : null;
 
   const handleToggle = async () => {
-    if (loading || !isKnown) return;
-    try {
-      const { data } = await updateUser({
-        variables: {
-          input: {
-            emailSubscribedStatus: isSubscribed
-              ? EMAIL_STATUS_UNSUBSCRIBED_CODE
-              : EMAIL_STATUS_SUBSCRIBED_CODE,
-          },
-        },
-      });
-      if (data?.updateMyProfile) {
-        setUser({ ...user, ...data.updateMyProfile });
-        toast.success(
-          isSubscribed
-            ? "You won't receive marketing emails."
-            : "You're subscribed to our emails.",
-        );
-      }
-    } catch (error) {
-      toast.error(getErrorMessage(error, "Couldn't update your preference."));
-    }
+    if (saving || !preferences) return;
+    const wantsEmail = !(isSubscribed || isPending);
+    const next = await save(wantsEmail);
+    // A failed save shows `saveError` under the status
+    if (next) toast.success(getSavedMessage(next.subscription));
   };
 
   return (
@@ -61,17 +60,47 @@ const EmailPreference = () => {
       <div className="settings__block">
         <div>
           <p>
-            News and offers by email -{" "}
-            {isKnown ? (isSubscribed ? "Subscribed" : "Not subscribed") : "…"}
+            {EMAIL_CONSENT_LABEL} -{" "}
+            {status ? status.label : loading ? "…" : "Not available"}
           </p>
+          {status && <p className="text-sm mt-1">{status.description}</p>}
+          {preferences && !isSubscribed && !isPending && (
+            <p className="text-sm mt-1">{EMAIL_CONFIRMATION_HINT}</p>
+          )}
+          {saveError && (
+            <p className="text-sm mt-1" role="alert">
+              {getConsentErrorMessage(saveError, retryAfterMs)}
+            </p>
+          )}
+          {error && (
+            <p className="text-sm mt-1" role="alert">
+              {getConsentErrorMessage(error)}{" "}
+              {error !== "no_email" && (
+                <button type="button" className="underline" onClick={reload}>
+                  Try again
+                </button>
+              )}
+            </p>
+          )}
         </div>
         <button
           type="button"
           onClick={handleToggle}
-          disabled={loading || !isKnown}
+          disabled={saving || !preferences}
+          aria-label={
+            isSubscribed || isPending
+              ? "Unsubscribe from news and offers by email"
+              : "Subscribe to news and offers by email"
+          }
           className="settings__link email_preference_btn"
         >
-          <p>{loading ? "Saving…" : isSubscribed ? "Unsubscribe" : "Subscribe"}</p>
+          <p>
+            {saving
+              ? "Saving…"
+              : isSubscribed || isPending
+                ? "Unsubscribe"
+                : "Subscribe"}
+          </p>
         </button>
       </div>
     </>

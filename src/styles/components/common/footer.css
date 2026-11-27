@@ -273,10 +273,20 @@
   cursor: not-allowed;
 }
 
+/* PRD-050 FR-3.8: the double opt-in line under the field */
+.newsletter_notice {
+  opacity: 0.75;
+}
+
 .newsletter_message {
   min-height: 1rem;
 }
 
 .newsletter_message.is_error {
   color: #c0392b;
+}
+
+/* PRD-050 FR-3.8 (D20): the store's own sign-up form in the footer */
+.newsletter_description {
+  opacity: 0.75;
 }

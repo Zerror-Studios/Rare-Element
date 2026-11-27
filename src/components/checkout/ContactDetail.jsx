@@ -4,6 +4,7 @@ import Input from '@/components/ui/Input'
 import { useAuthStore } from "@/store/auth-store";
 import { EmailSubscribedStatus } from "@/utils/Constant";
 import Checkbox from '../ui/Checkbox';
+import { EMAIL_CONFIRMATION_HINT, EMAIL_CONSENT_LABEL } from "@/utils/email-consent";
 
 const ContactDetail = ({ register, setValue, watch, errors }) => {
     const { isLoggedIn } = useAuthStore((state) => state);
@@ -28,7 +29,7 @@ const ContactDetail = ({ register, setValue, watch, errors }) => {
                     {...register("email")}
                 />
                 <Checkbox
-                    label="Email me with news and offers"
+                    label={EMAIL_CONSENT_LABEL}
                     checked={isSubscribed}
                     onChange={(e) =>
                         setValue(
@@ -40,6 +41,9 @@ const ContactDetail = ({ register, setValue, watch, errors }) => {
                         )
                     }
                 />
+                {isSubscribed && (
+                    <p className="text-sm checkout_consent_hint">{EMAIL_CONFIRMATION_HINT}</p>
+                )}
             </div>
         </>
     )

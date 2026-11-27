@@ -41,7 +41,7 @@ export const CheckoutSchema = z
     email: z.string().trim().min(1, "Email is required").email("Invalid email"),
     emailSubscribedStatus: z.enum(Object.values(EmailSubscribedStatus), {
       required_error: "Email subscribed is required"
-    }).default(EmailSubscribedStatus.SUBSCRIBED),
+    }).default(EmailSubscribedStatus.UNSUBSCRIBED),
     password: z
       .string()
       .trim()

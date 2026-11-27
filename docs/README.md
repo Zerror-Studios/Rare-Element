@@ -15,6 +15,7 @@ This is the index of every document in this repo. **Keep it current:** any doc y
 
 | ID | Title | Status | Repos |
 |---|---|---|---|
+| [PRD-050](prd/PRD-050-email-consent.md) | Email consent (pointer → backend `zcom-backend/docs/prd/PRD-050-email-msg91.md` FR-3.6, FR-3.8): `/email/confirm` (double opt-in), `/email/preferences`, the account email box, the double opt-in newsletter form and the checkout box wording, on kit 2.1.0 | **Implemented** 2026-11-27 (working tree; needs kit 2.1.0) |
 | [PRD-001](prd/PRD-001-session-cookie-hardening.md) | Session & refresh-cookie hardening, phase 2 (pointer → backend) | Approved; code complete 2026-10-14 (PRD-002 WS-F1) | rare-element |
 | [PRD-002](prd/PRD-002-audit-remediation.md) | Platform audit remediation (pointer → backend `zcom-backend/docs/prd/PRD-002-audit-remediation.md`); this repo's work is WS-F1 (round 1), R2-W6 (round 2) and R3-C (round 3) | Approved; WS-F1, R2-W6 and R3-C code complete 2026-10-14; integration check passed | rare-element |
 | [PRD-003](prd/PRD-003-legacy-data-migration.md) | Legacy data migration (pointer → backend `zcom-backend/docs/prd/PRD-003-legacy-data-migration.md`); this repo's share is the FR-0.5 password-reset UX and the cutover config | In progress; FR-0.5 pages code complete 2026-10-15 | rare-element |

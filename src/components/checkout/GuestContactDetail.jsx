@@ -2,9 +2,10 @@
 
 /**
  * The guest checkout's Contact step (backend PRD-041 FR-4, FR-17, §7):
- * the email only (required; owner, 2026-11-12), the "Email me with news
- * and offers" box (unticked, PRD-014 UX-29; it is the guest's email
- * consent, sent as the kit's `contact.acceptsMarketing`) and "Already have
+ * the email only (required; owner, 2026-11-12), the "Email me news and
+ * offers from Nahara" box (unticked, PRD-014 UX-29; it is the guest's email
+ * consent, sent as the kit's `contact.acceptsMarketing`; since backend
+ * PRD-050 FR-3.6 a confirmation email follows, which the hint says) and "Already have
  * an account? Sign in" (the code sign-in, back to this checkout with the
  * bag merged). The guest's name and phone are the delivery address's.
  */
@@ -15,6 +16,7 @@ import { useWatch } from "react-hook-form";
 import Input from "@/components/ui/Input";
 import Checkbox from "@/components/ui/Checkbox";
 import { EmailSubscribedStatus } from "@/utils/Constant";
+import { EMAIL_CONFIRMATION_HINT, EMAIL_CONSENT_LABEL } from "@/utils/email-consent";
 
 const GuestContactDetail = ({
   register,
@@ -47,7 +49,7 @@ const GuestContactDetail = ({
         {...register("contact.email")}
       />
       <Checkbox
-        label="Email me with news and offers"
+        label={EMAIL_CONSENT_LABEL}
         checked={subscribed === EmailSubscribedStatus.SUBSCRIBED}
         onChange={(event) =>
           setValue(
@@ -59,6 +61,9 @@ const GuestContactDetail = ({
           )
         }
       />
+      {subscribed === EmailSubscribedStatus.SUBSCRIBED && (
+        <p className="text-sm checkout_consent_hint">{EMAIL_CONFIRMATION_HINT}</p>
+      )}
     </div>
   );
 };

@@ -874,3 +874,9 @@
 .guest_checkout_note {
   opacity: 0.7;
 }
+
+/* PRD-050 FR-3.8: the news box's double opt-in line */
+.checkout_consent_hint {
+  margin-top: 0.25rem;
+  opacity: 0.75;
+}

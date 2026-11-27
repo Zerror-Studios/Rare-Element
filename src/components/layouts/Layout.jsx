@@ -14,6 +14,7 @@ import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import { useDialogA11y } from "@/hooks/useDialogA11y";
 import StoreChatLauncher from "@/components/chat/StoreChatLauncher";
+import SignupPopup from "@/components/common/SignupPopup";
 
 const Layout = ({ children }) => {
   const pathname = usePathname();
@@ -106,6 +107,8 @@ const Layout = ({ children }) => {
     <>
       {/* PRD-049 B0/B0.1: the store chat, else the WhatsApp link as before */}
       <StoreChatLauncher />
+      {/* PRD-050 D22: the store's sign-up pop-up, when it has one */}
+      <SignupPopup />
       <div
         ref={sizeGuideRef}
         className="ring_size_guide"

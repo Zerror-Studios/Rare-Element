@@ -25,6 +25,8 @@ const DISALLOWED_PATHS = [
   "/pay/",
   // PRD-032 FR-R3/R5: a buyer's review link and the opt-out link
   "/review",
+  // PRD-050 FR-3.8: the double opt-in link and the preference page
+  "/email/",
   "/api/",
 ];
 
