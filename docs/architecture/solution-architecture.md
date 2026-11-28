@@ -15,7 +15,7 @@ This is the brand storefront where shoppers browse Rare Element / Nahara product
 
 ```mermaid
 flowchart LR
-    SH(["👤 Shopper"]) --> NX["rare-element<br/>Next.js 16 App Router<br/>on @zcom/storefront-kit (Vercel)"]
+    SH(["👤 Shopper"]) --> NX["rare-element<br/>Next.js 16 App Router<br/>on @zcom/storefront-kit (AWS Amplify)"]
     NX -- "browser: same-origin /v1/graphql<br/>proxy.js = kit createZcomMiddleware → API_GATEWAY_URL<br/>+ x-zcom-client-ip · x-tenant-domain · x-zcom-edge-secret<br/>Bearer (memory) · cookie __Host-zc_cust_rt only" --> GW["ZCommerce gateway"]
     NX -- "RSC (kit zcomFetch) / SSR (kit ZcomSsrProvider):<br/>API_GATEWAY_URL/v1/graphql + edge headers (server-only)" --> GW
     NX -- "kit launchPayment (known hosts only)" --> NB["Payment app<br/>Razorpay · Cashfree · PayU"]
@@ -76,7 +76,7 @@ flowchart LR
         SQ["serverQuery() — kit zcomFetch<br/>Nahara's own documents · revalidate 300 s<br/>throws on any error but NOT_FOUND"] -- "API_GATEWAY_URL/v1/graphql<br/>x-tenant-domain + x-zcom-edge-secret" --> GW["Gateway"]
     end
     subgraph Edge["Next proxy (server)"]
-        MW["proxy.js — kit createZcomMiddleware<br/>strip client tenant headers · forward only the refresh cookie<br/>x-zcom-client-ip from Vercel's header only<br/>body cap (413) · no tenant domain → fails closed"]
+        MW["proxy.js — kit createZcomMiddleware<br/>strip client tenant headers · forward only the refresh cookie<br/>x-zcom-client-ip from ZCOM_TRUSTED_IP_HEADER, or the last x-forwarded-for hop if ZCOM_TRUST_FORWARDED_FOR=last<br/>body cap (413) · no tenant domain → fails closed"]
     end
     subgraph Browser
         AW["kit ZcomSsrProvider<br/>Apollo Client 4: error → auth → http<br/>shared with Nahara's useQuery calls"] -- "/v1/graphql (same origin)<br/>Authorization: Bearer (memory)" --> MW
@@ -86,7 +86,7 @@ flowchart LR
 ```
 
 - **Edge headers (PRD-002 R2-C1):** the gateway trusts `x-tenant-domain` and `x-zcom-client-ip` only with a valid `x-zcom-edge-secret`. Only the kit reads `EDGE_SHARED_SECRET` (proxy, `zcomFetch`, the SSR pass of `ZcomSsrProvider`); it is required in production and staging.
-- **Client IP:** the kit takes it only from a trusted source (Vercel's `x-vercel-forwarded-for` here); server reads send none (cached pages are shared), except the payment-link page (`getRequestClientIp`).
+- **Client IP:** the kit takes it only from a trusted source (on AWS Amplify, the header named in `ZCOM_TRUSTED_IP_HEADER`, or the right-most `x-forwarded-for` hop when `ZCOM_TRUST_FORWARDED_FOR=last`); server reads send none (cached pages are shared), except the payment-link page (`getRequestClientIp`).
 - **Error link (kit):** `TOKEN_EXPIRED` / `UNAUTHENTICATED` → refresh once, retry; `INVALID_AUTH_TOKEN` / `TENANT_MISMATCH` → the session ends (Nahara toasts it); `TENANT_NOT_FOUND` → one "store unavailable" toast (`onStoreUnavailable`); `TENANT_SUSPENDED` → reload at most once a minute. Network, 429 and 5xx never end a session. `context.skipAuth` sends a request anonymously.
 - **Errors** are shown with `utils/errors.js` (Nahara's copy; it reads Apollo and kit errors through the kit).
 

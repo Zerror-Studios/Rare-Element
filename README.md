@@ -17,7 +17,7 @@ npm run dev        # http://localhost:3000
 **Environment variables** (names only, see `.env.example`):
 - `API_GATEWAY_URL` (server-only, **required in production**): the gateway origin; `/v1/graphql` is proxied to it and server components call it directly.
 - `EDGE_SHARED_SECRET` (server-only, **required in production**): the gateway's edge secret; the kit signs proxied and server-side calls with it, so the gateway trusts this site's tenant and client-IP headers. Never prefix it with `NEXT_PUBLIC_`.
-- `GITHUB_TOKEN` (hosting only): the shared read token that installs the kit from its private repo (Vercel team shared variable; `vercel.json` uses it). See the kit README, "Build token".
+- `GITHUB_TOKEN` (hosting only): the shared read token that installs the kit from its private repo (an AWS Amplify environment variable; `amplify.yml` uses it). See the kit README, "Build token".
 - `ZCOM_STORE_SLUG` (server-only, PRD-018 FR-4.3): this store's slug; `/.well-known/zcom-store?nonce=<hex>` answers `{ slug, nonce, signature }` with an HMAC of `<slug>:<nonce>` under `EDGE_SHARED_SECRET` for the platform's go-live check (503 while unset, 400 for a missing or malformed nonce; CP-18).
 - `NEXT_PUBLIC_TENANT_DOMAIN` (**required in production**, `nahara.co.in`): selects the tenant.
 - `NEXT_PUBLIC_GRAPHQL_API_URL`: **leave unset** so the browser uses the same-origin `/v1/graphql` (needed for the session cookie).
@@ -27,7 +27,7 @@ Every `NEXT_PUBLIC_*` value is public in the browser bundle.
 
 **Deploying** (owner):
 
-- **AWS Amplify** (`amplify.yml`, the twin of `vercel.json`): set `GITHUB_TOKEN` (read access to the private kit repo) and the server variables (`API_GATEWAY_URL`, `EDGE_SHARED_SECRET`, `ZCOM_STORE_SLUG`, and `ZCOM_TRUSTED_IP_HEADER` once the host's trusted client-IP header is confirmed) as Amplify environment variables. The build rewrites GitHub git URLs to https with the token (the kit is a git dependency; the `.npmrc` token line only covers the npm registry) and writes the server variables to `.env.production`, because Amplify gives console variables to the build only and the kit reads these at runtime. `NEXT_PUBLIC_*` names are baked in at build and need nothing extra. Confirm on the first `dev` deploy that Amplify runs Next 16 with `src/proxy.js`.
+- **AWS Amplify** (app `d37dwqq7xuecwd`, ap-south-1; branch `main` builds the live domain on every push; `amplify.yml`, the twin of the unused `vercel.json`): set `GITHUB_TOKEN` (read access to the private kit repo) and the server variables (`API_GATEWAY_URL`, `EDGE_SHARED_SECRET`, `ZCOM_STORE_SLUG`, and `ZCOM_TRUSTED_IP_HEADER` once the host's trusted client-IP header is confirmed) as Amplify environment variables. The build rewrites GitHub git URLs to https with the token (the kit is a git dependency; the `.npmrc` token line only covers the npm registry) and writes the server variables to `.env.production`, because Amplify gives console variables to the build only and the kit reads these at runtime. `NEXT_PUBLIC_*` names are baked in at build and need nothing extra. Confirm on the first `dev` deploy that Amplify runs Next 16 with `src/proxy.js`.
 
 On any host: set the required variables in hosting (with the shared `GITHUB_TOKEN` linked), unset any absolute `NEXT_PUBLIC_GRAPHQL_API_URL`, set `EDGE_SHARED_SECRET` to the same value as on Elastic Beanstalk, and consider rolling the CSP out with `CSP_REPORT_ONLY=true` first. The storefront's domain is never added to the gateway's `CORS_ORIGINS` (PRD-007 FR-8.2: the kit's proxy is edge-signed).
 
@@ -43,7 +43,7 @@ Dev runs with Turbopack.
 | Contract check | `npm run validate:ops` (operations and `variables` shapes against the composed supergraph; needs `../../zcom-backend` installed and built; PRD-014 FR-1.6) |
 | Lint | `npm run lint` (currently not functional; see `CLAUDE.md` §4) |
 
-Tests: `npm test` runs `test/*.test.mjs` with `node:test` (Node ≥ 22.15, no extra dependency) and **runs before every `npm run build`** (`prebuild`, PRD-014 K-01), so a failing test stops the deploy; keep the host's Build Command at `npm run build` (`vercel.json`). 98 tests (2026-11-12) over Nahara's own helpers (SEO, sort, stock labels, order detail, back-in-stock, payment-request views, reviews, the PRD-041 guest checkout and order status helpers, the signed-in checkout's kit inputs); the proxy, session, consent, tags and store status are tested in the kit.
+Tests: `npm test` runs `test/*.test.mjs` with `node:test` (Node ≥ 22.15, no extra dependency) and **runs before every `npm run build`** (`prebuild`, PRD-014 K-01), so a failing test stops the deploy; keep the Amplify build at `npm run build` (`amplify.yml`). 98 tests (2026-11-12) over Nahara's own helpers (SEO, sort, stock labels, order detail, back-in-stock, payment-request views, reviews, the PRD-041 guest checkout and order status helpers, the signed-in checkout's kit inputs); the proxy, session, consent, tags and store status are tested in the kit.
 
 ## Structure
 
